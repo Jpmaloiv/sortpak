@@ -1,19 +1,16 @@
 {
   "development": {
-    "use_env_variable": "LOCALDB",
-    "secret": "sortpak"
+    "use_env_variable": "LOCALDB"
   },
   "test": {
     "username": "root",
     "password": null,
     "database": "database_test",
     "host": "127.0.0.1",
-    "dialect": "mysql",
-    "secret": "sortpak"
+    "dialect": "mysql"
   },
   "production": {
     "use_env_variable": "JAWSDB_URL",
-    "dialect": "mysql",
-    "secret": "sortpak"
+    "dialect": "mysql"
   }
 }

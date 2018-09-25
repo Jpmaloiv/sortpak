@@ -16,6 +16,8 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 const isDev = process.env.NODE_ENV === 'production';
 
+isDev
+
 //fileupload middleware
 app.use(fileUpload())
 // Requiring our models for syncing
@@ -32,7 +34,6 @@ app.use(express.static(path.join(__dirname + '/scripts')));
 
 
 app.use(["/api/scripts"], jwt({
-    secret: process.env.JWT_SECRET,
     userProperty: 'payload'
 }));
 app.use("/api/scripts", scriptRoutes);
