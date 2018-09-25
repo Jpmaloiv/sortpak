@@ -30,11 +30,12 @@ app.use(express.static(path.join(__dirname + '/public')));
 app.use("/api/user", authRoutes);
 app.use(express.static(path.join(__dirname + '/scripts')));
 
+app.use(express.static(__dirname + '/'));
 
-app.use(["/api/scripts"], jwt({
+/* app.use(["/api/scripts"], jwt({
     secret: process.env.JWT_SECRET,
     userProperty: 'payload'
-}));
+})); */
 app.use("/api/scripts", scriptRoutes);
 
 /* if (process.env.NODE_ENV === 'production') {
@@ -44,7 +45,7 @@ app.use("/api/scripts", scriptRoutes);
     });
 } */
 
-db.sequelize.sync({ force: false, logging: console.log }).then(function () {
+db.sequelize.sync({ force: true, logging: console.log }).then(function () {
     app.listen(PORT, function () {
         console.log("App listening on PORT " + PORT);
     })
