@@ -14,7 +14,7 @@ const bodyParser = require('body-parser');
 //express setup
 const app = express();
 const PORT = process.env.PORT || 3001;
-const isDev = process.env.NODE_ENV === 'development';
+const isDev = process.env.NODE_ENV === 'production';
 
 //fileupload middleware
 app.use(fileUpload())
