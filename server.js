@@ -30,21 +30,19 @@ app.use(express.static(path.join(__dirname + '/public')));
 app.use("/api/user", authRoutes);
 app.use(express.static(path.join(__dirname + '/scripts')));
 
-app.use(express.static(__dirname + '/'));
-
-/* app.use(["/api/scripts"], jwt({
+app.use(["/api/scripts"], jwt({
     secret: process.env.JWT_SECRET,
     userProperty: 'payload'
-})); */
+}));
 app.use("/api/scripts", scriptRoutes);
 
 
-/* if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production') {
     app.use(express.static(path.join(__dirname + '/client/build')));
     app.get("*", (req, res) => {
         res.sendFile(path.join(__dirname + '/client/build/index.html'));
     });
-} */
+}
 
 db.sequelize.sync({ force: false, logging: console.log }).then(function () {
     app.listen(PORT, function () {
