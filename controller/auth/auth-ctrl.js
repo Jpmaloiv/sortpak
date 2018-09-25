@@ -20,7 +20,7 @@ function generateJWT(user) {
         email: user.email,
         username: user.username,
         exp: expire.getTime()/1000
-    });
+    }, process.env.JWT_SECRET);
 }
 ctrl.login = function(req, res) {
     let user = req.body.user;

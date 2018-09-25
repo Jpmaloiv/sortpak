@@ -86,33 +86,33 @@ class NavBar extends Component {
           Physicians
         </NavLink>
 
-        {isAdmin && (
+        {/* {isAdmin && ( */}
           <NavLink
             to="/refills"
           >
             <Icon name="tint" />
             Refills
           </NavLink>
-        )}
+        
 
 
-        {isAdmin && (
+        {/* {isAdmin && ( */}
           <NavLink
             to="/products"
           >
             <Icon name="tint" />
             Products
           </NavLink>
-        )}
+        
 
-        {isAdmin && (
+        {/* {isAdmin && ( */}
           <NavLink
             to="/team"
           >
             <Icon name="user-o" />
-            Users
+            My Team
           </NavLink>
-        )}
+        
       </div>
     )
   }

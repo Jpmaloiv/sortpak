@@ -7,7 +7,6 @@ import styles from './LoginMain.css'
 import {
     ErrorMessage,
     FloatBox,
-    Link,
     Button,
     Form,
   } from '../../common'

@@ -14,9 +14,7 @@ const bodyParser = require('body-parser');
 //express setup
 const app = express();
 const PORT = process.env.PORT || 3001;
-const isDev = process.env.NODE_ENV === 'production';
-
-isDev
+const isDev = process.env.NODE_ENV === 'development';
 
 //fileupload middleware
 app.use(fileUpload())
@@ -34,11 +32,17 @@ app.use(express.static(path.join(__dirname + '/scripts')));
 
 
 app.use(["/api/scripts"], jwt({
+    secret: process.env.JWT_SECRET,
     userProperty: 'payload'
 }));
 app.use("/api/scripts", scriptRoutes);
 
-
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname + '/client/build')));
+    app.get("*", (req, res) => {
+        res.sendFile(path.join(__dirname + '/client/build/index.html'));
+    });
+}
 
 db.sequelize.sync({ force: false, logging: console.log }).then(function () {
     app.listen(PORT, function () {

@@ -4,7 +4,7 @@ import axios from 'axios'
 
 // import { hasAuthTokenAsync } from '../../../../lib'
 
-import {Span, Table, Header, Button} from '../../../common'
+import {Span, Selector, Table, Header, Button, ActionBox, ToggleSwitch, SearchBar} from '../../../common'
 
 import {
   getScripts,
@@ -158,6 +158,53 @@ class ScriptsView extends Component {
 
   render() {
     console.log(this.state.scripts);
+
+    const {
+      filterValue,
+      searchValue,
+    } = this.state
+
+    const Type1Options = [
+      'RX',
+      'HC',
+    ]
+
+    const Type2Options = [
+      'SP',
+      'Third Party',
+    ]
+
+    const SpecialOptions = [
+      'Medicare',
+    ]
+
+    const RepOptions = [
+      'All Reps',
+      'No Reps',
+      'EE',
+    ]
+
+    const SpecializationOptions = [
+      'All Specializations',
+      'No Specialization',
+      'EE'
+    ]
+
+    const StatusValues = [
+      "Received",
+      "Review",
+      "Prior Auth",
+      "Process",
+      "Copay Assistance",
+      "Schedule",
+      "QA",
+      "Fill",
+      "Shipped",
+      "Done",
+      "Cancelled",
+      "Refill",
+    ]
+
      /* const {
       script,
       date
@@ -224,6 +271,62 @@ var scriptList = this.state.scripts.map(function (item, i) {
         </Header>
 
         <div className="body">
+
+           <ActionBox>
+              <div className='main'>
+                <ToggleSwitch
+                  label="Type"
+                  options={Type1Options}
+                  selected={filterValue}
+                  onSelect={filterValue => this.setState({ filterValue })}
+                />
+                  <Selector
+                    label="Special"
+                    options={SpecialOptions}
+                    selected={filterValue}
+                    onSelect={filterValue => this.setState({ filterValue })}
+                  />
+                <ToggleSwitch
+                    label="Type"
+                    options={Type2Options}
+                    selected={filterValue}
+                    onSelect={filterValue => this.setState({ filterValue })}
+                />
+              <SearchBar
+                selected={searchValue}
+                onSelect={searchValue => this.setState({ searchValue })}
+                label="Search"
+                placeholder="Search..."
+              />
+              </div>
+            </ActionBox>
+            <ActionBox>
+              <div className="main">
+                <Selector
+                  label="Rep"
+                  options={RepOptions}
+                  selected={filterValue}
+                  onSelect={filterValue => this.setState({ searchValue })}
+                />
+                  <Selector
+                    label="Specialization"
+                    options={SpecializationOptions}
+                    selected={filterValue}
+                    onSelect={filterValue => this.setState({ searchValue })}
+                  />
+              </div>
+            </ActionBox>
+            <ActionBox>
+              <div className="main">
+                <ToggleSwitch
+                  label="Type"
+                  options={StatusValues}
+                  selected={filterValue}
+                  onSelect={filterValue => this.setState({ searchValue })}
+                  allowsMultipleSelection
+                />
+              </div>
+            </ActionBox>
 
           {this.renderTable()}
           {scriptList}

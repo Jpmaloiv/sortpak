@@ -7,9 +7,15 @@ import Signup from './components/Signup'
 import Login from './components/pages/LoginMain/LoginMain';
 import ScriptsPage from './components/pages/Scripts/ScriptsPage';
 import ScriptView from './components/pages/Scripts/ScriptView/ScriptView'
+import AddScript from './components/pages/Scripts/AddScript/AddScript'
+import PatientsPage from './components/pages/PatientsPage/PatientsPage'
 import DashboardPage from './components/pages/DashboardPage/DashboardPage'
 import AgendaPage from './components/pages/AgendaPage/AgendaPage'
-import AddScript from './components/pages/Scripts/AddScript/AddScript'
+import PhysiciansPage from './components/pages/PhysiciansPage/PhysiciansPage'
+import RefillsPage from './components/pages/RefillsPage/RefillsPage'
+import ProductsPage from './components/pages/ProductsPage/ProductsPage'
+import TeamPage from './components/pages/TeamPage/TeamPage'
+import AddMember from './components/pages/TeamPage/AddMember/AddMember'
 import { Provider } from 'react-redux'
 import ReduxThunk from 'redux-thunk'
 import reducers from './reducers'
@@ -56,8 +62,14 @@ class App extends Component {
               <Route exact path="/scripts" component={ScriptsPage} />
               <Route exact path="/scripts/add" component={AddScript} />
               <Route exact path="/scripts/:scriptId" component={ScriptView} />
+              <Route exact path="/patients" component={PatientsPage} />
               <Route exact path="/dashboard" component={DashboardPage} />
+              <Route exact path="/physicians" component={PhysiciansPage} />
               <Route exact path="/agenda" component={AgendaPage} />
+              <Route exact path="/refills" component={RefillsPage} />
+              <Route exact path="/products" component={ProductsPage} />
+              <Route exact path="/team" component={TeamPage} />
+              <Route exact path="/team/add" component={AddMember} />
 
             </Switch>
           </div>

@@ -360,7 +360,7 @@ class AddScript extends React.Component {
                                     <td>
                                         <Selector
                                              wide
-                                             label="Status"
+                                            //  label="Status"
                                              options={copayApproval}
                                              onSelect={status => this.setState({copayApproval})}
                                         />
