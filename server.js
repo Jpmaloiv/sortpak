@@ -38,7 +38,6 @@ app.use(express.static(__dirname + '/'));
 })); */
 app.use("/api/scripts", scriptRoutes);
 
-app.listen(process.env.PORT || 8080);
 
 /* if (process.env.NODE_ENV === 'production') {
     app.use(express.static(path.join(__dirname + '/client/build')));
@@ -47,7 +46,7 @@ app.listen(process.env.PORT || 8080);
     });
 } */
 
-db.sequelize.sync({ force: true, logging: console.log }).then(function () {
+db.sequelize.sync({ force: false, logging: console.log }).then(function () {
     app.listen(PORT, function () {
         console.log("App listening on PORT " + PORT);
     })
