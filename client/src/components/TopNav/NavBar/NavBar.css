@@ -1,0 +1,32 @@
+:local(.navBar) {
+  width: 100%;
+  display: flex;
+  background-color: #fff;
+  flex-wrap: wrap;
+  min-height: 63px; }
+  :local(.navBar) > a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: inherit;
+    flex: 1;
+    text-decoration: none;
+    text-align: center;
+    padding: 10px;
+    border-top: 1px solid #eaeaea;
+    display: flex;
+    align-items: center;
+    transition: 100ms; }
+    @media only screen and (max-width: 600px) {
+      :local(.navBar) > a {
+        padding: 5px; } }
+    :local(.navBar) > a:not(:last-child) {
+      border-right: 1px solid #eaeaea; }
+    :local(.navBar) > a:hover {
+      background-color: #eee; }
+    :local(.navBar) > a.active {
+      background-color: #ff7d38;
+      color: #fff; }
+      :local(.navBar) > a.active > .icon {
+        background: #fff;
+        color: #444; }

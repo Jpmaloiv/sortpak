@@ -1,0 +1,35 @@
+
+#scriptView td {width: 200px !important;} 
+
+table {
+    margin: 2% 0;
+}
+
+:local(.body) > td {
+    width: 200px !important;
+}
+
+:local(.body) {
+    width: 100%;
+}
+:local(.body) > table {
+    width: 70% !important;
+}
+:local(.body) > table > td {
+    width: 200px !important;
+}
+
+:local(.scriptView) > table > td {
+    width: 200px !important;
+    margin: 50px !important;
+}
+
+td.field {
+    color: #909090;
+    font-weight: lighter;
+}
+
+td.value {
+    color: #333;
+    font-weight: lighter;
+}
