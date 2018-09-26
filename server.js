@@ -25,6 +25,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.text());
 app.use(bodyParser.json({ type: "application/vnd.api+json" }));
 
+app.use(express.static(path.join(__dirname, 'client/build')));
+
 //routes
 app.use(express.static(path.join(__dirname + '/public')));
 app.use("/api/user", authRoutes);
