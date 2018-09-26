@@ -159,7 +159,7 @@ class TeamView extends Component {
 
 
   render() {
-    const { searchType } = this.state
+    // const { searchType } = this.state
 
     return (
       <div className={styles.app}>

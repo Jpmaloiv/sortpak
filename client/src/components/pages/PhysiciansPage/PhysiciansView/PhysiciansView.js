@@ -8,7 +8,7 @@ import {
   Header,
   ActionBox,
   Button,
-  Selector,
+  // Selector,
   SearchBar,
 } from '../../../common'
 
@@ -123,17 +123,17 @@ class PhysiciansView extends Component {
   }
 
   render() {
-    const {
+    /* const {
       filterValue,
       searchType,
       search,
-    } = this.state
+    } = this.state */
 
-    const {
+    /* const {
       reps,
-    } = this.props
+    } = this.props */
 
-    const filterOptions = [
+    /* const filterOptions = [
       {
         value: '',
         display: 'All',
@@ -153,7 +153,7 @@ class PhysiciansView extends Component {
         value: 'name',
         display: 'Name',
       },
-    ]
+    ] */
 
     return (
       <div className={styles.app}>

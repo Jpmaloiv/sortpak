@@ -39,7 +39,7 @@ class NavBar extends Component {
   }
 
   render() {
-    const isAdmin = 0;
+    // const isAdmin = 0;
     /* const { isAdmin, me } = this.props
     if (!me) {
       return (

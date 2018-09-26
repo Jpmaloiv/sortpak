@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux'
+// import { connect } from 'react-redux'
 
-import { hasAuthTokenAsync } from '../../../../lib'
+// import { hasAuthTokenAsync } from '../../../../lib'
 
 import {
-  Span,
+  // Span,
   Table,
   Header,
   ActionBox,
@@ -36,16 +36,16 @@ class ProductsView extends Component {
   //   }
   // }
 
-  componentDidMount() {
+  /* componentDidMount() {
     hasAuthTokenAsync()
       .then(() => {
-        {/*
+        
           TODO: GET AVAILABLE PRODUCTS FROM DB
           this.props.getPatients()
-        */}
+        
       })
       .catch(console.log)
-  }
+  } */
 
 
   //   TODO: ADD SEARCH FOR PRODUCTS
@@ -95,7 +95,7 @@ class ProductsView extends Component {
   }
 
   renderTableBody() {
-    const { products } = this.props
+    // const { products } = this.props
     return (
       <tbody>
         {/*
