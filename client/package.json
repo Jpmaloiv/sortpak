@@ -1,0 +1,43 @@
+{
+  "name": "sortpak",
+  "version": "0.1.0",
+  "private": true,
+  "proxy": "http://localhost:3001",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "calendar-js": "^1.4.4",
+    "classnames": "^2.2.6",
+    "create-react-app": "^1.5.2",
+    "jwt-decode": "^2.2.0",
+    "libphonenumber-js": "^1.4.6",
+    "prop-types": "^15.6.1",
+    "react": "^16.2.0",
+    "react-awesome-modal": "^2.0.5",
+    "react-disqus-thread": "^0.4.0",
+    "react-dom": "^16.2.0",
+    "react-fontawesome": "^1.6.1",
+    "react-pdf-js": "^3.0.7",
+    "react-progress-bar.js": "^0.2.3",
+    "react-redux": "^5.0.7",
+    "react-router-dom": "^4.2.2",
+    "react-router-redux": "^4.0.8",
+    "react-scripts": "1.1.1",
+    "react-spinner": "^0.2.7",
+    "react-stripe-checkout": "^2.6.3",
+    "react-stripe-elements": "^1.6.0",
+    "redux": "^4.0.0",
+    "redux-thunk": "^2.3.0",
+    "socket.io-client": "^2.1.1",
+    "yarn": "^1.5.1"
+  },
+  "scripts": {
+    "build-css": "node-sass-chokidar --exclude-path ./src/scss --include-path ./src --include-path ./node_modules src/ -o src/",
+    "watch-css": "npm run build-css && node-sass-chokidar --exclude-path ./src/scss --include-path ./src --include-path ./node_modules src/ -o src/ --watch --recursive",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "postinstall": "npm run build"
+  },
+  "devDependencies": {}
+}
