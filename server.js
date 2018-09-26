@@ -39,6 +39,14 @@ app.use(["/api/scripts"], jwt({
 }));
 app.use("/api/scripts", scriptRoutes);
 
+app.get('/*', function(req, res) {
+    res.sendFile(path.join(__dirname, './client/build/index.html'), function(err) {
+      if (err) {
+        res.status(500).send(err)
+      }
+    })
+  })
+
 
 
 db.sequelize.sync({ force: false, logging: console.log }).then(function () {
