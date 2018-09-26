@@ -5,6 +5,7 @@ const path = require("path");
 const jwt = require("express-jwt");
 const authRoutes = require("./routes/auth-routes.js");
 const scriptRoutes = require("./routes/script-routes.js");
+const patientRoutes = require("./routes/patient-routes.js");
 const fileUpload = require('express-fileupload');
 
 //middleware
@@ -31,6 +32,7 @@ app.use(express.static(path.join(__dirname, 'client/build')));
 app.use(express.static(path.join(__dirname + '/public')));
 app.use("/api/user", authRoutes);
 app.use(express.static(path.join(__dirname + '/scripts')));
+app.use(express.static(path.join(__dirname + '/patients')));
 
 
 app.use(["/api/scripts"], jwt({
@@ -38,6 +40,12 @@ app.use(["/api/scripts"], jwt({
     userProperty: 'payload'
 }));
 app.use("/api/scripts", scriptRoutes);
+app.use(["/api/patients"], jwt({
+    secret: process.env.JWT_SECRET,
+    userProperty: 'payload'
+}));
+app.use("/api/patients", patientRoutes);
+
 
 app.get('/*', function(req, res) {
     res.sendFile(path.join(__dirname, './client/build/index.html'), function(err) {

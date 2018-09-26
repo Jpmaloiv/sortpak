@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
+import axios from 'axios'
 
 import { hasAuthTokenAsync } from '../../../../lib'
 
@@ -33,13 +34,13 @@ class AddPatient extends Component {
     this.state = this.initialState
   }
 
-  componentDidMount() {
+  /* componentDidMount() {
     hasAuthTokenAsync()
       .then(() => {
         this.props.getPhysicians()
       })
       .catch(console.log)
-  }
+  } */
 
   get initialState() {
     return {
@@ -68,9 +69,19 @@ class AddPatient extends Component {
 
   onSubmit(e) {
     e.preventDefault()
-    if (this.invalid) {
-      return
-    }
+        console.log(this.state.firstName);
+        console.log(this.props.firstName);
+        const loginToken = window.localStorage.getItem("token");
+        let data = new FormData();
+        axios.post('/api/patients/create?firstName=' + this.state.firstName, 
+        data, { headers: { "Authorization": "Bearer " + loginToken } })
+            .then((data) => {
+                console.log(data);
+                // window.location = '/profile';
+                this.props.history.push("/patients");              
+            }).catch((error) => {
+                console.error(error);
+            })
 
     const {
       firstName,
@@ -80,13 +91,13 @@ class AddPatient extends Component {
 
     const dob = unformatDate(this.state.dob)
 
-    const data = {
+    /* const data = {
       firstName,
       lastName,
       dob,
       physicianId,
     }
-    this.props.createPatient(data)
+    this.props.createPatient(data) */
   }
 
   render() {
@@ -175,7 +186,6 @@ class AddPatient extends Component {
                 large
                 type="submit"
                 title="CREATE PATIENT"
-                inactive={this.invalid}
               />
             </div>
           </Form>

@@ -171,6 +171,7 @@ class PhysiciansView extends Component {
             />
 
             <Button
+              link="physicians/add"
               icon="plus"
               title="ADD A NEW PHYSICIAN"
               style={{ marginRight: 8 }}

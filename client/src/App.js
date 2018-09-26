@@ -9,9 +9,11 @@ import ScriptsPage from './components/pages/Scripts/ScriptsPage';
 import ScriptView from './components/pages/Scripts/ScriptView/ScriptView'
 import AddScript from './components/pages/Scripts/AddScript/AddScript'
 import PatientsPage from './components/pages/PatientsPage/PatientsPage'
+import AddPatient from './components/pages/PatientsPage/AddPatient/AddPatient'
 import DashboardPage from './components/pages/DashboardPage/DashboardPage'
 import AgendaPage from './components/pages/AgendaPage/AgendaPage'
 import PhysiciansPage from './components/pages/PhysiciansPage/PhysiciansPage'
+import AddPhysician from './components/pages/PhysiciansPage/AddPhysician/AddPhysician'
 import RefillsPage from './components/pages/RefillsPage/RefillsPage'
 import ProductsPage from './components/pages/ProductsPage/ProductsPage'
 import TeamPage from './components/pages/TeamPage/TeamPage'
@@ -63,8 +65,10 @@ class App extends Component {
               <Route exact path="/scripts/add" component={AddScript} />
               <Route exact path="/scripts/:scriptId" component={ScriptView} />
               <Route exact path="/patients" component={PatientsPage} />
+              <Route exact path="/patients/add" component={AddPatient} />
               <Route exact path="/dashboard" component={DashboardPage} />
               <Route exact path="/physicians" component={PhysiciansPage} />
+              <Route exact path="/physicians/add" component={AddPhysician} />
               <Route exact path="/agenda" component={AgendaPage} />
               <Route exact path="/refills" component={RefillsPage} />
               <Route exact path="/products" component={ProductsPage} />
