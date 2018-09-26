@@ -8,6 +8,7 @@ class ProductsPage extends Component {
     return (
       <div className={styles.app}>
         <Router />
+        <p>Test</p>
       </div>
     );
   }
