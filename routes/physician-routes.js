@@ -13,6 +13,11 @@ router.post("/add", (req, res) => {
     const physicianLink = '/physicians/' + req.payload.id + '/' + req.query.firstName.trim() + ".pdf";
     const physician = {
         firstName: req.query.firstName,
+        lastName: req.query.lastName,
+        username: req.query.username,
+        specialty: req.query.specialty,
+        group: req.query.group,
+        salesRep: req.query.salesReprenstative,
         link: physicianLink,
         UserId: req.payload.id
     }
