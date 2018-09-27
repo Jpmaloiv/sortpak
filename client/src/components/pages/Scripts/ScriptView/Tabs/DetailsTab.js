@@ -1,152 +1,67 @@
 import React, { Component } from 'react';
-import axios from 'axios';
-
-import {Header, Body} from '../../../common'
-import styles from './ScriptView.css'
+import axios from 'axios'
 
 // Components
 import {
-  SwitchTable,
-  AddressModal,
-  AddressLine,
-} from '../../../shared'
+  Header,
+  Body,
+  Form,
+  Span,
+} from '../../../../common'
 
-import DetailsTab from './Tabs/DetailsTab'
-import NotesTab from './Tabs/NotesTab'
-import AttachmentsTab from './Tabs/AttachmentsTab'
-
-
-
-class ScriptView extends Component {
-
-  constructor(props) {
-    super(props)
-    this.tabOptions = [
-      {
-        value: 'details',
-        display: 'Details',
-        renderComponent: () => this.renderDetailsTab(),
-      },
-      {
-        value: 'notes',
-        display: 'Notes',
-        renderComponent: () => this.renderNotesTab(),
-      },
-      {
-        value: 'attachments',
-        display: 'Attachments',
-        renderComponent: () => this.renderAttachmentsTab(),
-      },
-    ]
-
-    this.state = {
-      tab: this.tabOptions[0],
-      ...this.initialState,
-    }
-  }
-
+class DetailsTab extends Component {
   state = {
     script: ''
 }
+  /* componentDidMount() {
+    if (this.props.match.params.scriptId) {
+      const loginToken = window.localStorage.getItem("token");
+        axios.get('/api/scripts/search?scriptId=' + this.props.match.params.scriptId, { headers: { "Authorization": "Bearer " + loginToken } })
+        .then((resp) => {
+          console.log(resp);
+          let script = resp.data.response[0];
+            this.setState({
+                status: script.status,
+                writtenDate: script.writtenDate,
+                patient: script.patient,
+                billOnDate: script.billOnDate,
+                rxNumber: script.rxNumber,
+                phone: script.phone,
+                diagnosis: script.diagnosis,
+                email: script.email,
+                secDiagnosis: script.secDiagnosis,
+                refills: script.refills,
+                refillsRemaining: script.refillsRemaining,
+                quantity: script.quantity,
+                daysSupply: script.daysSupply,
+                salesCode: script.salesCode,
+                cost: script.cost,
+                primInsPay: script.primInsPay,
+                secInsPay: script.secInsPay,
+                location: script.location,
+                copayApproval: script.copayApproval,
+                copayNetwork: script.copayNetwork,
+                patientPay: script.patientPay,
+                directions: script.directions
+            }, () => console.log(this.state.status))
 
+        }).catch((err) => {
+            console.error(err)
+        })
+    }
+} */
 
-
-  componentDidMount() {
-    console.log(this.props);
-      if (this.props.match.params.scriptId) {
-        const loginToken = window.localStorage.getItem("token");
-          axios.get('/api/scripts/search?scriptId=' + this.props.match.params.scriptId, { headers: { "Authorization": "Bearer " + loginToken } })
-          .then((resp) => {
-            console.log(resp);
-            let script = resp.data.response[0];
-              this.setState({
-                  status: script.status,
-                  writtenDate: script.writtenDate,
-                  patient: script.patient,
-                  billOnDate: script.billOnDate,
-                  rxNumber: script.rxNumber,
-                  phone: script.phone,
-                  diagnosis: script.diagnosis,
-                  email: script.email,
-                  secDiagnosis: script.secDiagnosis,
-                  refills: script.refills,
-                  refillsRemaining: script.refillsRemaining,
-                  quantity: script.quantity,
-                  daysSupply: script.daysSupply,
-                  salesCode: script.salesCode,
-                  cost: script.cost,
-                  primInsPay: script.primInsPay,
-                  secInsPay: script.secInsPay,
-                  location: script.location,
-                  copayApproval: script.copayApproval,
-                  copayNetwork: script.copayNetwork,
-                  patientPay: script.patientPay,
-                  directions: script.directions
-              }, () => console.log(this.state.status))
-
-          }).catch((err) => {
-              console.error(err)
-          })
-      }
-  }
-
-  renderSwitchTable() {
-    const { tab } = this.state
-    return (
-      <SwitchTable
-        tabs={this.tabOptions}
-        selected={tab}
-        onClick={tab => this.setState({ tab })}
-      />
-    )
-  }
-
-  renderDetailsTab() {
-    return (
-      <DetailsTab
-        className={styles.detailsTab}
-      />
-    )
-  }
-
-  renderNotesTab() {
-    return (
-      <NotesTab
-        className={styles.notesTab}
-        state={this.state}
-        patient={this.props.patient}
-        setState={this.setState.bind(this)}
-      />
-    )
-  }
-
-  renderAttachmentsTab() {
-    return (
-      <NotesTab
-        className={styles.attachmentsTab}
-        state={this.state}
-        patient={this.props.patient}
-        setState={this.setState.bind(this)}
-        onCreateNote={this.createNote.bind(this)}
-        onCloseModal={() => this.closeModal()}
-      />
-    )
-  }
-
-  
-
-  render() {  
-    return (
+  render() {
+    return(
       <div>
         <Header>
           <h2>Status: {this.state.status}</h2>
         </Header>
+        <Body id="scriptView">
+        {/* <Body className={styles.body} id="scriptView"> */}
 
-        <Body className={styles.body} id="scriptView">
-
-        {this.renderSwitchTable()}
-        
-          <table className={styles.scriptView}>
+          <table>
+          {/* <table className={styles.scriptView}> */}
             <tbody>
               <tr>
                 <td className="field">Processed On</td>
@@ -295,9 +210,8 @@ class ScriptView extends Component {
 
         </Body>
       </div>
-      
-    );
+    )
   }
 }
 
-export default ScriptView;
+export default DetailsTab;

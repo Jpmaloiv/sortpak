@@ -69,19 +69,17 @@ class AddPatient extends Component {
 
   onSubmit(e) {
     e.preventDefault()
-        console.log(this.state.firstName);
-        console.log(this.props.firstName);
-        const loginToken = window.localStorage.getItem("token");
-        let data = new FormData();
-        axios.post('/api/patients/add?firstName=' + this.state.firstName, 
-        data, { headers: { "Authorization": "Bearer " + loginToken } })
-            .then((data) => {
-                console.log(data);
-                // window.location = '/profile';
-                this.props.history.push("/patients");              
-            }).catch((error) => {
-                console.error(error);
-            })
+      const loginToken = window.localStorage.getItem("token");
+      let data = new FormData();
+      axios.post('/api/patients/add?firstName=' + this.state.firstName + '&lastName=', 
+      data, { headers: { "Authorization": "Bearer " + loginToken } })
+          .then((data) => {
+              console.log(data);
+              // window.location = '/profile';
+              this.props.history.push("/patients");              
+          }).catch((error) => {
+              console.error(error);
+          })
 
     const {
       firstName,

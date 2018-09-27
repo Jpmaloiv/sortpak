@@ -13,6 +13,9 @@ router.post("/add", (req, res) => {
     const patientLink = '/patients/' + req.payload.id + '/' + req.query.firstName.trim() + ".pdf";
     const patient = {
         firstName: req.query.firstName,
+        lastName: req.query.lastName,
+        dob: req.query.dob,
+        physician: req.query.physician,
         link: patientLink,
         UserId: req.payload.id
     }
