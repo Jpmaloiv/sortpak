@@ -140,7 +140,7 @@ class ScriptView extends Component {
         <Header id="scriptViewHead">
           <h2>Status: {this.state.status}</h2>
         </Header>
-
+<p></p>
         <Body className={styles.body} id="scriptViewBody">
 
         {this.renderSwitchTable()}
