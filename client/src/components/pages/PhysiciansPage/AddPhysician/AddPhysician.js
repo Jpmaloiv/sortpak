@@ -66,7 +66,7 @@ class AddPhysician extends Component {
       specialty,
       username,
       group,
-      rep,
+      salesRep,
     } = this.state
     /* const data = {
       firstName,

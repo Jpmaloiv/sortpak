@@ -69,11 +69,12 @@ class AddPatient extends Component {
 
   onSubmit(e) {
     e.preventDefault()
-        console.log(this.state.firstName);
-        console.log(this.props.firstName);
+        
         const loginToken = window.localStorage.getItem("token");
         let data = new FormData();
-        axios.post('/api/patients/add?firstName=' + this.state.firstName, 
+        console.log(this.state.lastName)
+        console.log(this.state.dob)
+        axios.post('/api/patients/add?firstName=' + this.state.firstName + "&lastName=" + this.state.lastName + "&dob=" + this.state.dob, 
         data, { headers: { "Authorization": "Bearer " + loginToken } })
             .then((data) => {
                 console.log(data);
@@ -86,10 +87,11 @@ class AddPatient extends Component {
     const {
       firstName,
       lastName,
+      dob,
       physicianId,
     } = this.state
 
-    const dob = unformatDate(this.state.dob)
+    // const dob = unformatDate(this.state.dob)
 
     /* const data = {
       firstName,
