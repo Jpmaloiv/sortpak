@@ -38,14 +38,14 @@ class Agenda extends Component {
     )
 
     const key = `${weekIndex}-${dayIndex}`
-    const isToday = visit => {
+    /* const isToday = visit => {
       const visitDate = new Date(visit.dateTime)
       const visitDay = visitDate.getDate()
       return visitDay === day
-    }
-    const { visits } = this.props
-    const filteredVisits = day ? visits.filter(isToday) : []
-    const reduceVisitsToReps = (acc, curr) => {
+    } */
+    // const { visits } = this.props
+    // const filteredVisits = day ? visits.filter(isToday) : []
+    /* const reduceVisitsToReps = (acc, curr) => {
       const existingRep = acc.find(el => el.id === curr.rep.id)
       if (existingRep) {
         existingRep.visits.push(curr)
@@ -54,16 +54,16 @@ class Agenda extends Component {
         acc.push(rep)
       }
       return acc
-    }
+    } */
 
-    const reps = filteredVisits.reduce(reduceVisitsToReps, [])
+    // const reps = filteredVisits.reduce(reduceVisitsToReps, [])
 
     return (
       <Day
         onClick={rep => this.props.onSelectRep({rep, day})}
         key={key}
         day={day}
-        reps={reps}
+        // reps={reps}
         today={isCurrentDay}
       />
     )

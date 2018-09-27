@@ -243,7 +243,7 @@ var scriptList = this.state.scripts.map(function (item, i) {
         }
         else {
             return <div>
-                <p>None found</p>
+                <p></p>
             </div>
         }
          

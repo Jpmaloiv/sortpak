@@ -39,6 +39,8 @@ class AddScript extends React.Component {
     }
 
     submitscript = (event) => {
+        console.log(this.state.status);
+        console.log(this.state.copayApproval);
         event.preventDefault();
         const loginToken = window.localStorage.getItem("token");
         let data = new FormData();
@@ -104,7 +106,9 @@ class AddScript extends React.Component {
             phone,
             phoneChange,
             email,
-            emailChange
+            emailChange,
+            copayApproval,
+            copayNetwork
         } = this.props
 
         const statusOptions = [
@@ -122,12 +126,12 @@ class AddScript extends React.Component {
             'Refill'
         ]
 
-        const copayApproval = [
+        const copayApprovalOptions = [
             'Approved',
             'Denied'
         ]
 
-        const copayNetwork = [
+        const copayNetworkOptions = [
             'Cancer Care Foundation',
             'Chronice Disease Fund',
             'Health Well',
@@ -361,17 +365,20 @@ class AddScript extends React.Component {
                                         <Selector
                                              wide
                                             //  label="Status"
-                                             options={copayApproval}
+                                             options={copayApprovalOptions}
+                                             placeholder="No Status"
                                              onSelect={status => this.setState({copayApproval})}
                                         />
                                     </td>
                                     <td>
                                         <Selector
                                             wide
-                                            placeholder="Copay Network"
-                                            options={copayNetwork}
+                                            label="Copay Network"
+                                            placeholder="No Network"
+                                            options={copayNetworkOptions}
                                             onSelect={status => this.setState({copayNetwork})}
-                                        />                                            
+                                        />  
+                                                                                  
                                     </td>
                                 </tr>
                             </tbody>

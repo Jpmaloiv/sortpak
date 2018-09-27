@@ -1,7 +1,11 @@
 
 #addScript input {width: 400px !important;}
 
-#addScript table tbody tr td {padding: 0 3% !important;}
+#addScript .clearfix:after, .row:after {clear: none !important;}
+
+
+
+#addscript table {border-spacing: 25px !important;}
 
 :local(.container) {
     display: flex;

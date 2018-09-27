@@ -127,8 +127,7 @@ class ScriptView extends Component {
         state={this.state}
         patient={this.props.patient}
         setState={this.setState.bind(this)}
-        onCreateNote={this.createNote.bind(this)}
-        onCloseModal={() => this.closeModal()}
+        
       />
     )
   }

@@ -30,7 +30,7 @@ class NotesTab extends Component {
       // noteModal,
     } = state */
     return (
-      <div className={className}>
+      <div style={{margin: 25, padding: 10}} className={className}>
         <h2>
           More Info
         </h2>
