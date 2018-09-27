@@ -3,8 +3,7 @@ import React, { Component } from 'react';
 // Components
 import {
   Span,
-  Button,
-  DateBox,
+  Button
 } from '../../../../common'
 
 import {
@@ -18,8 +17,6 @@ class NotesTab extends Component {
 
   render() {
     const {
-      patient,
-      state,
       setState,
       className,
       onCloseModal,

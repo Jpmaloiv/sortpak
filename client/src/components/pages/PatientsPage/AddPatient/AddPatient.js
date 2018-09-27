@@ -2,11 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import axios from 'axios'
 
-import { hasAuthTokenAsync } from '../../../../lib'
-
-import {
-  unformatDate,
-} from '../../../../lib/dateHelper'
 
 import {
   Selector,
@@ -69,20 +64,6 @@ class AddPatient extends Component {
 
   onSubmit(e) {
     e.preventDefault()
-<<<<<<< HEAD
-      const loginToken = window.localStorage.getItem("token");
-      let data = new FormData();
-      axios.post('/api/patients/add?firstName=' + this.state.firstName + '&lastName=', 
-      data, { headers: { "Authorization": "Bearer " + loginToken } })
-          .then((data) => {
-              console.log(data);
-              // window.location = '/profile';
-              this.props.history.push("/patients");              
-          }).catch((error) => {
-              console.error(error);
-          })
-=======
-        
         const loginToken = window.localStorage.getItem("token");
         let data = new FormData();
         console.log(this.state.lastName)
@@ -96,14 +77,8 @@ class AddPatient extends Component {
             }).catch((error) => {
                 console.error(error);
             })
->>>>>>> 070e30b791570b9e4af1414bf426d7f5dc64595e
 
-    const {
-      firstName,
-      lastName,
-      dob,
-      physicianId,
-    } = this.state
+    
 
     // const dob = unformatDate(this.state.dob)
 

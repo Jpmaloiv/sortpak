@@ -1,15 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
+import axios from 'axios'
 
-import { hasAuthTokenAsync } from '../../../../lib'
 
 import {
   Span,
   Table,
   Header,
-  ActionBox,
-  Button,
-  SearchBar,
+  Button
 } from '../../../common'
 
 import {
@@ -35,14 +33,30 @@ class PatientsView extends Component {
     }
   }
   componentDidMount() {
-    hasAuthTokenAsync()
+    /* hasAuthTokenAsync()
       .then(() => {
         this.props.getPatients()
       })
-      .catch(console.log)
+      .catch(console.log) */
+
+      const loginToken = window.localStorage.getItem("token");
+        axios.get('api/patients/search/', { headers: { "Authorization": "Bearer " + loginToken } })
+          .then((resp) => {
+            console.log(resp);
+            console.log(resp.data);
+            console.log(resp.data.response);
+            this.setState({
+                patients: resp.data.response,
+                // id: resp.data.response.id,
+               
+            })
+            console.log(this.state.patients)
+          }).catch((error) => {
+            console.error(error);
+        })
   }
 
-  searchByName(name) {
+  /* searchByName(name) {
     const dob = ''
     this.setState({ name, dob })
     this.props.filterPatientsByName(name)
@@ -52,7 +66,7 @@ class PatientsView extends Component {
     const name = ''
     this.setState({ name, dob })
     this.props.filterPatientsByDob(dob)
-  }
+  } */
 
   renderTableHead() {
     return (
@@ -77,25 +91,24 @@ class PatientsView extends Component {
   }
 
   renderTableBody() {
-    const { patients } = this.props
+    // const { patients } = this.props
     return (
       <tbody>
-        {patients.map(this.renderTableRow.bind(this))}
+        {this.state.patients.map(this.renderTableRow.bind(this))}
       </tbody>
     )
   }
 
   renderTableRow(patient) {
-    const address = patient.address ? patient.address.street1 : 'None'
     return (
       <tr key={patient.id}>
         <td>
-          {patient.nameDisplay}
+          {patient.firstName} {patient.lastName}
         </td>
 
         <td>
           <Span icon="calendar">
-            {patient.dobDisplay || 'None'}
+            {patient.dob || 'None'}
           </Span>
         </td>
 
@@ -106,7 +119,7 @@ class PatientsView extends Component {
         </td>
 
         <td>
-          {address}
+          
         </td>
 
         <td className={styles.detailsCell}>
@@ -130,10 +143,41 @@ class PatientsView extends Component {
   }
 
   render() {
-    const {
-      name,
-      dob,
-    } = this.state
+
+    if (this.state.patients) {
+      // const self = this;
+
+var patientList = this.state.patients.map(function (item, i) {
+          console.log(item);
+          return (
+              <div key={i}>
+                  {/* <div className="story-title-author">
+                          <h3 className="story-title">{item.patient}</h3>
+                
+                      <h5 className="story-author">
+                          {!(self.props.match.params.username)
+                              ?
+                              <div style={{ marginLeft: "5px" }} className="btn-group" role="group">
+                                  <button onClick={() => self.showUpdForm(item)} type="button" className="btn btn-primary btn-xs"><span className="glyphicon glyphicon-pencil"></span></button>
+                                  <button onClick={() => self.deleteBook(item.id)} type="button" className="btn btn-primary btn-xs"><span className="glyphicon glyphicon-remove"></span></button>
+                              </div>
+                              : null
+                          }
+                      </h5>
+                  </div>
+                  
+                  <p>{item.description}</p>
+                  <br /> */}
+              </div>
+              )
+
+            })
+        }
+        else {
+            return <div>
+                <p>None found</p>
+            </div>
+        }
 
     return (
       <div className={styles.app}>
@@ -163,46 +207,10 @@ class PatientsView extends Component {
 
         <div className="body">
 
-          <ActionBox>
-            <div className="main">
-
-              <SearchBar
-                label="Search By Name"
-                placeholder="First or Last Name..."
-                value={name}
-                onChange={this.searchByName.bind(this)}
-              />
-              <SearchBar
-                label="Search By DOB"
-                type="date"
-                value={dob}
-                onChange={this.searchByDob.bind(this)}
-              />
-            <SearchBar
-                label="Search By Address"
-                type="address"
-                placeholder="Address or City"
-              />
-            <SearchBar
-                label="Search by Phone"
-                type="phone"
-                placeholder="(---) --- ---"
-            />
           
-            {/*
-              TODO: Automatic filter, no search button
-              <Button
-                search
-                icon="search"
-                title="SEARCH"
-              />
-            */}
-
-            </div>
-
-          </ActionBox>
 
           {this.renderTable()}
+          {patientList}
 
         </div>
 

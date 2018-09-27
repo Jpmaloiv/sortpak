@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
+import axios from 'axios'
 
-import { hasAuthTokenAsync } from '../../../../lib'
+
 
 import {
   Table,
@@ -30,22 +31,32 @@ class PhysiciansView extends Component {
       filterValue: 0,
       searchType: '',
       search: '',
+      physicians: ''
     }
   }
 
   componentDidMount() {
-    hasAuthTokenAsync()
+    /* hasAuthTokenAsync()
       .then(() => {
         this.props.getPhysicians()
       })
-      .catch(console.log)
-  }
+      .catch(console.log) */
 
-  filterPhysicians(search) {
-    const { searchType } = this.state
-
-    this.setState({ search })
-    this.props.filterPhysicians(search, searchType)
+      const loginToken = window.localStorage.getItem("token");
+        axios.get('api/physicians/search/', { headers: { "Authorization": "Bearer " + loginToken } })
+          .then((resp) => {
+            console.log(resp);
+            console.log(resp.data);
+            console.log(resp.data.response);
+            this.setState({
+                physicians: resp.data.response,
+                // id: resp.data.response.id,
+               
+            })
+            console.log(this.state.physicians)
+          }).catch((error) => {
+            console.error(error);
+        })
   }
 
   renderTableHead() {
@@ -74,34 +85,46 @@ class PhysiciansView extends Component {
   }
 
   renderTableBody() {
-    const { physicians } = this.props
     return (
       <tbody>
-        {physicians.map(this.renderTableRow.bind(this))}
+        {this.state.physicians.map(this.renderTableRow.bind(this))}
       </tbody>
     )
   }
 
   renderTableRow(physician) {
-    const { rep } = physician
-    const { address } = physician
     return (
       <tr key={physician.id}>
-        <td className="bold">
-          {physician.nameDisplay}
-        </td>
+
         <td>
-          {physician.specialty || 'None'}
+            Dr. {physician.firstName} {physician.lastName}
+          
         </td>
+
+        <td>
+            {physician.specialty || 'None'}
+        </td>
+
         <td>
           {physician.group || 'None'}
         </td>
+
         <td>
-          {rep ? rep.nameDisplay : 'Unassigned'}
+
         </td>
+
         <td>
-          {address ? address.city : 'None'}
+
         </td>
+
+        <td>
+          
+        </td>
+
+        <td>
+          
+        </td>
+
         <td className={styles.detailsCell}>
           <Button
             title="DETAILS"
@@ -154,6 +177,41 @@ class PhysiciansView extends Component {
         display: 'Name',
       },
     ] */
+
+    if (this.state.physicians) {
+      // const self = this;
+
+var physicianList = this.state.physicians.map(function (item, i) {
+          console.log(item);
+          return (
+              <div key={i}>
+                  {/* <div className="story-title-author">
+                          <h3 className="story-title">{item.patient}</h3>
+                
+                      <h5 className="story-author">
+                          {!(self.props.match.params.username)
+                              ?
+                              <div style={{ marginLeft: "5px" }} className="btn-group" role="group">
+                                  <button onClick={() => self.showUpdForm(item)} type="button" className="btn btn-primary btn-xs"><span className="glyphicon glyphicon-pencil"></span></button>
+                                  <button onClick={() => self.deleteBook(item.id)} type="button" className="btn btn-primary btn-xs"><span className="glyphicon glyphicon-remove"></span></button>
+                              </div>
+                              : null
+                          }
+                      </h5>
+                  </div>
+                  
+                  <p>{item.description}</p>
+                  <br /> */}
+              </div>
+              )
+
+            })
+        }
+        else {
+            return <div>
+                <p>None found</p>
+            </div>
+        }
 
     return (
       <div className={styles.app}>
@@ -254,6 +312,7 @@ class PhysiciansView extends Component {
           </ActionBox>
 
           {this.renderTable()}
+          {physicianList}
 
         </div>
       </div>

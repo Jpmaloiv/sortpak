@@ -1,4 +1,11 @@
 
+#scriptViewHead h2 {
+    margin-bottom: 5% !important;
+}
+#scriptView {
+    background-color: #fff; box-shadow: none !important;
+}
+
 #scriptView td {width: 200px !important;} 
 
 table {

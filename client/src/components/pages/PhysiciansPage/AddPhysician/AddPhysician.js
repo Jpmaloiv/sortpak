@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import axios from 'axios'
 
-import { hasAuthTokenAsync } from '../../../../lib'
 
 import {
   Selector,
@@ -60,14 +59,7 @@ class AddPhysician extends Component {
           }).catch((error) => {
               console.error(error);
           })
-    const {
-      firstName,
-      lastName,
-      specialty,
-      username,
-      group,
-      salesRep,
-    } = this.state
+    
     /* const data = {
       firstName,
       lastName,

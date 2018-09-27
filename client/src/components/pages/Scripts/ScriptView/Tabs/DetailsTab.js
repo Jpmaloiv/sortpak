@@ -4,19 +4,22 @@ import axios from 'axios'
 // Components
 import {
   Header,
-  Body,
-  Form,
-  Span,
+  Body
 } from '../../../../common'
+
 
 class DetailsTab extends Component {
   state = {
     script: ''
 }
-  /* componentDidMount() {
-    if (this.props.match.params.scriptId) {
+  componentDidMount() {
+
+    console.log(this.props.sID.match.params.scriptId);
+    let scriptNum = this.props.sID.match.params.scriptId;
+    
       const loginToken = window.localStorage.getItem("token");
-        axios.get('/api/scripts/search?scriptId=' + this.props.match.params.scriptId, { headers: { "Authorization": "Bearer " + loginToken } })
+      console.log(scriptNum);
+        axios.get('/api/scripts/search?scriptId=' + scriptNum, { headers: { "Authorization": "Bearer " + loginToken } })
         .then((resp) => {
           console.log(resp);
           let script = resp.data.response[0];
@@ -48,14 +51,14 @@ class DetailsTab extends Component {
         }).catch((err) => {
             console.error(err)
         })
-    }
-} */
+    
+}
 
   render() {
     return(
       <div>
         <Header>
-          <h2>Status: {this.state.status}</h2>
+          
         </Header>
         <Body id="scriptView">
         {/* <Body className={styles.body} id="scriptView"> */}
