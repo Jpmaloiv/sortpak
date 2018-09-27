@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
+import axios from 'axios'
 
 import { hasAuthTokenAsync } from '../../../../lib'
 
@@ -36,16 +37,29 @@ class AddPhysician extends Component {
     }
   }
 
-  componentDidMount() {
+  /* componentDidMount() {
     hasAuthTokenAsync()
       .then(() => {
         this.props.getReps()
       })
       .catch(console.log)
-  }
+  } */
 
   onSubmit(e) {
     e.preventDefault()
+    const loginToken = window.localStorage.getItem("token");
+      let data = new FormData();
+      axios.post('/api/physicians/add?firstName=' + this.state.firstName + '&lastName=' + this.state.lastName +
+      '&username=' + this.state.username + '&specialty=' + this.state.specialty + '&group=' + this.state.group +
+      '&salesRep=' + this.state.salesRep, 
+      data, { headers: { "Authorization": "Bearer " + loginToken } })
+          .then((data) => {
+              console.log(data);
+              // window.location = '/profile';
+              this.props.history.push("/physicians");              
+          }).catch((error) => {
+              console.error(error);
+          })
     const {
       firstName,
       lastName,
@@ -54,7 +68,7 @@ class AddPhysician extends Component {
       group,
       rep,
     } = this.state
-    const data = {
+    /* const data = {
       firstName,
       lastName,
       specialty,
@@ -63,7 +77,7 @@ class AddPhysician extends Component {
       group,
       role: 'physician',
     }
-    this.props.createPhysician(data)
+    this.props.createPhysician(data) */
   }
 
   render() {
@@ -77,12 +91,12 @@ class AddPhysician extends Component {
       username,
       specialty,
       group,
-      rep,
+      salesRep,
     } = this.state
 
     const invalid = !firstName || !lastName
 
-    const repOptions = [
+    const salesRepOptions = [
       {
         key: '',
         value: '',
@@ -159,9 +173,9 @@ class AddPhysician extends Component {
             </label>
             <Selector
               wide
-              selected={rep}
-              options={repOptions}
-              onSelect={rep => this.setState({ rep })}
+              selected={salesRep}
+              options={salesRepOptions}
+              onSelect={rep => this.setState({ salesRep })}
             />
 
             <br />

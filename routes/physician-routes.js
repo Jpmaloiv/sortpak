@@ -3,29 +3,29 @@ const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
-const authCtrl = require("../controller/auth/auth-ctrl.js");
+const authCtrl = require("../controller/auth/auth-ctrl");
 const fs = require('fs');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
 
 router.post("/add", (req, res) => {
-    const patientLink = '/patients/' + req.payload.id + '/' + req.query.firstName.trim() + ".pdf";
-    const patient = {
+    const physicianLink = '/physicians/' + req.payload.id + '/' + req.query.firstName.trim() + ".pdf";
+    const physician = {
         firstName: req.query.firstName,
-        link: patientLink,
+        link: physicianLink,
         UserId: req.payload.id
     }
 
-    fs.mkdir("./patients/", (err) => {
+    fs.mkdir("./physicians/", (err) => {
         if ((err) && (err.code !== 'EEXIST')) {
             console.error(err)
         } else {
-            const patientPath = './patients/' + req.payload.id + '/' + req.query.firstName.trim() + ".pdf";
+            const physicianPath = './physicians/' + req.payload.id + '/' + req.query.firstName.trim() + ".pdf";
             // console.log("dir created");
                     // console.log("file saved");
-                    db.Patients
-                        .create(patient)
+                    db.Physicians
+                        .create(physician)
                         .then((resp) => {
                             res.status(200).json({ message: "Upload successful!" });
                         })
@@ -50,12 +50,12 @@ router.get("/search", (req, res) => {
             attributes: ["id", "username"]
         }]
     }
-    if (req.query.patientId) {
-        searchParams.where.id = req.query.patientId
+    if (req.query.physicianId) {
+        searchParams.where.id = req.query.physicianId
     }
   
     console.log(searchParams);
-    db.Patients
+    db.Physicians
         .findAll(searchParams)
         .then((response) => {
             res.json({

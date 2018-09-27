@@ -73,7 +73,7 @@ class AddPatient extends Component {
         console.log(this.props.firstName);
         const loginToken = window.localStorage.getItem("token");
         let data = new FormData();
-        axios.post('/api/patients/create?firstName=' + this.state.firstName, 
+        axios.post('/api/patients/add?firstName=' + this.state.firstName, 
         data, { headers: { "Authorization": "Bearer " + loginToken } })
             .then((data) => {
                 console.log(data);

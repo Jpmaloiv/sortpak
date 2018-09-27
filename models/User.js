@@ -20,7 +20,15 @@ module.exports = function(sequelize, DataTypes) {
         salt: {
             type: DataTypes.STRING,
             allowNull: false
-        }
+        },
+        /* role: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        active: {
+            type: DataTypes.STRING,
+            allowNull: true
+        } */
     }); 
     User.associate = function(models) {
       models.User.hasMany(models.Scripts, {

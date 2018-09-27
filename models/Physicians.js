@@ -1,6 +1,7 @@
 
+
 module.exports = function(sequelize, DataTypes) {
-    var Patients = sequelize.define("Patients", {
+    var Physicians = sequelize.define("Physicians", {
         firstName: {
             type: DataTypes.STRING,
             allowNull: true
@@ -9,21 +10,29 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.STRING,
             allowNull: true
         },
-        dob: {
+        username: {
             type: DataTypes.STRING,
             allowNull: true
         },
-        physician: {
+        specialty: {
             type: DataTypes.STRING,
             allowNull: true
         },
+        group: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        salesRep: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },     
     }); 
-    Patients.associate = function(models) {
-        models.Patients.belongsTo(models.User, {
+    Physicians.associate = function(models) {
+        models.Physicians.belongsTo(models.User, {
             foreignKey: {
                 allowNull: false
             }
         });
     };
-    return Patients; 
+    return Physicians; 
   };
