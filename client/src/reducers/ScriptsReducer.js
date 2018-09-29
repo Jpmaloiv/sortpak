@@ -19,7 +19,6 @@ const INITIAL_STATE = {
 export default (state = INITIAL_STATE, action) => {
   // const {type, payload} = action
   const {type} = action
-  console.log("Action data: ", action);
 
   switch (type) {
     case CLEAR_ERRORS:

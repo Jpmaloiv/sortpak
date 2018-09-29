@@ -39,9 +39,8 @@ class AddScript extends React.Component {
     }
 
     submitscript = (event) => {
-        console.log(this.state.status);
-        console.log(this.state.copayApproval);
         event.preventDefault();
+        console.log(this.state.copayApproval);
         const loginToken = window.localStorage.getItem("token");
         let data = new FormData();
         axios.post('/api/scripts/add?patient=' + this.props.patient + "&medication=" + this.props.medication + "&status=" + this.state.status + "&pharmNPI=" + this.props.pharmNPI
@@ -106,9 +105,7 @@ class AddScript extends React.Component {
             phone,
             phoneChange,
             email,
-            emailChange,
-            copayApproval,
-            copayNetwork
+            emailChange
         } = this.props
 
         const statusOptions = [
@@ -367,7 +364,7 @@ class AddScript extends React.Component {
                                             //  label="Status"
                                              options={copayApprovalOptions}
                                              placeholder="No Status"
-                                             onSelect={status => this.setState({copayApproval})}
+                                             onSelect={copayApproval => this.setState({copayApproval})}
                                         />
                                     </td>
                                     <td>
@@ -376,7 +373,7 @@ class AddScript extends React.Component {
                                             label="Copay Network"
                                             placeholder="No Network"
                                             options={copayNetworkOptions}
-                                            onSelect={status => this.setState({copayNetwork})}
+                                            onSelect={copayNetwork => this.setState({copayNetwork})}
                                         />  
                                                                                   
                                     </td>

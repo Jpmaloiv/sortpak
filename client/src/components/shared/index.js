@@ -1,3 +1,4 @@
+import AttachmentModal from './AttachmentModal/AttachmentModal'
 import VisitModal from './VisitModal/VisitModal'
 import NoteModal from './NoteModal/NoteModal'
 import SwitchTable from './SwitchTable/SwitchTable'
@@ -8,6 +9,7 @@ import ExpensesTable from './ExpensesTable/ExpensesTable'
 import SummaryRow from './SummaryRow/SummaryRow'
 
 export {
+  AttachmentModal,
   VisitModal,
   NoteModal,
   SwitchTable,

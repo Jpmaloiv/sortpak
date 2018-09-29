@@ -4,9 +4,15 @@ import axios from 'axios';
 import {Header, Body} from '../../../common'
 import styles from './ScriptView.css'
 
+import { formatDate } from '../../../../lib/dateHelper'
+
+
+
 // Components
 import {
-  SwitchTable
+  SwitchTable,
+  AddressModal,
+  AddressLine
 } from '../../../shared'
 
 import DetailsTab from './Tabs/DetailsTab'
@@ -39,15 +45,13 @@ class ScriptView extends Component {
 
     this.state = {
       tab: this.tabOptions[0],
-      ...this.initialState,
+      ...this.initialState
     }
   }
 
   state = {
     script: ''
 }
-
-
 
   componentDidMount() {
     console.log(this.props);
@@ -89,6 +93,12 @@ class ScriptView extends Component {
       }
   }
 
+  closeModal() {
+    this.setState({
+      noteModal: null
+    })
+  }
+
   renderSwitchTable() {
     const { tab } = this.state
     return (
@@ -127,7 +137,7 @@ class ScriptView extends Component {
         state={this.state}
         patient={this.props.patient}
         setState={this.setState.bind(this)}
-        
+        onCloseModal={() => this.closeModal()}       
       />
     )
   }
@@ -140,7 +150,7 @@ class ScriptView extends Component {
         <Header id="scriptViewHead">
           <h2>Status: {this.state.status}</h2>
         </Header>
-<p></p>
+
         <Body className={styles.body} id="scriptViewBody">
 
         {this.renderSwitchTable()}

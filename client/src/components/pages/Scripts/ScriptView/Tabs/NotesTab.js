@@ -3,7 +3,8 @@ import React, { Component } from 'react';
 // Components
 import {
   Span,
-  Button
+  Button,
+  DateBox,
 } from '../../../../common'
 
 import {
@@ -17,6 +18,8 @@ class NotesTab extends Component {
 
   render() {
     const {
+      patient,
+      state,
       setState,
       className,
       onCloseModal,
@@ -24,22 +27,22 @@ class NotesTab extends Component {
     } = this.props
 
     // const notes = patient.notes || []
-    /* const {
-      // warning,
-      // editing,
-      // noteModal,
-    } = state */
+    const {
+      warning,
+      editing,
+      noteModal,
+    } = state
     return (
-      <div style={{margin: 25, padding: 10}} className={className}>
+      <div className={className}>
         <h2>
           More Info
         </h2>
         <Span
           type="textarea"
-          // editing={editing}
+          editing={editing}
           label="Patient Warning"
           placeholder="Patient Warning"
-          // value={warning}
+          value={warning}
           onChange={warning => setState({ warning })}
         >
           {/* {patient.warning || 'None'} */}
@@ -64,7 +67,7 @@ class NotesTab extends Component {
         </div>
 
         <NoteModal
-          // content={noteModal}
+          content={noteModal}
           onClickAway={onCloseModal}
           onSubmit={onCreateNote}
         />

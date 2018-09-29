@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import axios from 'axios'
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 // import { hasAuthTokenAsync } from '../../../../lib'
 
@@ -93,8 +94,9 @@ class ScriptsView extends Component {
   }
 
   renderTableRow(script) {
+    
+    
     return (
-      
       <tr key={script.id}>
         <td>
           {script.status}
@@ -144,6 +146,8 @@ class ScriptsView extends Component {
           />
         </td>
       </tr>
+      
+    
     )
   }
 

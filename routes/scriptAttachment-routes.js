@@ -3,54 +3,31 @@ const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
-const authCtrl = require("../controller/auth/auth-ctrl.js");
+const authCtrl = require("../controller/auth/auth-ctrl");
 const fs = require('fs');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
 
 router.post("/add", (req, res) => {
-    const scriptLink = '/scripts/' + req.payload.id + '/' + req.query.patient.trim() + ".pdf";
-    const script = {
-        patient: req.query.patient,
-        medication: req.query.medication,
-        status: req.query.status,
-        pharmNPI: req.query.pharmNPI,
-        location: req.query.location,
-        pharmDate: req.query.pharmDate,
-        writtenDate: req.query.writtenDate,
-        salesCode: req.query.salesCode,
-        billOnDate: req.query.billOnDate,
-        cost: req.query.cost,
-        rxNumber: req.query.rxNumber,
-        primInsPay: req.query.primInsPay,
-        diagnosis: req.query.diagnosis,
-        secInsPay: req.query.secInsPay,
-        secDiagnosis: req.query.secDiagnosis,
-        patientPay: req.query.patientPay,
-        refills: req.query.refills,
-        refillsRemaining: req.query.refillsRemaining,
-        quantity: req.query.quantity,
-        daysSupply: req.query.daysSupply,
-        copayApproval: req.query.copayApproval,
-        copayNetwork: req.query.copayNetwork,
-        homeInfusion: req.query.homeInfusion,
-        directions: req.query.directions,
-        phone: req.query.phone,
-        email: req.query.email,
+    const scriptLink = '/attachments/' + req.payload.id + '/' + req.query.dateAttached.trim() + ".pdf";
+    const attachment = {
+        dateAttached: req.query.dateAttached,
+        attachedBy: req.query.attachedBy,
+        type: req.query.type,
         link: scriptLink,
         UserId: req.payload.id
     }
 
-    fs.mkdir("./scripts/", (err) => {
+    fs.mkdir("./attachments/", (err) => {
         if ((err) && (err.code !== 'EEXIST')) {
             console.error(err)
         } else {
-            const scriptPath = './scripts/' + req.payload.id + '/' + req.query.patient.trim() + ".pdf";
+            const scriptPath = './scriptAttachments/' + req.payload.id + '/' + req.query.dateAttached.trim() + ".pdf";
             // console.log("dir created");
                     // console.log("file saved");
-                    db.Scripts
-                        .create(script)
+                    db.scriptAttachments
+                        .create(attachment)
                         .then((resp) => {
                             res.status(200).json({ message: "Upload successful!" });
                         })
@@ -75,12 +52,12 @@ router.get("/search", (req, res) => {
             attributes: ["id", "username"]
         }]
     }
-    if (req.query.scriptId) {
-        searchParams.where.id = req.query.scriptId
+    if (req.query.attachmentId) {
+        searchParams.where.id = req.query.attachmentId
     }
   
     console.log(searchParams);
-    db.Scripts
+    db.scriptAttachments
         .findAll(searchParams)
         .then((response) => {
             res.json({

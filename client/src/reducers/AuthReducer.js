@@ -88,7 +88,6 @@ const INITIAL_STATE = {
 
 export default (state = INITIAL_STATE, action) => {
   const {type, payload} = action
-  console.log("Action data: ", action);
 
   switch (type) {
     case EMAIL_CHANGED:

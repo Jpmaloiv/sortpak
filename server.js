@@ -5,6 +5,7 @@ const path = require("path");
 const jwt = require("express-jwt");
 const authRoutes = require("./routes/auth-routes.js");
 const scriptRoutes = require("./routes/script-routes.js");
+const scriptAttachmentRoutes = require("./routes/scriptAttachment-routes.js");
 const patientRoutes = require("./routes/patient-routes.js");
 const physicianRoutes = require("./routes/physician-routes.js");
 const fileUpload = require('express-fileupload');
@@ -33,6 +34,7 @@ app.use(express.static(path.join(__dirname, 'client/build')));
 app.use(express.static(path.join(__dirname + '/public')));
 app.use("/api/user", authRoutes);
 app.use(express.static(path.join(__dirname + '/scripts')));
+app.use(express.static(path.join(__dirname + '/scriptAttachments')));
 app.use(express.static(path.join(__dirname + '/patients')));
 app.use(express.static(path.join(__dirname + '/physicians')));
 
@@ -42,6 +44,11 @@ app.use(["/api/scripts"], jwt({
     userProperty: 'payload'
 }));
 app.use("/api/scripts", scriptRoutes);
+app.use(["/api/scripts/attachments"], jwt({
+    secret: process.env.JWT_SECRET,
+    userProperty: 'payload'
+}));
+app.use("/api/scripts/attachments", scriptAttachmentRoutes);
 app.use(["/api/patients"], jwt({
     secret: process.env.JWT_SECRET,
     userProperty: 'payload'
