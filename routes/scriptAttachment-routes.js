@@ -10,22 +10,26 @@ const Op = Sequelize.Op;
 
 
 router.post("/add", (req, res) => {
-    const scriptLink = '/attachments/' + req.payload.id + '/' + req.query.dateAttached.trim() + ".pdf";
+    const attachmentLink = '/attachments/' + req.payload.id + '/' + req.query.type.trim() + ".pdf";
     const attachment = {
         dateAttached: req.query.dateAttached,
         attachedBy: req.query.attachedBy,
-        type: req.query.type,
-        link: scriptLink,
+        type: req.query.type.trim(),
+        link: attachmentLink,
         UserId: req.payload.id
     }
 
-    fs.mkdir("./attachments/", (err) => {
+    const attachmentFile = req.files.attachmentFile;
+    fs.mkdir("./attachments/attachments/" + req.payload.id.toString(), (err) => {
         if ((err) && (err.code !== 'EEXIST')) {
             console.error(err)
         } else {
-            const scriptPath = './scriptAttachments/' + req.payload.id + '/' + req.query.dateAttached.trim() + ".pdf";
+            const attachmentPath = './attachments/attachments/' + req.payload.id + '/' + req.query.type.trim() + ".pdf";
             // console.log("dir created");
                     // console.log("file saved");
+                attachmentFile
+                    .mv(attachmentPath)
+                    .then((response) => {
                     db.scriptAttachments
                         .create(attachment)
                         .then((resp) => {
@@ -35,6 +39,11 @@ router.post("/add", (req, res) => {
                             console.error(err);
                             res.status(500).json({ message: "Internal server error.", error: err });
                         })
+                    })
+                    .catch((err) => {
+                        console.error(err);
+                        res.status(500).json({ message: "Internal server error.", error: err });
+                    })
                 
         }
     })
@@ -45,7 +54,7 @@ router.get("/search", (req, res) => {
     let searchParams = {
         where: {},
         attributes: {
-            exclude: ["createdAt", "updatedAt", "UserId"]
+            exclude: ["updatedAt", "UserId"]
         },
         include: [{
             model: db.User,

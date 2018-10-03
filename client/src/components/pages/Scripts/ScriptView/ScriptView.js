@@ -4,15 +4,10 @@ import axios from 'axios';
 import {Header, Body} from '../../../common'
 import styles from './ScriptView.css'
 
-import { formatDate } from '../../../../lib/dateHelper'
-
-
 
 // Components
 import {
-  SwitchTable,
-  AddressModal,
-  AddressLine
+  SwitchTable
 } from '../../../shared'
 
 import DetailsTab from './Tabs/DetailsTab'
@@ -52,6 +47,8 @@ class ScriptView extends Component {
   state = {
     script: ''
 }
+
+
 
   componentDidMount() {
     console.log(this.props);
@@ -95,7 +92,7 @@ class ScriptView extends Component {
 
   closeModal() {
     this.setState({
-      noteModal: null
+      attachmentModal: null
     })
   }
 

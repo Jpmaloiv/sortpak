@@ -26,27 +26,40 @@ import styles from './AddPatient.css'
 class AddPatient extends Component {
   constructor(props) {
     super(props)
-    this.state = this.initialState
+    this.state = {
+      firstName: '',
+      lastName: '',
+      dob: '',
+      physicians: '',
+      physicianId: ''
+    }
   }
 
-  /* componentDidMount() {
-    hasAuthTokenAsync()
-      .then(() => {
-        this.props.getPhysicians()
-      })
-      .catch(console.log)
-  } */
+  componentDidMount() {
+    const loginToken = window.localStorage.getItem("token");
+    axios.get('/api/physicians/search/', { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        this.setState({
+            physicians: resp.data.response,
+            // id: resp.data.response.id,    
+        })
+        console.log(this.state.physicians);
+      }).catch((error) => {
+        console.error(error);
+    })
+} 
+  
 
-  get initialState() {
+  /* get initialState() {
     return {
       firstName: '',
       lastName: '',
       dob: '1970-01-01',
       physicianId: '',
     }
-  }
+  } */
 
-  get invalid() {
+  /* get invalid() {
     const {
       firstName,
       lastName,
@@ -60,14 +73,12 @@ class AddPatient extends Component {
       && dob
       && physicianId
     )
-  }
+  } */
 
   onSubmit(e) {
     e.preventDefault()
         const loginToken = window.localStorage.getItem("token");
         let data = new FormData();
-        console.log(this.state.lastName)
-        console.log(this.state.dob)
         axios.post('/api/patients/add?firstName=' + this.state.firstName + "&lastName=" + this.state.lastName + "&dob=" + this.state.dob, 
         data, { headers: { "Authorization": "Bearer " + loginToken } })
             .then((data) => {
@@ -92,9 +103,11 @@ class AddPatient extends Component {
   }
 
   render() {
-    const {
+
+    console.log(this.state.physicians);
+    /* const {
       physicians,
-    } = this.props
+    } = this.props */
 
     const {
       firstName,
@@ -102,7 +115,11 @@ class AddPatient extends Component {
       dob,
       physicianId,
     } = this.state
+    console.log(this.state.physicians);
+    const physicians = this.state.physicians;
+    console.log(physicians);
 
+    
     const physicianOptions = [
       {
         key: '',
@@ -112,7 +129,7 @@ class AddPatient extends Component {
       ...physicians.map(physician => ({
         key: physician.id,
         value: physician.id,
-        display: physician.nameDisplay,
+        display: physician.firstName,
       })),
     ]
 
@@ -188,13 +205,11 @@ class AddPatient extends Component {
 
 const mapStateToProps = ({main}) => {
   const {
-    loading,
-    physicians,
+    loading
   } = main
 
   return {
-    loading,
-    physicians,
+    loading
   }
 }
 

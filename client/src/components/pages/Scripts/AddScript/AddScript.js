@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import axios from 'axios'
 import { connect } from 'react-redux'
 
@@ -27,10 +27,55 @@ import {
     emailChange
 } from '../../../../actions/auth'
 
-import {Selector, Button, Header, Input, Body, Form,} from '../../../common'
+import {Selector, Button, Header, Input, Body, Table, Form,} from '../../../common'
 import styles from './AddScript.css';
 
-class AddScript extends React.Component {
+class AddScript extends Component {
+
+    constructor(props) {
+        super(props)
+        this.state = {
+          processedOn: '',
+          physicians: '',
+          physicianOptions: []
+        }
+      }
+      
+
+      componentDidMount() {
+        const loginToken = window.localStorage.getItem("token");
+        axios.get('/api/physicians/search/', { headers: { "Authorization": "Bearer " + loginToken } })
+          .then((resp) => {
+            this.setState({
+                physicians: resp.data.response,
+                // id: resp.data.response.id,    
+            })
+            console.log(this.state.physicians);
+            this.physicianMap();
+          }).catch((error) => {
+            console.error(error);
+        })
+        
+    } 
+
+    physicianMap() {
+        const physicians = this.state.physicians;
+       
+        const physicianOptions = [
+            {
+              key: '',
+              value: '',
+              display: 'Select Physician',
+            },
+            ...physicians.map(physician => ({
+              key: physician.id,
+              value: physician.id,
+              display: physician.firstName,
+            })),
+          ]
+
+          console.log(physicianOptions);
+    }
 
     onChangeHandler = (event) => {
         this.setState({
@@ -43,12 +88,12 @@ class AddScript extends React.Component {
         console.log(this.state.copayApproval);
         const loginToken = window.localStorage.getItem("token");
         let data = new FormData();
-        axios.post('/api/scripts/add?patient=' + this.props.patient + "&medication=" + this.props.medication + "&status=" + this.state.status + "&pharmNPI=" + this.props.pharmNPI
+        axios.post('/api/scripts/add?processedOn=' + this.state.processedOn + '&patient=' + this.props.patient + "&medication=" + this.props.medication + "&status=" + this.state.status + "&pharmNPI=" + this.props.pharmNPI
         + "&location=" + this.props.location + "&pharmDate=" + this.props.pharmDate + "&writtenDate=" + this.props.writtenDate + "&salesCode=" + this.props.salesCode +
-        "&billOnDate=" + this.props.billOnDate + "&cost" + this.props.cost + "&rxNumber=" + this.props.rxNumber + "&primInsPay=" + this.props.primInsPay + "&diagnosis=" + this.props.diagnosis +
-        "&secInsPay=" + this.props.secInsPay + "&secDiagnosis" + this.props.secDiagnosis + "&patientPay=" + this.props.patientPay + "&refills=" + this.props.refills +
-        "&refillsRemaining=" + this.props.refillsRemaining + "&quantity=" + this.props.quantity + "&daysSupply" + this.props.daysSupply + "&directions=" + this.props.directions +
-        "&copayApproval=" + this.state.copayApproval + "&copayNetwork=" + this.state.copayNetwork + "&homeInfusion" + this.props.homeInfusion + "&phone=" + this.props.phone + "&email=" + this.props.email, 
+        "&billOnDate=" + this.props.billOnDate + "&cost=" + this.props.cost + "&rxNumber=" + this.props.rxNumber + "&primInsPay=" + this.props.primInsPay + "&diagnosis=" + this.props.diagnosis +
+        "&secInsPay=" + this.props.secInsPay + "&secDiagnosis=" + this.props.secDiagnosis + "&patientPay=" + this.props.patientPay + "&refills=" + this.props.refills +
+        "&refillsRemaining=" + this.props.refillsRemaining + "&quantity=" + this.props.quantity + "&daysSupply=" + this.props.daysSupply + "&directions=" + this.props.directions +
+        "&copayApproval=" + this.state.copayApproval + "&copayNetwork=" + this.state.copayNetwork + "&homeInfusion=" + this.props.homeInfusion + "&phone=" + this.props.phone + "&email=" + this.props.email, 
         data, { headers: { "Authorization": "Bearer " + loginToken } })
             .then((data) => {
                 console.log(data);
@@ -108,6 +153,29 @@ class AddScript extends React.Component {
             emailChange
         } = this.props
 
+        
+
+        const physicians = this.state.physicians;
+        
+
+        /* const physicianOptions = [
+            {
+              key: '',
+              value: '',
+              display: 'Select Physician',
+            },
+            this.state.physicians.map(physician => ({
+              key: physician.id,
+              value: physician.id,
+              display: physician.firstName,
+            })),
+          ] */
+          
+
+        const {
+            processedOn
+        } = this.state
+
         const statusOptions = [
             'Received',
             'Review',
@@ -143,8 +211,6 @@ class AddScript extends React.Component {
             'Copay Card'
         ]
 
-       
-
         return (
             <div>
                 <Header>
@@ -159,7 +225,15 @@ class AddScript extends React.Component {
                     />
                 </Header>
                 <Body className={styles.body} id="addScript">
+
                     <Form className={styles.form}>
+                        <Input
+                            type="date"
+                            placeholder="Meh"
+                            value={processedOn}
+                            onChange={processedOn => this.setState({ processedOn })}
+                        />
+
                         <Input
                             placeholder="Patient"
                             value={patient}
@@ -170,6 +244,14 @@ class AddScript extends React.Component {
                             value={medication}
                             onChange={medicationChange}
                         />
+
+                        <Table>
+                            {/* <Selector 
+                                wide
+                                value={physicianOptions}
+                            /> */}
+                                
+                        </Table>
 
                         <table>
                             <tbody>

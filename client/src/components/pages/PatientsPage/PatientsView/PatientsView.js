@@ -29,7 +29,8 @@ class PatientsView extends Component {
       name: '',
       dob: '',
       address: '',
-      phone: ''
+      phone: '',
+      file: ''
     }
   }
   componentDidMount() {

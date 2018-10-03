@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
+import axios from 'axios'
 
 // Components
 import {
   Button,
-  TextArea,
+  Selector,
   FormModal,
 } from '../../common'
 
@@ -12,38 +13,49 @@ import styles from './AttachmentModal.css'
 export default class AttachmentModal extends Component {
   constructor(props) {
     super(props)
-    this.state = {
-      text: '',
-    }
   }
+    state = {
+      attachmentFile: '',
+      dateAttached: '',
+      attachedBy: '',
+      type: ''
+    }
+  
+
+  onChangeHandler = (event) => {
+    this.setState({
+        [event.target.name]: event.target.value
+    })
+}
 
   get inactive() {
     const {
-      text,
+      scriptFile,
+      // type
     } = this.state
 
-    return !text
+    return !scriptFile
+    // return !type
   }
 
-  submit(e) {
+  onSubmit(e) {
     e.preventDefault()
-    const {
-      text,
-    } = this.state
+        const loginToken = window.localStorage.getItem("token");
+        let data = new FormData();
+        data.append("attachmentFile", document.getElementById("pdf-file").files[0])
+        axios.post('/api/scripts/attachments/add?dateAttached=' + this.state.dateAttached + "&attachedBy=" + this.state.attachedBy + "&type=" + this.state.type, 
+        data, { headers: { "Authorization": "Bearer " + loginToken } })
+            .then((data) => {
+                console.log(data);
+                this.props.onClickAway()
+                // this.setState({ scriptFile: '', type: '' })
+                window.location.reload();
+                // this.props.history.push("/scripts");              
+            }).catch((error) => {
+                console.error(error);
+            })
+          }
 
-    const {
-      visit,
-    } = this.props.content
-
-    const data = {
-      text,
-      visitId: visit ? visit.id : null,
-    }
-
-    this.props.onSubmit(data)
-    this.props.onClickAway()
-    this.setState({ text: '' })
-  }
 
   render() {
     const {
@@ -52,25 +64,40 @@ export default class AttachmentModal extends Component {
     } = this.props
 
     const {
-      text,
+      attachmentFile,
+      type
     } = this.state
+
+    const typeOptions = [
+      'Rx',
+      'Delivery Signature',
+      'PA form',
+      'Medical Notes',
+      'Copay Assistance Form',
+      'Income Documents',
+      'Shipping Label',
+      'Other'
+    ]  
 
     return (
       <FormModal
-        title="Add"
+        title="Add Attachment"
         onClickAway={onClickAway}
         visible={!!content}
-        onSubmit={this.submit.bind(this)}
+        onSubmit={this.onSubmit.bind(this)}
         className={styles.modal}
       >
-        {/* Rep */}
-        <label>
-          Note
-        </label>
-        <label htmlFor="scriptFile">Select PDF:</label>
-        <input name="scriptFile" onChange={this.onChangeHandler} accept=".pdf" id="pdf-file" type="file" />
+        <label htmlFor="attachmentFile">Select PDF:</label>
+        <input name="attachmentFile" selected={attachmentFile} onSelect={attachmentFile => this.setState({ attachmentFile })} onChange={this.onChangeHandler} accept=".pdf" id="pdf-file" type="file" />
 
         <br />
+
+        <Selector
+            wide
+            selected={type}
+            options={typeOptions}
+            onSelect={type => this.setState({ type })}
+          />
 
         <div className="buttons">
           <Button
@@ -82,7 +109,7 @@ export default class AttachmentModal extends Component {
           />
           <Button
             large
-            inactive={this.inactive}
+            // inactive={this.inactive}
             type="submit"
             title="Post"
           />

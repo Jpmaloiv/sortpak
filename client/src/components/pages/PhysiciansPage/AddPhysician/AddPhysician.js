@@ -23,6 +23,7 @@ import {
 
 import styles from './AddPhysician.css'
 
+
 class AddPhysician extends Component {
   constructor(props) {
     super(props)
@@ -86,6 +87,30 @@ class AddPhysician extends Component {
       salesRep,
     } = this.state
 
+    const specialtyOptions = [
+      'Internal Medicine',
+      'Home Health',
+      'Hospice',
+      'Skilled Nursing Center',
+      'Assisted Living',
+      'Hospital',
+      'Residential Living',
+      'Oncology',
+      'Rheumatology',
+      'Dermatology',
+      'Nephrology',
+      'Neurology',
+      'Gastroenterology',
+      'Allergy',
+      'Infectious Disease',
+      'Transplant',
+      'Orthopedic',
+      'Endocrinology',
+      'Urology',
+      'Cardiology',
+      'Hepatology'  
+    ]
+
     const invalid = !firstName || !lastName
 
     const salesRepOptions = [
@@ -141,10 +166,12 @@ class AddPhysician extends Component {
             <label>
               Specialty:
             </label>
-            <Input
+            <Selector
+              wide
               placeholder="Specialty"
+              options={specialtyOptions}
               value={specialty}
-              onChange={specialty => this.setState({ specialty })}
+              onSelect={specialty => this.setState({ specialty })}
             />
 
             <br />

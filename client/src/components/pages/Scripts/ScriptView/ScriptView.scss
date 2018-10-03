@@ -12,3 +12,20 @@
     width: 200px !important;
 }
 
+:local(.attachmentsTab) {
+    padding: 10px;
+    .span, .input {
+      display: block;
+      max-width: 600px;
+      padding: 8px;
+      line-height: 30px;
+    }
+    > .button {
+      margin-bottom: 20px;
+    }
+    > .attachments {
+      border-top: 1px solid $borderColor;
+      border-bottom: 1px solid $borderColor;
+    }
+  }
+

@@ -1,7 +1,7 @@
 
 
 module.exports = function(sequelize, DataTypes) {
-    var scriptAttachments = sequelize.define("Script Attachments", {
+    var scriptAttachments = sequelize.define("scriptAttachments", {
         dateAttached: {
             type: DataTypes.STRING,
             allowNull: true
@@ -13,10 +13,14 @@ module.exports = function(sequelize, DataTypes) {
         type: {
             type: DataTypes.STRING,
             allowNull: true
-        },    
+        },
+        link: {
+            type: DataTypes.STRING,
+            allowNull: true
+        }    
     }); 
     scriptAttachments.associate = function(models) {
-        models.Physicians.belongsTo(models.User, {
+        models.scriptAttachments.belongsTo(models.User, {
             foreignKey: {
                 allowNull: false
             }

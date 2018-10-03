@@ -1,6 +1,10 @@
 
 module.exports = function(sequelize, DataTypes) {
     var Scripts = sequelize.define("Scripts", {
+        processedOn: {
+            type: DataTypes.DATEONLY,
+            allowNull: true
+        },
         patient: {
             type: DataTypes.STRING,
             allowNull: true

@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import axios from 'axios'
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+
 
 // import { hasAuthTokenAsync } from '../../../../lib'
 
-import {Span, Selector, Table, Header, Button, ActionBox, ToggleSwitch, SearchBar} from '../../../common'
+import {Span, Selector, Table, Header, Link, Button, ActionBox, ToggleSwitch, SearchBar} from '../../../common'
 
 import {
   getScripts,
@@ -93,14 +93,18 @@ class ScriptsView extends Component {
     )
   }
 
+  
+
   renderTableRow(script) {
     
     
     return (
-      <tr key={script.id}>
+      <tr>
+    
         <td>
           {script.status}
         </td>
+      
 
         <td>
           <Span icon="calendar">
@@ -145,9 +149,7 @@ class ScriptsView extends Component {
             onClick={() => this.props.setScript(script)}
           />
         </td>
-      </tr>
-      
-    
+      </tr>  
     )
   }
 

@@ -6,6 +6,14 @@
     background-color: #fff; box-shadow: none !important;
 }
 
+#scriptView .container {
+    width: 100% !important;
+}
+
+.container {
+    width: 100% !important;
+}
+
 #scriptView td {width: 200px !important;} 
 
 table {
@@ -31,12 +39,36 @@ table {
     margin: 50px !important;
 }
 
-td.field {
-    color: #909090;
+td span {
+    line-height: 30px !important;
+}
+
+td {
     font-weight: lighter;
+}
+
+td.field {
+    color: #909090
 }
 
 td.value {
     color: #333;
-    font-weight: lighter;
 }
+
+td.setValue {
+    color: #00b1ec;
+}
+
+:local(.attachmentsTab) {
+    padding: 10px; }
+    :local(.attachmentsTab) .span, :local(.notesTab) .input {
+      display: block;
+      max-width: 600px;
+      padding: 8px;
+      line-height: 30px; }
+    :local(.attachmentsTab) > .button {
+      margin-bottom: 20px; }
+    :local(.attachmentsTab) > .notes {
+      border-top: 1px solid #dfe1e2;
+      border-bottom: 1px solid #dfe1e2; }
+

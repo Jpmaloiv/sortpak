@@ -12,6 +12,7 @@ const Op = Sequelize.Op;
 router.post("/add", (req, res) => {
     const scriptLink = '/scripts/' + req.payload.id + '/' + req.query.patient.trim() + ".pdf";
     const script = {
+        processedOn: req.query.processedOn,
         patient: req.query.patient,
         medication: req.query.medication,
         status: req.query.status,
@@ -93,6 +94,43 @@ router.get("/search", (req, res) => {
             res.status(500).json({ message: "Error (500): Internal Server Error", error: err })
         })
     })
+
+    
+
+router.put("/update", function(req, res) {
+    console.log("update")
+    const script = {
+        processedOn: req.query.processedOn,
+        writtenDate: req.query.writtenDate,
+        billOnDate: req.query.billOnDate,
+        rxNumber: req.query.rxNumber,
+        diagnosis: req.query.diagnosis,
+        secDiagnosis: req.query.secDiagnosis,
+        refills: req.query.refills,
+        refillsRemaining: req.query.refillsRemaining,
+        quantity: req.query.quantity,
+        daysSupply: req.query.daysSupply,
+        salesCode: req.query.salesCode,
+        cost: req.query.cost,
+        primInsPay: req.query.primInsPay,
+        secInsPay: req.query.secInsPay,
+        location: req.query.location,
+        copayApproval: req.query.copayApproval,
+        copayNetwork: req.query.copayNetwork,
+        patientPay: req.query.patientPay,
+        status: req.query.status
+    }
+    console.log(script);
+    db.Scripts.update(script, {where: {id: req.query.id}})
+    .then(function(resp) {
+        res.json({success: true});
+    })
+    .catch(function(err) {
+        console.error(err);
+        return res.status(500).end('Update FAILED' + err.toString());
+        throw err;
+    });
+})
 
 
 module.exports = router;
