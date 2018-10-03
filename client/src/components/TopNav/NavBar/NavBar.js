@@ -39,13 +39,9 @@ class NavBar extends Component {
   }
 
   render() {
-    // const isAdmin = 0;
-    /* const { isAdmin, me } = this.props
-    if (!me) {
-      return (
-        <div className={styles.navBar} />
-      )
-    } */
+    
+   
+      
 
     return (
       <div className={styles.navBar}>
@@ -86,7 +82,7 @@ class NavBar extends Component {
           Physicians
         </NavLink>
 
-        {/* {isAdmin && ( */}
+        
           <NavLink
             to="/refills"
           >
@@ -96,23 +92,24 @@ class NavBar extends Component {
         
 
 
-        {/* {isAdmin && ( */}
+         
           <NavLink
             to="/products"
+            activeStyle={{ color: 'red' }}
           >
             <Icon name="tint" />
             Products
           </NavLink>
-        
+         
 
-        {/* {isAdmin && ( */}
+          
           <NavLink
             to="/team"
           >
             <Icon name="user-o" />
             My Team
           </NavLink>
-        
+         
       </div>
     )
   }

@@ -17,6 +17,10 @@
     display: flex;
     align-items: center;
     transition: 100ms; }
+    :local(.navBar) > a:focus {
+      background-color: #ff7d38 !important;
+      color: #fff !important;
+    }
     @media only screen and (max-width: 600px) {
       :local(.navBar) > a {
         padding: 5px; } }
@@ -25,8 +29,8 @@
     :local(.navBar) > a:hover {
       background-color: #eee; }
     :local(.navBar) > a.active {
-      background-color: #ff7d38;
-      color: #fff; }
+      
+     }
       :local(.navBar) > a.active > .icon {
         background: #fff;
         color: #444; }

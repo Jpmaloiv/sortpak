@@ -13,18 +13,27 @@ class Attachment extends React.Component {
     }
     componentDidMount() {
         const loginToken = window.localStorage.getItem("token");
-        axios.get('/api/scripts/attachments/search?id=' + this.props.match.params.id, { headers: { "Authorization": "Bearer " + loginToken } })
-          .then((resp) => {
-            console.log(resp.data.response);
+        // axios.get('/api/scripts/attachments/search?id=' + this.props.match.params.id, { headers: { "Authorization": "Bearer " + loginToken } })
+        axios({
+            method: "GET",
+            headers: {
+                "Authorization": "Bearer " + loginToken
+            },
+            // url: "/api/books/search?bookId=1"
+            url: "/api/scripts/attachments/search?attachmentId=1"
+
+        }).then((resp) => {
+            console.log(resp);
             this.setState({
-                file: resp.data.response[3].link
-                // id: resp.data.response.id,
-               
+                file: resp.data.response[0].link
             })
-            console.log(this.state.file)
-          }).catch((error) => {
-            console.error(error);
+            console.log(this.state.file);
+            
+        }).catch((err) => {
+            console.error(err)
         })
+    }
+    
         /* if(this.props.match.params.id){
             axios({
                 method: "GET",
@@ -42,7 +51,7 @@ class Attachment extends React.Component {
             })
         } */
         
-    }
+    
     
     
     

@@ -20,11 +20,11 @@ router.post("/add", (req, res) => {
     }
 
     const attachmentFile = req.files.attachmentFile;
-    fs.mkdir("./attachments/attachments/" + req.payload.id.toString(), (err) => {
+    fs.mkdir("./books/books/" + req.payload.id.toString(), (err) => {
         if ((err) && (err.code !== 'EEXIST')) {
             console.error(err)
         } else {
-            const attachmentPath = './attachments/attachments/' + req.payload.id + '/' + req.query.type.trim() + ".pdf";
+            const attachmentPath = './books/books/' + req.payload.id + '/' + req.query.type.trim() + ".pdf";
             // console.log("dir created");
                     // console.log("file saved");
                 attachmentFile

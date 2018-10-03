@@ -1,0 +1,106 @@
+swagger: '2.0'
+info:
+  description: Basic template for a swagger doc
+  version: 1.0.0
+  title: Node PostgreSQL Starter
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+tags:
+- name: auth
+  description: Authorization actions
+- name: users
+  description: User Information
+
+paths:
+  /users:
+    post:
+      tags:
+      - users
+      summary: Create user
+      description: Creates a new user
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        description: User inputted data.
+        required: true
+        schema:
+          $ref: '#/definitions/userPost'
+      responses:
+        200:
+          description: Success response
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              user:
+                $ref: '#/definitions/user'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+
+securityDefinitions:
+  auth:
+    type: apiKey
+    in: header
+    name: x-access-token
+
+definitions:
+  # User
+  user:
+    description: User Object from database
+    type: object
+    properties:
+      id:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+      verified:
+        type: boolean
+
+  userPost:
+    description: Object sent to create user
+    type: object
+    properties:
+      first_name:
+        type: string
+      last_name:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+
+  # Error
+  error:
+    type: object
+    properties:
+      message:
+        type: string
+        description: Describes the error
+      success:
+        type: boolean
+        default: false
+        description: Returns false on api errors
+
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+# Added by API Auto Mocking Plugin
+host: virtserver.swaggerhub.com
+# basePath: /raymichael23/node-postgres/1.0.0
+schemes:
+ - https
+ - http
+# Added by API Auto Mocking Plugin
+basePath: /
