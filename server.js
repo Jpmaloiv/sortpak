@@ -8,6 +8,7 @@ const scriptRoutes = require("./routes/script-routes.js");
 const scriptAttachmentRoutes = require("./routes/scriptAttachment-routes.js");
 const patientRoutes = require("./routes/patient-routes.js");
 const physicianRoutes = require("./routes/physician-routes.js");
+const productRoutes = require("./routes/product-routes.js");
 const fileUpload = require('express-fileupload');
 
 //middleware
@@ -37,7 +38,10 @@ app.use(express.static(path.join(__dirname + '/scripts')));
 app.use(express.static(path.join(__dirname + '/scriptAttachments')));
 app.use(express.static(path.join(__dirname + '/patients')));
 app.use(express.static(path.join(__dirname + '/physicians')));
+app.use(express.static(path.join(__dirname + '/visits')));
 
+app.use("scripts/api/products", productRoutes);
+//overwriting routes
 
 app.use(["/api/scripts"], jwt({
     secret: process.env.JWT_SECRET,
@@ -59,6 +63,12 @@ app.use(["/api/physicians"], jwt({
     userProperty: 'payload'
 }));
 app.use("/api/physicians", physicianRoutes);
+app.use(["/api/visits"], jwt({
+    secret: process.env.JWT_SECRET,
+    userProperty: 'payload'
+}));
+app.use("/api/visits", physicianRoutes);
+// app.use("scripts/api/medications", medicationRoutes);
 
 
 app.get('/*', function(req, res) {

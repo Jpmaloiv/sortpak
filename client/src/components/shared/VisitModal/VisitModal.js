@@ -35,7 +35,7 @@ class VisitModal extends Component {
     return newProps.content || null
   }
 
-  get inactive() {
+  /* get inactive() {
     const {
       date,
       time,
@@ -43,7 +43,7 @@ class VisitModal extends Component {
     } = this.state
     const rep = this.props.isAdmin ? this.state.rep : this.props.me
     return !rep || !date || !time || !physician
-  }
+  } */
 
   submit(e) {
     e.preventDefault()
@@ -58,10 +58,11 @@ class VisitModal extends Component {
     // combine date and time
     const dateTime = moment(`${date} ${time}`, 'YYYY-MM-DD HH:mm').toISOString()
     const data = {
-      repId: rep.id || rep,
+      // repId: rep.id || rep,
       dateTime,
-      physicianId: physician.id || physician,
+      // physicianId: physician.id || physician,
     }
+    console.log(dateTime);
 
     this.props.onSubmit(data)
     this.props.onClickAway()
@@ -187,7 +188,7 @@ class VisitModal extends Component {
           />
           <Button
             large
-            inactive={this.inactive}
+            // inactive={this.inactive}
             type="submit"
             title="Schedule"
           />

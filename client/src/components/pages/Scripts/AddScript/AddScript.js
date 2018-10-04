@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios'
 import { connect } from 'react-redux'
+import Medications from '../Medications.js'
 
 import {
     patientChange,
@@ -37,13 +38,14 @@ class AddScript extends Component {
         this.state = {
           processedOn: '',
           physicians: '',
-          physicianOptions: []
+          physicianOptions: [],
+          medicationVal: ''
         }
       }
       
 
       componentDidMount() {
-        const loginToken = window.localStorage.getItem("token");
+       /*  const loginToken = window.localStorage.getItem("token");
         axios.get('/api/physicians/search/', { headers: { "Authorization": "Bearer " + loginToken } })
           .then((resp) => {
             this.setState({
@@ -54,28 +56,25 @@ class AddScript extends Component {
             this.physicianMap();
           }).catch((error) => {
             console.error(error);
+        }) */
+
+        const loginToken = window.localStorage.getItem("token");
+        axios.get('/api/products/search/', { headers: { "Authorization": "Bearer " + loginToken } })
+          .then((resp) => {
+              console.log(resp);
+            this.setState({
+                medications: resp.data.response,
+                // id: resp.data.response.id,    
+            })
+            console.log(this.state.medications);
+            this.physicianMap();
+          }).catch((error) => {
+            console.error(error);
         })
+            
         
     } 
 
-    physicianMap() {
-        const physicians = this.state.physicians;
-       
-        const physicianOptions = [
-            {
-              key: '',
-              value: '',
-              display: 'Select Physician',
-            },
-            ...physicians.map(physician => ({
-              key: physician.id,
-              value: physician.id,
-              display: physician.firstName,
-            })),
-          ]
-
-          console.log(physicianOptions);
-    }
 
     onChangeHandler = (event) => {
         this.setState({
@@ -227,33 +226,57 @@ class AddScript extends Component {
                 <Body className={styles.body} id="addScript">
 
                     <Form className={styles.form}>
+                    <Table>
+                        <tr>
+                            <td>
+                        
                         <Input
                             type="date"
-                            placeholder="Meh"
+                            label="Processed On"
                             value={processedOn}
                             onChange={processedOn => this.setState({ processedOn })}
                         />
-
-                        <Input
+                        </td>
+                        </tr>
+                        <tr>
+                            <td>
+                            <Input
                             placeholder="Patient"
+                            label="Patient"
                             value={patient}
                             onChange={patientChange}
                         />
-                        <Input
+                            </td>
+                        </tr>
+                    </Table>
+                    <Table>
+                        <tbody>
+                        <tr>
+                            <td>
+                            <Medications 
+                                placeholder="Medication"
+                                value={medication}
+                                onChange={medicationChange}
+                            />
+                            {/* <Input
                             placeholder="Medication"
                             value={medication}
                             onChange={medicationChange}
-                        />
-
-                        <Table>
-                            {/* <Selector 
-                                wide
-                                value={physicianOptions}
-                            /> */}
-                                
+                        /> */}
+                            </td>
+                        </tr>
+                        </tbody>
                         </Table>
 
-                        <table>
+                        {/* <Table>
+                            <Selector 
+                                wide
+                                value={physicianOptions}
+                            />
+                                
+                        </Table> */}
+
+                        <Table>
                             <tbody>
                                 <tr>
                                     <td>
@@ -265,7 +288,7 @@ class AddScript extends Component {
                                         <Selector
                                             wide
                                             label="Status"
-                                            placeholder="No Status"
+                                            placeholder="--"
                                             options={statusOptions}
                                             onSelect={status => this.setState({status})}
                                         />
@@ -298,9 +321,9 @@ class AddScript extends Component {
                                     </td>
                                 </tr>                                        
                             </tbody>
-                        </table>
+                        </Table>
 
-                        <table>
+                        <Table>
                             <tbody>
                                 <tr>
                                     <td>
@@ -430,9 +453,9 @@ class AddScript extends Component {
                                     </td>
                                 </tr>
                             </tbody>
-                        </table>
+                        </Table>
 
-                        <table>
+                        <Table>
                             <tbody>
                                 <tr>
                                     <td>
@@ -461,9 +484,9 @@ class AddScript extends Component {
                                     </td>
                                 </tr>
                             </tbody>
-                        </table>
+                        </Table>
 
-                        <table>
+                        <Table>
                             <tbody>
                                 <tr>
                                     <th>
@@ -481,9 +504,9 @@ class AddScript extends Component {
                                     </td>
                                 </tr>
                             </tbody>
-                        </table>
+                        </Table>
 
-                        <table>
+                        <Table>
                             <tbody>
                                 <tr>
                                     <td>
@@ -508,7 +531,7 @@ class AddScript extends Component {
                                     </td>
                                 </tr>
                             </tbody>
-                        </table>
+                        </Table>
     
                     </Form>
                 </Body>

@@ -7,6 +7,9 @@ import { authTypes } from './types'
 // Services
 import { auth, users } from '../services'
 
+import axios from 'axios'
+
+
 const {
   EMAIL_CHANGED,
   USERNAME_CHANGED,
@@ -253,9 +256,19 @@ export const patientChange = payload => {
 }
 
 export const medicationChange = payload => {
+  const loginToken = window.localStorage.getItem("token");
+  axios.get('api/medications/search?s=' + payload, { headers: { "Authorization": "Bearer " + loginToken } })
+  .then((res) => {
+    console.log(res.data.response)
+    
+  })
+  .catch((error) => {
+    console.error(error)
+  })
+
   return {
     type: MEDICATION_CHANGE,
-    payload,
+    payload
   }
 }
 

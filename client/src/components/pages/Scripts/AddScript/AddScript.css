@@ -44,4 +44,8 @@
     padding: 0 2% !important;
 }
 
-#addScript table > tbody > tr > td {padding: 0 5% !important;}
+#addScript table {background: transparent; box-shadow: none; border-bottom: 1px solid #ebeced;}
+#addScript tbody {float: left; width: 30%;}
+#addScript table > tbody > tr > td {border: none;}
+
+#addScript table > tbody > tr:nth-child(odd) {background-color: transparent;}

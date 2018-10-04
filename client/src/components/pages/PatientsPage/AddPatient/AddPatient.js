@@ -119,8 +119,11 @@ class AddPatient extends Component {
     const physicians = this.state.physicians;
     console.log(physicians);
 
-    
     const physicianOptions = [
+      'Dr. Joshua Wilkinson',
+      'Dr. Joseph Phan'
+    ]
+    /* const physicianOptions = [
       {
         key: '',
         value: '',
@@ -131,7 +134,7 @@ class AddPatient extends Component {
         value: physician.id,
         display: physician.firstName,
       })),
-    ]
+    ] */
 
     return (
       <div>

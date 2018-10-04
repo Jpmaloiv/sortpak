@@ -5,7 +5,7 @@ import axios from 'axios'
 
 // import { hasAuthTokenAsync } from '../../../../lib'
 
-import {Span, Selector, Table, Header, Button, ActionBox, ToggleSwitch, SearchBar} from '../../../common'
+import {Span, Selector, Table, Header, Button, ActionBox, Link, ToggleSwitch, SearchBar} from '../../../common'
 
 import {
   getScripts,
@@ -35,6 +35,7 @@ class ScriptsView extends Component {
       username: '',
       userID: ''
     }
+    this.handleClick = this.handleClick.bind(this);
   }
   componentDidMount() {
     /* hasAuthTokenAsync()
@@ -93,13 +94,18 @@ class ScriptsView extends Component {
     )
   }
 
-  
+  handleClick(value) {
+    console.log("clicked");
+    window.location=`/scripts/${value}`
+  }
 
   renderTableRow(script) {
     
     
+    
     return (
-      <tr>
+      
+      <tr value={script.id} onClick={() => this.handleClick(script.id)}>
     
         <td>
           {script.status}
@@ -143,13 +149,14 @@ class ScriptsView extends Component {
         </td>
 
         <td className={styles.detailsCell}>
-          <Button
+          <Span
             title="DETAILS"
             link={`/scripts/${script.id}`}
             onClick={() => this.props.setScript(script)}
           />
         </td>
       </tr>  
+      
     )
   }
 

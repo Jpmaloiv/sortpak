@@ -1,4 +1,5 @@
 import { api } from '../config'
+import { visits } from '../test-data'
 
 export default {
   getAll() {
