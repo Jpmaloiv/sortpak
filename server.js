@@ -38,10 +38,6 @@ app.use(express.static(path.join(__dirname + '/scriptAttachments')));
 app.use(express.static(path.join(__dirname + '/patients')));
 app.use(express.static(path.join(__dirname + '/physicians')));
 
-app.use(jwt({
-    secret: process.env.JWT_SECRET,
-    userProperty: 'payload'
-}));
 
 app.use(["/api/scripts"], jwt({
     secret: process.env.JWT_SECRET,
