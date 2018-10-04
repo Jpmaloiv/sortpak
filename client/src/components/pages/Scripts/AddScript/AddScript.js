@@ -155,7 +155,7 @@ class AddScript extends Component {
 
         
 
-        const physicians = this.state.physicians;
+        // const physicians = this.state.physicians;
         
 
         /* const physicianOptions = [

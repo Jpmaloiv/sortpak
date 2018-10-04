@@ -81,9 +81,9 @@ class AttachmentsTab extends Component {
     return (
       <tr key={attachment.id}>
         <td>
-          {/* <Link to={'./attachment/' + attachment.id} activeClassName="active"> */}
+          {/* <Link to={'./attachment/' + attachment.id} activeClassName="active">
               <h3>View</h3>
-          {/* </Link> */}
+          </Link> */}
           
         </td>
         

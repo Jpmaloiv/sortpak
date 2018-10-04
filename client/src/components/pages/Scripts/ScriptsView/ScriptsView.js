@@ -5,7 +5,7 @@ import axios from 'axios'
 
 // import { hasAuthTokenAsync } from '../../../../lib'
 
-import {Span, Selector, Table, Header, Link, Button, ActionBox, ToggleSwitch, SearchBar} from '../../../common'
+import {Span, Selector, Table, Header, Button, ActionBox, ToggleSwitch, SearchBar} from '../../../common'
 
 import {
   getScripts,

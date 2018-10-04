@@ -6,11 +6,12 @@ import axios from 'axios';
 class Attachment extends React.Component {
     constructor(props) {
         super(props)
+        this.state = {
+            file: ""
+        }
     }
 
-    state = {
-        file: ""
-    }
+    
     componentDidMount() {
         const loginToken = window.localStorage.getItem("token");
         // axios.get('/api/scripts/attachments/search?id=' + this.props.match.params.id, { headers: { "Authorization": "Bearer " + loginToken } })
@@ -19,8 +20,8 @@ class Attachment extends React.Component {
             headers: {
                 "Authorization": "Bearer " + loginToken
             },
-            // url: "/api/books/search?bookId=1"
-            url: "/api/scripts/attachments/search?attachmentId=1"
+            url: "/api/books/search?bookId=1"
+            // url: "/api/scripts/attachments/search?attachmentId=1"
 
         }).then((resp) => {
             console.log(resp);
@@ -56,13 +57,19 @@ class Attachment extends React.Component {
     
     
     render() {
+        console.log(this.state.file);
+        if(this.state.file) {
         return(
-            this.state.file ? 
+            
             <AttachmentWindow 
             file={this.state.file} 
-            /> : 
-            <div>Couldn't Find Attachment</div>
-        );
+            /> 
+            
+        )} else {
+            return (
+                <div>Loading PDF</div>
+            )
+        }
     }
 }
 

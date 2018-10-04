@@ -1,10 +1,10 @@
 import React from 'react';
 import PDF from 'react-pdf-js';
 
-class BookWindow extends React.Component {
-  constructor(props) {
+class AttachmentWindow extends React.Component {
+  /* constructor(props) {
     super(props);
-  }
+  } */
   state = {};
 
   onDocumentComplete = (pages) => {
@@ -24,13 +24,13 @@ class BookWindow extends React.Component {
   }
 
   renderPagination = (page, pages) => {
-    let previousButton = <li className="previous" onClick={this.handlePrevious}><a href="#"><i className="fa fa-arrow-left"></i> Previous</a></li>;
+    let previousButton = <li className="previous" onClick={this.handlePrevious}><i className="fa fa-arrow-left"></i> Previous</li>;
     if (page === 1) {
-      previousButton = <li className="previous disabled"><a href="#"><i className="fa fa-arrow-left"></i> Previous</a></li>;
+      previousButton = <li className="previous disabled"><i className="fa fa-arrow-left"></i> Previous</li>;
     }
-    let nextButton = <li className="next" onClick={this.handleNext}><a href="#">Next <i className="fa fa-arrow-right"></i></a></li>;
+    let nextButton = <li className="next" onClick={this.handleNext}>Next <i className="fa fa-arrow-right"></i></li>;
     if (page === pages) {
-      nextButton = <li className="next disabled"><a href="#">Next <i className="fa fa-arrow-right"></i></a></li>;
+      nextButton = <li className="next disabled">Next <i className="fa fa-arrow-right"></i></li>;
     }
     return (
       <nav id="prev-next">
@@ -51,7 +51,7 @@ class BookWindow extends React.Component {
     return (
       <div>
         <PDF
-          file={this.props.file}
+          file={this.state.file}
           onDocumentComplete={this.onDocumentComplete}
           onPageComplete={this.onPageComplete}
           page={this.state.page}
@@ -62,5 +62,5 @@ class BookWindow extends React.Component {
   }
 }
 
-export default BookWindow;
+export default AttachmentWindow;
 

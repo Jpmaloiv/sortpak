@@ -11,9 +11,9 @@ import {
 import styles from './AttachmentModal.css'
 
 export default class AttachmentModal extends Component {
-  constructor(props) {
+  /* constructor(props) {
     super(props)
-  }
+  } */
     state = {
       attachmentFile: '',
       dateAttached: '',
