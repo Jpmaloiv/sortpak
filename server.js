@@ -8,7 +8,6 @@ const scriptRoutes = require("./routes/script-routes.js");
 const scriptAttachmentRoutes = require("./routes/scriptAttachment-routes.js");
 const patientRoutes = require("./routes/patient-routes.js");
 const physicianRoutes = require("./routes/physician-routes.js");
-const bookRoutes = require("./routes/book-routes.js");
 const fileUpload = require('express-fileupload');
 
 //middleware
@@ -38,14 +37,12 @@ app.use(express.static(path.join(__dirname + '/scripts')));
 app.use(express.static(path.join(__dirname + '/scriptAttachments')));
 app.use(express.static(path.join(__dirname + '/patients')));
 app.use(express.static(path.join(__dirname + '/physicians')));
-app.use(express.static(path.join(__dirname + '/books')));
 
-app.use(express.static("books"))
 app.use(jwt({
     secret: process.env.JWT_SECRET,
     userProperty: 'payload'
 }));
-app.use("/api/books", bookRoutes);
+
 app.use(["/api/scripts"], jwt({
     secret: process.env.JWT_SECRET,
     userProperty: 'payload'
