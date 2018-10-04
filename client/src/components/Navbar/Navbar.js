@@ -20,7 +20,7 @@ class Navbar extends React.Component {
                             </button>
                             <div>
                                 <a className="navbar-brand" href="/">SortPak</a>
-                                <img alt="SortPak" id="logo" src="http://www.sortpak.com/site-uploadz/2018/05/sortpak-logo-lg.png" />
+                                {/* <img alt="SortPak" id="logo" src="http://www.sortpak.com/site-uploadz/2018/05/sortpak-logo-lg.png" /> */}
                             </div>
                         </div>
                         <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
