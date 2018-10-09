@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Autosuggest from 'react-autosuggest';
 import axios from 'axios'
     

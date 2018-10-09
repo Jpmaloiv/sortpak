@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
+import axios from 'axios'
 
 import moment from 'moment'
 
@@ -46,27 +47,41 @@ class VisitModal extends Component {
   } */
 
   submit(e) {
-    e.preventDefault()
-    const {
+    
+    /* const {
       date,
       time,
       physician,
     } = this.state
 
-    const rep = this.props.isAdmin ? this.state.rep : this.props.me
+    const rep = this.props.isAdmin ? this.state.rep : this.props.me */
 
-    // combine date and time
+    /* // combine date and time
     const dateTime = moment(`${date} ${time}`, 'YYYY-MM-DD HH:mm').toISOString()
     const data = {
       // repId: rep.id || rep,
       dateTime,
       // physicianId: physician.id || physician,
     }
-    console.log(dateTime);
+    console.log(dateTime); */
 
-    this.props.onSubmit(data)
-    this.props.onClickAway()
-  }
+        const loginToken = window.localStorage.getItem("token");
+        let data = new FormData();
+        axios.post('/api/visits/add?date=' + this.state.date + '&time=' + this.state.time, 
+        data, { headers: { "Authorization": "Bearer " + loginToken } })
+            .then((data) => {
+                console.log(data);
+                this.props.onClickAway()
+                // this.setState({ scriptFile: '', type: '' })
+                window.location.reload();
+                // this.props.history.push("/scripts");              
+            }).catch((error) => {
+                console.error(error);
+            })
+          }
+        
+    // this.props.onClickAway()
+  
 
   renderSelectByType(type) {
     const { content } = this.props

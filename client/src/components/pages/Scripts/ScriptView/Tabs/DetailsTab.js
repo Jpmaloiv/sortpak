@@ -12,10 +12,23 @@ import {
 } from '../../../../common'
 
 
+
 class DetailsTab extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {refills: 0}
+  
+      // this.handleClick = this.handleClick.bind(this);
+  }
   state = {
     script: ''
 }
+
+/* handleClick = () => {
+  this.setState({refills: this.state.refills += 1}, () => {
+      console.log(this.state.refills);
+  });
+} */
   componentDidMount() {
 
     let scriptNum = this.props.sID.match.params.scriptId;
@@ -79,6 +92,8 @@ save() {
 }
 
   render() {
+
+   
 
     const statusOptions = [
       'Received',
@@ -254,11 +269,19 @@ save() {
                 <td className="value"></td>
                 <td className="field">Refill #</td>
                 <td className="value">
+                 {/*  <Button
+                    className="plus"
+                    icon="plus"
+                    editing={editing}
+                    value={this.state.refills}
+                    onClick={this.handleClick}
+                  /> */}
                   <Span
                     editing={editing}
                     placeholder={this.state.refills}
                     value={this.state.refills}
                     onChange={refills => this.setState({ refills })}
+                    
                   >
                     {this.state.refills}
                   </Span> 

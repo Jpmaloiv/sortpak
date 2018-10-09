@@ -10,7 +10,7 @@ const Op = Sequelize.Op;
 
 
 router.post("/add", (req, res) => {
-    const physicianLink = '/physicians/' + req.payload.id + '/' + req.query.firstName.trim() + ".pdf";
+    const physicianLink = '/physicians/' + req.payload.id;
     const physician = {
         firstName: req.query.firstName,
         lastName: req.query.lastName,
@@ -26,7 +26,7 @@ router.post("/add", (req, res) => {
         if ((err) && (err.code !== 'EEXIST')) {
             console.error(err)
         } else {
-            const physicianPath = './physicians/' + req.payload.id + '/' + req.query.firstName.trim() + ".pdf";
+            const physicianPath = './physicians/' + req.payload.id;
             // console.log("dir created");
                     // console.log("file saved");
                     db.Physicians

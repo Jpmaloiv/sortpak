@@ -2,6 +2,11 @@
 #scriptViewHead h2 {
     margin-bottom: 5% !important;
 }
+#scriptViewHead table {
+    background-color: transparent !important;
+    width: 100%;
+    box-shadow: none;
+}
 #scriptView {
     background-color: #fff; box-shadow: none !important;
 }
@@ -26,6 +31,9 @@ table {
 
 :local(.body) {
     width: 100%;
+}
+:local(.header) > table {
+    width: 100% !important;
 }
 :local(.body) > table {
     width: 70% !important;

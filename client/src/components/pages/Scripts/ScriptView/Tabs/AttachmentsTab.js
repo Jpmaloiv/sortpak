@@ -4,7 +4,7 @@ import axios from 'axios'
 import Moment from 'react-moment'
 
 // Components
-import { Button, Link, Table } from '../../../../common'
+import { Button, Table } from '../../../../common'
 
 import {
   AttachmentModal,

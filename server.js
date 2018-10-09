@@ -9,6 +9,7 @@ const scriptAttachmentRoutes = require("./routes/scriptAttachment-routes.js");
 const patientRoutes = require("./routes/patient-routes.js");
 const physicianRoutes = require("./routes/physician-routes.js");
 const productRoutes = require("./routes/product-routes.js");
+const visitRoutes = require("./routes/visit-routes.js");
 const fileUpload = require('express-fileupload');
 
 //middleware
@@ -67,7 +68,7 @@ app.use(["/api/visits"], jwt({
     secret: process.env.JWT_SECRET,
     userProperty: 'payload'
 }));
-app.use("/api/visits", physicianRoutes);
+app.use("/api/visits", visitRoutes);
 // app.use("scripts/api/medications", medicationRoutes);
 
 

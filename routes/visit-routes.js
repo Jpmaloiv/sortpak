@@ -10,9 +10,10 @@ const Op = Sequelize.Op;
 
 
 router.post("/add", (req, res) => {
-    const visitLink = '/visits/' + req.payload.id + '/' + req.query.dateTime.trim() + ".pdf";
+    const visitLink = '/visits/' + req.payload.id + '/' + req.query.date.trim() + ".pdf";
     const visit = {
-        dateTime: req.query.dateTime,
+        date: req.query.date,
+        time: req.query.time,
         link: visitLink,
         UserId: req.payload.id
     }
@@ -21,7 +22,7 @@ router.post("/add", (req, res) => {
         if ((err) && (err.code !== 'EEXIST')) {
             console.error(err)
         } else {
-            const visitPath = './visits/' + req.payload.id + '/' + req.query.trim() + ".pdf";
+            const visitPath = './visits/' + req.payload.id + '/' + req.query.date.trim() + ".pdf";
             // console.log("dir created");
                     // console.log("file saved");
                     db.Visits

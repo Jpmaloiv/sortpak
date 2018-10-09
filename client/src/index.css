@@ -15,3 +15,9 @@ html {
     color: #666; }
     html body > div#root {
       height: 100vh; }
+
+h2 {
+  color: #25292d;
+  font-size: 1.6em;
+  font-weight: normal;
+}

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import qs from 'query-string'
 
-import { hasAuthTokenAsync, getDateObject } from '../../../lib'
+import { getDateObject } from '../../../lib'
 
 import { formatDate } from '../../../lib/dateHelper'
 
@@ -33,14 +33,12 @@ class AgendaPage extends Component {
   }
 
   componentDidMount() {
-    hasAuthTokenAsync()
-      .then(() => {
+    
         if (!this.params.month || !this.params.year) {
           console.log('setting current date');
           this.setToCurrentDate()
         }
-      })
-      .catch(console.log)
+    
   }
 
   get params() {

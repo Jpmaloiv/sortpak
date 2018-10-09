@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
-import {Header, Body} from '../../../common'
+import {Header, Body, Table, ToggleSwitch} from '../../../common'
 import styles from './ScriptView.css'
 
 
@@ -13,6 +13,10 @@ import {
 import DetailsTab from './Tabs/DetailsTab'
 import NotesTab from './Tabs/NotesTab'
 import AttachmentsTab from './Tabs/AttachmentsTab'
+import RXHistoryTab from './Tabs/RXHistoryTab'
+import FaxesTab from './Tabs/FaxesTab'
+import StatusesTab from './Tabs/StatusesTab'
+import PaymentsTab from './Tabs/PaymentsTab'
 
 
 
@@ -29,13 +33,33 @@ class ScriptView extends Component {
       {
         value: 'notes',
         display: 'Notes',
-        renderComponent: () => this.renderNotesTab(),
+        renderComponent: () => this.renderNotesTab()
       },
       {
         value: 'attachments',
         display: 'Attachments',
-        renderComponent: () => this.renderAttachmentsTab(),
+        renderComponent: () => this.renderAttachmentsTab()
       },
+      {
+        value: 'rxHistory',
+        display: 'RX History',
+        renderComponent: () => this.renderRXHistoryTab()
+      },
+      {
+        value: 'faxes',
+        display: 'Faxes',
+        renderComponent: () => this.renderFaxesTab()
+      },
+      {
+        value: 'statuses',
+        display: 'Statuses',
+        renderComponent: () => this.renderStatusesTab()
+      },
+      {
+        value: 'payments',
+        display: 'Payments',
+        renderComponent: () => this.renderPaymentsTab()
+      }
     ]
 
     this.state = {
@@ -139,18 +163,88 @@ class ScriptView extends Component {
     )
   }
 
+  renderRXHistoryTab() {
+    return (
+      <RXHistoryTab
+        className={styles.rxHistoryTab}
+        state={this.state}
+        patient={this.props.patients}
+        setState={this.setState.bind(this)} 
+      />
+    )
+  }
+
+  renderFaxesTab() {
+    return (
+      <FaxesTab />
+    )
+  }
+
+  renderStatusesTab() {
+    return (
+    <StatusesTab />
+    )
+  }
+
+  renderPaymentsTab() {
+    return (
+      <PaymentsTab />
+    )
+  }
+
   
 
-  render() {  
+  render() {
+
+    const {
+      filterValue,
+      searchValue,
+    } = this.state
+
+    const statusValues = [
+      "Received",
+      "Review",
+      "Prior Auth",
+      "Process",
+      "Copay Assistance",
+      "Schedule",
+      "QA",
+      "Fill",
+      "Shipped",
+      "Done",
+      "Cancelled",
+      "Refill",
+    ]
+
     return (
       <div>
-        <Header id="scriptViewHead">
-          <h2>Status: {this.state.status}</h2>
+        <Header className={styles.header} id="scriptViewHead">
+          <Table>
+            <tr>
+              <td>
+              <ToggleSwitch
+                options={statusValues}
+                selected={filterValue}
+                onSelect={filterValue => this.setState({ searchValue })}
+                allowsMultipleSelection
+              /> 
+              </td>
+            </tr>
+            <tr>
+              <td><h2>Status: {this.state.status}</h2></td>
+            </tr>
+          </Table>
+         
+       
+          
+          
+          
         </Header>
 
         <Body className={styles.body} id="scriptViewBody">
 
-        {this.renderSwitchTable()}
+
+          {this.renderSwitchTable()}
         
           
         </Body>

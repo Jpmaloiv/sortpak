@@ -5,7 +5,7 @@ import axios from 'axios'
 
 // import { hasAuthTokenAsync } from '../../../../lib'
 
-import {Span, Selector, Table, Header, Button, ActionBox, Link, ToggleSwitch, SearchBar} from '../../../common'
+import {Span, Selector, Table, Header, Button, ActionBox, ToggleSwitch, SearchBar} from '../../../common'
 
 import {
   getScripts,
@@ -33,10 +33,12 @@ class ScriptsView extends Component {
       medication: '',
       other: '',
       username: '',
-      userID: ''
+      userID: '',
+      
     }
     this.handleClick = this.handleClick.bind(this);
   }
+
   componentDidMount() {
     /* hasAuthTokenAsync()
       .then(() => {
@@ -65,7 +67,14 @@ class ScriptsView extends Component {
             console.error(error);
         })
         console.log(this.state.scripts);
+        
+
+        /* let searchsearchScripts(searchParams);Params = "?";
+        console.log("TEST");
+        if (this.state.salesCode) searchParams += "&salesCode=" + this.state.salesCode; */
+        
       }
+
         
 
   renderTableHead() {
@@ -95,7 +104,6 @@ class ScriptsView extends Component {
   }
 
   handleClick(value) {
-    console.log("clicked");
     window.location=`/scripts/${value}`
   }
 
@@ -173,6 +181,10 @@ class ScriptsView extends Component {
     console.log(this.state.scripts);
 
     const {
+      medicare
+    } = this.state
+
+    const {
       filterValue,
       searchValue,
     } = this.state
@@ -229,7 +241,7 @@ class ScriptsView extends Component {
       // const self = this;
 
 var scriptList = this.state.scripts.map(function (item, i) {
-          console.log(item);
+          
           return (
               <div key={i}>
                   {/* <div className="story-title-author">
@@ -293,11 +305,12 @@ var scriptList = this.state.scripts.map(function (item, i) {
                   selected={filterValue}
                   onSelect={filterValue => this.setState({ filterValue })}
                 />
-                  <Selector
+                  <ToggleSwitch
                     label="Special"
                     options={SpecialOptions}
                     selected={filterValue}
-                    onSelect={filterValue => this.setState({ filterValue })}
+                    onSelect={medicare => this.setState({ medicare })}
+                    onClick={this.submitSearch}
                   />
                 <ToggleSwitch
                     label="Type"

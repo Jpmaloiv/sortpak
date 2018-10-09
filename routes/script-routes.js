@@ -79,8 +79,10 @@ router.get("/search", (req, res) => {
     if (req.query.scriptId) {
         searchParams.where.id = req.query.scriptId
     }
+    if (req.query.salesCode) {
+        searchParams.where.salesCode = req.query.salesCode
+    }
   
-    console.log(searchParams);
     db.Scripts
         .findAll(searchParams)
         .then((response) => {
