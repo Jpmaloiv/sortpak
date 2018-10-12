@@ -14,10 +14,19 @@ router.post("/add", (req, res) => {
     const physician = {
         firstName: req.query.firstName,
         lastName: req.query.lastName,
-        username: req.query.username,
-        specialty: req.query.specialty,
+        specialization: req.query.specialization,
         group: req.query.group,
-        salesRep: req.query.salesReprenstative,
+        rep: req.query.rep,
+        DEA: req.query.DEA,
+        NPI: req.query.NPI,
+        phone: req.query.phone,
+        fax: req.query.fax,
+        email: req.query.fax,
+        contact: req.query.contact,
+        address1: req.query.address1,
+        address2: req.query.address2,
+        address3: req.query.address3,
+        physicianWarning: req.query.physicianWarning,
         link: physicianLink,
         UserId: req.payload.id
     }

@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
+import axios from 'axios'
 import moment from 'moment'
 
-import { hasAuthTokenAsync } from '../../../../lib'
 import { formatNumber, unformatNumber } from '../../../../lib/phoneHelper'
 
-// Components
-import ContactInfo from './ContactInfo'
-import MiscInfo from './MiscInfo'
 
 import {
   VisitModal,
@@ -17,7 +14,7 @@ import {
 } from '../../../shared'
 
 import {
-  Icon,
+  Input,
   Button,
   Header,
   Body,
@@ -60,8 +57,38 @@ class PhysicianView extends Component {
       },
     ]
 
-    this.state = this.initialState
+    this.state = {
+      tab: this.tabOptions[0],
+      ...this.initialState
+    }
   }
+
+  componentDidMount() {
+    if (this.props.match.params.physicianId) {
+      const loginToken = window.localStorage.getItem("token");
+        axios.get('/api/physicians/search?physicianId=' + this.props.match.params.physicianId, { headers: { "Authorization": "Bearer " + loginToken } })
+        .then((resp) => {
+          console.log(resp);
+          let physician = resp.data.response[0]
+            this.setState({
+                name: physician.firstName + " " + physician.lastName,
+                id: physician.id,
+                group: physician.group,
+                specializatioin: physician.specialization,
+                phone: physician.phone,
+                fax: physician.fax,
+                address: physician.address1 + " " + physician.address3 + " " + physician.address2,
+                email: physician.email,
+                NPI: physician.NPI,
+                DEA: physician.DEA,
+                rep: physician.rep,
+                contact: physician.contact
+            })
+        }).catch((err) => {
+            console.error(err)
+        })
+    }
+}
 
   get initialState() {
     const physician = this.props.physician || {}
@@ -108,14 +135,6 @@ class PhysicianView extends Component {
     }
   }
 
-  componentDidMount() {
-    hasAuthTokenAsync()
-      .then(() => {
-        const { physicianId } = this.props.match.params
-        this.props.getPhysicianById(physicianId)
-      })
-      .catch(console.log)
-  }
 
   save() {
     const id = this.props.physician.id
@@ -158,6 +177,114 @@ class PhysicianView extends Component {
 
     this.setEditState(false)
   }
+
+  renderContactInfo() {
+    const {
+      editing,
+      firstName,
+      lastName
+    } = this.state
+
+    return (
+      <div id="patientView">
+      <div className="flex-grid">
+      <div id="contactInfo" className={styles.contactInfo}>
+            {editing ? (
+              <div className="name">
+                Name:
+                {this.state.name}
+                <Input
+                  placeholder="First Name"
+                  value={firstName}
+                  onChange={firstName => this.setState({ firstName })}
+                />
+                <Input
+                  placeholder="Last Name"
+                  value={lastName}
+                  onChange={lastName => this.setState({ lastName })}
+                />
+              </div>
+            ) : (
+              <div>
+                Name: Dr. {this.state.name}
+              </div>
+            )}
+
+            <div>
+              Group: {this.state.group}
+            </div>
+            <div>
+              Specialty: {this.state.specialization}
+            </div>     
+          </div>
+          <div id="contactInfo" className={styles.contactInfo}>  
+          
+            <div>
+              <Span icon="phone">
+                {this.state.phone}
+              </Span>
+            </div>
+            <div>
+              <Span icon="print">
+                {this.state.fax}
+              </Span>
+            </div>
+            <div>
+              <Span icon="building">
+                {this.state.address}
+              </Span>
+            </div>
+            <div>
+              <Span className="blue" icon="envelope">
+                {this.state.email}
+              </Span>
+            </div>
+          </div>
+        </div>
+        </div>
+        
+    )}
+
+  renderMiscInfo() {
+    return (
+      <div className={styles.miscInfo}>
+        <div className="grid">
+          <div className="item">
+            <label>
+              Physician's NPI
+            </label>
+            <Span>
+              {this.state.NPI || 'None'}
+            </Span>
+          </div>
+          <div className="item">
+            <label>
+              Physician's DEA
+            </label>
+            <Span>
+              {this.state.DEA || 'None'}
+            </Span>
+          </div>
+          <div className="item">
+            <label>
+              Sales Rep
+            </label>
+              <Span>
+                {this.state.rep || 'Unassigned'}
+              </Span>
+            
+          </div>
+          <div className="item">
+            <label>
+              Point of Contact
+            </label>
+            <Span>
+              {this.state.contact || 'None'}
+            </Span>
+          </div>
+        </div>
+      </div>
+    )}
 
   setEditState(editing) {
     const password = ''
@@ -225,8 +352,6 @@ class PhysicianView extends Component {
       return null
     }
 
-    const { visits } = physician
-
     const {
       visitModal,
       noteModal,
@@ -241,9 +366,9 @@ class PhysicianView extends Component {
             onClick={() => this.openVisitModal()}
           />
         </div>
-        <div className="visits">
+        {/* <div className="visits">
           {visits.map(this.renderVisit.bind(this))}
-        </div>
+        </div> */}
 
         <VisitModal
           content={visitModal}
@@ -346,64 +471,51 @@ class PhysicianView extends Component {
   }
 
   render() {
-    const { physician } = this.props
-    if (!physician) {
-      return null
-    }
-
-    const { editing } = this.state
-
-    const {
-      nameDisplay,
-      group,
-    } = physician
+    
 
     return (
       <div>
         <Header className={styles.header}>
           <h2>
-            {nameDisplay}
+            Dr. {this.state.name}
             <span className="group">
-              {group || 'No Group Available'}
+              {this.state.group || 'No Group Available'}
             </span>
-            {!editing ? (
-              <div>
-                <Icon
-                  edit
-                  onClick={() => this.setEditState(true)}
+            <div className="action">
+                <Button
+                  search
+                  icon="edit"
+                  title="EDIT PHYSICIAN"
+                  style={{ marginLeft: 8 }}
+                />
+              
+                <Button
+                  search
+                  icon="lock"
+                  title="GIVE ACCESS"
+                  style={{ marginLeft: 8 }}
                 />
               </div>
-            ) : (
-              <div>
-                <Icon
-                  cancel
-                  onClick={() => this.setEditState(false)}
-                />
-                <Icon
-                  save
-                  onClick={() => this.save()}
-                />
-              </div>
-            )}
           </h2>
         </Header>
         <Body className={styles.body}>
-          <ContactInfo
+        {this.renderContactInfo()}
+          {/* <ContactInfo
             className={styles.contactInfo}
             physician={physician}
             editing={editing}
             state={this.state}
             onChange={newState => this.setState(newState)}
             closeModal={() => this.closeModal()}
-          />
-
-          <MiscInfo
+          /> */}
+          {this.renderMiscInfo()}
+         {/*  <MiscInfo
             className={styles.miscInfo}
             physician={physician}
             editing={editing}
             state={this.state}
             onChange={newState => this.setState(newState)}
-          />
+          /> */}
 
           {this.renderSwitchTable()}
         </Body>

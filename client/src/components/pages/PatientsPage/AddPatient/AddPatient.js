@@ -30,6 +30,10 @@ class AddPatient extends Component {
       firstName: '',
       lastName: '',
       dob: '',
+      sex: '',
+      phone: '',
+      email: '',
+      patientWarning: '',
       physicians: '',
       physicianId: ''
     }
@@ -48,38 +52,16 @@ class AddPatient extends Component {
         console.error(error);
     })
 } 
-  
 
-  /* get initialState() {
-    return {
-      firstName: '',
-      lastName: '',
-      dob: '1970-01-01',
-      physicianId: '',
-    }
-  } */
-
-  /* get invalid() {
-    const {
-      firstName,
-      lastName,
-      dob,
-      physicianId,
-    } = this.state
-
-    return !(
-      firstName
-      && lastName
-      && dob
-      && physicianId
-    )
-  } */
-
-  onSubmit(e) {
-    e.preventDefault()
+  submitpatient = (event) => {
+    event.preventDefault()
         const loginToken = window.localStorage.getItem("token");
         let data = new FormData();
-        axios.post('/api/patients/add?firstName=' + this.state.firstName + "&lastName=" + this.state.lastName + "&dob=" + this.state.dob, 
+        axios.post('/api/patients/add?firstName=' + this.state.firstName + "&lastName=" + this.state.lastName + "&dob=" + this.state.dob + "&sex=" + this.state.sex + '&phone=' + this.state.phone +
+        '&email=' + this.state.email + '&patientWarning=' + this.state.patientWarning + '&conditions=' + this.state.conditions + '&allergies=' + this.state.allergies + '&address1=' + this.state.address1 +
+        '&address2=' + this.state.address2 + '&primInsPlan=' + this.state.primInsPlan + '&primInsBIN=' + this.state.primInsBIN + '&primInsPCN=' + this.state.primInsPCN + 'primInsID=' + this.state.primInsID +
+        '&primInsGroup=' + this.state.primInsGroup + '&primInsType=' + this.state.primInsType + '&secInsPlan=' + this.state.secInsPlan + '&secInsBIN=' + this.state.secInsBIN + '&secInsPCN=' + this.state.secInsPCN + 
+        '&secInsID=' + this.state.secInsID + '&secInsGroup=' + this.state.secInsGroup + '&secInsType=' + this.state.secInsType, 
         data, { headers: { "Authorization": "Bearer " + loginToken } })
             .then((data) => {
                 console.log(data);
@@ -88,117 +70,207 @@ class AddPatient extends Component {
             }).catch((error) => {
                 console.error(error);
             })
-
-    
-
-    // const dob = unformatDate(this.state.dob)
-
-    /* const data = {
-      firstName,
-      lastName,
-      dob,
-      physicianId,
-    }
-    this.props.createPatient(data) */
   }
 
   render() {
 
-    console.log(this.state.physicians);
-    /* const {
-      physicians,
-    } = this.props */
-
     const {
-      firstName,
-      lastName,
-      dob,
-      physicianId,
+      firstName, lastName, dob, sex, phone, email, patientWarning, conditions, allergies, address1, address2, primInsPlan, primInsBIN, primInsPCN, primInsID,
+      primInsGroup, primInsType, secInsPlan, secInsBIN, secInsPCN, secInsID, secInsGroup, secInsType
     } = this.state
-    console.log(this.state.physicians);
-    const physicians = this.state.physicians;
-    console.log(physicians);
 
-    const physicianOptions = [
-      'Dr. Joshua Wilkinson',
-      'Dr. Joseph Phan'
+    const sexOptions = [
+      '--',
+      'Male',
+      'Female',
+      'Other'
     ]
-    /* const physicianOptions = [
-      {
-        key: '',
-        value: '',
-        display: 'Select Physician',
-      },
-      ...physicians.map(physician => ({
-        key: physician.id,
-        value: physician.id,
-        display: physician.firstName,
-      })),
-    ] */
+
+    const insTypeOptions = [
+      '--',
+      'Medicare Part B',
+      'Medicare Part D',
+      'Medicaid',
+      'Commercial',
+      'Patient Pay'
+    ]
 
     return (
-      <div>
+      <div className={styles.app} id="addPatient">
         <Header>
-          <h3>Add a New Patient</h3>
-        </Header>
-        <Body className={styles.body}>
-          <Form
-            className="form"
-            onSubmit={this.onSubmit.bind(this)}
-          >
-            <label>
-              Patient Name
-            </label>
-            <Input
-              placeholder="First Name"
-              value={firstName}
-              onChange={firstName => this.setState({ firstName })}
-            />
-            <Input
-              placeholder="Last Name"
-              value={lastName}
-              onChange={lastName => this.setState({ lastName })}
-            />
-
-            <br />
-
-            <label>
-              Date of Birth
-            </label>
-            <Input
-              type="date"
-              value={dob}
-              onChange={dob => this.setState({ dob })}
-            />
-
-            <br />
-
-            <label>
-              Physician
-            </label>
-            <Selector
-              wide
-              selected={physicianId}
-              options={physicianOptions}
-              onSelect={physicianId => this.setState({ physicianId })}
-            />
-
-            <br />
-
-            <div className="buttons">
+          <h2>Add Patient</h2>
+          <div className="action">
               <Button
-                large
                 cancel
                 type="button"
                 title="CANCEL"
                 link="/patients"
+                style={{ marginRight: 10 }}
               />
               <Button
-                large
-                type="submit"
+                onClick={this.submitpatient}
                 title="CREATE PATIENT"
+                className="submit btn btn-default"
+                type="submit"
+                value="Submit"
+                style={{ marginRight: 8 }}
               />
             </div>
+        </Header>
+        <Body className={styles.body}>
+          <Form className="form">
+            <div class="flex-grid">
+              <div class="col">         
+                <Input
+                  label="Patient Name"
+                  placeholder="First Name"
+                  value={firstName}
+                  onChange={firstName => this.setState({ firstName })}
+                />
+                <Input
+                  placeholder="Last Name"
+                  value={lastName}
+                  onChange={lastName => this.setState({ lastName })}
+                />
+      
+                <Input
+                  label="Date of Birth"
+                  type="date"
+                  value={dob}
+                  onChange={dob => this.setState({ dob })}
+                />
+
+                <Selector
+                  label="Sex"
+                  options={sexOptions}
+                  value={sex}
+                  onSelect={sex => this.setState({ sex })}
+                />
+
+                <Input
+                  label="Phone"
+                  value={phone}
+                  onChange={phone => this.setState({ phone })}
+                />
+
+                <Input 
+                  label="Email"
+                  value={email}
+                  onChange={email => this.setState({ email })}
+                />
+
+                <Input 
+                  label="Patient Warning"
+                  className="textarea"
+                  value={patientWarning}
+                  onChange={patientWarning => this.setState({ patientWarning })}
+                />
+
+              </div>
+              <div class="col">
+
+                <Input 
+                  label="Co-morbid Conditions"
+                  className="textarea"
+                  placeholder="Conditions"
+                  value={conditions}
+                  onChange={conditions => this.setState({ conditions })}
+                />
+
+                <Input
+                  label="Allergies"
+                  className="textarea"
+                  placeholder="Conditions"
+                  value={allergies}
+                  onChange={allergies => this.setState({ allergies })}
+                />
+
+                <Input 
+                  label="Patient Address"
+                  placeholder="Click here"
+                  value={address1}
+                  onChange={address1 => this.setState({ address1 })}
+                />
+
+                <Input
+                  placeholder="To enter address"
+                  value={address2}
+                  onChange={address2 => this.setState({ address2 })}
+                />
+              </div>
+            </div>
+
+            <div class="flex-grid">
+              <div class="col">
+                <h4>Primary Insurance</h4>
+                <Input
+                  label="Plan"
+                  value={primInsPlan}
+                  onChange={primInsPlan => this.setState({ primInsPlan })}
+                />
+                <Input
+                  label="BIN"
+                  value={primInsBIN}
+                  onChange={primInsBIN => this.setState({ primInsBIN })}
+                />
+                <Input
+                  label="PCN"
+                  value={primInsPCN}
+                  onChange={primInsPCN => this.setState({ primInsPCN })}
+                />
+                <Input
+                  label="ID"
+                  value={primInsID}
+                  onChange={primInsID => this.setState({ primInsID })}
+                />
+                <Input
+                  label="Group"
+                  value={primInsGroup}
+                  onChange={primInsGroup => this.setState({ primInsGroup })}
+                />
+                <Selector
+                  label="Type"
+                  options={insTypeOptions}
+                  value={primInsType}
+                  onSelect={primInsType => this.setState({ primInsType })}
+                />
+              </div>
+              <div class="col">
+                <h4>Secondary Insurance</h4>
+                <Input
+                  label="Plan"
+                  value={secInsPlan}
+                  onChange={secInsPlan => this.setState({ secInsPlan })}
+                />
+                <Input
+                  label="BIN"
+                  value={secInsBIN}
+                  onChange={secInsBIN => this.setState({ secInsBIN })}
+                />
+                <Input
+                  label="PCN"
+                  value={secInsPCN}
+                  onChange={secInsPCN => this.setState({ secInsPCN })}
+                />
+                <Input
+                  label="ID"
+                  value={secInsID}
+                  onChange={secInsID => this.setState({ secInsID })}
+                />
+                <Input
+                  label="Group"
+                  value={secInsGroup}
+                  onChange={secInsGroup => this.setState({ secInsGroup })}
+                />
+                <Selector
+                  label="Type"
+                  options={insTypeOptions}
+                  value={secInsType}
+                  onSelect={secInsType => this.setState({ secInsType })}
+                />
+              </div>
+            </div>
+            
           </Form>
         </Body>
       </div>

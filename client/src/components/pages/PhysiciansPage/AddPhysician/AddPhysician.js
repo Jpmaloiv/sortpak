@@ -45,13 +45,15 @@ class AddPhysician extends Component {
       .catch(console.log)
   } */
 
-  onSubmit(e) {
-    e.preventDefault()
+  submitphysician = (event) => {
+    event.preventDefault()
     const loginToken = window.localStorage.getItem("token");
       let data = new FormData();
       axios.post('/api/physicians/add?firstName=' + this.state.firstName + '&lastName=' + this.state.lastName +
-      '&username=' + this.state.username + '&specialty=' + this.state.specialty + '&group=' + this.state.group +
-      '&salesRep=' + this.state.salesRep, 
+      '&group=' + this.state.group + '&rep=' + this.state.rep + '&specialization=' + this.state.specialization +
+      '&DEA=' + this.state.DEA + '&NPI=' + this.state.NPI + '&phone=' + this.state.phone + '&fax=' + this.state.fax +
+      '&email=' + this.state.email + '&contact=' + this.state.contact + '&address1=' + this.state.address1 + '&address2=' +
+      this.state.address2 + '&address3=' + this.state.address3 + '&physicianWarning=' + this.state.physicianWarning, 
       data, { headers: { "Authorization": "Bearer " + loginToken } })
           .then((data) => {
               console.log(data);
@@ -74,20 +76,12 @@ class AddPhysician extends Component {
   }
 
   render() {
-    const {
-      reps,
-    } = this.props
 
     const {
-      firstName,
-      lastName,
-      username,
-      specialty,
-      group,
-      salesRep,
+      firstName, lastName, specialization, group, rep, DEA, NPI, phone, fax, email, contact, address1, address2, address3, physicianWarning
     } = this.state
 
-    const specialtyOptions = [
+    const specOptions = [
       'Internal Medicine',
       'Home Health',
       'Hospice',
@@ -111,35 +105,35 @@ class AddPhysician extends Component {
       'Hepatology'  
     ]
 
-    const invalid = !firstName || !lastName
-
-    const salesRepOptions = [
-      {
-        key: '',
-        value: '',
-        display: 'Unassigned',
-      },
-      ...reps.map(rep => ({
-        key: rep.id,
-        value: rep.id,
-        display: rep.nameDisplay,
-      })),
-    ]
 
     return (
-      <div>
+      <div className={styles.app} id="addPhysician">
         <Header>
-          <h3>Add a New Physician</h3>
+          <h2>Add a New Physician</h2>
+          <div className="action">
+              <Button
+                cancel
+                type="button"
+                title="CANCEL"
+                link="/physicians"
+                style={{ marginRight: 10 }}
+              />
+              <Button
+                onClick={this.submitphysician}
+                title="CREATE PHYSICIAN"
+                className="submit btn btn-default"
+                type="submit"
+                value="Submit"
+                style={{ marginRight: 8 }}
+              />
+            </div>
         </Header>
         <Body className={styles.body}>
-          <Form
-            className="form"
-            onSubmit={this.onSubmit.bind(this)}
-          >
-            <label>
-              Physician Name:
-            </label>
+          <Form className="form">
+          <div class="flex-grid">
+            <div class="col">
             <Input
+              label="Physician Name"
               placeholder="First Name"
               value={firstName}
               onChange={firstName => this.setState({ firstName })}
@@ -150,70 +144,101 @@ class AddPhysician extends Component {
               onChange={lastName => this.setState({ lastName })}
             />
 
-            <br />
-
-            <label>
-              Username:
-            </label>
             <Input
-              placeholder="Username"
-              value={username}
-              onChange={username => this.setState({ username })}
-            />
-
-            <br />
-
-            <label>
-              Specialty:
-            </label>
-            <Selector
-              wide
-              placeholder="Specialty"
-              options={specialtyOptions}
-              value={specialty}
-              onSelect={specialty => this.setState({ specialty })}
-            />
-
-            <br />
-
-            <label>
-              Group
-            </label>
-            <Input
-              placeholder="Group"
+              label="Group"
+              placeholder="Group Name"
               value={group}
-              onChange={group => this.setState({ group })}
+              onChange={group => this.setState({ group})}
             />
 
-            <br />
-
-            <label>
-              Sales Representative
-            </label>
+            <Input
+              label="Rep"
+              placeholder="Select Rep"
+              value={rep}
+              onChange={rep => this.setState({ rep })}
+            />
+     
             <Selector
               wide
-              selected={salesRep}
-              options={salesRepOptions}
-              onSelect={rep => this.setState({ salesRep })}
+              label="Specialization"
+              placeholder="Specialization"
+              options={specOptions}
+              value={specialization}
+              onSelect={specialization => this.setState({ specialization })}
             />
 
-            <br />
+            <Input
+              label="DEA"
+              value={DEA}
+              onChange={DEA => this.setState({ DEA})}
+            />
 
-            <div className="buttons">
-              <Button
-                large
-                cancel
-                type="button"
-                title="CANCEL"
-                link="/physicians"
-              />
-              <Button
-                large
-                type="submit"
-                title="CREATE PHYSICIAN"
-                inactive={invalid}
-              />
+            <Input
+              label="NPI"
+              value={NPI}
+              onChange={NPI => this.setState({ NPI })}
+            />
+
+            <Input
+              label="Phone"
+              placeholder="(---) --- ----"
+              value={phone}
+              onChange={phone => this.setState({ phone })}
+            />
+
+            <Input
+              label="Fax"
+              placeholder="(---) --- ----"
+              value={fax}
+              onChange={fax => this.setState({ fax })}
+            />
+
+            <Input
+              label="Email"
+              placeholder="name@email.com"
+              value={email}
+              onChange={email => this.setState({ email })}
+            />
+
+            <Input
+              label="Contact"
+              placeholder="Enter additional contact here"
+              value={contact}
+              onChange={contact => this.setState({ contact })} 
+            />
+
+            <Input
+              label="Physician Address"
+              placeholder="Address Line 1"
+              value={address1}
+              onChange={address1 => this.setState({ address1 })}
+            />
+
+            <Input
+              placeholder="Address Line 2"
+              value={address2}
+              onChange={address2 => this.setState({ address2 })}
+            />
+
+            <Input
+              placeholder="Unit #"
+              value={address3}
+              onChange={address3 => this.setState({ address3 })}
+            />
+
+          </div>
+          <div class="col">
+
+            <Input
+              label="Physician Warning"
+              placeholder="Enter physician warning here"
+              value={physicianWarning}
+              onChange={physicianWarning => this.setState({ physicianWarning})}
+            />
+
             </div>
+          </div>
+    
           </Form>
         </Body>
       </div>

@@ -1,3 +1,20 @@
+
+.flex-grid {
+  display: flex !important;
+}
+
+#contactInfo {display: initial !important;}
+
+#contactInfo:nth-child(1) {
+  width: 70%;
+}
+
+#contactInfo .blue {
+  color: #00b1ec !important;
+  font-weight: lighter;
+}
+
+
 :local(.header) > h2 {
   display: flex;
   align-items: baseline; }
@@ -54,3 +71,4 @@
       margin-left: 5px; }
     :local(.contactInfo) > div.transfer > div {
       margin-right: 10px; }
+

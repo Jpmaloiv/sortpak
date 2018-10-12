@@ -135,17 +135,17 @@ save() {
       editing
     } = this.state
 
-    const  patient  = this.props;
+    // const  patient  = this.props;
 
-    const {
+    /* const {
       nameDisplay 
-    } = patient
+    } = patient */
 
     return(
       <div>
         <Header>
         <h2>
-            {nameDisplay}
+            {/* {nameDisplay} */}
             {!editing ? (
               <div>
                 <Button

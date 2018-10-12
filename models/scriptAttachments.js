@@ -1,5 +1,4 @@
 
-
 module.exports = function(sequelize, DataTypes) {
     var scriptAttachments = sequelize.define("scriptAttachments", {
         dateAttached: {

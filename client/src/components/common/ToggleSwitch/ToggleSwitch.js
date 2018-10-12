@@ -13,7 +13,7 @@ export class ToggleSwitch extends Component {
   }
 
   handleClick(btn) {
-    console.log("Printing state: ", this.state, btn)
+    console.log("Printing state: ", this.state)
   }
 
 

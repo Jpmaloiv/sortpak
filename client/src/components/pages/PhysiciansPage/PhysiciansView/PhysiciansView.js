@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import axios from 'axios'
 
-
-
 import {
   Table,
   Header,
@@ -67,18 +65,20 @@ class PhysiciansView extends Component {
             Physician Name
           </th>
           <th>
-            Specialty
-          </th>
-          <th>
             Group
           </th>
           <th>
             Rep
           </th>
           <th>
-            City
+            Specialty
           </th>
-          <th/>
+          <th>
+            Phone
+          </th>
+          <th>
+            Address
+          </th>
         </tr>
       </thead>
     )
@@ -92,9 +92,13 @@ class PhysiciansView extends Component {
     )
   }
 
+  handleClick(value) {
+    window.location=`/physicians/${value}`
+  }
+
   renderTableRow(physician) {
     return (
-      <tr key={physician.id}>
+      <tr value={physician.id} onClick={() => this.handleClick(physician.id)}>
 
         <td>
             Dr. {physician.firstName} {physician.lastName}
@@ -102,36 +106,27 @@ class PhysiciansView extends Component {
         </td>
 
         <td>
-            {physician.specialty || 'None'}
-        </td>
-
-        <td>
           {physician.group || 'None'}
         </td>
 
         <td>
-
+          {physician.rep || 'None'}
         </td>
 
         <td>
-
+          {physician.specialization || 'None'}
         </td>
 
         <td>
-          
+          {physician.phone || 'None'}
         </td>
 
         <td>
-          
+          {physician.address1} {physician.address3}
+          <br />
+          {physician.address2}
         </td>
-
-        <td className={styles.detailsCell}>
-          <Button
-            title="DETAILS"
-            link={`/physicians/${physician.id}`}
-            onClick={() => this.props.setPhysician(physician)}
-          />
-        </td>
+   
       </tr>
     )
   }

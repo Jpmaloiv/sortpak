@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
+import axios from 'axios'
+import Moment from 'react-moment'
+
 import {
   AsYouType,
   parseNumber,
@@ -10,26 +13,15 @@ import {
   unformatDate,
 } from '../../../../lib/dateHelper'
 
-import { hasAuthTokenAsync } from '../../../../lib'
-
 // Components
-import {
-  SwitchTable,
-  AddressModal,
-  AddressLine,
-} from '../../../shared'
+import {SwitchTable, AddressModal} from '../../../shared'
 
-import {
-  Input,
-  Icon,
-  Header,
-  Body,
-  Span,
-} from '../../../common'
+import {Body, Button, Header, Input, Span} from '../../../common'
 
-import NotesTab from './Tabs/NotesTab'
 import ScriptsTab from './Tabs/ScriptsTab'
 import InsuranceTab from './Tabs/InsuranceTab'
+import FilesTab from './Tabs/FilesTab'
+import NotesTab from './Tabs/NotesTab'
 
 // Actions
 import {
@@ -55,6 +47,11 @@ class PatientView extends Component {
         renderComponent: () => this.renderInsuranceTab(),
       },
       {
+        value: 'files',
+        display: 'Files/Docs',
+        renderComponent: () => this.renderFilesTab()
+      },
+      {
         value: 'notes',
         display: 'More Info/Notes',
         renderComponent: () => this.renderNotesTab(),
@@ -65,6 +62,28 @@ class PatientView extends Component {
       tab: this.tabOptions[0],
       ...this.initialState,
     }
+  }
+
+  componentDidMount() {
+      if (this.props.match.params.patientId) {
+        const loginToken = window.localStorage.getItem("token");
+          axios.get('/api/patients/search?patientId=' + this.props.match.params.patientId, { headers: { "Authorization": "Bearer " + loginToken } })
+          .then((resp) => {
+            let patient = resp.data.response[0]
+              this.setState({
+                  name: patient.firstName + " " + patient.lastName,
+                  id: patient.id,
+                  dob: patient.dob,
+                  sex: patient.sex,
+                  patientSince: patient.createdAt,
+                  phone: patient.phone,
+                  address: patient.address1 + "\n" + patient.address2,
+                  email: patient.email
+              })
+          }).catch((err) => {
+              console.error(err)
+          })
+      }
   }
 
   get initialState() {
@@ -115,15 +134,6 @@ class PatientView extends Component {
     }
   }
 
-  componentDidMount() {
-    hasAuthTokenAsync()
-      .then(() => {
-        const { patientId } = this.props.match.params
-        this.props.getPatientById(patientId)
-      })
-      .catch(console.log)
-  }
-
   setEditState(editing) {
     this.setState({ ...this.initialState, editing })
   }
@@ -139,8 +149,7 @@ class PatientView extends Component {
 
   closeModal() {
     this.setState({
-      noteModal: null,
-      addressModal: null,
+      attachmentModal: null,
     })
   }
 
@@ -210,98 +219,79 @@ class PatientView extends Component {
       editing,
       firstName,
       lastName,
-      phone,
-      dob,
-      transferNpi,
-      transferDate,
+      dob
     } = this.state
 
-    const { patient } = this.props
-    const {
-      nameDisplay,
-      dobDisplay,
-      address,
-      phoneDisplay,
-      transferDateDisplay
-    } = patient
-
     return (
-      <div className={styles.contactInfo}>
-        {editing ? (
-          <div className="name">
-            Name:
-            <Input
-              placeholder="First Name"
-              value={firstName}
-              onChange={firstName => this.setState({ firstName })}
-            />
-            <Input
-              placeholder="Last Name"
-              value={lastName}
-              onChange={lastName => this.setState({ lastName })}
-            />
-          </div>
-        ) : (
-          <div>
-            Name: {nameDisplay}
-          </div>
-        )}
+      <div id="patientView">
+      <div className="flex-grid">
+      <div id="contactInfo" className={styles.contactInfo}>
+            {editing ? (
+              <div className="name">
+                Name:
+                {this.state.name}
+                <Input
+                  placeholder="First Name"
+                  value={firstName}
+                  onChange={firstName => this.setState({ firstName })}
+                />
+                <Input
+                  placeholder="Last Name"
+                  value={lastName}
+                  onChange={lastName => this.setState({ lastName })}
+                />
+              </div>
+            ) : (
+              <div>
+                Name: {this.state.name}
+              </div>
+            )}
 
-        <div>
-          Date of Birth:
-          <Span
-            editing={editing}
-            type="date"
-            value={dob}
-            onChange={dob => this.setState({ dob })}
-          >
-            {dobDisplay || 'No date of birth set...'}
-          </Span>
+            <div>
+              Patient ID: #{this.state.id}
+            </div>
+
+            <div>
+              Date of Birth:
+              <Span
+                editing={editing}
+                type="date"
+                value={dob}
+                onChange={dob => this.setState({ dob })}
+              >
+                {this.state.dob}
+              </Span>
+            </div>
+            <div>
+              Sex: {this.state.sex}
+            </div>
+            <div>
+              Patient Since: <Moment format={"YYYY-MM-DD"}>{this.state.createdAt}</Moment>
+            </div>     
+          </div>
+          <div id="contactInfo" className={styles.contactInfo}>  
+          
+            <div>
+              <Span icon="phone">
+                {this.state.phone}
+              </Span>
+            </div>
+            <div>
+              <Span icon="building">
+                {this.state.address}
+              </Span>
+            </div>
+            <div>
+              <Span className="blue" icon="envelope">
+                {this.state.email}
+              </Span>
+            </div>
+          </div>
         </div>
-        <div>
-          Address:
-          <AddressLine
-            editing={editing}
-            state={this.state}
-            address={address}
-            onChange={newState => this.setState(newState)}
-          />
         </div>
-        <div>
-          Phone Number:
-          <Span
-            editing={editing}
-            value={phone}
-            placeholder="xxx xxx xxxx"
-            onChange={this.handlePhoneChange.bind(this)}
-          >
-            {phoneDisplay || 'No Phone...'}
-          </Span>
-        </div>
-        <div className="transfer">
-          <Span
-            type="number"
-            label="Transfer Pharmacy NPI"
-            editing={editing}
-            value={transferNpi}
-            placeholder="Transfer NPI"
-            onChange={transferNpi => this.setState({ transferNpi })}
-          >
-            {patient.transferNpi || 'None'}
-          </Span>
-          <Span
-            label="Transfer Pharmacy Date"
-            type="date"
-            editing={editing}
-            value={transferDate}
-            onChange={transferDate => this.setState({ transferDate })}
-          >
-            {transferDateDisplay || 'None'}
-          </Span>
-        </div>
-      </div>
-    )
-  }
+        
+    )}
+            
 
   renderSwitchTable() {
     const { tab } = this.state
@@ -333,6 +323,18 @@ class PatientView extends Component {
     )
   }
 
+  renderFilesTab() {
+    return (
+      <FilesTab
+        className={styles.filesTab}
+        state={this.state}
+        patient={this.props.patient}
+        setState={this.setState.bind(this)}
+        onCloseModal={() => this.closeModal()}
+      />
+    )
+  }
+
   renderNotesTab() {
     return (
       <NotesTab
@@ -353,42 +355,39 @@ class PatientView extends Component {
     }
 
     const {
-      editing,
-      addressModal,
+      addressModal
     } = this.state
-
-    const {
-      nameDisplay,
-    } = patient
 
     return (
       <div>
         <Header className={styles.header}>
-          <h2>
-            {nameDisplay}
-            {!editing ? (
-              <div>
-                <Icon
-                  edit
-                  onClick={() => this.setEditState(true)}
+          <h2>{this.state.name}
+              <div className="action">
+                <Button
+                  search
+                  icon="edit"
+                  title="EDIT PATIENT"
+                  style={{ marginLeft: 8 }}
+                />
+              
+                <Button
+                  icon="plus"
+                  title="ADD A NEW SCRIPT"
+                  link="/scripts/add"
+                  style={{ marginLeft: 8 }}
+                />
+                
+                <Button
+                  icon="plus"
+                  title="ATTACH FILE"
+                  style={{ marginLeft: 8 }}
                 />
               </div>
-            ) : (
-              <div>
-                <Icon
-                  cancel
-                  onClick={() => this.setEditState(false)}
-                />
-                <Icon
-                  save
-                  onClick={() => this.save()}
-                />
-              </div>
-            )}
-          </h2>
+            </h2>
+          
         </Header>
+        
         <Body className={styles.body}>
-
           {this.renderContactInfo()}
 
           <div className="switch-buffer" />

@@ -67,8 +67,6 @@ class AttachmentsTab extends Component {
   }
 
   renderTableBody() {
-    console.log(this.state.attachments);
-    // const { patients } = this.props
     return (
       <tbody>
         {this.state.attachments.map(this.renderTableRow.bind(this))}
@@ -99,14 +97,6 @@ class AttachmentsTab extends Component {
         <td>
           {attachment.type}
         </td>
-
-        {/* <td className={styles.detailsCell}>
-          <Button
-            title="DETAILS"
-            link={`/patients/${patient.id}`}
-            onClick={() => this.props.setPatient(patient)}
-          />
-        </td> */}
       </tr>
     )
   }
@@ -183,7 +173,7 @@ var attachmentList = this.state.attachments.map(function (item, i) {
 
         <div className="notes">
 
-        {this.renderTable()}
+          {this.renderTable()}
           {attachmentList}
   
         </div>

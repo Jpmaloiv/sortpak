@@ -69,7 +69,7 @@ router.get("/search", (req, res) => {
     let searchParams = {
         where: {},
         attributes: {
-            exclude: ["createdAt", "updatedAt", "UserId"]
+            exclude: ["createdAt", "UserId"]
         },
         include: [{
             model: db.User,

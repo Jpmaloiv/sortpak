@@ -15,7 +15,26 @@ router.post("/add", (req, res) => {
         firstName: req.query.firstName,
         lastName: req.query.lastName,
         dob: req.query.dob,
-        physician: req.query.physician,
+        sex: req.query.sex,
+        phone: req.query.phone,
+        email: req.query.email,
+        patientWarning: req.query.patientWarning,
+        condtions: req.query.conditions,
+        allergies: req.query.allergies,
+        address1: req.query.address1,
+        address2: req.query.address2,
+        primInsPlan: req.query.primInsPlan,
+        primInsBIN: req.query.primInsBIN,
+        primInsPCN: req.query.primInsPCN,
+        primInsID: req.query.primInsID,
+        primInsGroup: req.query.primInsGroup,
+        primInsType: req.query.primInsType,
+        secInsPlan: req.query.secInsPlan,
+        secInsBIN: req.query.secInsBIN,
+        secInsPCN: req.query.secInsPCN, 
+        secInsID: req.query.secInsID,
+        secInsGroup: req.query.secInsGroup,
+        secInsType: req.query.secInsType,
         link: patientLink,
         UserId: req.payload.id
     }
@@ -46,7 +65,7 @@ router.get("/search", (req, res) => {
     let searchParams = {
         where: {},
         attributes: {
-            exclude: ["createdAt", "updatedAt", "UserId"]
+            exclude: ["updatedAt", "UserId"]
         },
         include: [{
             model: db.User,

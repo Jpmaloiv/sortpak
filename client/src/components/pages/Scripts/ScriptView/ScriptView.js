@@ -233,20 +233,14 @@ class ScriptView extends Component {
             <tr>
               <td><h2>Status: {this.state.status}</h2></td>
             </tr>
-          </Table>
-         
-       
-          
-          
+          </Table> 
           
         </Header>
 
         <Body className={styles.body} id="scriptViewBody">
 
-
           {this.renderSwitchTable()}
-        
-          
+           
         </Body>
       </div>
       

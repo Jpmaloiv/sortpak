@@ -3,12 +3,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 
 
-import {
-  Span,
-  Table,
-  Header,
-  Button
-} from '../../../common'
+import {Span, Table, Header, Button, ActionBox, SearchBar} from '../../../common'
 
 import {
   getPatients,
@@ -34,22 +29,13 @@ class PatientsView extends Component {
     }
   }
   componentDidMount() {
-    /* hasAuthTokenAsync()
-      .then(() => {
-        this.props.getPatients()
-      })
-      .catch(console.log) */
-
       const loginToken = window.localStorage.getItem("token");
         axios.get('api/patients/search/', { headers: { "Authorization": "Bearer " + loginToken } })
           .then((resp) => {
-            console.log(resp);
-            console.log(resp.data);
             console.log(resp.data.response);
             this.setState({
                 patients: resp.data.response,
-                // id: resp.data.response.id,
-               
+                // id: resp.data.response.id,   
             })
             console.log(this.state.patients)
           }).catch((error) => {
@@ -100,9 +86,13 @@ class PatientsView extends Component {
     )
   }
 
+  handleClick(value) {
+    window.location=`/patients/${value}`
+  }
+
   renderTableRow(patient) {
     return (
-      <tr key={patient.id}>
+      <tr value={patient.id} onClick={() => this.handleClick(patient.id)}>
         <td>
           {patient.firstName} {patient.lastName}
         </td>
@@ -115,20 +105,14 @@ class PatientsView extends Component {
 
         <td>
           <Span icon="phone">
-            {patient.phoneDisplay || 'None'}
+            {patient.phone || 'None'}
           </Span>
         </td>
 
         <td>
-          
-        </td>
-
-        <td className={styles.detailsCell}>
-          <Button
-            title="DETAILS"
-            link={`/patients/${patient.id}`}
-            onClick={() => this.props.setPatient(patient)}
-          />
+          {patient.address1}
+          <br />
+          {patient.address2}
         </td>
       </tr>
     )
@@ -208,7 +192,45 @@ var patientList = this.state.patients.map(function (item, i) {
 
         <div className="body">
 
+          <ActionBox>
+            <div className="main">
+
+              <SearchBar
+                label="Search By Name"
+                placeholder="First or Last Name..."
+                // value={name}
+                // onChange={this.searchByName.bind(this)}
+              />
+              <SearchBar
+                label="Search By DOB"
+                type="date"
+                // value={dob}
+                // onChange={this.searchByDob.bind(this)}
+              />
+            <SearchBar
+                label="Search By Address"
+                type="address"
+                placeholder="Address or City"
+              />
+            <SearchBar
+                label="Search by Phone"
+                type="phone"
+                placeholder="(---) --- ---"
+            />
           
+            {/*
+              TODO: Automatic filter, no search button
+              <Button
+                search
+                icon="search"
+                title="SEARCH"
+              />
+            */}
+
+            </div>
+
+          </ActionBox>
+
 
           {this.renderTable()}
           {patientList}

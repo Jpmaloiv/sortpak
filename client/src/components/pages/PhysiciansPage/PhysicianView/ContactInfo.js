@@ -23,6 +23,7 @@ const ContactInfo = ({ physician, className, editing, onChange, state }) => {
     group,
     specialty,
   } = state
+  
 
   return (
     <div className={className}>
