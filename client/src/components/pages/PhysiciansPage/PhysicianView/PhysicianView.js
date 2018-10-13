@@ -74,7 +74,7 @@ class PhysicianView extends Component {
                 name: physician.firstName + " " + physician.lastName,
                 id: physician.id,
                 group: physician.group,
-                specializatioin: physician.specialization,
+                specialization: physician.specialization,
                 phone: physician.phone,
                 fax: physician.fax,
                 address: physician.address1 + " " + physician.address3 + " " + physician.address2,
@@ -82,7 +82,8 @@ class PhysicianView extends Component {
                 NPI: physician.NPI,
                 DEA: physician.DEA,
                 rep: physician.rep,
-                contact: physician.contact
+                contact: physician.contact,
+                physicianWarning: physician.physicianWarning
             })
         }).catch((err) => {
             console.error(err)
@@ -267,12 +268,13 @@ class PhysicianView extends Component {
           </div>
           <div className="item">
             <label>
-              Sales Rep
+              Physician Warning
             </label>
-              <Span>
-                {this.state.rep || 'Unassigned'}
-              </Span>
-            
+            <div id="physWarning">
+            <Span>
+              {this.state.physicianWarning || ""}
+            </Span>
+            </div>           
           </div>
           <div className="item">
             <label>
@@ -282,8 +284,17 @@ class PhysicianView extends Component {
               {this.state.contact || 'None'}
             </Span>
           </div>
-        </div>
+        <div className="item">
+        <label>
+              Sales Rep
+            </label>
+              <Span>
+                {this.state.rep || 'Unassigned'}
+              </Span>
+         </div>
       </div>
+
+    </div>
     )}
 
   setEditState(editing) {

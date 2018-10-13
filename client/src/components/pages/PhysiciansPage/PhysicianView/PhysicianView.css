@@ -1,4 +1,13 @@
 
+#physWarning {
+  background-color: #e2f3f9;
+  border: 1px solid #00b1ec;
+  border-radius: 2px;
+  padding: 0 5%;
+  margin: 1% 0;
+  margin-right: 10%;
+}
+
 :local(.header) > h2 {
   display: flex;
   align-items: baseline; }
@@ -40,7 +49,7 @@
   :local(.miscInfo) > .grid {
     flex: 1;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 2fr 1fr;
     grid-column-gap: 20px; }
     :local(.miscInfo) > .grid .cell {
       display: flex;

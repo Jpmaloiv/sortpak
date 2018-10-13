@@ -6,6 +6,8 @@ import {
   ActionBox,
   Button,
   SearchBar,
+  Selector,
+  ToggleSwitch
 } from '../../../common'
 
 import styles from './RefillsView.css'
@@ -23,25 +25,19 @@ class RefillsView extends Component {
       <thead>
         <tr>
           <th>
-            Ok To Refill
-          </th>
-          <th>
-            Refill On
+            Process On
           </th>
           <th>
             Physician
           </th>
           <th>
-            Group
-          </th>
-          <th>
             Patient
           </th>
           <th>
-            DOB
+            Medication
           </th>
           <th>
-            Medication
+            Rx Number
           </th>
         </tr>
       </thead>
@@ -66,43 +62,85 @@ class RefillsView extends Component {
 
   render() {
     const { searchValue } = this.state
-    const searchOptions = [
-      'Any',
-      'Name',
-      'Email',
+
+    const typeOptions = [
+      'OK to Refill',
+      'Refill Request'
+    ]
+
+    const reps = [
+      'All Reps'
+    ]
+
+    const specOptions = [
+      'Internal Medicine',
+      'Home Health',
+      'Hospice',
+      'Skilled Nursing Center',
+      'Assisted Living',
+      'Hospital',
+      'Residential Living',
+      'Oncology',
+      'Rheumatology',
+      'Dermatology',
+      'Nephrology',
+      'Neurology',
+      'Gastroenterology',
+      'Allergy',
+      'Infectious Disease',
+      'Transplant',
+      'Orthopedic',
+      'Endocrinology',
+      'Urology',
+      'Cardiology',
+      'Hepatology'  
     ]
 
     return (
       <div className={styles.app}>
         <Header>
           <h2>
-            Select a Patient
+            Refills
           </h2>
         </Header>
         <div className="body">
           <ActionBox>
             <div className="main">
+              <ToggleSwitch
+                  label="Type"
+                  options={typeOptions}
+                  /* selected={filterValue}
+                  onSelect={filterValue => this.setState({ filterValue })} */
+                />
+            </div>
+          </ActionBox>
+          
+          <ActionBox>
+            <div className="main">
               <SearchBar
-                options={searchOptions}
                 selected={searchValue}
                 onSelect={searchValue => this.setState({ searchValue })}
                 label="Search"
-                placeholder="First or Last Name..."
+                placeholder="Search..."
               />
-              <Button
-                search
-                icon="search"
-                title="SEARCH"
+              <Selector
+                wide
+                label="Rep"
+                options={reps}
+              />
+              <Selector
+                wide
+                label="Specialization"
+                placeholder="Specialization"
+                options={specOptions}
+                /* value={specialization}
+                onSelect={specialization => this.setState({ specialization })} */
               />
             </div>
-            <div className="action">
-              <Button
-                icon="check"
-                title="OK TO REFILL"
-              />
-            </div>
-          </ActionBox>
+           </ActionBox>
+          
           {this.renderTable()}
+
         </div>
       </div>
     );
