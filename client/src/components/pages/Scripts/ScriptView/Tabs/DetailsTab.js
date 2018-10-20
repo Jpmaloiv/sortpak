@@ -30,7 +30,6 @@ class DetailsTab extends Component {
   });
 } */
   componentDidMount() {
-
     let scriptNum = this.props.sID.match.params.scriptId;
     const loginToken = window.localStorage.getItem("token");
         axios.get('/api/scripts/search?scriptId=' + scriptNum, { headers: { "Authorization": "Bearer " + loginToken } })
@@ -61,7 +60,12 @@ class DetailsTab extends Component {
                 copayApproval: script.copayApproval,
                 copayNetwork: script.copayNetwork,
                 patientPay: script.patientPay,
-                directions: script.directions
+                directions: script.directions,
+                shipOn: script.shipOn,
+                deliveryMethod: script.deliveryMethod,
+                trackNum: script.trackNum,
+                ETA: script.ETA,
+                paymentOption: script.paymentOption
             }, () => console.log(this.state.status))
 
         }).catch((err) => {
@@ -93,9 +97,8 @@ save() {
 
   render() {
 
-   
-
     const statusOptions = [
+      'No Status',
       'Received',
       'Review',
       'Prior Auth',
@@ -144,30 +147,6 @@ save() {
     return(
       <div>
         <Header>
-        <h2>
-            {/* {nameDisplay} */}
-            {!editing ? (
-              <div>
-                <Button
-                  search
-                  icon="edit"
-                  title="EDIT SCRIPT"
-                  onClick={() => this.setEditState(true)}
-                />
-              </div>
-            ) : (
-              <div>
-                <Icon
-                  cancel
-                  onClick={() => this.setEditState(false)}
-                />
-                <Icon
-                  save
-                  onClick={() => this.save()}
-                />
-              </div>
-            )}
-          </h2>
         </Header>
         <Body id="scriptView">
         {/* <Body className={styles.body} id="scriptView"> */}
@@ -427,7 +406,7 @@ save() {
               </tr>
               <tr>
                 <td className="field">Ship On</td>
-                <td></td>
+                <td>{this.state.shipOn}</td>
                 <td className="field">Copay Assistance Network</td>
                 <td>
                 { editing ? (
@@ -446,13 +425,13 @@ save() {
               </tr>
               <tr>
                 <td className="field">Delivery Method</td>
-                <td></td>
+                <td>{this.state.deliveryMethod}</td>
                 <td className="field">Copay Assistance Amount</td>
                 <td></td>
               </tr>
               <tr>
                 <td className="field">Tracking Number</td>
-                <td></td>
+                <td>{this.state.trackNum}</td>
                 <td className="field">Patient Pay</td>
                 <td>
                   <Span
@@ -467,9 +446,9 @@ save() {
               </tr>
               <tr>
                 <td className="field">ETA</td>
-                <td></td>
+                <td>{this.state.ETA}</td>
                 <td className="field">Payment Option</td>
-                <td></td>              
+                <td>{this.state.paymentOption}</td>              
               </tr>
               <tr>
                 <td className="field">Status</td>

@@ -14,7 +14,7 @@ class ScriptSearch extends React.Component {
 
     this.handleClick = this.handleClick.bind(this);
   }
-     
+
 
     handleClick() {
       this.setState(prevState => ({
@@ -47,6 +47,8 @@ class ScriptSearch extends React.Component {
 
 
     render() {
+
+      console.log(this.state.isToggleOn);
       
           const {
             filterValue,

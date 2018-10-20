@@ -56,6 +56,7 @@ class PatientsView extends Component {
   } */
 
   renderTableHead() {
+    console.log(this.state.patients);
     return (
       <thead>
         <tr>

@@ -4,7 +4,7 @@ import axios from 'axios'
 import Moment from 'react-moment'
 
 // Components
-import { Button, Table } from '../../../../common'
+import { Button, Link, Table } from '../../../../common'
 
 import {
   AttachmentModal,
@@ -28,15 +28,12 @@ class AttachmentsTab extends Component {
       const loginToken = window.localStorage.getItem("token");
         axios.get('/api/scripts/attachments/search/', { headers: { "Authorization": "Bearer " + loginToken } })
           .then((resp) => {
-            console.log(resp);
-            console.log(resp.data);
-            console.log(resp.data.response);
             this.setState({
                 attachments: resp.data.response,
                 // id: resp.data.response.id,
                
             })
-            console.log(this.state.attachments)
+            console.log(this.state)
           }).catch((error) => {
             console.error(error);
         })
@@ -45,6 +42,7 @@ class AttachmentsTab extends Component {
   
 
   renderTableHead() {
+    console.log(this.state);
     return (
       <thead>
         <tr>
@@ -79,9 +77,9 @@ class AttachmentsTab extends Component {
     return (
       <tr key={attachment.id}>
         <td>
-          {/* <Link to={'./attachment/' + attachment.id} activeClassName="active">
+          <Link to={'./attachment/' + attachment.id} activeClassName="active">
               <h3>View</h3>
-          </Link> */}
+          </Link>
           
         </td>
         

@@ -21,6 +21,10 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.STRING,
             allowNull: true
         },
+        priorAuth: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
         location: {
             type: DataTypes.STRING,
             allowNull: true
@@ -98,8 +102,8 @@ module.exports = function(sequelize, DataTypes) {
             allowNull: true
         },
         homeInfusion: {
-            type: DataTypes.STRING,
-            allowNull: true
+            type: DataTypes.BOOLEAN,
+            allowNull: false
         },
         phone: {
             type: DataTypes.STRING,
@@ -109,13 +113,53 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.STRING,
             allowNull: true
         },
+        transLocation: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        transNPI: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        transDate: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        shipOn: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        deliveryMethod: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        trackNum: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        ETA: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        paymentOption: {
+            type: DataTypes.STRING,
+            allowNull: true
+        }
     }); 
+
     Scripts.associate = function(models) {
-        models.Scripts.belongsTo(models.User, {
+        models.Scripts.hasMany(models.scriptNotes, {
+            onDelete: "cascade"
+        })
+    }
+
+    /* Scripts.associate = function(models) {
+        models.Scripts.belongsTo(models.Patients, {
             foreignKey: {
                 allowNull: false
             }
         });
-    };
+    }; */
+
     return Scripts; 
   };

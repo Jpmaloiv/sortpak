@@ -8,6 +8,7 @@ import Login from './components/pages/LoginMain/LoginMain';
 import ScriptsPage from './components/pages/Scripts/ScriptsPage';
 import ScriptView from './components/pages/Scripts/ScriptView/ScriptView'
 import AddScript from './components/pages/Scripts/AddScript/AddScript'
+import EditScript from './components/pages/Scripts/AddScript/EditScript'
 import Attachment from './components/pages/Scripts/ScriptView/Attachment'
 import PatientsPage from './components/pages/PatientsPage/PatientsPage'
 import AddPatient from './components/pages/PatientsPage/AddPatient/AddPatient'
@@ -68,6 +69,7 @@ class App extends Component {
               <Route exact path="/scripts" component={ScriptsPage} />
               <Route exact path="/scripts/add" component={AddScript} />
               <Route exact path="/scripts/:scriptId" component={ScriptView} />
+              <Route exact path="/scripts/:scriptId/edit" component={EditScript} />
               <Route exact path="/patients" component={PatientsPage} />
               <Route exact path="/patients/add" component={AddPatient} />
               <Route exact path="/patients/:patientId" component={PatientView} />

@@ -18,7 +18,7 @@ import {SwitchTable, AddressModal} from '../../../shared'
 
 import {Body, Button, Header, Input, Span} from '../../../common'
 
-import ScriptsTab from './Tabs/ScriptsTab'
+import PrescriptionsTab from './Tabs/PrescriptionsTab'
 import InsuranceTab from './Tabs/InsuranceTab'
 import FilesTab from './Tabs/FilesTab'
 import NotesTab from './Tabs/NotesTab'
@@ -37,9 +37,9 @@ class PatientView extends Component {
     super(props)
     this.tabOptions = [
       {
-        value: 'scripts',
+        value: 'prescriptions',
         display: 'Prescriptions',
-        renderComponent: () => this.renderScriptsTab(),
+        renderComponent: () => this.renderPrescriptionsTab(),
       },
       {
         value: 'insurance',
@@ -84,6 +84,37 @@ class PatientView extends Component {
               console.error(err)
           })
       }
+
+      const loginToken = window.localStorage.getItem("token");
+        let patientId = (this.props.match.params.patientId) ? this.props.match.params.patientId : JSON.parse(window.atob(loginToken.split('.')[1])).patientId;
+        axios({
+            url: '/api/profile/' + patientId,
+            method: 'get',
+            headers: { "Authorization": "Bearer " + loginToken }
+        })
+            .then((resp) => {
+                console.log(resp);
+                this.setState({
+                    patientId: resp.data.id
+                })
+                
+                const loginToken = window.localStorage.getItem("token");
+        let data = new FormData();
+        console.log(this.state.patientId);
+
+        axios.put('/api/current/add?patientId=' + this.state.patientId,
+        data, { headers: { "Authorization": "Bearer " + loginToken } })
+            .then((data) => {
+                console.log(data);
+                // window.location = '/profile';
+                            
+            }).catch((error) => {
+                console.error(error);
+            })
+
+            }).catch((error) => {
+                console.error(error);
+            })
   }
 
   get initialState() {
@@ -304,10 +335,14 @@ class PatientView extends Component {
     )
   }
 
-  renderScriptsTab() {
+  renderPrescriptionsTab() {
     return (
-      <ScriptsTab
+      <PrescriptionsTab
         className={styles.scriptsTab}
+        pID={this.props}
+        state={this.state}
+        patient={this.props.patient}
+        setState={this.setState.bind(this)}
       />
     )
   }
@@ -377,11 +412,6 @@ class PatientView extends Component {
                   style={{ marginLeft: 8 }}
                 />
                 
-                <Button
-                  icon="plus"
-                  title="ATTACH FILE"
-                  style={{ marginLeft: 8 }}
-                />
               </div>
             </h2>
           

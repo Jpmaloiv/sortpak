@@ -17,6 +17,7 @@ router.post("/add", (req, res) => {
         medication: req.query.medication,
         status: req.query.status,
         pharmNPI: req.query.pharmNPI,
+        priorAuth: req.query.priorAuth,
         location: req.query.location,
         pharmDate: req.query.pharmDate,
         writtenDate: req.query.writtenDate,
@@ -39,8 +40,16 @@ router.post("/add", (req, res) => {
         directions: req.query.directions,
         phone: req.query.phone,
         email: req.query.email,
+        transLocation: req.query.transLocation,
+        transNPI: req.query.transNPI,
+        transDate: req.query.transDate,
+        shipOn: req.query.shipOn,
+        deliveryMethod: req.query.deliveryMethod,
+        trackNum: req.query.trackNum,
+        ETA: req.query.ETA,
+        paymentOption: req.query.paymentOption,
         link: scriptLink,
-        UserId: req.payload.id
+        PatientId: req.query.patientId
     }
 
     fs.mkdir("./scripts/", (err) => {
@@ -71,10 +80,14 @@ router.get("/search", (req, res) => {
         attributes: {
             exclude: ["createdAt", "UserId"]
         },
-        include: [{
-            model: db.User,
-            attributes: ["id", "username"]
-        }]
+        /* include: [{
+            model: db.Patients,
+            attributes: ["id", "firstName", "lastName"]
+        }] */
+        include: {
+            model: db.scriptNotes,
+            attributes: ["id", "note"]
+        }
     }
     if (req.query.scriptId) {
         searchParams.where.id = req.query.scriptId
@@ -103,6 +116,7 @@ router.put("/update", function(req, res) {
     console.log("update")
     const script = {
         processedOn: req.query.processedOn,
+        patient: req.query.patient,
         writtenDate: req.query.writtenDate,
         billOnDate: req.query.billOnDate,
         rxNumber: req.query.rxNumber,
@@ -116,11 +130,20 @@ router.put("/update", function(req, res) {
         cost: req.query.cost,
         primInsPay: req.query.primInsPay,
         secInsPay: req.query.secInsPay,
+        priorAuth: req.query.priorAuth,
         location: req.query.location,
         copayApproval: req.query.copayApproval,
         copayNetwork: req.query.copayNetwork,
         patientPay: req.query.patientPay,
-        status: req.query.status
+        status: req.query.status,
+        transLocation: req.query.transLocation,
+        transNPI: req.query.transNPI,
+        transDate: req.query.transDate,
+        shipOn: req.query.shipOn,
+        deliveryMethod: req.query.deliveryMethod,
+        trackNum: req.query.trackNum,
+        ETA: req.query.ETA,
+        paymentOption: req.query.paymentOption,
     }
     console.log(script);
     db.Scripts.update(script, {where: {id: req.query.id}})

@@ -8,7 +8,6 @@ import {
 
 class PaymentsTab extends Component {
 
-
   render() {
     return (
       <div>

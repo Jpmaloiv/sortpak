@@ -84,8 +84,8 @@ class FilesTab extends Component {
         </td>
         
 
-        <td>        
-        <Moment format={"YYYY-MM-DD"}>{`${attachment.createdAt}`}</Moment>
+        <td> 
+          <Moment format={"YYYY-MM-DD"}>{`${attachment.createdAt}`}</Moment>
         </td>
 
         <td>

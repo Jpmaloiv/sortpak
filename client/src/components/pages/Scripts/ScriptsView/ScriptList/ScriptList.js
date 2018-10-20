@@ -51,9 +51,7 @@ class ScriptList extends React.Component {
           
     
             <td>
-              <Span icon="calendar">
-                {script.dateDisplay || 'None'}
-              </Span>
+                <Moment format="MM/DD/YYYY">{script.processedOn || 'None'}</Moment>
             </td>
     
             <td>

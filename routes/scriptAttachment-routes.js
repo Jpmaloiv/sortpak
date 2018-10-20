@@ -20,6 +20,7 @@ router.post("/add", (req, res) => {
     }
 
     const attachmentFile = req.files.attachmentFile;
+    console.log(attachmentFile);
     fs.mkdir("./attachments/attachments/" + req.payload.id.toString(), (err) => {
         if ((err) && (err.code !== 'EEXIST')) {
             console.error(err)

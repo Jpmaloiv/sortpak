@@ -4,9 +4,12 @@ const express = require("express");
 const path = require("path");
 const jwt = require("express-jwt");
 const authRoutes = require("./routes/auth-routes.js");
+const currentPatientRoutes = require("./routes/currentPatient-routes.js");
 const scriptRoutes = require("./routes/script-routes.js");
+const scriptNoteRoutes = require("./routes/scriptNote-routes.js");
 const scriptAttachmentRoutes = require("./routes/scriptAttachment-routes.js");
 const patientRoutes = require("./routes/patient-routes.js");
+const profileRoutes = require("./routes/profile-routes.js");
 const patientAttachmentRoutes = require("./routes/patientAttachment-routes.js");
 const physicianRoutes = require("./routes/physician-routes.js");
 const productRoutes = require("./routes/product-routes.js");
@@ -37,6 +40,7 @@ app.use(express.static(path.join(__dirname, 'client/build')));
 app.use(express.static(path.join(__dirname + '/public')));
 app.use("/api/user", authRoutes);
 app.use(express.static(path.join(__dirname + '/scripts')));
+app.use(express.static(path.join(__dirname + '/scriptNotes')));
 app.use(express.static(path.join(__dirname + '/scriptAttachments')));
 app.use(express.static(path.join(__dirname + '/patients')));
 app.use(express.static(path.join(__dirname + '/patientAttachments')));
@@ -47,6 +51,11 @@ app.use("scripts/api/products", productRoutes);
 //overwriting routes
 
 app.use(["/api/scripts"], jwt({
+    secret: process.env.JWT_SECRET,
+    userProperty: 'payload'
+}));
+app.use("/api/scripts/notes", scriptNoteRoutes);
+app.use(["/api/scripts/notes"], jwt({
     secret: process.env.JWT_SECRET,
     userProperty: 'payload'
 }));
@@ -76,6 +85,8 @@ app.use(["/api/visits"], jwt({
     userProperty: 'payload'
 }));
 app.use("/api/visits", visitRoutes);
+app.use("/api/profile", profileRoutes);
+app.use("/api/current", currentPatientRoutes);
 // app.use("scripts/api/medications", medicationRoutes);
 
 

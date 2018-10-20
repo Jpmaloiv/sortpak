@@ -4,24 +4,23 @@ import axios from 'axios';
 
 
 class Attachment extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            file: ""
-        }
+    
+    state = {
+        file: "",
+        attachment: ''
     }
 
     
     componentDidMount() {
         const loginToken = window.localStorage.getItem("token");
         // axios.get('/api/scripts/attachments/search?id=' + this.props.match.params.id, { headers: { "Authorization": "Bearer " + loginToken } })
-        axios({
+       /*  axios({
             method: "GET",
             headers: {
                 "Authorization": "Bearer " + loginToken
             },
-            url: "/api/books/search?bookId=1"
-            // url: "/api/scripts/attachments/search?attachmentId=1"
+            // url: "/api/books/search?bookId=1"
+            url: "/api/scripts/attachments/search?id=1"
 
         }).then((resp) => {
             console.log(resp);
@@ -32,44 +31,45 @@ class Attachment extends React.Component {
             
         }).catch((err) => {
             console.error(err)
-        })
-    }
+        }) */
     
-        /* if(this.props.match.params.id){
+    
+        
             axios({
                 method: "GET",
                 headers: {
                     "Authorization": "Bearer " + window.localStorage.getItem("token")
                 },
-                url: "/api/scripts/attachments/search?id=" + this.props.match.params.id
+                url: "/api/scripts/attachments/search?id=3"
             }).then((resp) => {
+                console.log(resp);
                 this.setState({
-                    file: resp.data.response[0].link
-                })
+                    file: resp.data.response[0].link,
+                    attachment: resp.data.response[0]
+                }, () => console.log(this.state));
                 
             }).catch((err) => {
                 console.error(err)
             })
-        } */
+        }
         
     
     
     
     
     render() {
-        console.log(this.state.file);
-        if(this.state.file) {
+       
         return(
-            
+            this.state.file ?
             <AttachmentWindow 
             file={this.state.file} 
             /> 
             
-        )} else {
-            return (
+         : 
+           
                 <div>Loading PDF</div>
-            )
-        }
+            
+        )
     }
 }
 

@@ -1,18 +1,58 @@
 
-#scriptViewHead h2 {
-    margin-bottom: 5% !important;
-}
 #scriptViewHead table {
     background-color: transparent !important;
     width: 100%;
     box-shadow: none;
+    margin-bottom: 0;
+    border-collapse: initial;
+    border-spacing: 15px;
 }
 #scriptView {
     background-color: #fff; box-shadow: none !important;
 }
 
+button#white {
+    background-color: #fff !important;
+    color: #2b2b2b;
+}
+
+#scriptViewHead button span {line-height: 0 !important;}
+
+#scriptViewHead h2 {display: inline;}
+
 #scriptView .container {
     width: 100% !important;
+}
+
+#scriptViewHead .inactiveStatus {
+    text-align: center;
+    border: none;
+    border-radius: 3px;
+    color: #000;
+    background-color: #fff;
+    padding: 12px 15px;
+    font-size: 14px;
+    text-decoration: none;
+    cursor: pointer;
+    -webkit-transition: all 150ms;
+    -o-transition: all 150ms;
+    transition: all 150ms;
+    border: 1px solid #dfe1e2;
+    min-width: initial;
+}
+#scriptViewHead .currentStatus {
+  text-align: center;
+  border: none;
+  border-radius: 3px;
+  color: #fff;
+  background-color: #ff7d38;
+  padding: 12px 15px;
+  font-size: 14px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 150ms;
+  border: 1px solid #dfe1e2;
+  min-width: initial;
 }
 
 .container {
@@ -21,7 +61,65 @@
 
 #scriptView td {width: 200px !important;} 
 
+h3 {
+    color: #25292d;
+    font-size: 1.3em;
+    font-weight: normal;
+    margin: 1% 0;
+}
+
+.actions {
+    padding: 0 2%;
+    margin-bottom: 6%;
+}
+
+.actions table {
+    border-spacing: 15px;
+    margin-left: 5%;
+    margin-top: 0;
+}
+
+.actions input, .actions select {
+    min-width: 450px;
+}
+
+
+
+.actions button {
+    box-shadow: 0px 2px 15px 0px #b9b7b7;
+    font-weight: 100;
+    min-width: initial;
+}
+
+button.search, button#white {
+    box-shadow: 0px 3px 12px 0px #d6d3d3;
+}
+
+.actions p {
+    color: #a7a8a9;
+    font-weight: lighter;
+    font-size: .9em;
+}
+
+.actions label {
+    display: inline-block;
+}
+
+.actions p.large {
+    font-size: 1.1em;
+    margin: 1% 0;
+}
+
+.actions td.field {
+    text-align: right;
+}
+
+button.orange {
+    background-color: #ff7d38;
+}
+
 table {
+    border-spacing: 0;
     margin: 2% 0;
 }
 
@@ -30,7 +128,11 @@ table {
 }
 
 :local(.body) {
-    width: 100%;
+    width: 90%;
+}
+:local(.header) {
+    width: 95%;
+    margin: 0 auto;
 }
 :local(.header) > table {
     width: 100% !important;
@@ -56,7 +158,8 @@ td {
 }
 
 td.field {
-    color: #909090
+    color: #909090;
+    font-size: .9em;
 }
 
 td.value {

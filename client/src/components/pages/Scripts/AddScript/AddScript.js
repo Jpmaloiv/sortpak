@@ -37,42 +37,44 @@ class AddScript extends Component {
         super(props)
         this.state = {
           processedOn: '',
-          physicians: '',
-          physicianOptions: [],
-          medicationVal: ''
+          medicationVal: '',
+          status: 'Received'
         }
       }
       
-
       componentDidMount() {
-       /*  const loginToken = window.localStorage.getItem("token");
-        axios.get('/api/physicians/search/', { headers: { "Authorization": "Bearer " + loginToken } })
-          .then((resp) => {
-            this.setState({
-                physicians: resp.data.response,
-                // id: resp.data.response.id,    
-            })
-            console.log(this.state.physicians);
-            this.physicianMap();
-          }).catch((error) => {
-            console.error(error);
-        }) */
+       const loginToken = window.localStorage.getItem("token");
 
-        const loginToken = window.localStorage.getItem("token");
-        axios.get('/api/products/search/', { headers: { "Authorization": "Bearer " + loginToken } })
-          .then((resp) => {
-              console.log(resp);
-            this.setState({
-                medications: resp.data.response,
-                // id: resp.data.response.id,    
-            })
-            console.log(this.state.medications);
-            this.physicianMap();
-          }).catch((error) => {
-            console.error(error);
+       axios.get('/api/current/search', { headers: { "Authorization": "Bearer " + loginToken } })
+        .then((resp) => {
+            console.log(resp);
+        this.setState({
+            currentPatientID: resp.data.response[0].patientId,
+            // id: resp.data.response.id,    
         })
-            
-        
+        console.log(this.state.currentPatientID);
+
+    axios.get('/api/patients/search?patientId=' + this.state.currentPatientID, { headers: { "Authorization": "Bearer " + loginToken } })
+        .then((resp) => {
+            console.log(resp);
+            const patient = resp.data.response[0]
+        this.setState({
+            patientId: patient.id,
+            patientName: patient.firstName + " " + patient.lastName,
+            patientDob: patient.dob,
+            patientPhone: patient.phone,
+            patientAddress: patient.address1 + "\n" + patient.address2
+            // id: resp.data.response.id,    
+        })
+        console.log(this.state.patientName);
+        }).catch((error) => {
+        console.error(error);
+     })
+        }).catch((error) => {
+        console.error(error);
+     })
+
+     console.log(this.state.currentPatientID)
     } 
 
 
@@ -85,10 +87,12 @@ class AddScript extends Component {
     submitscript = (event) => {
         event.preventDefault();
         console.log(this.state.copayApproval);
+        this.state.status === "Received";
+        console.log(this.state.status);
         const loginToken = window.localStorage.getItem("token");
         let data = new FormData();
-        axios.post('/api/scripts/add?processedOn=' + this.state.processedOn + '&patient=' + this.props.patient + "&medication=" + this.props.medication + "&status=" + this.state.status + "&pharmNPI=" + this.props.pharmNPI
-        + "&location=" + this.props.location + "&pharmDate=" + this.props.pharmDate + "&writtenDate=" + this.props.writtenDate + "&salesCode=" + this.props.salesCode +
+        axios.post('/api/scripts/add?patientId=' + this.state.patientId + '&processedOn=' + this.state.processedOn + '&patient=' + this.props.patient + "&medication=" + this.props.medication + "&status=" + this.state.status + "&pharmNPI=" + this.props.pharmNPI
+        + "&priorAuth=" + this.state.priorAuth + "&location=" + this.props.location + "&pharmDate=" + this.props.pharmDate + "&writtenDate=" + this.props.writtenDate + "&salesCode=" + this.props.salesCode +
         "&billOnDate=" + this.props.billOnDate + "&cost=" + this.props.cost + "&rxNumber=" + this.props.rxNumber + "&primInsPay=" + this.props.primInsPay + "&diagnosis=" + this.props.diagnosis +
         "&secInsPay=" + this.props.secInsPay + "&secDiagnosis=" + this.props.secDiagnosis + "&patientPay=" + this.props.patientPay + "&refills=" + this.props.refills +
         "&refillsRemaining=" + this.props.refillsRemaining + "&quantity=" + this.props.quantity + "&daysSupply=" + this.props.daysSupply + "&directions=" + this.props.directions +
@@ -154,40 +158,15 @@ class AddScript extends Component {
 
         
 
-        // const physicians = this.state.physicians;
-        
-
-        /* const physicianOptions = [
-            {
-              key: '',
-              value: '',
-              display: 'Select Physician',
-            },
-            this.state.physicians.map(physician => ({
-              key: physician.id,
-              value: physician.id,
-              display: physician.firstName,
-            })),
-          ] */
-          
-
         const {
             processedOn
         } = this.state
 
-        const statusOptions = [
-            'Received',
-            'Review',
-            'Prior Auth',
-            'Process',
-            'Copay Assistance',
-            'Schedule',
-            'QA',
-            'Fill',
-            'Shipped',
-            'Done',
-            'Cancelled',
-            'Refill'
+        const priorAuthOptions = [
+            'Approved',
+            'Denied',
+            'Payor Restriction',
+            'Limited Distribution'
         ]
 
         const copayApprovalOptions = [
@@ -238,17 +217,24 @@ class AddScript extends Component {
                         />
                         </td>
                         </tr>
+                    </Table>
+                    
+                    <h4 style={{marginLeft: 30, marginBottom: 0}}>Patient</h4>
+                    <Table className="patientTable">
+                        <thead>
+                            <th>NAME</th>
+                            <th>DATE OF BIRTH</th>
+                            <th>PHONE NUMBER</th>
+                            <th>ADDRESS</th>
+                        </thead>
                         <tr>
-                            <td>
-                            <Input
-                            placeholder="Patient"
-                            label="Patient"
-                            value={patient}
-                            onChange={patientChange}
-                        />
-                            </td>
+                            <td>{this.state.patientName}</td>
+                            <td>{this.state.patientDob}</td>
+                            <td>{this.state.patientPhone}</td>
+                            <td>{this.state.patientAddress}</td>
                         </tr>
                     </Table>
+
                     <Table>
                         <tbody>
                         <tr>
@@ -288,9 +274,8 @@ class AddScript extends Component {
                                         <Selector
                                             wide
                                             label="Status"
-                                            placeholder="--"
-                                            options={statusOptions}
-                                            onSelect={status => this.setState({status})}
+                                            options={priorAuthOptions}
+                                            onSelect={priorAuth => this.setState({priorAuth})}
                                         />
                                     </td>
                                     <td>                                   
@@ -306,13 +291,13 @@ class AddScript extends Component {
                                     <td>
                                         <Input
                                             label="Location"
-                                            placeholder="--/--/----"
                                             value={location}
                                             onChange={locationChange}
                                         />
                                     </td>
                                    <td>
                                         <Input
+                                            type="date"
                                             label="Transfer Pharmacy Date"
                                             placeholder="--/--/----"
                                             value={pharmDate}
@@ -328,6 +313,7 @@ class AddScript extends Component {
                                 <tr>
                                     <td>
                                         <Input
+                                            type="date"
                                             label="Written Date"
                                             placeholder="--/--/----"
                                             value={writtenDate}
@@ -345,6 +331,7 @@ class AddScript extends Component {
                                 <tr>
                                     <td>
                                         <Input
+                                            type="date"
                                             label="Bill on Date"
                                             placeholder="--/--/----"
                                             value={billOnDate}
@@ -489,9 +476,7 @@ class AddScript extends Component {
                         <Table>
                             <tbody>
                                 <tr>
-                                    <th>
                                         <h4>Shipping</h4>
-                                    </th>
                                 </tr>
                                 <tr>
                                     <td>

@@ -95,10 +95,8 @@ module.exports = function(sequelize, DataTypes) {
         }
     }); 
     Patients.associate = function(models) {
-        models.Patients.belongsTo(models.User, {
-            foreignKey: {
-                allowNull: false
-            }
+        models.Patients.hasMany(models.Scripts, {
+            onDelete: "cascade"
         });
     };
     return Patients; 

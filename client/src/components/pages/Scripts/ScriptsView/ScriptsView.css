@@ -2,3 +2,7 @@
 tr {
     cursor: pointer !important;
 }
+
+.action-box .main {
+    justify-content: initial;
+}

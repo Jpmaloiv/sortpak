@@ -70,17 +70,6 @@ class ScriptsView extends Component {
             Select a Script
           </h2>
 
-          <div className="action">
-
-            <Button
-              link="/scripts/add"
-              icon="plus"
-              title="ADD A NEW SCRIPT"
-              style={{ marginRight: 8 }}
-            />
-
-        </div>
-
         </Header>
 
         <div className="body">
