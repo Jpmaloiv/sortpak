@@ -75,10 +75,10 @@ app.use(["/api/patients"], jwt({
     userProperty: 'payload'
 }));
 app.use("/api/patients", patientRoutes);
-/* app.use(["/api/physicians"], jwt({
+app.use(["/api/physicians"], jwt({
     secret: process.env.JWT_SECRET,
     userProperty: 'payload'
-})); */
+}));
 app.use("/api/physicians", physicianRoutes);
 app.use(["/api/visits"], jwt({
     secret: process.env.JWT_SECRET,
