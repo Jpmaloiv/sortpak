@@ -322,7 +322,7 @@ class PatientView extends Component {
             </div>
             <div>
               <Span icon="building">
-                {this.state.address}{this.state.phone}
+                {this.state.address}
               </Span>
             </div>
             <div>

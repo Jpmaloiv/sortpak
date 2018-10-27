@@ -82,19 +82,19 @@ router.get("/search", (req, res) => {
         attributes: {
             exclude: ["createdAt"]
         },
-        include: [{
-            model: db.Patients,
-            attributes: ["firstName", "lastName", "dob", "phone", "email", "patientWarning", "conditions", "allergies"],
-        },
-        {
-            model: db.Physicians,
-            attributes: ["firstName", "lastName", "rep", "contact", "phone", "physicianWarning"]
-        },
-        {
-            model: db.scriptNotes,
-            attributes: ['note', 'createdAt', 'UserId']
-        }
-        ]
+        // include: [{
+        //     model: db.Patients,
+        //     attributes: ["firstName", "lastName", "dob", "phone", "email", "patientWarning", "conditions", "allergies"],
+        // },
+        // {
+        //     model: db.Physicians,
+        //     attributes: ["firstName", "lastName", "rep", "contact", "phone", "physicianWarning"]
+        // },
+        // {
+        //     model: db.scriptNotes,
+        //     attributes: ['note', 'createdAt', 'UserId']
+        // }
+        // ]
       
     }
     if (req.query.scriptId) {
