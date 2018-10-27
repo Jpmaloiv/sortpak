@@ -53,7 +53,7 @@ router.post("/add", (req, res) => {
 });
 
 
-router.get("/find", (req, res) => {
+router.get("/search", (req, res) => {
     let searchParams = {
         where: {},
         attributes: {
@@ -61,9 +61,13 @@ router.get("/find", (req, res) => {
         },
         include: [{
             model: db.Scripts,
-            attributes: ["status", "processedOn", 'PatientId']
-        }
-        ]
+            attributes: ["status", "processedOn", 'PatientId'],
+            include: [{
+                model: db.Patients,
+                attributes: ['id', "firstName", 'lastName']
+            }
+            ]
+        }]
     }
     if (req.query.physicianId) {
         searchParams.where.id = req.query.physicianId

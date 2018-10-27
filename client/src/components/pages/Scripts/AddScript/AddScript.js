@@ -54,6 +54,7 @@ class AddScript extends Component {
     }
 
     openNoteModal() {
+        console.log("HI");
         this.setState({ physicianModal: {} })
     }
 
