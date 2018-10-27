@@ -67,10 +67,10 @@ router.get("/search", (req, res) => {
         attributes: {
             exclude: ["updatedAt", "UserId"]
         },
-        // include: [{
-        //     model: db.Scripts,
-        //     attributes: ["id", "patient", "processedOn", "status"],
-        // },
+        include: [{
+            model: db.Scripts,
+            attributes: ["id", "patient", "processedOn", "status"],
+        }],
         // {
         //     model: db.Physicians,
         //     attributes: ['id', 'firstName', 'lastName']

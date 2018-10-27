@@ -12,6 +12,8 @@ class PrescriptionsTab extends Component {
   }
 
   componentDidMount() {
+    console.log(this.props);
+    console.log(this.state);
     const patientNum = this.props.pID.match.params.patientId;
     const loginToken = window.localStorage.getItem("token");
     axios.get('/api/patients/search?patientId=' + patientNum, { headers: { "Authorization": "Bearer " + loginToken } })
