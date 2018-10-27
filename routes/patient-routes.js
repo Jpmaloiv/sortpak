@@ -62,30 +62,37 @@ router.post("/add", (req, res) => {
 
 
 router.get("/search", (req, res) => {
-    let searchParams = {
-        where: {},
-        attributes: {
-            exclude: ["updatedAt", "UserId"]
-        },
-        include: [{
-            model: db.Scripts,
-            as: 'patientScripts',
-            attributes: ["id", "patient", "processedOn", "status"],
-        }],
+    // let searchParams = {
+    //     where: {},
+    //     attributes: {
+    //         exclude: ["updatedAt", "UserId"]
+    //     },
+    //     include: [{
+    //         model: db.Scripts,
+    //         as: 'patientScripts',
+    //         attributes: ["id", "patient", "processedOn", "status"],
+    //     }],
         // {
         //     model: db.Physicians,
         //     attributes: ['id', 'firstName', 'lastName']
         // }
         // ]
         
-    }
+    // }
     // if (req.query.patientId) {
     //     searchParams.where.id = req.query.patientId
     // }
   
-    console.log(searchParams);
-    db.Patients
-        .findAll(searchParams)
+    // console.log(searchParams);
+    // db.Patients
+    //     .findAll(searchParams)
+    db.Patients.findAll({
+        include: [{
+          model: db.Scripts,
+          as: 'Singer',
+          where: {} //
+        }]
+      })
         .then((response) => {
             res.json({
                 success: true,
