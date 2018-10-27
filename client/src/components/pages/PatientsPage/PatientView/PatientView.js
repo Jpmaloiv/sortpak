@@ -307,9 +307,9 @@ class PatientView extends Component {
           </div>
           <div id="contactInfo" className={styles.contactInfo}>
 
-            {/* <GoogleMaps
+            <GoogleMaps
               address={this.state.address}
-             /> */}
+             />
 
           </div>
           <div id="contactInfo" className={styles.contactInfo}>
