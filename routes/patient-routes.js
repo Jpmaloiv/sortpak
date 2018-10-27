@@ -69,6 +69,7 @@ router.get("/search", (req, res) => {
         },
         include: [{
             model: db.Scripts,
+            as: 'patientScripts',
             attributes: ["id", "patient", "processedOn", "status"],
         }],
         // {
