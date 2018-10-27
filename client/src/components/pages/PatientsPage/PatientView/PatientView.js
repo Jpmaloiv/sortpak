@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import Moment from 'react-moment'
 
-// import GoogleMaps from '../../../shared/GoogleMaps/GoogleMaps.js'
+import GoogleMaps from '../../../shared/GoogleMaps/GoogleMaps.js'
 
 import {
   AsYouType,
