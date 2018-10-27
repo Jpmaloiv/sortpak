@@ -4,7 +4,6 @@ import {
   Table,
   Header,
   ActionBox,
-  Button,
   SearchBar,
   Selector,
   ToggleSwitch
@@ -93,7 +92,8 @@ class RefillsView extends Component {
       'Endocrinology',
       'Urology',
       'Cardiology',
-      'Hepatology'  
+      'Hepatology',
+      'Pulmonology'
     ]
 
     return (

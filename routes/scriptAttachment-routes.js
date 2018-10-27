@@ -16,6 +16,7 @@ router.post("/add", (req, res) => {
         attachedBy: req.query.attachedBy,
         type: req.query.type.trim(),
         link: attachmentLink,
+        ScriptId: req.query.scriptId,
         UserId: req.payload.id
     }
 

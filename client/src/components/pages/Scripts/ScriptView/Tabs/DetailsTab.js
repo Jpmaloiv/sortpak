@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import axios from 'axios'
+import Moment from 'react-moment'
 
 // Components
 import {
   Header,
   Body,
-  Icon,
-  Button,
+  Link,
   Selector,
-  Span
+  Span,
+  TextArea
 } from '../../../../common'
 
 
@@ -16,84 +17,92 @@ import {
 class DetailsTab extends Component {
   constructor(props) {
     super(props)
-    this.state = {refills: 0}
-  
-      // this.handleClick = this.handleClick.bind(this);
+    this.state = { refills: 0 }
   }
   state = {
     script: ''
-}
+  }
 
-/* handleClick = () => {
-  this.setState({refills: this.state.refills += 1}, () => {
-      console.log(this.state.refills);
-  });
-} */
+
   componentDidMount() {
     let scriptNum = this.props.sID.match.params.scriptId;
     const loginToken = window.localStorage.getItem("token");
-        axios.get('/api/scripts/search?scriptId=' + scriptNum, { headers: { "Authorization": "Bearer " + loginToken } })
-        .then((resp) => {
-          console.log(resp);
-          let script = resp.data.response[0];
-            this.setState({
-                id: script.id,
-                processedOn: script.processedOn,
-                status: script.status,
-                writtenDate: script.writtenDate,
-                patient: script.patient,
-                billOnDate: script.billOnDate,
-                rxNumber: script.rxNumber,
-                phone: script.phone,
-                diagnosis: script.diagnosis,
-                email: script.email,
-                secDiagnosis: script.secDiagnosis,
-                refills: script.refills,
-                refillsRemaining: script.refillsRemaining,
-                quantity: script.quantity,
-                daysSupply: script.daysSupply,
-                salesCode: script.salesCode,
-                cost: script.cost,
-                primInsPay: script.primInsPay,
-                secInsPay: script.secInsPay,
-                location: script.location,
-                copayApproval: script.copayApproval,
-                copayNetwork: script.copayNetwork,
-                patientPay: script.patientPay,
-                directions: script.directions,
-                shipOn: script.shipOn,
-                deliveryMethod: script.deliveryMethod,
-                trackNum: script.trackNum,
-                ETA: script.ETA,
-                paymentOption: script.paymentOption
-            }, () => console.log(this.state.status))
+    axios.get('/api/scripts/search?scriptId=' + scriptNum, { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        console.log(resp);
+        let script = resp.data.response[0];
+        this.setState({
+          id: script.id,
+          processedOn: script.processedOn,
+          status: script.status,
+          writtenDate: script.writtenDate,
+          patientId: script.PatientId,
+          patientName: script.Patient.firstName + " " + script.Patient.lastName,
+          patientDob: script.Patient.dob,
+          patientPhone: script.Patient.phone,
+          patientEmail: script.Patient.email,
+          conditions: script.Patient.conditions,
+          allergies: script.Patient.allergies,
+          patientWarning: script.Patient.patientWarning,
+          physicianId: script.PhysicianId,
+          physicianName: "Dr. " + script.Physician.firstName + " " + script.Physician.lastName,
+          physicianContact: script.Physician.contact,
+          physicianPhone: script.Physician.phone,
+          physicianRep: script.Physician.rep,
+          physicianWarning: script.Physician.physicianWarning,
+          billOnDate: script.billOnDate,
+          rxNumber: script.rxNumber,
+          phone: script.phone,
+          diagnosis: script.diagnosis,
+          email: script.email,
+          secDiagnosis: script.secDiagnosis,
+          refills: script.refills,
+          refillsRemaining: script.refillsRemaining,
+          quantity: script.quantity,
+          daysSupply: script.daysSupply,
+          salesCode: script.salesCode,
+          cost: script.cost,
+          primInsPay: script.primInsPay,
+          secInsPay: script.secInsPay,
+          location: script.location,
+          copayApproval: script.copayApproval,
+          copayNetwork: script.copayNetwork,
+          networkPay: script.networkPay,
+          patientPay: script.patientPay,
+          directions: script.directions,
+          shipOn: script.shipOn,
+          deliveryMethod: script.deliveryMethod,
+          trackNum: script.trackNum,
+          ETA: script.ETA,
+          paymentOption: script.paymentOption
+        }, () => console.log(this.state.status))
 
-        }).catch((err) => {
-            console.error(err)
-        })
-    
-}
+      }).catch((err) => {
+        console.error(err)
+      })
 
-setEditState(editing) {
-  this.setState({ ...this.initialState, editing })
-}
+  }
 
-save() {
-        const loginToken = window.localStorage.getItem("token");
-        let data = new FormData();
-        axios.put('/api/scripts/update?id=' + this.state.id + '&processedOn=' + this.state.processedOn + '&writtenDate=' + this.state.writtenDate
-        + '&billOnDate=' + this.state.billOnDate + '&rxNumber=' + this.state.rxNumber + '&diagnosis=' + this.state.diagnosis + '&secDiagnosis=' + this.state.secDiagnosis
-        + '&refills=' + this.state.refills + '&refillsRemaining=' + this.state.refillsRemaining + '&quantity=' + this.state.quantity + '&daysSupply=' + this.state.daysSupply
-        + '&salesCode=' + this.state.salesCode + '&cost=' + this.state.cost + '&primInsPay=' + this.state.primInsPay + '&secInsPay=' + this.state.secInsPay
-        + '&copayApproval=' + this.state.copayApproval + '&copayNetwork=' + this.state.copayNetwork + '&patientPay=' + this.state.patientPay + '&status=' + this.state.status, 
-        data, { headers: { "Authorization": "Bearer " + loginToken } })
-            .then((data) => {
-                console.log(data);
-                window.location.reload();              
-            }).catch((error) => {
-                console.error(error);
-            })
-}
+  setEditState(editing) {
+    this.setState({ ...this.initialState, editing })
+  }
+
+  save() {
+    const loginToken = window.localStorage.getItem("token");
+    let data = new FormData();
+    axios.put('/api/scripts/update?id=' + this.state.id + '&processedOn=' + this.state.processedOn + '&writtenDate=' + this.state.writtenDate
+      + '&billOnDate=' + this.state.billOnDate + '&rxNumber=' + this.state.rxNumber + '&diagnosis=' + this.state.diagnosis + '&secDiagnosis=' + this.state.secDiagnosis
+      + '&refills=' + this.state.refills + '&refillsRemaining=' + this.state.refillsRemaining + '&quantity=' + this.state.quantity + '&daysSupply=' + this.state.daysSupply
+      + '&salesCode=' + this.state.salesCode + '&cost=' + this.state.cost + '&primInsPay=' + this.state.primInsPay + '&secInsPay=' + this.state.secInsPay
+      + '&copayApproval=' + this.state.copayApproval + '&copayNetwork=' + this.state.copayNetwork + '&patientPay=' + this.state.patientPay + '&status=' + this.state.status,
+      data, { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((data) => {
+        console.log(data);
+        window.location.reload();
+      }).catch((error) => {
+        console.error(error);
+      })
+  }
 
   render() {
 
@@ -111,14 +120,14 @@ save() {
       'Done',
       'Cancelled',
       'Refill'
-  ]
+    ]
 
     const copayApprovalOptions = [
       'Approved',
       'Denied'
-  ]
+    ]
 
-  const copayNetworkOptions = [
+    const copayNetworkOptions = [
       'Cancer Care Foundation',
       'Chronice Disease Fund',
       'Health Well',
@@ -131,364 +140,409 @@ save() {
       'Coupon',
       'Voucher',
       'Copay Card'
-  ]
-    
+    ]
+
 
     const {
       editing
     } = this.state
 
-    // const  patient  = this.props;
+    if (this.state.conditions) {
+      var conditions = this.state.conditions.split(",").join("\n")
+    }
 
-    /* const {
-      nameDisplay 
-    } = patient */
+    if (this.state.allergies) {
+      var allergies = this.state.allergies.split(",").join("\n")
+    }
 
-    return(
+    return (
       <div>
         <Header>
         </Header>
         <Body id="scriptView">
-        {/* <Body className={styles.body} id="scriptView"> */}
+          <div id="scriptViewColumns">
+            <div className="scriptViewColumn1">
+              <table>
+                {/* <table className={styles.scriptView}> */}
+                <tbody>
+                  <tr style={{ 'line-height': '1.8em' }}>
+                    <td className="field">Processed On</td>
+                    <td className="value">
+                      <Moment format="MM/DD/YYYY">{this.state.processedOn || 'None'}</Moment>
+                    </td>
+                    <td className="field">Written Date</td>
+                    <td className="value">
+                      <Moment stye={{ 'line-height': '1.8em' }} format="MM/DD/YYYY">{this.state.writtenDate || 'None'}</Moment>
+                    </td>
+                  </tr>
+                  <tr style={{ 'line-height': '1.8em' }}>
+                    <td className="field">Patient Name</td>
+                    <td className="setValue">
+                      <Link to={'../patients/' + this.state.patientId} activeClassName="active">
+                        {this.state.patientName}
+                      </Link>
+                    </td>
+                    <td className="field">Bill On</td>
+                    <td className="value">
+                      <Moment format="MM/DD/YYYY">{this.state.billOnDate || 'None'}</Moment>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="field">Date of Birth</td>
+                    <td className="value">{this.state.patientDob}</td>
+                    <td className="field">RX Number</td>
+                    <td className="value">
+                      <Span
+                        editing={editing}
+                        placeholder={this.state.rxNumber}
+                        value={this.state.rxNumber}
+                        onChange={rxNumber => this.setState({ rxNumber })}
+                      >
+                        {this.state.rxNumber}
+                      </Span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="field">Phone</td>
+                    <td className="value">{this.state.patientPhone}</td>
+                    <td className="field">Diagnosis</td>
+                    <td className="value">
+                      <Span
+                        editing={editing}
+                        placeholder={this.state.diagnosis}
+                        value={this.state.diagnosis}
+                        onChange={diagnosis => this.setState({ diagnosis })}
+                      >
+                        {this.state.diagnosis}
+                      </Span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="field">Email</td>
+                    <td className="value">{this.state.patientEmail}</td>
+                    <td className="field">Secondary Diagnosis</td>
+                    <td className="value">
+                      <Span
+                        editing={editing}
+                        placeholder={this.state.secDiagnosis}
+                        value={this.state.secDiagnosis}
+                        onChange={secDiagnosis => this.setState({ secDiagnosis })}
+                      >
+                        {this.state.secDiagnosis}
+                      </Span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
 
-          <table>
-          {/* <table className={styles.scriptView}> */}
-            <tbody>
-              <tr>
-                <td className="field">Processed On</td>
-                <td className="value">
-                  <Span
-                    editing={editing}
-                    type="date"
-                    value={this.state.proessedOn}
-                    onChange={processedOn => this.setState({ processedOn })}
-                  >
-                    {this.state.processedOn}
-                  </Span>
-                </td>
-                <td className="field">Written Date</td>
-                <td className="value">
-                  <Span
-                    editing={editing}
-                    type="date"
-                    value={this.state.writtenDate}
-                    onChange={writtenDate => this.setState({ writtenDate})}
-                  >
-                    {this.state.writtenDate}
-                  </Span>
-                </td>
-              </tr>
-              <tr>
-                <td className="field">Patient Name</td>
-                <td className="setValue">{this.state.patient}</td>
-                <td className="field">Bill On</td>
-                <td className="value">
-                <Span
-                    editing={editing}
-                    type="date"
-                    value={this.state.billOnDate}
-                    onChange={billOnDate => this.setState({ billOnDate })}
-                  >
-                    {this.state.billOnDate}
-                  </Span>
-                </td>
-              </tr>
-              <tr>
-                <td className="field">Date of Birth</td>
-                <td className="value">{this.state.dob}</td>                
-                <td className="field">RX Number</td>
-                <td className="value">
-                  <Span
-                    editing={editing}
-                    placeholder={this.state.rxNumber}
-                    value={this.state.rxNumber}
-                    onChange={rxNumber => this.setState({ rxNumber })}
-                  >
-                    {this.state.rxNumber}
-                  </Span>
-                </td>
-              </tr>
-              <tr>
-                <td className="field">Phone</td>
-                <td className="value">{this.state.phone}</td>
-                <td className="field">Diagnosis</td>
-                <td className="value">
-                  <Span
-                    editing={editing}
-                    placeholder={this.state.diagnosis}
-                    value={this.state.diagnosis}
-                    onChange={diagnosis => this.setState({ diagnosis })}
-                  >
-                    {this.state.diagnosis}
-                  </Span>             
-                </td>
-              </tr>
-              <tr>
-                <td className="field">Email</td>
-                <td className="value">{this.state.email}</td>
-                <td className="field">Secondary Diagnosis</td>
-                <td className="value">
-                  <Span
-                    editing={editing}
-                    placeholder={this.state.secDiagnosis}
-                    value={this.state.secDiagnosis}
-                    onChange={secDiagnosis => this.setState({ secDiagnosis })}
-                  >
-                    {this.state.secDiagnosis}
-                  </Span> 
-                </td>
-              </tr>
-            </tbody>
-          </table>
-
-          <table>
-            <tbody>
-              <tr>
-                <td className="field">Physician</td>
-                <td className="value"></td>
-                <td className="field">Refill #</td>
-                <td className="value">
-                 {/*  <Button
+              <table>
+                <tbody>
+                  <tr>
+                    <td className="field">Physician</td>
+                    <td className="setValue">
+                      <Link to={'../physicians/' + this.state.physicianId} activeClassName="active">
+                        {this.state.physicianName}
+                      </Link></td>
+                    <td className="field">Refill #</td>
+                    <td className="value">
+                      {/*  <Button
                     className="plus"
                     icon="plus"
                     editing={editing}
                     value={this.state.refills}
                     onClick={this.handleClick}
                   /> */}
-                  <Span
-                    editing={editing}
-                    placeholder={this.state.refills}
-                    value={this.state.refills}
-                    onChange={refills => this.setState({ refills })}
-                    
-                  >
-                    {this.state.refills}
-                  </Span> 
-                </td>
-              </tr>
-              <tr>
-                <td className="field">Contact</td>
-                <td className="value"></td>
-                <td className="field">Refills Remaining</td>
-                <td className="value">
-                  <Span
-                    editing={editing}
-                    placeholder={this.state.refillsRemaining}
-                    value={this.state.refillsRemaining}
-                    onChange={refillsRemaining => this.setState({ refillsRemaining })}
-                  >
-                    {this.state.refillsRemaining}
-                  </Span>
-                </td>
-              </tr>
-              <tr>
-                <td className="field">Phone</td>
-                <td className="value"></td>
-                <td className="field">Quantity</td>
-                <td className="value">
-                  <Span
-                    editing={editing}
-                    placeholder={this.state.quantity}
-                    value={this.state.quantity}
-                    onChange={quantity => this.setState({ quantity })}
-                  >
-                    {this.state.quantity}
-                  </Span>
-                </td>
-              </tr>
-              <tr>
-                <td className="field">Rep</td>
-                <td className="value"></td>
-                <td className="field">Days Supply</td>
-                <td>
-                 <Span
-                    editing={editing}
-                    placeholder={this.state.daysSupply}
-                    value={this.state.daysSupply}
-                    onChange={daysSupply => this.setState({ daysSupply })}
-                  >
-                    {this.state.daysSupply}
-                  </Span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                      <Span
+                        editing={editing}
+                        placeholder={this.state.refills}
+                        value={this.state.refills}
+                        onChange={refills => this.setState({ refills })}
 
-          <table>
-            <tbody>
-              <tr>
-                <td className="field">Medicine</td>
-                <td></td>
-                <td className="field">Sales Code</td>
-                <td>
-                  <Span
-                    editing={editing}
-                    placeholder={this.state.salesCode}
-                    value={this.state.salesCode}
-                    onChange={salesCode => this.setState({ salesCode })}
-                  >
-                    {this.state.salesCode}
-                  </Span> 
-                </td>
-              </tr>
-              <tr>
-                <td className="field">NDC</td>
-                <td></td>
-                <td className="field">Cost</td>
-                <td>
-                <Span
-                    editing={editing}
-                    placeholder={this.state.cost}
-                    value={this.state.cost}
-                    onChange={cost => this.setState({ cost })}
-                  >
-                    {this.state.cost}
-                  </Span> 
-                </td>
-              </tr>
-              <tr>
-                <td className="field">On Hand</td>
-                <td></td>
-                <td className="field">Primary Insurance Pay</td>
-                <td>
-                  <Span
-                    editing={editing}
-                    placeholder={this.state.primInsPay}
-                    value={this.state.primInsPay}
-                    onChange={primInsPay => this.setState({ primInsPay })}
-                  >
-                    {this.state.primInsPay}
-                  </Span>
-                </td>
-              </tr>
-              <tr>
-                <td className="field">Prior Authorization</td>
-                <td></td>
-                <td className="field">Secondary Insurance Pay</td>
-                <td>
-                  <Span
-                    editing={editing}
-                    placeholder={this.state.secInsPay}
-                    value={this.state.secInsPay}
-                    onChange={secInsPay => this.setState({ secInsPay })}
-                  >
-                    {this.state.secInsPay}
-                  </Span>
-                </td>
-              </tr>
-              <tr>
-                <td className="field">Location</td>
-                <td>
-                  <Span
-                    editing={editing}
-                    placeholder={this.state.location}
-                    value={this.state.location}
-                    onChange={location => this.setState({ location })}
-                  >
-                    {this.state.location}
-                  </Span>
-                </td>
-                <td className="field">Copay Assistance Status</td>
-                <td>
-                  { editing ? (
-                    <Selector
-                      placeholder={this.state.copayApproval}
-                      value={this.state.copayApproval}
-                      options={copayApprovalOptions}
-                      onSelect={copayApproval => this.setState({ copayApproval })}
-                    />
-                    ) : (
-                    <Span>
-                      {this.state.copayApproval}
-                    </Span>               
-                  )}               
-                </td>
-              </tr>
-              <tr>
-                <td className="field">Ship On</td>
-                <td>{this.state.shipOn}</td>
-                <td className="field">Copay Assistance Network</td>
-                <td>
-                { editing ? (
-                  <Selector
-                      placeholder={this.state.copayNetwork}
-                      value={this.state.copayNetwork}
-                      options={copayNetworkOptions}
-                      onSelect={copayNetwork => this.setState({ copayNetwork })}
-                    />
-                  ) : (
-                    <Span>
-                      {this.state.copayNetwork}
+                      >
+                        {this.state.refills}
+                      </Span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="field">Contact</td>
+                    <td className="value">{this.state.physicianContact}</td>
+                    <td className="field">Refills Remaining</td>
+                    <td className="value">
+                      <Span
+                        editing={editing}
+                        placeholder={this.state.refillsRemaining}
+                        value={this.state.refillsRemaining}
+                        onChange={refillsRemaining => this.setState({ refillsRemaining })}
+                      >
+                        {this.state.refillsRemaining}
+                      </Span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="field">Phone</td>
+                    <td className="value">{this.state.physicianPhone}</td>
+                    <td className="field">Quantity</td>
+                    <td className="value">
+                      <Span
+                        editing={editing}
+                        placeholder={this.state.quantity}
+                        value={this.state.quantity}
+                        onChange={quantity => this.setState({ quantity })}
+                      >
+                        {this.state.quantity}
+                      </Span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="field">Rep</td>
+                    <td className="value">{this.state.physicianRep}</td>
+                    <td className="field">Days Supply</td>
+                    <td>
+                      <Span
+                        editing={editing}
+                        placeholder={this.state.daysSupply}
+                        value={this.state.daysSupply}
+                        onChange={daysSupply => this.setState({ daysSupply })}
+                      >
+                        {this.state.daysSupply}
+                      </Span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <table>
+                <tbody>
+                  <tr>
+                    <td className="field">Medicine</td>
+                    <td></td>
+                    <td className="field">Sales Code</td>
+                    <td>
+                      <Span
+                        editing={editing}
+                        placeholder={this.state.salesCode}
+                        value={this.state.salesCode}
+                        onChange={salesCode => this.setState({ salesCode })}
+                      >
+                        {this.state.salesCode}
+                      </Span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="field">NDC</td>
+                    <td></td>
+                    <td className="field">Cost</td>
+                    <td>
+                      <Span
+                        editing={editing}
+                        placeholder={this.state.cost}
+                        value={this.state.cost}
+                        onChange={cost => this.setState({ cost })}
+                      >
+                        {this.state.cost}
+                      </Span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="field">On Hand</td>
+                    <td></td>
+                    <td className="field">Primary Insurance Pay</td>
+                    <td>
+                      <Span
+                        editing={editing}
+                        placeholder={this.state.primInsPay}
+                        value={this.state.primInsPay}
+                        onChange={primInsPay => this.setState({ primInsPay })}
+                      >
+                        {this.state.primInsPay}
+                      </Span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="field">Prior Authorization</td>
+                    <td></td>
+                    <td className="field">Secondary Insurance Pay</td>
+                    <td>
+                      <Span
+                        editing={editing}
+                        placeholder={this.state.secInsPay}
+                        value={this.state.secInsPay}
+                        onChange={secInsPay => this.setState({ secInsPay })}
+                      >
+                        {this.state.secInsPay}
+                      </Span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="field">Location</td>
+                    <td>
+                      <Span
+                        editing={editing}
+                        placeholder={this.state.location}
+                        value={this.state.location}
+                        onChange={location => this.setState({ location })}
+                      >
+                        {this.state.location}
+                      </Span>
+                    </td>
+                    <td className="field">Copay Assistance Status</td>
+                    <td>
+                      {editing ? (
+                        <Selector
+                          placeholder={this.state.copayApproval}
+                          value={this.state.copayApproval}
+                          options={copayApprovalOptions}
+                          onSelect={copayApproval => this.setState({ copayApproval })}
+                        />
+                      ) : (
+                          <Span>
+                            {this.state.copayApproval}
+                          </Span>
+                        )}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="field">Ship On</td>
+                    <td>{this.state.shipOn}</td>
+                    <td className="field">Copay Assistance Network</td>
+                    <td>
+                      {editing ? (
+                        <Selector
+                          placeholder={this.state.copayNetwork}
+                          value={this.state.copayNetwork}
+                          options={copayNetworkOptions}
+                          onSelect={copayNetwork => this.setState({ copayNetwork })}
+                        />
+                      ) : (
+                          <Span>
+                            {this.state.copayNetwork}
+                          </Span>
+                        )}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="field">Delivery Method</td>
+                    <td>{this.state.deliveryMethod}</td>
+                    <td className="field">Copay Assistance Amount</td>
+                    <td>{this.state.networkPay}</td>
+                  </tr>
+                  <tr>
+                    <td className="field">Tracking Number</td>
+                    <td>{this.state.trackNum}</td>
+                    <td className="field">Patient Pay</td>
+                    <td>
+                      <Span
+                        editing={editing}
+                        placeholder={this.state.patientPay}
+                        value={this.state.patientPay}
+                        onChange={patientPay => this.setState({ patientPay })}
+                      >
+                        {this.state.patientPay}
+                      </Span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="field">ETA</td>
+                    <td>{this.state.ETA}</td>
+                    <td className="field">Payment Option</td>
+                    <td>{this.state.paymentOption}</td>
+                  </tr>
+                  <tr>
+                    <td className="field">Status</td>
+                    <td>
+                      {editing ? (
+                        <Selector
+                          placeholder={this.state.status}
+                          value={this.state.status}
+                          options={statusOptions}
+                          onSelect={status => this.setState({ status })}
+                        />
+                      ) : (
+                          <Span>
+                            {this.state.status}
+                          </Span>
+                        )}
+                    </td>
+                    <td className="field">Total Pay</td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td className="field">Primary Insurance</td>
+                    <td></td>
+                    <td className="field">Profile</td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td className="field"></td>
+                    <td></td>
+                    <td className="field">Margin</td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td className="field">Instructions</td>
+                    <td>{this.state.directions}</td>
+                    <td className="field">Secondary Insurance</td>
+                    <td className="value"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div className="scriptViewColumn2">
+
+              <table>
+                <tr>
+                  <td>
+                    <Span
+                      label="Co-morbid conditions"
+                    >
+                      <TextArea
+                        disabled
+                        id='symptoms'
+                        placeholder={conditions}
+                      />
                     </Span>
-                )}
-                </td>
-              </tr>
-              <tr>
-                <td className="field">Delivery Method</td>
-                <td>{this.state.deliveryMethod}</td>
-                <td className="field">Copay Assistance Amount</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td className="field">Tracking Number</td>
-                <td>{this.state.trackNum}</td>
-                <td className="field">Patient Pay</td>
-                <td>
-                  <Span
-                    editing={editing}
-                    placeholder={this.state.patientPay}
-                    value={this.state.patientPay}
-                    onChange={patientPay => this.setState({ patientPay })}
-                  >
-                    {this.state.patientPay}
-                  </Span>
-                </td>
-              </tr>
-              <tr>
-                <td className="field">ETA</td>
-                <td>{this.state.ETA}</td>
-                <td className="field">Payment Option</td>
-                <td>{this.state.paymentOption}</td>              
-              </tr>
-              <tr>
-                <td className="field">Status</td>
-                <td>
-                { editing ? (
-                  <Selector
-                      placeholder={this.state.status}
-                      value={this.state.status}
-                      options={statusOptions}
-                      onSelect={status => this.setState({ status })}
-                    />
-                  ) : (
-                    <Span>
-                      {this.state.status}
-                    </Span>
-                )}
-                </td>
-                <td className="field">Total Pay</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td className="field">Primary Insurance</td>
-                <td></td>
-                <td className="field">Profile</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td className="field"></td>
-                <td></td>
-                <td className="field">Margin</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td className="field">Instructions</td>
-                <td>{this.state.directions}</td>
-                <td className="field">Secondary Insurance</td>
-                <td className="value"></td>
-              </tr>
-            </tbody>
-          </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <Span
+                      label="Allergies"
+                    >
+                      <TextArea
+                        disabled
+                        id='symptoms'
+                        placeholder={allergies}
+                      /></Span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label style={{ fontSize: 14 }}>
+                      Patient Warning
+                    </label>
+                    <div id="patientWarning">
+                      <Span>
+                        {this.state.patientWarning || 'None'}
+                      </Span>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label style={{ fontSize: 14 }}>
+                      Physician Warning
+                    </label>
+                    <div id="physicianWarning">
+                      <Span>
+                        {this.state.physicianWarning || 'None'}
+                      </Span>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
 
         </Body>
       </div>

@@ -109,7 +109,8 @@ class AttachmentsTab extends Component {
   }
 
   render() {
-
+console.log(this.props);
+console.log(this.state);
     if (this.state.attachments) {
       // const self = this;
 

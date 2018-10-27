@@ -34,6 +34,10 @@ import {
   clearState,
 } from '../../../../actions/physicians'
 
+import { Line } from 'react-chartjs-2';
+
+import ScriptsTab from './Tabs/ScriptsTab'
+
 import styles from './PhysicianView.css'
 
 class PhysicianView extends Component {
@@ -66,30 +70,33 @@ class PhysicianView extends Component {
   componentDidMount() {
     if (this.props.match.params.physicianId) {
       const loginToken = window.localStorage.getItem("token");
-        axios.get('/api/physicians/search?physicianId=' + this.props.match.params.physicianId, { headers: { "Authorization": "Bearer " + loginToken } })
+      axios.get('/api/physicians/search?physicianId=' + this.props.match.params.physicianId, { headers: { "Authorization": "Bearer " + loginToken } })
         .then((resp) => {
           console.log(resp);
           let physician = resp.data.response[0]
-            this.setState({
-                name: physician.firstName + " " + physician.lastName,
-                id: physician.id,
-                group: physician.group,
-                specialization: physician.specialization,
-                phone: physician.phone,
-                fax: physician.fax,
-                address: physician.address1 + " " + physician.address3 + " " + physician.address2,
-                email: physician.email,
-                NPI: physician.NPI,
-                DEA: physician.DEA,
-                rep: physician.rep,
-                contact: physician.contact,
-                physicianWarning: physician.physicianWarning
-            })
+          this.setState({
+            name: physician.firstName + " " + physician.lastName,
+            id: physician.id,
+            group: physician.group,
+            specialization: physician.specialization,
+            phone: physician.phone,
+            fax: physician.fax,
+            addressStreet: physician.addressStreet,
+            addressCity: physician.addressCity,
+            addressState: physician.addressState,
+            addressZipCode: physician.addressZipCode,
+            email: physician.email,
+            NPI: physician.NPI,
+            DEA: physician.DEA,
+            rep: physician.rep,
+            contact: physician.contact,
+            physicianWarning: physician.physicianWarning
+          })
         }).catch((err) => {
-            console.error(err)
+          console.error(err)
         })
     }
-}
+  }
 
   get initialState() {
     const physician = this.props.physician || {}
@@ -186,10 +193,20 @@ class PhysicianView extends Component {
       lastName
     } = this.state
 
+    var data = {
+      labels: [ "June", "July", "August", "September", "October", "November"],
+      datasets: [{
+        label: "Physician Revenue",
+        backgroundColor: '#ff8840',
+        borderColor: '#f5bb94',
+        data: [0, 15, 7, 40, 25, 70],
+      }]
+    }
+
     return (
-      <div id="patientView">
-      <div className="flex-grid">
-      <div id="contactInfo" className={styles.contactInfo}>
+      <div id="physicianView">
+        <div className="flex-grid">
+          <div id="contactInfo" className={styles.contactInfo}>
             {editing ? (
               <div className="name">
                 Name:
@@ -206,20 +223,23 @@ class PhysicianView extends Component {
                 />
               </div>
             ) : (
-              <div>
-                Name: Dr. {this.state.name}
-              </div>
-            )}
+                <div>
+                  Name: Dr. {this.state.name}
+                </div>
+              )}
 
             <div>
               Group: {this.state.group}
             </div>
             <div>
               Specialty: {this.state.specialization}
-            </div>     
+            </div>
           </div>
-          <div id="contactInfo" className={styles.contactInfo}>  
-          
+          <div id="contactInfo" className={styles.contactInfo}>
+            <Line data={data} />
+          </div>
+
+          <div id="contactInfo" className={styles.contactInfo}>
             <div>
               <Span icon="phone">
                 {this.state.phone}
@@ -231,8 +251,9 @@ class PhysicianView extends Component {
               </Span>
             </div>
             <div>
-              <Span icon="building">
-                {this.state.address}
+              <Span id="address" icon="building">
+                {this.state.addressStreet}<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{this.state.addressCity}, {this.state.addressState}, {this.state.addressZipCode}
               </Span>
             </div>
             <div>
@@ -242,9 +263,10 @@ class PhysicianView extends Component {
             </div>
           </div>
         </div>
-        </div>
-        
-    )}
+      </div>
+
+    )
+  }
 
   renderMiscInfo() {
     return (
@@ -271,10 +293,10 @@ class PhysicianView extends Component {
               Physician Warning
             </label>
             <div id="physWarning">
-            <Span>
-              {this.state.physicianWarning || ""}
-            </Span>
-            </div>           
+              <Span>
+                {this.state.physicianWarning || ""}
+              </Span>
+            </div>
           </div>
           <div className="item">
             <label>
@@ -284,18 +306,19 @@ class PhysicianView extends Component {
               {this.state.contact || 'None'}
             </Span>
           </div>
-        <div className="item">
-        <label>
+          <div className="item">
+            <label>
               Sales Rep
             </label>
-              <Span>
-                {this.state.rep || 'Unassigned'}
-              </Span>
-         </div>
-      </div>
+            <Span>
+              {this.state.rep || 'Unassigned'}
+            </Span>
+          </div>
+        </div>
 
-    </div>
-    )}
+      </div>
+    )
+  }
 
   setEditState(editing) {
     const password = ''
@@ -418,11 +441,13 @@ class PhysicianView extends Component {
 
   renderScriptsTab() {
     return (
-      <div className={styles.scriptsTab}>
-        <div className="header">
-          <h2>Scripts Go Here</h2>
-        </div>
-      </div>
+      <ScriptsTab
+        className={styles.scriptsTab}
+        pID={this.props}
+        state={this.state}
+        patient={this.props.patient}
+        setState={this.setState.bind(this)}
+      />
     )
   }
 
@@ -482,7 +507,7 @@ class PhysicianView extends Component {
   }
 
   render() {
-    
+
 
     return (
       <div>
@@ -493,24 +518,24 @@ class PhysicianView extends Component {
               {this.state.group || 'No Group Available'}
             </span>
             <div className="action">
-                <Button
-                  search
-                  icon="edit"
-                  title="EDIT PHYSICIAN"
-                  style={{ marginLeft: 8 }}
-                />
-              
-                <Button
-                  search
-                  icon="lock"
-                  title="GIVE ACCESS"
-                  style={{ marginLeft: 8 }}
-                />
-              </div>
+              <Button
+                search
+                icon="edit"
+                title="EDIT PHYSICIAN"
+                style={{ marginLeft: 8 }}
+              />
+
+              <Button
+                search
+                icon="lock"
+                title="GIVE ACCESS"
+                style={{ marginLeft: 8 }}
+              />
+            </div>
           </h2>
         </Header>
         <Body className={styles.body}>
-        {this.renderContactInfo()}
+          {this.renderContactInfo()}
           {/* <ContactInfo
             className={styles.contactInfo}
             physician={physician}
@@ -520,7 +545,7 @@ class PhysicianView extends Component {
             closeModal={() => this.closeModal()}
           /> */}
           {this.renderMiscInfo()}
-         {/*  <MiscInfo
+          {/*  <MiscInfo
             className={styles.miscInfo}
             physician={physician}
             editing={editing}

@@ -84,7 +84,6 @@ class ScriptView extends Component {
 }
 
 
-
   componentDidMount() {
     console.log(this.props);
       if (this.props.match.params.scriptId) {
@@ -101,9 +100,7 @@ class ScriptView extends Component {
                   patient: script.patient,
                   billOnDate: script.billOnDate,
                   rxNumber: script.rxNumber,
-                  phone: script.phone,
                   diagnosis: script.diagnosis,
-                  email: script.email,
                   secDiagnosis: script.secDiagnosis,
                   refills: script.refills,
                   refillsRemaining: script.refillsRemaining,
@@ -453,7 +450,7 @@ class ScriptView extends Component {
                     </td>
                   </tr>
                   <tr>
-                    <td className="field">Network Copay</td>
+                    <td className="field">Network Pay</td>
                     <td>
                       <Input />
                     </td>

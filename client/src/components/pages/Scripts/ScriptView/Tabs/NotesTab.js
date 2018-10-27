@@ -30,111 +30,91 @@ class NotesTab extends Component {
 
   componentDidMount() {
     const loginToken = window.localStorage.getItem("token");
-      axios.get('/api/scripts/notes/search/', { headers: { "Authorization": "Bearer " + loginToken } })
-        .then((resp) => {
-          this.setState({
-              notes: resp.data.response,
-              // id: resp.data.response.id,
-             
-          })
-          console.log(this.state)
-        }).catch((error) => {
-          console.error(error);
+    axios.get('/api/scripts/notes/search/?ScriptId=' + this.props.state.id, { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        console.log(resp);
+        this.setState({
+          notes: resp.data.response,
+
+        })
+        console.log(this.state)
+      }).catch((error) => {
+        console.error(error);
       })
-}
+  }
 
-renderTableHead() {
-  console.log(this.state);
-  return (
-    <thead>
-      
-    </thead>
-  )
-}
+  renderTableHead() {
+    console.log(this.state);
+    return (
+      <thead>
 
-renderTableBody() {
-  return (
-    <tbody>
-      {this.state.notes.map(this.renderTableRow.bind(this))}
-    </tbody>
-  )
-}
+      </thead>
+    )
+  }
 
-renderTableRow(note) {
-  console.log(this.state.note);
-  return (<div>
+  renderTableBody() {
+    return (
+      <tbody>
+        {this.state.notes.map(this.renderTableRow.bind(this))}
+      </tbody>
+    )
+  }
 
-    <Table className="nt" key={note.id}>   
-      <thead><th>{note.User.username}</th></thead>
-        
-      
-      <tr>
-        <td>{note.note}</td>
-      </tr>
-    </Table>
-
-    <Table className="noteDateTime" key={note.id}>
-      <td>
-        <Span icon="calendar" />
-        <Moment format={"MM/DD/YY"}>{note.createdAt}</Moment>
-        &nbsp;&nbsp;
-        <Span icon="clock-o" />
-        <Moment format={"hh:mm A"}>{note.createdAt}</Moment>
-      </td>
-    </Table>
+  renderTableRow(note) {
+    console.log(this.state.note);
+    return (<div>
 
     </div>
-    
-  )
-}
 
-renderTable() {
-  return (
-    <Table>
-      {this.renderTableHead()}
-      {this.renderTableBody()}
-    </Table>
-  )
-}
+    )
+  }
+
+  renderTable() {
+    return (
+      <Table>
+        {this.renderTableHead()}
+        {this.renderTableBody()}
+      </Table>
+    )
+  }
 
 
   render() {
-    console.log(this.state.notes);
 
     if (this.state.notes) {
-      // const self = this;
 
-var noteList = this.state.notes.map(function (item, i) {
-          console.log(item);
-          return (
-              <div key={i}>
-                  {/* <div className="story-title-author">
-                          <h3 className="story-title">{item.patient}</h3>
-                
-                      <h5 className="story-author">
-                          {!(self.props.match.params.username)
-                              ?
-                              <div style={{ marginLeft: "5px" }} className="btn-group" role="group">
-                                  <button onClick={() => self.showUpdForm(item)} type="button" className="btn btn-primary btn-xs"><span className="glyphicon glyphicon-pencil"></span></button>
-                                  <button onClick={() => self.deleteBook(item.id)} type="button" className="btn btn-primary btn-xs"><span className="glyphicon glyphicon-remove"></span></button>
-                              </div>
-                              : null
-                          }
-                      </h5>
-                  </div>
-                  
-                  <p>{item.description}</p>
-                  <br /> */}
-              </div>
-              )
+      var noteList = 
+      
+      //   .sort((a, b) => a.createdAt < b.createdAt)
+        this.state.notes.reverse().map((item, i) =>
+          <div key={i}>
+          <Table className="nt" key={item.id}>
+        <thead><th>{item.User.username}</th></thead>
 
-            })
-        }
-        else {
-            return <div>
-                <p></p>
-            </div>
-        }
+
+        <tr>
+          <td>{item.note}</td>
+        </tr>
+      </Table>
+
+      <Table className="noteDateTime" key={item.id}>
+        <td>
+          <Span icon="calendar" />
+          <Moment format={"MM/DD/YY"}>{item.createdAt}</Moment>
+          &nbsp;&nbsp;
+        <Span icon="clock-o" />
+          <Moment format={"hh:mm A"}>{item.createdAt}</Moment>
+        </td>
+      </Table>
+      </div>
+        );
+      
+    }
+    else {
+      return <div>
+        <p></p>
+      </div>
+    }
 
     const {
       state,
@@ -153,7 +133,7 @@ var noteList = this.state.notes.map(function (item, i) {
 
     return (
       <div id="notesTab" className={className}>
-        
+
         <Button
           icon="plus"
           title="ADD NOTE"

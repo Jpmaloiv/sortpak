@@ -1,165 +1,209 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import qs from 'query-string'
 
-import {ActionBox, SearchBar, Selector, ToggleSwitch} from '../../../../common'
+import { ActionBox, SearchBar, Selector, ToggleSwitch } from '../../../../common'
+import { Button, ButtonGroup, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
+import styles from '../ScriptsView.js'
 
 class ScriptSearch extends React.Component {
 
   constructor(props) {
     super(props);
+
     this.state = {
-      type1RX: true,
-      type1HC: true, 
-      special: true
+      value: [1, 3],
+      special: true,
+      /* selected: {
+        RX: false,
+        HC: false,
+      } */
+      RX: false,
+      HC: false
     }
 
+    this.handleChange = this.handleChange.bind(this);
     this.handleClick = this.handleClick.bind(this);
   }
 
 
-    handleClick() {
-      this.setState(prevState => ({
-        special: !prevState.special
-      }));
-      this.submitSearch();
+  handleClick(e) {
+    this.setState(prevState => ({
+      special: !prevState.special
+    }));
+    // console.log(this.state.special)
+    this.submitSearch();
+  }
+
+  onChangeHandler = (event) => {
+    this.setState({
+      [event.target.name]: event.target.value
+    })
+  }
+
+  handleChange(e) {
+    console.log(e.target.value);
+    const key = e.target.value; // e.g. 'A'
+    if (key === 'RX') {
+      this.setState({
+        RX: true,
+        HC: false
+      })
+    } else if (key === 'HC') {
+      this.setState({
+        RX: false,
+        HC: true
+      })
     }
-
-    handleType1() {
-      this.setState(prevState => ({
-        type1RX: !prevState.type1RX
-      }));
-      this.submitSearch();
-    }
-
-    onChangeHandler = (event) => {
-        this.setState({
-            [event.target.name]: event.target.value
-        })
-    }
-   
-
-    submitSearch = (event) => {
-        // console.log(this.state.checked)
-        console.log(this.state.special);
-        let searchParams = "?";
-        if (this.state.special) searchParams += "&salesCode=M"
-        this.props.searchFunc(searchParams);
-    }
+    this.submitSearch();
+    // const value = !this.state.selected[key];
+    //  const newSelected = Object.assign(this.state.selected, {[key]: value});
+    //  console.log(newSelected)
+    // this.setState({ selected: newSelected });
+    // console.log('this.state', this.state); 
+  }
 
 
-    render() {
+  submitSearch = (event) => {
+    console.log(this.state.RX, this.state.HC)
+    let searchParams = "?";
+    if (this.state.RX) searchParams += '&homeCare=false'
+    if (this.state.HC) searchParams += '&homeCare=true'
+    if (this.state.special) searchParams += "&salesCode=M"
+    this.props.searchFunc(searchParams);
+  }
 
-      console.log(this.state.isToggleOn);
-      
-          const {
-            filterValue,
-            searchValue
-          } = this.state
-      
-          const Type1Options = [
-            'RX',
-            'HC',
-          ]
-      
-          const Type2Options = [
-            'SP',
-            'Third Party',
-          ]
-      
-          const SpecialOptions = [
-            'Medicare',
-          ]
-      
-          const RepOptions = [
-            'All Reps',
-            'No Reps',
-            'EE',
-          ]
-      
-          const SpecializationOptions = [
-            'All Specializations',
-            'No Specialization',
-            'EE'
-          ]
-      
-          const StatusValues = [
-            "Received",
-            "Review",
-            "Prior Auth",
-            "Process",
-            "Copay Assistance",
-            "Schedule",
-            "QA",
-            "Fill",
-            "Shipped",
-            "Done",
-            "Cancelled",
-            "Refill",
-          ]
 
-    
-        return(
-            <div>
+  render() {
+    // console.log(this.state.RX, this.state.HC)
+    console.log(this.state.special)
 
-                <ActionBox>
-              <div className='main'>
-                <ToggleSwitch
-                  label="Type"
-                  options={Type1Options}
-                  selected={filterValue}
-                  onSelect={filterValue => this.setState({ filterValue })}
-                />
-                
-                <ToggleSwitch               
-                    label="Special"
-                    options={SpecialOptions}
-                    onClick={this.handleClick}                  
-                    disabled={this.state.special}                                    
-                />
+    const {
+      filterValue,
+      searchValue
+    } = this.state
 
-                <ToggleSwitch
-                    label="Type"
-                    options={Type2Options}
-                    selected={filterValue}
-                    onSelect={filterValue => this.setState({ filterValue })}
-                />
-              <SearchBar
-                selected={searchValue}
-                onSelect={searchValue => this.setState({ searchValue })}
-                label="Search"
-                placeholder="Search..."
-              />
-              </div>
-            </ActionBox>
-            <ActionBox>
-              <div className="main">
-                <Selector
-                  label="Rep"
-                  options={RepOptions}
-                  selected={filterValue}
-                  onSelect={filterValue => this.setState({ searchValue })}
-                />
-                  <Selector
-                    label="Specialization"
-                    options={SpecializationOptions}
-                    selected={filterValue}
-                    onSelect={filterValue => this.setState({ searchValue })}
-                  />
-              </div>
-            </ActionBox>
-            <ActionBox>
-              <div className="main">
-                <ToggleSwitch
-                  label="Type"
-                  options={StatusValues}
-                  selected={filterValue}
-                  onSelect={filterValue => this.setState({ searchValue })}
-                  allowsMultipleSelection
-                />
-              </div>
-            </ActionBox>
-            </div>
-        )
-    }
+    const Type1Options = [
+      'RX',
+      'HC'
+    ]
+    const Type2Options = [
+      'SP',
+      'Third Party',
+    ]
+
+    const SpecialOptions = [
+      'Medicare',
+    ]
+
+    const RepOptions = [
+      'All Reps',
+      'No Reps',
+      'EE',
+    ]
+
+    const SpecializationOptions = [
+      'All Specializations',
+      'No Specialization',
+      'EE'
+    ]
+
+    const StatusValues = [
+      "Received",
+      "Review",
+      "Prior Auth",
+      "Process",
+      "Copay Assistance",
+      "Schedule",
+      "QA",
+      "Fill",
+      "Shipped",
+      "Done",
+      "Cancelled",
+      "Refill",
+    ]
+
+
+    return (
+      <div>
+
+        <ActionBox>
+          <div className='main'>
+
+            <ButtonGroup
+              className="scriptSearch"
+              value={this.state.value}
+              onClick={this.handleChange}
+            >
+              <label>Type</label>
+              <Button value='RX'>RX</Button>
+              <Button value='HC'>HC</Button>
+            </ButtonGroup>
+
+            {/* <ToggleButtonGroup
+              className="scriptSearch"
+              type="checkbox"
+              value={this.state.value}
+              onChange={this.handleChange}
+            >
+              <ToggleButton value={1}>RX</ToggleButton>
+              <ToggleButton value={2}>HC</ToggleButton>
+              
+              
+            </ToggleButtonGroup> */}
+
+            <ToggleSwitch
+              label="Special"
+              options={SpecialOptions}
+              onClick={this.handleClick}
+            />
+
+            <ToggleSwitch
+              label="Type"
+              options={Type2Options}
+              selected={filterValue}
+              onSelect={filterValue => this.setState({ filterValue })}
+            />
+            <SearchBar
+              selected={searchValue}
+              onSelect={searchValue => this.setState({ searchValue })}
+              label="Search"
+              placeholder="Search..."
+            />
+          </div>
+        </ActionBox>
+        <ActionBox>
+          <div className="main">
+            <Selector
+              label="Rep"
+              options={RepOptions}
+              selected={filterValue}
+              onSelect={filterValue => this.setState({ searchValue })}
+            />
+            <Selector
+              label="Specialization"
+              options={SpecializationOptions}
+              selected={filterValue}
+              onSelect={filterValue => this.setState({ searchValue })}
+            />
+          </div>
+        </ActionBox>
+        <ActionBox>
+          <div className="main">
+            <ToggleSwitch
+              label="Type"
+              options={StatusValues}
+              selected={filterValue}
+              onSelect={filterValue => this.setState({ searchValue })}
+              allowsMultipleSelection
+            />
+          </div>
+        </ActionBox>
+      </div>
+    )
+  }
 }
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"></link>
 
 export default ScriptSearch;

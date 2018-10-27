@@ -19,7 +19,7 @@ router.post("/add", (req, res) => {
         phone: req.query.phone,
         email: req.query.email,
         patientWarning: req.query.patientWarning,
-        condtions: req.query.conditions,
+        conditions: req.query.conditions,
         allergies: req.query.allergies,
         address1: req.query.address1,
         address2: req.query.address2,
@@ -69,7 +69,11 @@ router.get("/search", (req, res) => {
         },
         include: [{
             model: db.Scripts,
-            attributes: ["id", "patient", "processedOn", "status"]
+            attributes: ["id", "patient", "processedOn", "status"],
+            include: [{
+                model: db.Physicians,
+                attributes: ['id', 'firstName', 'lastName']
+            }]
         }]
     }
     if (req.query.patientId) {

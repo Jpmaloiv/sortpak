@@ -49,6 +49,10 @@ router.get("/search", (req, res) => {
             attributes: ["id", "username"]
         }]
     }
+
+    if (req.query.ScriptId) {
+        searchParams.where.ScriptId = req.query.ScriptId
+    }
   
     console.log(searchParams);
     db.scriptNotes

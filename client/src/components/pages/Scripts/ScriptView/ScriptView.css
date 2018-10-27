@@ -16,6 +16,35 @@ button#white {
     color: #2b2b2b;
 }
 
+#patientWarning {
+    background-color: #fff4ed;
+    border: 1px solid #ff8840;
+    border-radius: 2px;
+    padding: 4% 7%;
+    margin: 1% 0;
+    margin-right: 10%;
+    width: 175%;
+    font-size: 15px;
+    color: #1d1d1d;
+  }
+
+  #patientWarning span, #physicianWarning span {
+      line-height: 20px !important;
+  }
+
+  #physicianWarning {
+    background-color: #e2f3f9;
+    border: 1px solid #00b1ec;
+    border-radius: 2px;
+    padding: 4% 7%;
+    margin: 1% 0;
+    margin-right: 10%;
+    width: 175%;
+    font-size: 15px;
+    color: #1d1d1d;
+  }
+  
+
 #scriptViewHead button span {line-height: 0 !important;}
 
 #scriptViewHead h2 {display: inline;}
@@ -166,8 +195,30 @@ td.value {
     color: #333;
 }
 
-td.setValue {
+td.setValue a, td.setValue a:visited {
     color: #00b1ec;
+}
+
+#scriptViewColumns {
+    display: inline-block;
+}
+
+.scriptViewColumn1 {
+    display: inline;
+    float: left;
+}
+
+.scriptViewColumn2 {
+    display: inline-block;
+}
+
+#symptoms {
+    border-color: #e3e5e6;
+    border-radius: 10px;
+    padding: 5%;
+    width: 175%;
+    min-height: 90px;
+    margin: 2% 0;
 }
 
 :local(.attachmentsTab) {

@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import Moment from 'react-moment'
 
+import GoogleMaps from '../../../shared/GoogleMaps/GoogleMaps.js'
+
 import {
   AsYouType,
   parseNumber,
@@ -14,9 +16,9 @@ import {
 } from '../../../../lib/dateHelper'
 
 // Components
-import {SwitchTable, AddressModal} from '../../../shared'
+import { SwitchTable, AddressModal } from '../../../shared'
 
-import {Body, Button, Header, Input, Span} from '../../../common'
+import { Body, Button, Header, Input, Span } from '../../../common'
 
 import PrescriptionsTab from './Tabs/PrescriptionsTab'
 import InsuranceTab from './Tabs/InsuranceTab'
@@ -65,56 +67,57 @@ class PatientView extends Component {
   }
 
   componentDidMount() {
-      if (this.props.match.params.patientId) {
-        const loginToken = window.localStorage.getItem("token");
-          axios.get('/api/patients/search?patientId=' + this.props.match.params.patientId, { headers: { "Authorization": "Bearer " + loginToken } })
-          .then((resp) => {
-            let patient = resp.data.response[0]
-              this.setState({
-                  name: patient.firstName + " " + patient.lastName,
-                  id: patient.id,
-                  dob: patient.dob,
-                  sex: patient.sex,
-                  patientSince: patient.createdAt,
-                  phone: patient.phone,
-                  address: patient.address1 + "\n" + patient.address2,
-                  email: patient.email
-              })
-          }).catch((err) => {
-              console.error(err)
-          })
-      }
-
+    if (this.props.match.params.patientId) {
       const loginToken = window.localStorage.getItem("token");
-        let patientId = (this.props.match.params.patientId) ? this.props.match.params.patientId : JSON.parse(window.atob(loginToken.split('.')[1])).patientId;
-        axios({
-            url: '/api/profile/' + patientId,
-            method: 'get',
-            headers: { "Authorization": "Bearer " + loginToken }
+      axios.get('/api/patients/search?patientId=' + this.props.match.params.patientId, { headers: { "Authorization": "Bearer " + loginToken } })
+        .then((resp) => {
+          let patient = resp.data.response[0]
+          this.setState({
+            name: patient.firstName + " " + patient.lastName,
+            id: patient.id,
+            dob: patient.dob,
+            sex: patient.sex,
+            patientSince: patient.createdAt,
+            phone: patient.phone,
+            address: patient.address1 + "\n" + patient.address2,
+            email: patient.email
+          })
+        }).catch((err) => {
+          console.error(err)
         })
-            .then((resp) => {
-                console.log(resp);
-                this.setState({
-                    patientId: resp.data.id
-                })
-                
-                const loginToken = window.localStorage.getItem("token");
+    }
+
+    const loginToken = window.localStorage.getItem("token");
+    let patientId = (this.props.match.params.patientId) ? this.props.match.params.patientId : JSON.parse(window.atob(loginToken.split('.')[1])).patientId;
+    axios({
+      url: '/api/profile/' + patientId,
+      method: 'get',
+      headers: { "Authorization": "Bearer " + loginToken }
+    })
+      .then((resp) => {
+        console.log(resp);
+        this.setState({
+          patientId: resp.data.id
+        })
+
+        const loginToken = window.localStorage.getItem("token");
         let data = new FormData();
         console.log(this.state.patientId);
 
         axios.put('/api/current/add?patientId=' + this.state.patientId,
-        data, { headers: { "Authorization": "Bearer " + loginToken } })
-            .then((data) => {
-                console.log(data);
-                // window.location = '/profile';
-                            
-            }).catch((error) => {
-                console.error(error);
-            })
+          data, { headers: { "Authorization": "Bearer " + loginToken } })
+          .then((data) => {
+            console.log(data);
+            // window.location = '/profile';
 
-            }).catch((error) => {
-                console.error(error);
-            })
+          }).catch((error) => {
+            console.error(error);
+          })
+
+      }).catch((error) => {
+        console.error(error);
+      })
+
   }
 
   get initialState() {
@@ -253,10 +256,12 @@ class PatientView extends Component {
       dob
     } = this.state
 
+
+
     return (
-      <div id="patientView">
-      <div className="flex-grid">
-      <div id="contactInfo" className={styles.contactInfo}>
+      <div>
+        <div className="flex-grid">
+          <div id="contactInfo" className={styles.contactInfo}>
             {editing ? (
               <div className="name">
                 Name:
@@ -273,10 +278,10 @@ class PatientView extends Component {
                 />
               </div>
             ) : (
-              <div>
-                Name: {this.state.name}
-              </div>
-            )}
+                <div>
+                  Name: {this.state.name}
+                </div>
+              )}
 
             <div>
               Patient ID: #{this.state.id}
@@ -298,10 +303,18 @@ class PatientView extends Component {
             </div>
             <div>
               Patient Since: <Moment format={"YYYY-MM-DD"}>{this.state.createdAt}</Moment>
-            </div>     
+            </div>
           </div>
-          <div id="contactInfo" className={styles.contactInfo}>  
-          
+          <div id="contactInfo" className={styles.contactInfo}>
+
+            <GoogleMaps
+              address={this.state.address}
+             />
+
+          </div>
+          <div id="contactInfo" className={styles.contactInfo}>
+
+
             <div>
               <Span icon="phone">
                 {this.state.phone}
@@ -319,10 +332,11 @@ class PatientView extends Component {
             </div>
           </div>
         </div>
-        </div>
-        
-    )}
-            
+      </div>
+
+    )
+  }
+
 
   renderSwitchTable() {
     const { tab } = this.state
@@ -397,27 +411,27 @@ class PatientView extends Component {
       <div>
         <Header className={styles.header}>
           <h2>{this.state.name}
-              <div className="action">
-                <Button
-                  search
-                  icon="edit"
-                  title="EDIT PATIENT"
-                  style={{ marginLeft: 8 }}
-                />
-              
-                <Button
-                  icon="plus"
-                  title="ADD A NEW SCRIPT"
-                  link="/scripts/add"
-                  style={{ marginLeft: 8 }}
-                />
-                
-              </div>
-            </h2>
-          
+            <div className="action">
+              <Button
+                search
+                icon="edit"
+                title="EDIT PATIENT"
+                style={{ marginLeft: 8 }}
+              />
+
+              <Button
+                icon="plus"
+                title="ADD A NEW SCRIPT"
+                link="/scripts/add"
+                style={{ marginLeft: 8 }}
+              />
+
+            </div>
+          </h2>
+
         </Header>
-        
-        <Body className={styles.body}>
+
+        <Body id="patientView" className={styles.body}>
           {this.renderContactInfo()}
 
           <div className="switch-buffer" />

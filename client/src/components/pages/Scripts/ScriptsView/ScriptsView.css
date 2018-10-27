@@ -6,3 +6,54 @@ tr {
 .action-box .main {
     justify-content: initial;
 }
+
+
+.scriptSearch button {
+    padding: 12px 15px;
+    border-radius: 3px;
+    color: #000;
+    background-color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    -webkit-transition: all 150ms;
+    -o-transition: all 150ms;
+    transition: all 150ms;
+    border: 1px solid #dfe1e2;
+}
+
+.scriptSearch button:focus {
+    color: #fff;
+    background-color: #ff7d38;
+}
+
+.scriptSearch label {
+    display: block;
+    margin: 8% 0;
+}
+
+/* .scriptSearch label {
+    padding: 12px 15px;
+    border-radius: 3px;
+    color: #000;
+    background-color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    -webkit-transition: all 150ms;
+    -o-transition: all 150ms;
+    transition: all 150ms;
+    border: 1px solid #dfe1e2;
+}
+
+.scriptSearch label .btn.btn-default.active {
+    color: #fff;
+    background-color: #ff7d38;
+}
+
+.scriptSearch label input {
+    display: none;
+} */
+
+
+html [type="button"] {
+    -webkit-appearance: initial !important;
+}

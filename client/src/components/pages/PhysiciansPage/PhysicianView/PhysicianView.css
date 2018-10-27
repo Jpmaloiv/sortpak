@@ -1,11 +1,31 @@
 
+#physicianView #contactInfo:nth-child(1) {
+  width: 50%;
+}
+
+#physicianView #contactInfo:nth-child(3) {
+  padding-left: 5%;
+}
+
 #physWarning {
   background-color: #e2f3f9;
   border: 1px solid #00b1ec;
   border-radius: 2px;
-  padding: 0 5%;
+  padding: 2% 5%;
   margin: 1% 0;
   margin-right: 10%;
+}
+
+.chartjs-size-monitor {
+  position: relative !important;
+}
+
+#physicianView #address {
+  line-height: 20px;
+}
+
+#physWarning span {
+  line-height: 1.5em;
 }
 
 :local(.header) > h2 {
@@ -41,15 +61,15 @@
         margin-left: 5px; }
 
 :local(.miscInfo) {
-  display: flex;
-  height: 240px; }
+  display: flex; }
   :local(.miscInfo) > .grid, :local(.miscInfo) > .revenue {
     padding: 20px 10px;
     padding-bottom: 60px; }
   :local(.miscInfo) > .grid {
     flex: 1;
     display: grid;
-    grid-template-columns: 1fr 2fr 1fr;
+    margin: 1% 3%;
+    grid-template-columns: 1fr 1fr 1fr;
     grid-column-gap: 20px; }
     :local(.miscInfo) > .grid .cell {
       display: flex;

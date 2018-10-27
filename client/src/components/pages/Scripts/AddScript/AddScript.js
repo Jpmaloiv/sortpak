@@ -4,6 +4,10 @@ import { connect } from 'react-redux'
 import Medications from '../Medications.js'
 
 import {
+    PhysicianModal,
+} from '../../../shared/'
+
+import {
     patientChange,
     medicationChange,
     pharmNPIChange,
@@ -28,54 +32,79 @@ import {
     emailChange
 } from '../../../../actions/auth'
 
-import {Selector, Button, Header, Input, Body, Table, Form,} from '../../../common'
+import { Selector, Button, Header, Input, Body, Table, Form, } from '../../../common'
 import styles from './AddScript.css';
+import { runInThisContext } from 'vm';
 
 class AddScript extends Component {
 
     constructor(props) {
         super(props)
         this.state = {
-          processedOn: '',
-          medicationVal: '',
-          status: 'Received'
+            pouch: false,
+            homeCare: false,
+            processedOn: '',
+            medicationVal: '',
+            status: 'Received',
+            physicianId: '',
+            physicianSet: false
         }
-      }
-      
-      componentDidMount() {
-       const loginToken = window.localStorage.getItem("token");
 
-       axios.get('/api/current/search', { headers: { "Authorization": "Bearer " + loginToken } })
-        .then((resp) => {
-            console.log(resp);
+        this.handleCheckbox = this.handleCheckbox.bind(this);
+    }
+
+    openNoteModal() {
+        this.setState({ physicianModal: {} })
+    }
+
+    onCloseModal() {
         this.setState({
-            currentPatientID: resp.data.response[0].patientId,
-            // id: resp.data.response.id,    
+            physicianModal: null
         })
-        console.log(this.state.currentPatientID);
+    }
 
-    axios.get('/api/patients/search?patientId=' + this.state.currentPatientID, { headers: { "Authorization": "Bearer " + loginToken } })
-        .then((resp) => {
-            console.log(resp);
-            const patient = resp.data.response[0]
+    onUpdate = (val) => {
+        this.onCloseModal();
         this.setState({
-            patientId: patient.id,
-            patientName: patient.firstName + " " + patient.lastName,
-            patientDob: patient.dob,
-            patientPhone: patient.phone,
-            patientAddress: patient.address1 + "\n" + patient.address2
-            // id: resp.data.response.id,    
-        })
-        console.log(this.state.patientName);
-        }).catch((error) => {
-        console.error(error);
-     })
-        }).catch((error) => {
-        console.error(error);
-     })
+            physicianId: val,
+            physicianSet: true
+        },
+            this.getPhysician
+        )
+    };
 
-     console.log(this.state.currentPatientID)
-    } 
+    componentDidMount() {
+        const loginToken = window.localStorage.getItem("token");
+
+        axios.get('/api/current/search', { headers: { "Authorization": "Bearer " + loginToken } })
+            .then((resp) => {
+                console.log(resp);
+                this.setState({
+                    currentPatientID: resp.data.response[0].patientId 
+                })
+                console.log(this.state.currentPatientID);
+
+                axios.get('/api/patients/search?patientId=' + this.state.currentPatientID, { headers: { "Authorization": "Bearer " + loginToken } })
+                    .then((resp) => {
+                        console.log(resp);
+                        const patient = resp.data.response[0]
+                        this.setState({
+                            patientId: patient.id,
+                            patientName: patient.firstName + " " + patient.lastName,
+                            patientDob: patient.dob,
+                            patientPhone: patient.phone,
+                            patientAddress: patient.address1 + "\n" + patient.address2  
+                        })
+                        console.log(this.state.patientName);
+                    }).catch((error) => {
+                        console.error(error);
+                    })
+            }).catch((error) => {
+                console.error(error);
+            })
+
+        console.log(this.state.currentPatientID)
+    }
 
 
     onChangeHandler = (event) => {
@@ -84,30 +113,71 @@ class AddScript extends Component {
         })
     }
 
-    submitscript = (event) => {
-        event.preventDefault();
-        console.log(this.state.copayApproval);
-        this.state.status === "Received";
-        console.log(this.state.status);
+    getPhysician() {
+        console.log(this.state.physicianId);
         const loginToken = window.localStorage.getItem("token");
         let data = new FormData();
-        axios.post('/api/scripts/add?patientId=' + this.state.patientId + '&processedOn=' + this.state.processedOn + '&patient=' + this.props.patient + "&medication=" + this.props.medication + "&status=" + this.state.status + "&pharmNPI=" + this.props.pharmNPI
-        + "&priorAuth=" + this.state.priorAuth + "&location=" + this.props.location + "&pharmDate=" + this.props.pharmDate + "&writtenDate=" + this.props.writtenDate + "&salesCode=" + this.props.salesCode +
-        "&billOnDate=" + this.props.billOnDate + "&cost=" + this.props.cost + "&rxNumber=" + this.props.rxNumber + "&primInsPay=" + this.props.primInsPay + "&diagnosis=" + this.props.diagnosis +
-        "&secInsPay=" + this.props.secInsPay + "&secDiagnosis=" + this.props.secDiagnosis + "&patientPay=" + this.props.patientPay + "&refills=" + this.props.refills +
-        "&refillsRemaining=" + this.props.refillsRemaining + "&quantity=" + this.props.quantity + "&daysSupply=" + this.props.daysSupply + "&directions=" + this.props.directions +
-        "&copayApproval=" + this.state.copayApproval + "&copayNetwork=" + this.state.copayNetwork + "&homeInfusion=" + this.props.homeInfusion + "&phone=" + this.props.phone + "&email=" + this.props.email, 
-        data, { headers: { "Authorization": "Bearer " + loginToken } })
+        axios.get('/api/physicians/search?physicianId=' + this.state.physicianId,
+            data, { headers: { "Authorization": "Bearer " + loginToken } })
             .then((data) => {
                 console.log(data);
-                // window.location = '/profile';
-                this.props.history.push("/scripts");              
+                let physician = data.data.response[0]
+                this.setState({
+                    physicianName: "Dr. " + physician.firstName + " " + physician.lastName,
+                    physicianGroup: physician.group,
+                    physicianPhone: physician.phone,
+                    physicianAddressStreet: physician.addressStreet,
+                    physicianAddressCity: physician.addressCity,
+                    physicianAddressState: physician.addressStreet,
+                    physicianAddressZipCode: physician.addressZipCode
+                })
+
+                console.log(this.state);
+
+
             }).catch((error) => {
                 console.error(error);
             })
     }
 
+    submitscript = (event) => {
+        event.preventDefault();
+        this.state.status === "Received";
+        const loginToken = window.localStorage.getItem("token");
+        console.log(this.state.physicianId);
+        let data = new FormData();
+        axios.post('/api/scripts/add?patientId=' + this.state.patientId + '&physicianId=' + this.state.physicianId + '&processedOn=' + this.state.processedOn + '&pouch=' + this.state.pouch + '&patient=' + this.props.patient + "&medication=" + this.props.medication + "&status=" + this.state.status + "&pharmNPI=" + this.props.pharmNPI
+            + "&priorAuth=" + this.state.priorAuth + "&location=" + this.props.location + "&pharmDate=" + this.props.pharmDate + "&writtenDate=" + this.props.writtenDate + "&salesCode=" + this.props.salesCode +
+            "&billOnDate=" + this.props.billOnDate + "&cost=" + this.props.cost + "&rxNumber=" + this.props.rxNumber + "&primInsPay=" + this.props.primInsPay + "&diagnosis=" + this.state.diagnosis +
+            "&secInsPay=" + this.props.secInsPay + "&secDiagnosis=" + this.state.secDiagnosis + "&patientPay=" + this.props.patientPay + "&refills=" + this.props.refills +
+            "&refillsRemaining=" + this.props.refillsRemaining + "&quantity=" + this.props.quantity + "&daysSupply=" + this.props.daysSupply + "&directions=" + this.props.directions +
+            "&copayApproval=" + this.state.copayApproval + "&copayNetwork=" + this.state.copayNetwork + "&homeCare=" + this.state.homeCare + '&hcHome=' + this.state.hcHome + '&hcPhone=' + this.state.hcPhone,
+            data, { headers: { "Authorization": "Bearer " + loginToken } })
+            .then((data) => {
+                console.log(data);
+                // window.location = '/profile';
+                this.props.history.push("/scripts");
+            }).catch((error) => {
+                console.error(error);
+            })
+    }
+
+    handleCheckbox(event) {
+        const target = event.target
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        this.setState({
+            [name]: value
+        });
+
+    }
+
+    handleChangeValue = e => this.setState({ value: e.target.value });
+
+
     render() {
+
         const {
             patient,
             patientChange,
@@ -148,15 +218,8 @@ class AddScript extends Component {
             daysSupply,
             daysSupplyChange,
             directions,
-            directionsChange,
-            homeInfusion,
-            phone,
-            phoneChange,
-            email,
-            emailChange
+            directionsChange
         } = this.props
-
-        
 
         const {
             processedOn
@@ -189,78 +252,117 @@ class AddScript extends Component {
             'Copay Card'
         ]
 
+        const {
+            physicianModal
+        } = this.state
+
+
         return (
             <div>
                 <Header>
                     <h2>Add A New Script</h2>
-                    <Button
-                        onClick={this.submitscript} 
-                        title="CREATE SCRIPT" 
-                        className="submit btn btn-default" 
-                        type="submit" 
-                        value="Submit"
-                        style={{ marginRight: 8 }}
-                    />
+                    <div className="action">
+                        <Button
+                            cancel
+                            type="button"
+                            title="CANCEL"
+                            link="/patients"
+                            style={{ marginRight: 10 }}
+                        />
+                        <Button
+                            onClick={this.submitscript}
+                            title="CREATE SCRIPT"
+                            className="submit btn btn-default"
+                            type="submit"
+                            value="Submit"
+                            style={{ marginRight: 8 }}
+                        />
+                    </div>
                 </Header>
                 <Body className={styles.body} id="addScript">
 
                     <Form className={styles.form}>
-                    <Table>
-                        <tr>
-                            <td>
-                        
-                        <Input
-                            type="date"
-                            label="Processed On"
-                            value={processedOn}
-                            onChange={processedOn => this.setState({ processedOn })}
-                        />
-                        </td>
-                        </tr>
-                    </Table>
-                    
-                    <h4 style={{marginLeft: 30, marginBottom: 0}}>Patient</h4>
-                    <Table className="patientTable">
-                        <thead>
-                            <th>NAME</th>
-                            <th>DATE OF BIRTH</th>
-                            <th>PHONE NUMBER</th>
-                            <th>ADDRESS</th>
-                        </thead>
-                        <tr>
-                            <td>{this.state.patientName}</td>
-                            <td>{this.state.patientDob}</td>
-                            <td>{this.state.patientPhone}</td>
-                            <td>{this.state.patientAddress}</td>
-                        </tr>
-                    </Table>
-
-                    <Table>
-                        <tbody>
-                        <tr>
-                            <td>
-                            <Medications 
-                                placeholder="Medication"
-                                value={medication}
-                                onChange={medicationChange}
-                            />
-                            {/* <Input
-                            placeholder="Medication"
-                            value={medication}
-                            onChange={medicationChange}
-                        /> */}
-                            </td>
-                        </tr>
-                        </tbody>
+                        <Table>
+                            <tr className="checkboxRow">
+                                <td>
+                                    <Input
+                                        type="date"
+                                        label="Process On"
+                                        value={processedOn}
+                                        onChange={processedOn => this.setState({ processedOn })}
+                                    />
+                                </td>
+                                <td className="check">
+                                    <div>
+                                        <input
+                                            type="checkbox"
+                                            name="pouch"
+                                            checked={this.state.pouch}
+                                            onChange={this.handleCheckbox}
+                                        />
+                                        <label>POUCH</label>
+                                    </div>
+                                </td>
+                            </tr>
                         </Table>
 
-                        {/* <Table>
-                            <Selector 
-                                wide
-                                value={physicianOptions}
-                            />
+                        <h4 style={{ marginLeft: 30, marginBottom: 0 }}>Patient</h4>
+                        <Table className="addScriptTable">
+                            <thead>
+                                <th>NAME</th>
+                                <th>DATE OF BIRTH</th>
+                                <th>PHONE NUMBER</th>
+                                <th>ADDRESS</th>
+                            </thead>
+                            <tr>
+                                <td>{this.state.patientName}</td>
+                                <td>{this.state.patientDob}</td>
+                                <td>{this.state.patientPhone}</td>
+                                <td>{this.state.patientAddress}</td>
+                            </tr>
+                        </Table>
+
+                        <Table>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <Medications
+                                            placeholder="Medication"
+                                            value={medication}
+                                            onChange={medicationChange}
+                                        />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </Table>
+
+                        <Table className="addScriptTable">
+                            <thead>
+                                <th>PHYSICIAN NAME</th>
+                                <th>GROUP</th>
+                                <th>PHONE</th>
+                                <th>ADDRESS</th>
+                            </thead>
+
+                            {this.state.physicianSet ?
+                                <tr>
+                                <td>{this.state.physicianName}</td>
+                                <td>{this.state.physicianGroup}</td>
+                                <td>{this.state.physicianPhone}</td>
                                 
-                        </Table> */}
+                                    <td>
+                                        {this.state.physicianAddressStreet}<br />
+                                        {this.state.physicianAddressCity}, {this.state.physicianAddressState}, {this.state.physicianAddressZipCode}
+                                    </td>
+                            </tr>
+                                :
+                                <tr>
+                                <td className="add" onClick={() => this.openNoteModal()}>
+                                    + Click here to add a physician
+                            </td>
+                            </tr>
+                            }
+                        </Table>
 
                         <Table>
                             <tbody>
@@ -275,10 +377,10 @@ class AddScript extends Component {
                                             wide
                                             label="Status"
                                             options={priorAuthOptions}
-                                            onSelect={priorAuth => this.setState({priorAuth})}
+                                            onSelect={priorAuth => this.setState({ priorAuth })}
                                         />
                                     </td>
-                                    <td>                                   
+                                    <td>
                                         <Input
                                             className={styles.input}
                                             label="Transfer Pharmacy NPI"
@@ -295,7 +397,7 @@ class AddScript extends Component {
                                             onChange={locationChange}
                                         />
                                     </td>
-                                   <td>
+                                    <td>
                                         <Input
                                             type="date"
                                             label="Transfer Pharmacy Date"
@@ -304,7 +406,7 @@ class AddScript extends Component {
                                             onChange={pharmDateChange}
                                         />
                                     </td>
-                                </tr>                                        
+                                </tr>
                             </tbody>
                         </Table>
 
@@ -366,8 +468,8 @@ class AddScript extends Component {
                                     <td>
                                         <Input
                                             label="Diagnosis"
-                                            value={diagnosis}
-                                            onChange={diagnosisChange}
+                                            value={this.state.diagnosis}
+                                            onChange={diagnosis => this.setState({ diagnosis })}
                                         />
                                     </td>
                                     <td>
@@ -382,8 +484,8 @@ class AddScript extends Component {
                                     <td>
                                         <Input
                                             label="Secondary Diagnosis"
-                                            value={secDiagnosis}
-                                            onChange={secDiagnosisChange}
+                                            value={this.state.secDiagnosis}
+                                            onChange={secDiagnosis => this.setState({ secDiagnosis })}
                                         />
                                     </td>
                                     <td>
@@ -452,11 +554,11 @@ class AddScript extends Component {
                                 <tr>
                                     <td>
                                         <Selector
-                                             wide
+                                            wide
                                             //  label="Status"
-                                             options={copayApprovalOptions}
-                                             placeholder="No Status"
-                                             onSelect={copayApproval => this.setState({copayApproval})}
+                                            options={copayApprovalOptions}
+                                            placeholder="No Status"
+                                            onSelect={copayApproval => this.setState({ copayApproval })}
                                         />
                                     </td>
                                     <td>
@@ -465,9 +567,9 @@ class AddScript extends Component {
                                             label="Copay Network"
                                             placeholder="No Network"
                                             options={copayNetworkOptions}
-                                            onSelect={copayNetwork => this.setState({copayNetwork})}
-                                        />  
-                                                                                  
+                                            onSelect={copayNetwork => this.setState({ copayNetwork })}
+                                        />
+
                                     </td>
                                 </tr>
                             </tbody>
@@ -476,15 +578,15 @@ class AddScript extends Component {
                         <Table>
                             <tbody>
                                 <tr>
-                                        <h4>Shipping</h4>
+                                    <h4>Shipping</h4>
                                 </tr>
                                 <tr>
                                     <td>
                                         <Button
-                                            title="CREATE SHIPPING" 
-                                            className="" 
-                                            type="" 
-                                            value=""                                     
+                                            title="CREATE SHIPPING"
+                                            className=""
+                                            type=""
+                                            value=""
                                         />
                                     </td>
                                 </tr>
@@ -494,92 +596,102 @@ class AddScript extends Component {
                         <Table>
                             <tbody>
                                 <tr>
-                                    <td>
-                                    <label>Home Infusion</label>
-                                    <input type="checkbox" onChange={status => this.setState({homeInfusion})} />
+                                    <td className="check">
+                                        <input
+                                            type="checkbox"
+                                            name="homeCare"
+                                            checked={this.state.homeCare}
+                                            onChange={this.handleCheckbox}
+                                        />
+                                        <label>Home Care</label>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <Input
-                                            label="Phone"
-                                            value={phone}
-                                            onChange={phoneChange}
-                                        />   
+                                            label="Home"
+                                            value={this.state.hcHome}
+                                            onChange={hcHome => this.setState({ hcHome })}
+                                        />
                                     </td>
                                     <td>
                                         <Input
-                                            label="Email"
-                                            value={email}
-                                            onChange={emailChange}
+                                            label="Phone"
+                                            value={this.state.hcPhone}
+                                            onChange={hcPhone => this.setState({ hcPhone })}
                                         />
                                     </td>
                                 </tr>
                             </tbody>
                         </Table>
-    
+                        <PhysicianModal
+                            content={physicianModal}
+                            onClickAway={() => this.onCloseModal()}
+                            // onSubmit={this.getPhysician}
+                            onUpdate={this.onUpdate}
+                        />
                     </Form>
                 </Body>
-            </div>
+            </div >
         );
     }
 }
 
 
 
-const mapStateToProps = ({auth}) => {
+const mapStateToProps = ({ auth }) => {
     const {
-      patient,
-      medication,
-      pharmNPI,
-      location,
-      pharmDate,
-      writtenDate,
-      salesCode,
-      billOnDate,
-      cost,
-      rxNumber,
-      primInsPay,
-      diagnosis,
-      secInsPay,
-      secDiagnosis,
-      patientPay,
-      refills,
-      refillsRemaining,
-      quantity,
-      daysSupply,
-      directions,
-      phone,
-      email,
-      loading
+        patient,
+        medication,
+        pharmNPI,
+        location,
+        pharmDate,
+        writtenDate,
+        salesCode,
+        billOnDate,
+        cost,
+        rxNumber,
+        primInsPay,
+        diagnosis,
+        secInsPay,
+        secDiagnosis,
+        patientPay,
+        refills,
+        refillsRemaining,
+        quantity,
+        daysSupply,
+        directions,
+        phone,
+        email,
+        loading
     } = auth
-  
+
     return {
-      patient,
-      medication,
-      pharmNPI,
-      location,
-      pharmDate,
-      writtenDate,
-      salesCode,
-      billOnDate,
-      cost,
-      rxNumber,
-      primInsPay,
-      diagnosis,
-      secInsPay,
-      secDiagnosis,
-      patientPay,
-      refills,
-      refillsRemaining,
-      quantity,
-      daysSupply,
-      directions,
-      phone,
-      email,
-      loading
+        patient,
+        medication,
+        pharmNPI,
+        location,
+        pharmDate,
+        writtenDate,
+        salesCode,
+        billOnDate,
+        cost,
+        rxNumber,
+        primInsPay,
+        diagnosis,
+        secInsPay,
+        secDiagnosis,
+        patientPay,
+        refills,
+        refillsRemaining,
+        quantity,
+        daysSupply,
+        directions,
+        phone,
+        email,
+        loading
     }
-  }
+}
 
 const actions = {
     patientChange,

@@ -13,6 +13,7 @@ router.post("/add", (req, res) => {
     const scriptLink = '/scripts/' + req.payload.id + '/' + req.query.patient.trim() + ".pdf";
     const script = {
         processedOn: req.query.processedOn,
+        pouch: req.query.pouch,
         patient: req.query.patient,
         medication: req.query.medication,
         status: req.query.status,
@@ -36,10 +37,10 @@ router.post("/add", (req, res) => {
         daysSupply: req.query.daysSupply,
         copayApproval: req.query.copayApproval,
         copayNetwork: req.query.copayNetwork,
-        homeInfusion: req.query.homeInfusion,
+        homeCare: req.query.homeCare,
         directions: req.query.directions,
-        phone: req.query.phone,
-        email: req.query.email,
+        hcHome: req.query.hcHome,
+        hcPhone: req.query.hcPhone,
         transLocation: req.query.transLocation,
         transNPI: req.query.transNPI,
         transDate: req.query.transDate,
@@ -49,7 +50,8 @@ router.post("/add", (req, res) => {
         ETA: req.query.ETA,
         paymentOption: req.query.paymentOption,
         link: scriptLink,
-        PatientId: req.query.patientId
+        PatientId: req.query.patientId,
+        PhysicianId: req.query.physicianId
     }
 
     fs.mkdir("./scripts/", (err) => {
@@ -58,17 +60,17 @@ router.post("/add", (req, res) => {
         } else {
             const scriptPath = './scripts/' + req.payload.id + '/' + req.query.patient.trim() + ".pdf";
             // console.log("dir created");
-                    // console.log("file saved");
-                    db.Scripts
-                        .create(script)
-                        .then((resp) => {
-                            res.status(200).json({ message: "Upload successful!" });
-                        })
-                        .catch((err) => {
-                            console.error(err);
-                            res.status(500).json({ message: "Internal server error.", error: err });
-                        })
-                
+            // console.log("file saved");
+            db.Scripts
+                .create(script)
+                .then((resp) => {
+                    res.status(200).json({ message: "Upload successful!" });
+                })
+                .catch((err) => {
+                    console.error(err);
+                    res.status(500).json({ message: "Internal server error.", error: err });
+                })
+
         }
     })
 });
@@ -78,16 +80,22 @@ router.get("/search", (req, res) => {
     let searchParams = {
         where: {},
         attributes: {
-            exclude: ["createdAt", "UserId"]
+            exclude: ["createdAt"]
         },
-        /* include: [{
+        include: [{
             model: db.Patients,
-            attributes: ["id", "firstName", "lastName"]
-        }] */
-        include: {
+            attributes: ["firstName", "lastName", "dob", "phone", "email", "patientWarning", "conditions", "allergies"],
+        },
+        {
+            model: db.Physicians,
+            attributes: ["firstName", "lastName", "rep", "contact", "phone", "physicianWarning"]
+        },
+        {
             model: db.scriptNotes,
-            attributes: ["id", "note"]
+            attributes: ['note', 'createdAt', 'UserId']
         }
+        ]
+      
     }
     if (req.query.scriptId) {
         searchParams.where.id = req.query.scriptId
@@ -95,7 +103,10 @@ router.get("/search", (req, res) => {
     if (req.query.salesCode) {
         searchParams.where.salesCode = req.query.salesCode
     }
-  
+    if (req.query.homeCare) {
+        searchParams.where.homeCare = req.query.homeCare
+    }
+
     db.Scripts
         .findAll(searchParams)
         .then((response) => {
@@ -108,14 +119,15 @@ router.get("/search", (req, res) => {
             console.error(err);
             res.status(500).json({ message: "Error (500): Internal Server Error", error: err })
         })
-    })
+})
 
-    
 
-router.put("/update", function(req, res) {
+
+router.put("/update", function (req, res) {
     console.log("update")
     const script = {
         processedOn: req.query.processedOn,
+        pouch: req.query.pouch,
         patient: req.query.patient,
         writtenDate: req.query.writtenDate,
         billOnDate: req.query.billOnDate,
@@ -130,12 +142,18 @@ router.put("/update", function(req, res) {
         cost: req.query.cost,
         primInsPay: req.query.primInsPay,
         secInsPay: req.query.secInsPay,
+        diagnosis: req.query.diagnosis,
+        secDiagnosis: req.query.secDiagnosis,
         priorAuth: req.query.priorAuth,
         location: req.query.location,
         copayApproval: req.query.copayApproval,
         copayNetwork: req.query.copayNetwork,
+        networkPay: req.query.networkPay,
         patientPay: req.query.patientPay,
         status: req.query.status,
+        homeCare: req.query.homeCare,
+        hcHome: req.query.hcHome,
+        hcPhone: req.query.hcPhone,
         transLocation: req.query.transLocation,
         transNPI: req.query.transNPI,
         transDate: req.query.transDate,
@@ -146,15 +164,15 @@ router.put("/update", function(req, res) {
         paymentOption: req.query.paymentOption,
     }
     console.log(script);
-    db.Scripts.update(script, {where: {id: req.query.id}})
-    .then(function(resp) {
-        res.json({success: true});
-    })
-    .catch(function(err) {
-        console.error(err);
-        return res.status(500).end('Update FAILED' + err.toString());
-        throw err;
-    });
+    db.Scripts.update(script, { where: { id: req.query.id } })
+        .then(function (resp) {
+            res.json({ success: true });
+        })
+        .catch(function (err) {
+            console.error(err);
+            return res.status(500).end('Update FAILED' + err.toString());
+            throw err;
+        });
 })
 
 

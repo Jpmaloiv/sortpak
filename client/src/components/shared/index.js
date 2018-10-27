@@ -7,6 +7,7 @@ import ContactBox from './ContactBox/ContactBox'
 import AddressModal from './AddressModal/AddressModal'
 import AddressLine from './AddressLine/AddressLine'
 import ExpensesTable from './ExpensesTable/ExpensesTable'
+import PhysicianModal from './PhysicianModal/PhysicianModal'
 import SummaryRow from './SummaryRow/SummaryRow'
 
 export {
@@ -19,5 +20,6 @@ export {
   AddressModal,
   AddressLine,
   ExpensesTable,
+  PhysicianModal,
   SummaryRow,
 }

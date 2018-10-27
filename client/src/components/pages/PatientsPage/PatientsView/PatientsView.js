@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 
 
-import {Span, Table, Header, Button, ActionBox, SearchBar} from '../../../common'
+import { Span, Table, Header, Button, ActionBox, SearchBar } from '../../../common'
 
 import {
   getPatients,
@@ -29,18 +29,18 @@ class PatientsView extends Component {
     }
   }
   componentDidMount() {
-      const loginToken = window.localStorage.getItem("token");
-        axios.get('api/patients/search/', { headers: { "Authorization": "Bearer " + loginToken } })
-          .then((resp) => {
-            console.log(resp.data.response);
-            this.setState({
-                patients: resp.data.response,
-                // id: resp.data.response.id,   
-            })
-            console.log(this.state.patients)
-          }).catch((error) => {
-            console.error(error);
+    const loginToken = window.localStorage.getItem("token");
+    axios.get('api/patients/search/', { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        console.log(resp.data.response);
+        this.setState({
+          patients: resp.data.response,
+          // id: resp.data.response.id,   
         })
+        console.log(this.state.patients)
+      }).catch((error) => {
+        console.error(error);
+      })
   }
 
   /* searchByName(name) {
@@ -72,7 +72,7 @@ class PatientsView extends Component {
           <th>
             Address
           </th>
-          <th/>
+          <th />
         </tr>
       </thead>
     )
@@ -88,7 +88,7 @@ class PatientsView extends Component {
   }
 
   handleClick(value) {
-    window.location=`/patients/${value}`
+    window.location = `/patients/${value}`
   }
 
   renderTableRow(patient) {
@@ -133,11 +133,11 @@ class PatientsView extends Component {
     if (this.state.patients) {
       // const self = this;
 
-var patientList = this.state.patients.map(function (item, i) {
-          console.log(item);
-          return (
-              <div key={i}>
-                  {/* <div className="story-title-author">
+      var patientList = this.state.patients.map(function (item, i) {
+        console.log(item);
+        return (
+          <div key={i}>
+            {/* <div className="story-title-author">
                           <h3 className="story-title">{item.patient}</h3>
                 
                       <h5 className="story-author">
@@ -154,16 +154,16 @@ var patientList = this.state.patients.map(function (item, i) {
                   
                   <p>{item.description}</p>
                   <br /> */}
-              </div>
-              )
+          </div>
+        )
 
-            })
-        }
-        else {
-            return <div>
-                <p></p>
-            </div>
-        }
+      })
+    }
+    else {
+      return <div>
+        <p></p>
+      </div>
+    }
 
     return (
       <div className={styles.app}>
@@ -177,7 +177,7 @@ var patientList = this.state.patients.map(function (item, i) {
           <div className="action">
             <Button
               title="MERGE PATIENT"
-              style={{backgroundColor: "#ff7d38", marginRight: 10 }}
+              style={{ backgroundColor: "#ff7d38", marginRight: 10 }}
             />
 
             <Button
@@ -187,7 +187,7 @@ var patientList = this.state.patients.map(function (item, i) {
               style={{ marginRight: 8 }}
             />
 
-        </div>
+          </div>
 
         </Header>
 
@@ -199,27 +199,27 @@ var patientList = this.state.patients.map(function (item, i) {
               <SearchBar
                 label="Search By Name"
                 placeholder="First or Last Name..."
-                // value={name}
-                // onChange={this.searchByName.bind(this)}
+              // value={name}
+              // onChange={this.searchByName.bind(this)}
               />
               <SearchBar
                 label="Search By DOB"
                 type="date"
-                // value={dob}
-                // onChange={this.searchByDob.bind(this)}
+              // value={dob}
+              // onChange={this.searchByDob.bind(this)}
               />
-            <SearchBar
+              <SearchBar
                 label="Search By Address"
                 type="address"
                 placeholder="Address or City"
               />
-            <SearchBar
+              <SearchBar
                 label="Search by Phone"
                 type="phone"
                 placeholder="(---) --- ---"
-            />
-          
-            {/*
+              />
+
+              {/*
               TODO: Automatic filter, no search button
               <Button
                 search

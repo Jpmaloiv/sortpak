@@ -7,6 +7,10 @@
 
 #addscript table {border-spacing: 25px !important;}
 
+tr.checkboxRow td:nth-child(1) {width: 35% !important;}
+#addScript td.check input {width: initial !important; margin: 1%;}
+td.check label {display: inline;}
+
 :local(.container) {
     display: flex;
     justify-content: center;
@@ -50,15 +54,20 @@
 
 #addScript table > tbody > tr:nth-child(odd) {background-color: transparent;}
 
-#addScript .patientTable table {font-size: .9em;}
-#addScript .patientTable table th {text-align: left;
+#addScript .addScriptTable table {font-size: .9em;}
+#addScript .addScriptTable table th {text-align: left;
     padding: 1%;
     font-weight: lighter;
     color: #abb0b5;
     font-size: .9em;}
 
-#addScript .patientTable table tr {background: #fff;
+#addScript .addScriptTable td.add {
+    color: #49d66d;
+    font-size: 1.2em;
+}
+
+#addScript .addScriptTable table tr {background: #fff;
     box-shadow: 0px 0px 2px #efefef;}
 
-    #addScript .patientTable table td {    padding: 1%;
+    #addScript .addScriptTable table td {    padding: 1%;
         border-right: 1px solid #e5e6e6;}

@@ -65,7 +65,6 @@ class AddPatient extends Component {
         data, { headers: { "Authorization": "Bearer " + loginToken } })
             .then((data) => {
                 console.log(data);
-                // window.location = '/profile';
                 this.props.history.push("/patients");              
             }).catch((error) => {
                 console.error(error);

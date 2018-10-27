@@ -46,15 +46,19 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.STRING,
             allowNull: true
         },
-        address1: {
+        addressStreet: {
             type: DataTypes.STRING,
             allowNull: true
         },
-        address2: {
+        addressCity: {
             type: DataTypes.STRING,
             allowNull: true
         },
-        address3: {
+        addressState: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        addressZipCode: {
             type: DataTypes.STRING,
             allowNull: true
         },
@@ -63,12 +67,12 @@ module.exports = function(sequelize, DataTypes) {
             allowNull: true
         }  
     }); 
+
     Physicians.associate = function(models) {
-        models.Physicians.belongsTo(models.User, {
-            foreignKey: {
-                allowNull: false
-            }
+        models.Physicians.hasMany(models.Scripts, {
+            onDelete: "cascade"
         });
     };
+
     return Physicians; 
   };

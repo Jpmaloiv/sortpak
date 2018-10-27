@@ -5,6 +5,10 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.DATEONLY,
             allowNull: true
         },
+        pouch: {
+            type: DataTypes.BOOLEAN,
+            allowNull: true
+        },
         patient: {
             type: DataTypes.STRING,
             allowNull: true
@@ -101,15 +105,20 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.STRING,
             allowNull: true
         },
-        homeInfusion: {
-            type: DataTypes.BOOLEAN,
-            allowNull: false
-        },
-        phone: {
+        networkPay: {
             type: DataTypes.STRING,
             allowNull: true
         },
-        email: {
+        homeCare: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: false
+        },
+        hcHome: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        hcPhone: {
             type: DataTypes.STRING,
             allowNull: true
         },
@@ -147,19 +156,33 @@ module.exports = function(sequelize, DataTypes) {
         }
     }); 
 
-    Scripts.associate = function(models) {
+    /* Scripts.associate = function(models) {
         models.Scripts.hasMany(models.scriptNotes, {
             onDelete: "cascade"
         })
-    }
+    } */
 
-    /* Scripts.associate = function(models) {
+    Scripts.associate = function(models) {
         models.Scripts.belongsTo(models.Patients, {
             foreignKey: {
                 allowNull: false
             }
+        }),
+        models.Scripts.belongsTo(models.Physicians, {
+            foreignKey: {
+                allowNull: false
+            }
+        }),
+        models.Scripts.hasMany(models.scriptNotes, {
+            onDelete: "cascade"
+        }),
+        models.Scripts.hasMany(models.scriptAttachments, {
+            onDelete: "cascade"
         });
-    }; */
+        
+    };
+
+   
 
     return Scripts; 
   };

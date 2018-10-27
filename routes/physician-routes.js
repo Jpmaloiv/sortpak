@@ -10,7 +10,7 @@ const Op = Sequelize.Op;
 
 
 router.post("/add", (req, res) => {
-    const physicianLink = '/physicians/' + req.payload.id;
+    const physicianLink = '/physicians/'
     const physician = {
         firstName: req.query.firstName,
         lastName: req.query.lastName,
@@ -23,19 +23,19 @@ router.post("/add", (req, res) => {
         fax: req.query.fax,
         email: req.query.fax,
         contact: req.query.contact,
-        address1: req.query.address1,
-        address2: req.query.address2,
-        address3: req.query.address3,
+        addressStreet: req.query.addressStreet,
+        addressCity: req.query.addressCity,
+        addressState: req.query.addressState,
+        addressZipCode: req.query.addressZipCode,
         physicianWarning: req.query.physicianWarning,
         link: physicianLink,
-        UserId: req.payload.id
     }
 
     fs.mkdir("./physicians/", (err) => {
         if ((err) && (err.code !== 'EEXIST')) {
             console.error(err)
         } else {
-            const physicianPath = './physicians/' + req.payload.id;
+            const physicianPath = './physicians/'
             // console.log("dir created");
                     // console.log("file saved");
                     db.Physicians
@@ -57,11 +57,15 @@ router.get("/search", (req, res) => {
     let searchParams = {
         where: {},
         attributes: {
-            exclude: ["createdAt", "updatedAt", "UserId"]
+            exclude: ["createdAt", "updatedAt"]
         },
         include: [{
-            model: db.User,
-            attributes: ["id", "username"]
+            model: db.Scripts,
+            attributes: ["status", "processedOn", 'PatientId'],
+            include: [{
+                model: db.Patients,
+                attributes: ['firstName', 'lastName']
+            }]
         }]
     }
     if (req.query.physicianId) {

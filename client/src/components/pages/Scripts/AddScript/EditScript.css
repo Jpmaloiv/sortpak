@@ -10,6 +10,9 @@
 
 #editScript div.select label {position: initial;}
 
+#editScript td.check input {width: initial !important; display: inline; margin: 1%;}
+td.check label {display: inline;}
+
 
 :local(.container) {
     display: flex;

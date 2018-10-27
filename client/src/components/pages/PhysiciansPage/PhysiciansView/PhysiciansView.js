@@ -40,21 +40,21 @@ class PhysiciansView extends Component {
       })
       .catch(console.log) */
 
-      const loginToken = window.localStorage.getItem("token");
-        axios.get('api/physicians/search/', { headers: { "Authorization": "Bearer " + loginToken } })
-          .then((resp) => {
-            console.log(resp);
-            console.log(resp.data);
-            console.log(resp.data.response);
-            this.setState({
-                physicians: resp.data.response,
-                // id: resp.data.response.id,
-               
-            })
-            console.log(this.state.physicians)
-          }).catch((error) => {
-            console.error(error);
+    const loginToken = window.localStorage.getItem("token");
+    axios.get('api/physicians/search/', { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        console.log(resp);
+        console.log(resp.data);
+        console.log(resp.data.response);
+        this.setState({
+          physicians: resp.data.response,
+          // id: resp.data.response.id,
+
         })
+        console.log(this.state.physicians)
+      }).catch((error) => {
+        console.error(error);
+      })
   }
 
   renderTableHead() {
@@ -93,7 +93,7 @@ class PhysiciansView extends Component {
   }
 
   handleClick(value) {
-    window.location=`/physicians/${value}`
+    window.location = `/physicians/${value}`
   }
 
   renderTableRow(physician) {
@@ -101,8 +101,8 @@ class PhysiciansView extends Component {
       <tr value={physician.id} onClick={() => this.handleClick(physician.id)}>
 
         <td>
-            Dr. {physician.firstName} {physician.lastName}
-          
+          Dr. {physician.firstName} {physician.lastName}
+
         </td>
 
         <td>
@@ -122,11 +122,10 @@ class PhysiciansView extends Component {
         </td>
 
         <td>
-          {physician.address1} {physician.address3}
-          <br />
-          {physician.address2}
+          {physician.addressStreet}<br />
+          {physician.addressCity}, {physician.addressState}, {physician.addressZipCode} 
         </td>
-   
+
       </tr>
     )
   }
@@ -176,11 +175,11 @@ class PhysiciansView extends Component {
     if (this.state.physicians) {
       // const self = this;
 
-var physicianList = this.state.physicians.map(function (item, i) {
-          console.log(item);
-          return (
-              <div key={i}>
-                  {/* <div className="story-title-author">
+      var physicianList = this.state.physicians.map(function (item, i) {
+        console.log(item);
+        return (
+          <div key={i}>
+            {/* <div className="story-title-author">
                           <h3 className="story-title">{item.patient}</h3>
                 
                       <h5 className="story-author">
@@ -197,16 +196,16 @@ var physicianList = this.state.physicians.map(function (item, i) {
                   
                   <p>{item.description}</p>
                   <br /> */}
-              </div>
-              )
+          </div>
+        )
 
-            })
-        }
-        else {
-            return <div>
-                <p></p>
-            </div>
-        }
+      })
+    }
+    else {
+      return <div>
+        <p></p>
+      </div>
+    }
 
     return (
       <div className={styles.app}>
@@ -220,7 +219,7 @@ var physicianList = this.state.physicians.map(function (item, i) {
           <div className="action">
             <Button
               title="MERGE PHYSICIAN"
-              style={{backgroundColor: "#ff7d38", marginRight: 10 }}
+              style={{ backgroundColor: "#ff7d38", marginRight: 10 }}
             />
 
             <Button
@@ -229,7 +228,7 @@ var physicianList = this.state.physicians.map(function (item, i) {
               title="ADD A NEW PHYSICIAN"
               style={{ marginRight: 8 }}
             />
-        </div>
+          </div>
 
         </Header>
 
@@ -268,7 +267,7 @@ var physicianList = this.state.physicians.map(function (item, i) {
                 type='specialty'
               />
 
-            {/*
+              {/*
               TODO: Automatic filter, no search button
               <Button
                 search

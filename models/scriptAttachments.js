@@ -19,6 +19,11 @@ module.exports = function(sequelize, DataTypes) {
         }    
     }); 
     scriptAttachments.associate = function(models) {
+        models.scriptAttachments.belongsTo(models.Scripts, {
+            foreignKey: {
+                allowNull: false
+            }
+        })
         models.scriptAttachments.belongsTo(models.User, {
             foreignKey: {
                 allowNull: false

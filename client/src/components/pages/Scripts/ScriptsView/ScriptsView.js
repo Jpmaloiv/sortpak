@@ -7,7 +7,7 @@ import ScriptList from './ScriptList/ScriptList'
 
 // import { hasAuthTokenAsync } from '../../../../lib'
 
-import { Header, Button } from '../../../common'
+import { Header } from '../../../common'
 
 import styles from './ScriptsView.css'
 
