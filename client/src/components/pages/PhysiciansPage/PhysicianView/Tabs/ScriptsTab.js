@@ -145,6 +145,7 @@ class ScriptsTab extends Component {
             <div>
                 {this.renderTable()}
                 {scriptList}
+                <p></p>
             </div>
         )
     }
