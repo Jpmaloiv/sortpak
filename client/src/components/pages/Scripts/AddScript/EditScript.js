@@ -246,11 +246,11 @@ class EditScript extends Component {
                                     />
                                 </td>
                                 <td>
-                                    <Input
+                                    {/* <Input
                                         label="Physician"
                                         value={this.state.physician}
                                         onChange={physician => this.setState((physician))}
-                                    />
+                                    /> */}
                                 </td>
                             </tr>
                             <tr>

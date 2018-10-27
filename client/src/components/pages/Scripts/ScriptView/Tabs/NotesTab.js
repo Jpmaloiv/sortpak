@@ -35,7 +35,6 @@ class NotesTab extends Component {
         console.log(resp);
         this.setState({
           notes: resp.data.response,
-
         })
         console.log(this.state)
       }).catch((error) => {
@@ -89,7 +88,7 @@ class NotesTab extends Component {
         this.state.notes.reverse().map((item, i) =>
           <div key={i}>
           <Table className="nt" key={item.id}>
-        <thead><th>{item.User.username}</th></thead>
+        <thead><th>Admin</th></thead>
 
 
         <tr>
