@@ -21,11 +21,23 @@ class PrescriptionsTab extends Component {
         console.log(resp);
         // let patient = resp.data.response[0];
         this.setState({
-          scripts: resp.data.response[0].Scripts,
-          physician: 'Dr. ' + resp.data.response[0].Scripts[0].Physician.firstName + ' ' + resp.data.response[0].Scripts[0].Physician.lastName,
-          conditions: resp.data.response[0].conditions,
-          allergies: resp.data.response[0].allergies
+          patientId: resp.data.response[0].id
+          // physician: 'Dr. ' + resp.data.response[0].Scripts[0].Physician.firstName + ' ' + resp.data.response[0].Scripts[0].Physician.lastName,
+          // conditions: resp.data.response[0].conditions,
+          // allergies: resp.data.response[0].allergies
         })
+
+        console.log(this.state.patientId);
+        axios.get('/api/scripts/search?patientId=' + this.state.patientId, { headers: { "Authorization": "Bearer " + loginToken } })
+          .then((resp) => {
+            console.log(resp);
+            this.setState({
+              scripts: resp.data.response
+            })
+          })
+      }).catch((error) => {
+        console.error(error);
+
       }).catch((error) => {
         console.error(error);
       })
