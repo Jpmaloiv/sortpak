@@ -1,6 +1,9 @@
 import React from 'react';
 import Moment from 'react-moment'
 import { Span, Table } from '../../../../common'
+import { GET_PHYSICIAN } from '../../../../../actions/types/physicians';
+
+import axios from 'axios'
 
 var moment = require('moment');
 moment().format();
@@ -35,11 +38,29 @@ class ScriptList extends React.Component {
     )
   }
 
+  // getPhysician() {
+  //   axios.get('/api/physicians/search?physicianId=', { headers: { "Authorization": "Bearer " + loginToken } })
+  //     .then((resp) => {
+  //       console.log(resp);
+
+  //       this.setState({
+
+  //       })
+
+  //     }).catch((error) => {
+  //       console.error(error);
+  //     })
+
+  // }
+
   handleClick(value) {
     window.location = `/scripts/${value}`
   }
 
   renderTableRow(script) {
+    console.log(this.props);
+    console.log(this.state);
+    
 
     return (
 

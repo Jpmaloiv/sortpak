@@ -41,7 +41,7 @@ class PhysiciansView extends Component {
       .catch(console.log) */
 
     const loginToken = window.localStorage.getItem("token");
-    axios.get('api/physicians/search/', { headers: { "Authorization": "Bearer " + loginToken } })
+    axios.get('api/physicians/find/', { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
         console.log(resp);
         console.log(resp.data);

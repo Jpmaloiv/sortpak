@@ -27,7 +27,7 @@ class ScriptsView extends Component {
       username: '',
       userID: '',
       results: []
-      
+
     }
     // this.handleClick = this.handleClick.bind(this);
   }
@@ -36,27 +36,26 @@ class ScriptsView extends Component {
     const loginToken = window.localStorage.getItem("token");
     axios.get('api/scripts/search' + searchParams, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
-            console.log(resp)
+        console.log(resp)
         this.setState({
-            results: resp.data.response,
-            // id: resp.data.response.id,
-            patient: resp.data.patient,
-            medication: resp.data.medication,
-            status: resp.data.status,
-            pharmNPI: resp.data.pharmNPI,
-            location: resp.data.location,
-            pharmDate: resp.data.pharmDate
+          results: resp.data.response,
+          physicianId: resp.data.response[0].physicianId,
+          patient: resp.data.patient,
+          medication: resp.data.medication,
+          status: resp.data.status,
+          pharmNPI: resp.data.pharmNPI,
+          location: resp.data.location,
+          pharmDate: resp.data.pharmDate
         })
-        
       }).catch((error) => {
         console.error(error);
-    })
-}
+      })
+  }
 
   componentDidMount() {
-      const urlParams = new URLSearchParams(this.props.location.scripts)
-      // const patient = urlParams.get("patient")
-      this.searchScriptDb("?patient=" + urlParams.get("patient"))   
+    const urlParams = new URLSearchParams(this.props.location.scripts)
+    // const patient = urlParams.get("patient")
+    this.searchScriptDb("?patient=" + urlParams.get("patient"))
   }
 
 
@@ -74,7 +73,7 @@ class ScriptsView extends Component {
 
         <div className="body">
 
-          <ScriptSearch searchFunc={this.searchScriptDb}/>
+          <ScriptSearch searchFunc={this.searchScriptDb} />
           {/* {(this.state.results[0]) ? <ScriptList data={this.state.results} /> : ""} */}
           <ScriptList data={this.state.results} />
 
