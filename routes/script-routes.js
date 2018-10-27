@@ -106,6 +106,15 @@ router.get("/search", (req, res) => {
     if (req.query.homeCare) {
         searchParams.where.homeCare = req.query.homeCare
     }
+    if (req.query.patientId) {
+        searchParams.where.PatientId = req.query.patientId
+    }
+
+    if (req.query.physicianId) {
+        searchParams.where.PhysicianId = req.query.physicianId
+    }
+
+
 
     db.Scripts
         .findAll(searchParams)

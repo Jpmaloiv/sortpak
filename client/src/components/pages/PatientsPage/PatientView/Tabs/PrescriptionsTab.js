@@ -21,10 +21,10 @@ class PrescriptionsTab extends Component {
         console.log(resp);
         // let patient = resp.data.response[0];
         this.setState({
-          patientId: resp.data.response[0].id
-          // physician: 'Dr. ' + resp.data.response[0].Scripts[0].Physician.firstName + ' ' + resp.data.response[0].Scripts[0].Physician.lastName,
-          // conditions: resp.data.response[0].conditions,
-          // allergies: resp.data.response[0].allergies
+          patientId: resp.data.response[0].id,
+          conditions: resp.data.response[0].conditions,
+          allergies: resp.data.response[0].allergies
+          
         })
 
         console.log(this.state.patientId);
@@ -87,7 +87,7 @@ class PrescriptionsTab extends Component {
         </td>
 
         <td>
-          {this.state.physician}
+          Dr. {script.Physician.firstName} {script.Physician.lastName}
         </td>
 
         <td>

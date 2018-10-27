@@ -19,12 +19,21 @@ class ScriptsTab extends Component {
                 console.log(resp);
                 // let patient = resp.data.response[0];
                 this.setState({
+                    physicianId: resp.data.response[0].id,
                     scripts: resp.data.response[0].Scripts
                 })
+
+                axios.get('/api/scripts/search?physicianId=' + this.state.physicianId, { headers: { "Authorization": "Bearer " + loginToken } })
+                    .then((resp) => {
+                        console.log(resp);
+                        this.setState({
+                            scripts: resp.data.response
+                        })
+                    })
             }).catch((error) => {
                 console.error(error);
             })
-            
+
     }
 
     renderTableHead() {
@@ -80,9 +89,9 @@ class ScriptsTab extends Component {
                 <td>
                     {script.Patient.firstName} {script.Patient.lastName}
                 </td>
-                    
+
                 <td>
-    
+
                 </td>
 
                 <td>
