@@ -9,7 +9,7 @@ class TeamPage extends Component {
   render() {
     return (
       <div className={styles.app}>
-        <Router />
+        <Router /><p></p>
       </div>
     );
   }
