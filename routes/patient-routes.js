@@ -70,10 +70,10 @@ router.get("/search", (req, res) => {
         include: [{
             model: db.Scripts,
             attributes: ["id", "patient", "processedOn", "status"],
-            include: [{
-                model: db.Physicians,
-                attributes: ['id', 'firstName', 'lastName']
-            }]
+            // include: [{
+            //     model: db.Physicians,
+            //     attributes: ['id', 'firstName', 'lastName']
+            // }]
         }]
     }
     if (req.query.patientId) {
