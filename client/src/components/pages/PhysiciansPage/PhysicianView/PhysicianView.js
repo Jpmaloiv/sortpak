@@ -34,7 +34,7 @@ import {
   clearState,
 } from '../../../../actions/physicians'
 
-// import { Line } from 'react-chartjs-2';
+import { Line } from 'react-chartjs-2';
 
 import ScriptsTab from './Tabs/ScriptsTab'
 
@@ -236,7 +236,7 @@ class PhysicianView extends Component {
             </div>
           </div>
           <div id="contactInfo" className={styles.contactInfo}>
-            {/* <Line data={data} /> */}
+            <Line data={data} />
           </div>
 
           <div id="contactInfo" className={styles.contactInfo}>
