@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
 import axios from 'axios'
-import { connect } from 'react-redux'
 import Medications from '../Medications.js'
 
-import { Selector, Button, Header, Input, Body, Table, ToggleSwitch, Form, } from '../../../common'
+import { Selector, Button, Header, Input, Body, Table, Form, } from '../../../common'
 import styles from './EditScript.css';
-import { checkCredentials } from '../../../../lib/index.js';
-import { runInThisContext } from 'vm';
 
 class EditScript extends Component {
 
@@ -84,9 +81,13 @@ class EditScript extends Component {
 
     handleCopayApproval = (event) => {
         if (this.state.copayApproval === "Approved") {
-            this.state.copayApproved = true;
+            this.setState({
+                copayApproved: true
+            })
         } else {
-            this.state.copayApproved = false;
+            this.setState({
+                copayApproved: false
+            })
         }
         this.forceUpdate();
     }

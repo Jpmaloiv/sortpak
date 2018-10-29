@@ -21,6 +21,7 @@
     "react-disqus-thread": "^0.4.0",
     "react-dom": "^16.6.0",
     "react-fontawesome": "^1.6.1",
+    "react-geocode": "^0.1.2",
     "react-moment": "^0.8.1",
     "react-pdf-js": "^3.0.8",
     "react-progress-bar.js": "^0.2.3",

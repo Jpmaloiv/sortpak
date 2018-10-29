@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Geocode from 'react-geocode'
 
 import { Map, InfoWindow, Marker, GoogleApiWrapper } from 'google-maps-react';
-import { isNullOrUndefined } from 'util';
+// import { isNullOrUndefined } from 'util';
 
 export class MapContainer extends Component {
 

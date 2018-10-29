@@ -17,7 +17,6 @@ import RXHistoryTab from './Tabs/RXHistoryTab'
 import FaxesTab from './Tabs/FaxesTab'
 import StatusesTab from './Tabs/StatusesTab'
 import PaymentsTab from './Tabs/PaymentsTab'
-import { PATCH_SCRIPT } from '../../../../actions/types/scripts';
 
 
 class ScriptView extends Component {
@@ -116,9 +115,10 @@ class ScriptView extends Component {
                   patientPay: script.patientPay,
                   directions: script.directions
               }, () => console.log(this.state.status))
-              console.log(script.transLocation);
               
-                this.state.cancelPharmTrans === true;
+                this.setState({
+                  cancelPharmTrans: true
+                })
               
               console.log(this.state.cancelPharmTrans)
 
@@ -156,40 +156,60 @@ class ScriptView extends Component {
   }
 
   handleClick(event) {
-    this.state.status = event.target.id;
+    this.setState({
+      status: event.target.id
+    })
     console.log(this.state.status);
     this.updateStatus();
   }
 
   handleCopayApproval(event) {
-    this.state.status = event.target.id;
+    this.setState({
+      status: event.target.id
+    })
     if (event.target.id === "Schedule") {
-      this.state.copayApproval ="Approved"
+      this.setState({
+        copayApproval: 'Approved'
+      })
     } else {
-      this.state.copayApproval = "Denied"
+      this.setState({
+        copayApproval: 'Approved'
+      })
     }
     this.updateStatus();
   }
 
   transferScript(event) {
-    this.state.status = event.target.id;
-    this.state.cancelPharmTrans = true;
+    this.setState({
+      status: event.target.id
+    })
+    this.setState({
+      cancelPharmTrans: true
+    })
     this.updateStatus();
   }
 
   reversalPane(event) {
-    this.state.reversal = true;
+    this.setState({
+      reversal: true
+    })
     this.forceUpdate();
   }
 
   transferPane(event) {
-    this.state.transfer = true;
+    this.setState({ 
+      transfer: true
+    })
     this.forceUpdate();
   }
 
   handleShipping(event) {
-    this.state.status = event.target.id;
-    this.state.shipping = true;
+    this.setState({
+      status: event.target.id
+    })
+    this.setState({
+      shipping: true
+    })
     this.updateStatus();
   }
 
@@ -737,32 +757,6 @@ class ScriptView extends Component {
   
 
   render() {
-
-    const {
-      filterValue,
-      searchValue,
-    } = this.state
-
-    const statusValues = [
-      "Received",
-      "Review",
-      "Prior Auth",
-      "Process",
-      "Copay Assistance",
-      "Schedule",
-      "QA",
-      "Fill",
-      "Shipped",
-      "Done",
-      "Cancelled",
-      "Refill",
-    ]
-
-    const Refill= [
-      "Refill"
-    ]
-
-    console.log(this.state.status);
 
     return (
       <div>

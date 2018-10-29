@@ -24,7 +24,7 @@ class PrescriptionsTab extends Component {
           patientId: resp.data.response[0].id,
           conditions: resp.data.response[0].conditions,
           allergies: resp.data.response[0].allergies
-          
+
         })
 
         console.log(this.state.patientId);
@@ -159,43 +159,45 @@ class PrescriptionsTab extends Component {
 
         <div className='col'>
           <table>
-            <tr>
-              <td>
-                <Span
-                  label="Co-morbid conditions"
-                >
-                  <TextArea
-                    disabled
-                    id='symptoms'
-                    placeholder={this.state.conditions}
-                  />
-                </Span>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <Span
-                  label="Allergies"
-                >
-                  <TextArea
-                    disabled
-                    id='symptoms'
-                    placeholder={this.state.allergies}
-                  /></Span>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <label style={{ fontSize: 14 }}>
-                  Patient Warning
-                    </label>
-                <div id="patientWarning">
-                  <Span>
-                    {this.state.patientWarning || 'None'}
+            <tbody>
+              <tr>
+                <td>
+                  <Span
+                    label="Co-morbid conditions"
+                  >
+                    <TextArea
+                      disabled
+                      id='symptoms'
+                      placeholder={this.state.conditions}
+                    />
                   </Span>
-                </div>
-              </td>
-            </tr>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <Span
+                    label="Allergies"
+                  >
+                    <TextArea
+                      disabled
+                      id='symptoms'
+                      placeholder={this.state.allergies}
+                    /></Span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <label style={{ fontSize: 14 }}>
+                    Patient Warning
+                    </label>
+                  <div id="patientWarning">
+                    <Span>
+                      {this.state.patientWarning || 'None'}
+                    </Span>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
           </table>
         </div>
       </div>

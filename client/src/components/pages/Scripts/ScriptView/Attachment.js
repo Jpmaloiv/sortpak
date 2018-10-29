@@ -12,7 +12,7 @@ class Attachment extends React.Component {
 
     
     componentDidMount() {
-        const loginToken = window.localStorage.getItem("token");
+        // const loginToken = window.localStorage.getItem("token");
         // axios.get('/api/scripts/attachments/search?id=' + this.props.match.params.id, { headers: { "Authorization": "Bearer " + loginToken } })
        /*  axios({
             method: "GET",

@@ -34,7 +34,6 @@ import {
 
 import { Selector, Button, Header, Input, Body, Table, Form, } from '../../../common'
 import styles from './AddScript.css';
-import { runInThisContext } from 'vm';
 
 class AddScript extends Component {
 
@@ -143,7 +142,9 @@ class AddScript extends Component {
 
     submitscript = (event) => {
         event.preventDefault();
-        this.state.status === "Received";
+        this.setState({
+            status: 'Received'
+        })
         const loginToken = window.localStorage.getItem("token");
         console.log(this.state.physicianId);
         let data = new FormData();
@@ -180,8 +181,6 @@ class AddScript extends Component {
     render() {
 
         const {
-            patient,
-            patientChange,
             medication,
             medicationChange,
             pharmNPI,
@@ -202,12 +201,8 @@ class AddScript extends Component {
             rxNumberChange,
             primInsPay,
             primInsPayChange,
-            diagnosis,
-            diagnosisChange,
             secInsPay,
             secInsPayChange,
-            secDiagnosis,
-            secDiagnosisChange,
             patientPay,
             patientPayChange,
             refills,

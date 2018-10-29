@@ -14,7 +14,6 @@ import {
   NoteModal,
 } from '../../../../shared'
 
-import styles from './NotesTab.css'
 
 class NotesTab extends Component {
   constructor(props) {
@@ -117,17 +116,13 @@ class NotesTab extends Component {
 
     const {
       state,
-      setState,
       className,
       onCloseModal,
       onCreateNote,
     } = this.props
 
-    // const notes = patient.notes || []
     const {
-      warning,
-      editing,
-      noteModal,
+      noteModal
     } = state
 
     return (

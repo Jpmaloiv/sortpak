@@ -1,10 +1,7 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import qs from 'query-string'
 
 import { ActionBox, SearchBar, Selector, ToggleSwitch } from '../../../../common'
-import { Button, ButtonGroup, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
-import styles from '../ScriptsView.js'
+import { Button, ButtonGroup } from 'react-bootstrap';
 
 class ScriptSearch extends React.Component {
 
@@ -83,10 +80,6 @@ class ScriptSearch extends React.Component {
       searchValue
     } = this.state
 
-    const Type1Options = [
-      'RX',
-      'HC'
-    ]
     const Type2Options = [
       'SP',
       'Third Party',
@@ -204,6 +197,5 @@ class ScriptSearch extends React.Component {
   }
 }
 
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"></link>
 
 export default ScriptSearch;

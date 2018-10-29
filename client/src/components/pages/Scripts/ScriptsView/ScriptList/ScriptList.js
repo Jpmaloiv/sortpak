@@ -1,9 +1,7 @@
 import React from 'react';
 import Moment from 'react-moment'
 import { Span, Table } from '../../../../common'
-import { GET_PHYSICIAN } from '../../../../../actions/types/physicians';
 
-import axios from 'axios'
 
 var moment = require('moment');
 moment().format();
