@@ -31,7 +31,8 @@ module.exports = function(sequelize, DataTypes) {
         },
         location: {
             type: DataTypes.STRING,
-            allowNull: true
+            allowNull: true,
+            defaultValue: null
         },
         pharmDate: {
             type: DataTypes.STRING,
@@ -112,7 +113,6 @@ module.exports = function(sequelize, DataTypes) {
         homeCare: {
             type: DataTypes.BOOLEAN,
             allowNull: false,
-            defaultValue: false
         },
         hcHome: {
             type: DataTypes.STRING,

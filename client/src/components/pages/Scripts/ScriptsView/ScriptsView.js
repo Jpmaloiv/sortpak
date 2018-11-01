@@ -29,7 +29,6 @@ class ScriptsView extends Component {
       results: []
 
     }
-    // this.handleClick = this.handleClick.bind(this);
   }
 
   searchScriptDb = (searchParams) => {
@@ -39,7 +38,6 @@ class ScriptsView extends Component {
         console.log(resp)
         this.setState({
           results: resp.data.response,
-          physicianId: resp.data.response[0].physicianId,
           patient: resp.data.patient,
           medication: resp.data.medication,
           status: resp.data.status,
@@ -54,8 +52,9 @@ class ScriptsView extends Component {
 
   componentDidMount() {
     const urlParams = new URLSearchParams(this.props.location.scripts)
-    // const patient = urlParams.get("patient")
-    this.searchScriptDb("?patient=" + urlParams.get("patient"))
+      // const patient = urlParams.get("patient")
+      this.searchScriptDb("?patient=" + urlParams.get("patient"))   
+    // this.searchScriptDb();
   }
 
 

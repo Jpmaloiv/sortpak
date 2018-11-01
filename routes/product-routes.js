@@ -10,24 +10,30 @@ const Op = Sequelize.Op;
 var url = require('url');
 
 router.get("/search", (req, res) => {
-    var url_parts = url.parse(req.url, true);
-    var query = url_parts.query;
-    var dbQuery = {
-            attributes: ['DrugName', 'DrugNDC'],
-            where: {
-                [Op.or]:  [{
-                    DrugName: {
-                        like: '%'+ query.s + '%'
-                    }
-                }, {
-                    DrugNDC: {
-                        like: '%' + query.s + '%'
-                    }
-                }]
-            }
+    // var url_parts = url.parse(req.url, true);
+    // var query = url_parts.query;
+    // var dbQuery = {
+    //         attributes: ['DrugName', 'DrugNdc'],
+    //         where: {
+    //             [Op.or]:  [{
+    //                 DrugName: {
+    //                     like: '%'+ query.s + '%'
+    //                 }
+    //             }, {
+    //                 DrugNdc: {
+    //                     like: '%' + query.s + '%'
+    //                 }
+    //             }]
+    //         }
+    //     }
+    let searchParams = {
+        where: {},
+        attributes: {
+            exclude: ["updatedAt", "UserId"]
         }
-    db.Medications
-        .findAll(dbQuery)
+    }
+    db.Products
+        .findAll(searchParams)
         .then((response) => {
             res.json({
                successs: true,

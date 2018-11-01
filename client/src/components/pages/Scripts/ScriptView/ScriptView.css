@@ -103,6 +103,7 @@ h3 {
 }
 
 .actions table {
+    border-collapse: separate;
     border-spacing: 15px;
     margin-left: 5%;
     margin-top: 0;

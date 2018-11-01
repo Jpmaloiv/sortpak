@@ -13,6 +13,8 @@
 #editScript td.check input {width: initial !important; display: inline; margin: 1%;}
 td.check label {display: inline;}
 
+#editScript .refillsRemaining div {display: inline-block;}
+
 
 :local(.container) {
     display: flex;

@@ -10,7 +10,8 @@ const Op = Sequelize.Op;
 
 
 router.post("/add", (req, res) => {
-    const scriptLink = '/scripts/' + req.payload.id + '/' + req.query.patient.trim() + ".pdf";
+    // const scriptLink = '/scripts/' + req.payload.id + '/' + req.query.patient.trim() + ".pdf";
+    const scriptLink = '/scripts/' + req.payload.id;
     const script = {
         processedOn: req.query.processedOn,
         pouch: req.query.pouch,
@@ -58,7 +59,8 @@ router.post("/add", (req, res) => {
         if ((err) && (err.code !== 'EEXIST')) {
             console.error(err)
         } else {
-            const scriptPath = './scripts/' + req.payload.id + '/' + req.query.patient.trim() + ".pdf";
+            const scriptPath = './scripts/' + req.payload.id;
+            // const scriptPath = './scripts/' + req.payload.id + '/' + req.query.patient.trim() + ".pdf";
             // console.log("dir created");
             // console.log("file saved");
             db.Scripts
@@ -77,7 +79,9 @@ router.post("/add", (req, res) => {
 
 
 router.get("/search", (req, res) => {
+
     let searchParams = {
+        
         where: {},
         attributes: {
             exclude: ["createdAt"]
@@ -88,15 +92,17 @@ router.get("/search", (req, res) => {
         },
         {
             model: db.Physicians,
-            attributes: ["firstName", "lastName", "rep", "contact", "phone", "physicianWarning"]
+            attributes: ["firstName", "lastName", 'specialization', "rep", "contact", "phone", "physicianWarning"],
         },
         {
             model: db.scriptNotes,
             attributes: ['note', 'createdAt', 'UserId']
         }
         ]
-      
+
     }
+
+
     if (req.query.scriptId) {
         searchParams.where.id = req.query.scriptId
     }
@@ -106,6 +112,7 @@ router.get("/search", (req, res) => {
     if (req.query.homeCare) {
         searchParams.where.homeCare = req.query.homeCare
     }
+
     if (req.query.patientId) {
         searchParams.where.PatientId = req.query.patientId
     }
@@ -114,6 +121,38 @@ router.get("/search", (req, res) => {
         searchParams.where.PhysicianId = req.query.physicianId
     }
 
+
+
+
+    // if (req.query.location) {
+    //     searchParams.where.location != ""
+    // } else {
+    //     searchParams.where.location = ''
+    // }
+
+
+
+
+    if (req.query.status) {
+        if (req.query.status.match(/,.*,.*,.*,.*,.*,.*,.*,.*,.*,.*,.*,/)) { // Check if there are 2 commas
+            str = str.replace(',', ''); // Remove the first one
+        }
+        const statuses = req.query.status.split(',').map((elem) => {
+            return '%' + elem + '%'
+        });
+        if (statuses.length > 1) {
+            const opLikes = statuses.map((elem) => {
+                return { [Op.like]: elem }
+            })
+            searchParams.where.status = {
+                [Op.or]: opLikes
+            }
+        } else {
+            searchParams.where.status = {
+                [Op.like]: statuses[0]
+            }
+        }
+    }
 
 
     db.Scripts
@@ -159,6 +198,7 @@ router.put("/update", function (req, res) {
         copayNetwork: req.query.copayNetwork,
         networkPay: req.query.networkPay,
         patientPay: req.query.patientPay,
+        directions: req.query.directions,
         status: req.query.status,
         homeCare: req.query.homeCare,
         hcHome: req.query.hcHome,

@@ -94,6 +94,7 @@ class ScriptView extends Component {
               this.setState({
                   id: script.id,
                   processedOn: script.processedOn,
+                  pouch: script.pouch,
                   status: script.status,
                   writtenDate: script.writtenDate,
                   patient: script.patient,
@@ -110,6 +111,7 @@ class ScriptView extends Component {
                   primInsPay: script.primInsPay,
                   secInsPay: script.secInsPay,
                   location: script.location,
+                  homeCare: script.homeCare,
                   copayApproval: script.copayApproval,
                   copayNetwork: script.copayNetwork,
                   patientPay: script.patientPay,
@@ -138,8 +140,9 @@ class ScriptView extends Component {
 
   updateStatus() {
     const loginToken = window.localStorage.getItem("token");
+    console.log(this.state.homeCare);
     let data = new FormData();
-    let updateParams = '?id=' + this.props.match.params.scriptId + '&status=' + this.state.status;;
+    let updateParams = '?id=' + this.props.match.params.scriptId + '&status=' + this.state.status + '&pouch=' + this.state.pouch + '&location=' + this.state.location + '&homeCare=' + this.state.homeCare;
     if (this.state.reversal) updateParams += '&processedOn=' + this.state.processedOn;
     if (this.state.transfer) updateParams += '&transLocation=' + this.state.transLocation + '&transNPI=' + this.state.transNPI + '&transDate=' + this.state.transDate;
     if (this.state.copayApproval) updateParams += '&patientPay=' + this.state.patientPay + '&copayApproval=' + this.state.copayApproval + '&copayNetwork=' + this.state.copayNetwork;
@@ -149,7 +152,7 @@ class ScriptView extends Component {
         .then((data) => {
             console.log(data);
             console.log(this.state.status)
-            window.location.reload();
+            // window.location.reload();
         }).catch((error) => {
             console.error(error);
         })
@@ -158,9 +161,9 @@ class ScriptView extends Component {
   handleClick(event) {
     this.setState({
       status: event.target.id
-    })
-    console.log(this.state.status);
-    this.updateStatus();
+    },
+    this.updateStatus
+    )
   }
 
   handleCopayApproval(event) {
@@ -170,23 +173,21 @@ class ScriptView extends Component {
     if (event.target.id === "Schedule") {
       this.setState({
         copayApproval: 'Approved'
-      })
+      }, this.updateStatus)
     } else {
       this.setState({
         copayApproval: 'Approved'
-      })
+      }, this.updateStatus)
     }
-    this.updateStatus();
   }
 
   transferScript(event) {
     this.setState({
       status: event.target.id
-    })
+    }, this.updateStatus)
     this.setState({
       cancelPharmTrans: true
-    })
-    this.updateStatus();
+    }, this.updateStatus)
   }
 
   reversalPane(event) {
@@ -206,11 +207,10 @@ class ScriptView extends Component {
   handleShipping(event) {
     this.setState({
       status: event.target.id
-    })
+    }, this.updateStatus )
     this.setState({
       shipping: true
-    })
-    this.updateStatus();
+    }, this.updateStatus )
   }
 
   renderActions() {

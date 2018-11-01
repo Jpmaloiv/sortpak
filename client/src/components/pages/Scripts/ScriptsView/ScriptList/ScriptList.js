@@ -1,6 +1,6 @@
 import React from 'react';
 import Moment from 'react-moment'
-import { Span, Table } from '../../../../common'
+import { Table } from '../../../../common'
 
 
 var moment = require('moment');
@@ -56,10 +56,7 @@ class ScriptList extends React.Component {
   }
 
   renderTableRow(script) {
-    console.log(this.props);
-    console.log(this.state);
     
-
     return (
 
       <tr value={script.id} onClick={() => this.handleClick(script.id)}>
@@ -94,12 +91,7 @@ class ScriptList extends React.Component {
         </td>
 
         <td>
-          {/* <td className={styles.detailsCell}> */}
-          <Span
-            title="DETAILS"
-            link={`/scripts/${script.id}`}
-            onClick={() => this.props.setScript(script)}
-          />
+          {script.location}
         </td>
       </tr>
 

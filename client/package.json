@@ -23,6 +23,7 @@
     "react-fontawesome": "^1.6.1",
     "react-geocode": "^0.1.2",
     "react-moment": "^0.8.1",
+    "react-pagination-table": "^2.0.2",
     "react-pdf-js": "^3.0.8",
     "react-progress-bar.js": "^0.2.3",
     "react-redux": "^5.0.7",

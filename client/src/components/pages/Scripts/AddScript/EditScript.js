@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios'
 import Medications from '../Medications.js'
+import moment from 'moment';
 
 import { Selector, Button, Header, Input, Body, Table, Form, } from '../../../common'
 import styles from './EditScript.css';
@@ -18,7 +19,10 @@ class EditScript extends Component {
 
         this.handleCopayApproval = this.handleCopayApproval.bind(this);
         this.handleCheckbox = this.handleCheckbox.bind(this);
+        this.generateRefillScript = this.generateRefillScript.bind(this);
     }
+
+
 
 
     componentDidMount() {
@@ -44,6 +48,8 @@ class EditScript extends Component {
                         billOn: script.billOn,
                         cost: script.cost,
                         rxNumber: script.rxNumber,
+                        diagnosis: script.diagnosis,
+                        secDiagnosis: script.secDiagnosis,
                         primInsPay: script.primInsPay,
                         secInsPay: script.secInsPay,
                         patientPay: script.patientPay,
@@ -62,9 +68,13 @@ class EditScript extends Component {
                         homeCare: script.homeCare,
                         hcHome: script.hcHome,
                         hcPhone: script.hcPhone,
+                        PatientId: script.PatientId,
+                        PhysicianId: script.PhysicianId
                     }, () => console.log(this.state.status))
 
                     this.handleCopayApproval();
+
+
 
                 }).catch((err) => {
                     console.error(err)
@@ -109,14 +119,13 @@ class EditScript extends Component {
     }
 
     updateScript = (event) => {
-        console.log(this.state.pouch);
         event.preventDefault();
         const loginToken = window.localStorage.getItem("token");
         let data = new FormData();
         axios.put('/api/scripts/update?id=' + this.state.id + '&processedOn=' + this.state.processedOn + '&pouch=' + this.state.pouch + '&patient=' + this.state.patient + "&medication=" + this.state.medication +
             '&status=' + this.state.status + '&priorAuth=' + this.state.priorAuth + '&location=' + this.state.location + '&transNPI=' + this.state.transNPI + '&transDate=' + this.state.transDate +
             '&writtenDate=' + this.state.writtenDate + '&salesCode=' + this.state.salesCode + '&billOn=' + this.state.billOn + '&cost=' + this.state.cost + '&rxNumber=' +
-            this.state.rxNumber + '&primInsPay=' + this.state.primInsPay + '&diagnosis=' + this.state.diagnosis + '&secInsPay=' + this.state.secInsPay + '&secDiagnosis=' + this.state.secDiagnosis + '&patientPay=' + this.state.patientPay + '&refills=' + this.state.refills + '&refillsRemaining' +
+            this.state.rxNumber + '&primInsPay=' + this.state.primInsPay + '&diagnosis=' + this.state.diagnosis + '&secInsPay=' + this.state.secInsPay + '&secDiagnosis=' + this.state.secDiagnosis + '&patientPay=' + this.state.patientPay + '&refills=' + this.state.refills + '&refillsRemaining=' +
             this.state.refillsRemaining + '&quantity=' + this.state.quantity + '&daysSupply=' + this.state.daysSupply + '&directions=' + this.state.directions + '&copayApproval=' + this.state.copayApproval + '&copayNetwork=' +
             this.state.copayNetwork + '&networkPay=' + this.state.networkPay + '&shipOn=' + this.state.shipOn + '&deliveryMethod=' + this.state.deliveryMethod + '&trackNum=' + this.state.trackNum + '&ETA=' + this.state.ETA + '&paymentOption=' + this.state.paymentOption +
             '&homeCare=' + this.state.homeCare + '&hcHome=' + this.state.hcHome + '&hcPhone=' + this.state.hcPhone,
@@ -128,6 +137,60 @@ class EditScript extends Component {
                 console.error(error);
             })
     }
+
+    addScript() {
+        const loginToken = window.localStorage.getItem("token");
+        let data = new FormData();
+        axios.post('/api/scripts/add?patientId=' + this.state.PatientId + '&physicianId=' + this.state.PhysicianId + '&processedOn=' + this.state.newProcessedOn + '&pouch=' + this.state.pouch + "&medication=" + this.state.medication + "&status=" + this.state.newStatus + "&pharmNPI=" + this.state.pharmNPI
+            + "&priorAuth=" + this.state.priorAuth + "&location=" + this.state.location + "&pharmDate=" + this.state.pharmDate + "&writtenDate=" + this.state.writtenDate + "&salesCode=" + this.state.salesCode +
+            "&billOnDate=" + this.state.billOnDate + "&cost=" + this.state.cost + "&rxNumber=" + this.state.rxNumber + "&primInsPay=" + this.state.primInsPay + "&diagnosis=" + this.state.diagnosis +
+            "&secInsPay=" + this.state.secInsPay + "&secDiagnosis=" + this.state.secDiagnosis + "&patientPay=" + this.state.patientPay + "&refills=" + this.state.newRefills +
+            "&refillsRemaining=" + this.state.newRefillsRemaining + "&quantity=" + this.state.quantity + "&daysSupply=" + this.state.daysSupply + "&directions=" + this.state.directions +
+            "&copayApproval=" + this.state.copayApproval + "&copayNetwork=" + this.state.copayNetwork + "&homeCare=" + this.state.homeCare + '&hcHome=' + this.state.hcHome + '&hcPhone=' + this.state.hcPhone,
+            data, { headers: { "Authorization": "Bearer " + loginToken } })
+            .then((data) => {
+                console.log(data);
+                window.location = '/refills';
+            }).catch((error) => {
+                console.error(error);
+            })
+
+    }
+
+    refillLogic() {
+        console.log(this.state.newRefillsRemaining);
+        if (this.state.newRefillsRemaining < 0) {
+            this.setState({
+                newRefills: '',
+                newRefillsRemaining: ''
+            }, this.addScript)
+        } else {
+            this.addScript();
+        }
+    }
+
+    generateRefillScript = (event) => {
+        event.preventDefault();
+        let count = this.state.refills;
+        count++;
+        let num = this.state.refillsRemaining
+        let newStatus;
+        if (num == 0) {
+            newStatus = 'Renew'
+        } else if (num !== 0) {
+            newStatus = 'Refill'
+        }
+        this.setState({
+            newProcessedOn: moment(this.state.ETA).add(this.state.daysSupply, 'days').subtract(10, 'days').format('MM-DD-YYYY'),
+            newRefills: count,
+            newRefillsRemaining: this.state.refillsRemaining - 1,
+            newStatus: newStatus
+        }, this.refillLogic)
+    }
+
+
+
+
 
     render() {
 
@@ -189,6 +252,8 @@ class EditScript extends Component {
             'Credit Card',
             'No Copay'
         ]
+
+
 
 
         return (
@@ -417,16 +482,45 @@ class EditScript extends Component {
                                     />
                                 </td>
                             </tr>
-                            <tr>
-                                <td>
-                                    <Input
-                                        label="Refills Remaining"
-                                        placeholder={this.state.refillsRemaining}
-                                        value={this.state.refillsRemaining}
-                                        onChange={refillsRemaining => this.setState({ refillsRemaining })}
-                                    />
-                                </td>
-                            </tr>
+                            {this.state.status === 'Shipped' || this.state.status === 'Done' ?
+                                <tr>
+                                    <td className="refillsRemaining">
+                                        <Input
+                                            style={{ 'display': 'inline-block', paddingRight: 40 }}
+                                            label="Refills Remaining"
+                                            placeholder={this.state.refillsRemaining}
+                                            value={this.state.refillsRemaining}
+                                            onChange={refillsRemaining => this.setState({ refillsRemaining })}
+                                        />
+                                        {this.state.refillsRemaining == 0 ?
+                                            <Button
+                                                style={{ 'margin': '0 3%' }}
+                                                title="RENEW"
+                                                onClick={this.generateRefillScript}
+                                            />
+                                            :
+                                            <Button
+                                                style={{ 'margin': '0 3%' }}
+                                                title="REFILL"
+                                                onClick={this.generateRefillScript}
+                                            />
+                                        }</td></tr>
+
+                                : <tr>
+                                    <td className="refillsRemaining">
+                                        <Input
+                                            style={{ 'display': 'inline-block', paddingRight: 40 }}
+                                            label="Refills Remaining"
+                                            placeholder={this.state.refillsRemaining}
+                                            value={this.state.refillsRemaining}
+                                            onChange={refillsRemaining => this.setState({ refillsRemaining })}
+                                        />
+                                    </td>
+                                </tr>
+                            }
+
+
+
                             <tr>
                                 <td>
                                     <Input
@@ -451,7 +545,7 @@ class EditScript extends Component {
                                 <td>
                                     <Input
                                         label="Directions"
-                                        placeholder={this.state.directiions}
+                                        placeholder={this.state.directions}
                                         value={this.state.directions}
                                         onChange={directions => this.setState({ directions })}
                                     />

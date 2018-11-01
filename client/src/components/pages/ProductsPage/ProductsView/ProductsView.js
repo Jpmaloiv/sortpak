@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
-// import { connect } from 'react-redux'
 
-// import { hasAuthTokenAsync } from '../../../../lib'
+import React, { Component } from 'react';
+
+import axios from 'axios'
+import { TablePagination } from 'react-pagination-table';
 
 import {
   // Span,
@@ -12,171 +13,168 @@ import {
   SearchBar,
 } from '../../../common'
 
-// import {
-//   getPatients,
-//   filterPatientsByName,
-//   filterPatientsByDob,
-// } from '../../../../actions/main'
 
-// import {
-//   setPatient,
-// } from '../../../../actions/patients'
+import styles from './ProductsView.css'
 
-import styles from './ProductsView.scss'
+const th = ['NAME','NDC','SCHEDULE','PACKAGE SIZE','QUANTITY','COST','VALUE']
 
 class ProductsView extends Component {
 
-  // constructor(props) {
-  //   super(props)
-  //   this.state = {
-  //     name: '',
-  //     dob: '',
-  //     address: '',
-  //     phone: ''
-  //   }
-  // }
+  constructor(props) {
+    super(props)
+    this.state = {
+      products: ''
+    }
+  }
 
-  /* componentDidMount() {
-    hasAuthTokenAsync()
-      .then(() => {
-        
-          TODO: GET AVAILABLE PRODUCTS FROM DB
-          this.props.getPatients()
-        
+  
+
+  componentDidMount() {
+    const loginToken = window.localStorage.getItem("token");
+    axios.get('/api/products/search', { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        console.log(resp);
+
+        this.setState({
+          products: resp.data.response
+        })
+
+      }).catch((err) => {
+        console.error(err)
       })
-      .catch(console.log)
-  } */
+  }
 
 
-  //   TODO: ADD SEARCH FOR PRODUCTS
-  // searchByName(name) {
-  //   const dob = ''
-  //   this.setState({ name, dob })
-  //   this.props.filterPatientsByName(name)
+
+
+  // renderTableHead() {
+  //   return (
+  //     <thead>
+  //       <tr>
+  //         <th>
+  //           NAME
+  //         </th>
+  //         <th>
+  //           NDC
+  //         </th>
+  //         <th>
+  //           SCHEDULE
+  //         </th>
+  //         <th>
+  //           PACKAGE SIZE
+  //         </th>
+  //         <th>
+  //           QUANTITY
+  //         </th>
+  //         <th>
+  //           COST
+  //         </th>
+  //         <th>
+  //           VALUE
+  //         </th>
+  //         <th/>
+  //       </tr>
+  //     </thead>
+  //   )
   // }
-  //
-  //
-  // searchByDob(dob) {
-  //   const name = ''
-  //   this.setState({ name, dob })
-  //   this.props.filterPatientsByDob(dob)
+
+  // renderTableBody() {
+
+  //   return (
+  //     <tbody>
+  //       {this.state.products.map(this.renderTableRow.bind(this))}
+  //     </tbody>
+  //   )
   // }
 
+  // renderTableRow(product) {
+  //   return (
+  //     <tr>
+  //       <td>
+  //         {product.name}
+  //       </td>
 
-  renderTableHead() {
-    return (
-      <thead>
-        <tr>
-          <th>
-            NAME
-          </th>
-          <th>
-            NDC
-          </th>
-          <th>
-            SCHEDULE
-          </th>
-          <th>
-            PACKAGE SIZE
-          </th>
-          <th>
-            QUANTITY
-          </th>
-          <th>
-            COST
-          </th>
-          <th>
-            VALUE
-          </th>
-          <th/>
-        </tr>
-      </thead>
-    )
-  }
+  //       <td>
+  //         {/*
+  //           TODO: RENDER PRODUCT NDC
+  //         */}
+  //       </td>
 
-  renderTableBody() {
-    // const { products } = this.props
-    return (
-      <tbody>
-        {/*
-          TODO: RENDER PRODUCTS FROM DB
-        {patients.map(this.renderTableRow.bind(this))}
-        */}
-      </tbody>
-    )
-  }
+  //       <td>
+  //         {/*
+  //           TODO: RENDER PRODUCT SCHEDULE
+  //         */}
+  //       </td>
 
-  renderTableRow(patient) {
-    return (
-      <tr>
-        <td>
-          {/*
-            TODO: RENDER PRODUCT NAME
-          */}
-        </td>
+  //       <td>
+  //         {/*
+  //           TODO: RENDER PRODUCT PACKAGE SIZE
+  //         */}
+  //       </td>
 
-        <td>
-          {/*
-            TODO: RENDER PRODUCT NDC
-          */}
-        </td>
+  //       <td>
+  //         {/*
+  //           TODO: RENDER PRODUCT QUANTITY
+  //         */}
+  //       </td>
 
-        <td>
-          {/*
-            TODO: RENDER PRODUCT SCHEDULE
-          */}
-        </td>
+  //       <td>
+  //         {/*
+  //           TODO: RENDER PRODUCT COST
+  //         */}
+  //       </td>
 
-        <td>
-          {/*
-            TODO: RENDER PRODUCT PACKAGE SIZE
-          */}
-        </td>
+  //       <td>
+  //         {/*
+  //           TODO: RENDER PRODUCT VALUE
+  //         */}
+  //       </td>
 
-        <td>
-          {/*
-            TODO: RENDER PRODUCT QUANTITY
-          */}
-        </td>
+  //       {/*
+  //         TODO: Edit button for product
+  //       <td>
 
-        <td>
-          {/*
-            TODO: RENDER PRODUCT COST
-          */}
-        </td>
+  //         <Button
+  //           title="edit"
+  //           styes={{ backgroundColor:"orange" }}
+  //         />
 
-        <td>
-          {/*
-            TODO: RENDER PRODUCT VALUE
-          */}
-        </td>
+  //       </td>
+  //       */}
 
-        {/*
-          TODO: Edit button for product
-        <td>
+  //     </tr>
+  //   )
+  // }
 
-          <Button
-            title="edit"
-            styes={{ backgroundColor:"orange" }}
-          />
-
-        </td>
-        */}
-
-      </tr>
-    )
-  }
-
-  renderTable() {
-    return (
-      <Table>
-        {this.renderTableHead()}
-        {this.renderTableBody()}
-      </Table>
-    )
-  }
+  // renderTable() {
+  //   return (
+  //     <Table>
+  //       {this.renderTableHead()}
+  //       {this.renderTableBody()}
+  //     </Table>
+  //   )
+  // }
 
   render() {
+
+    if (this.state.products) {
+      // const self = this;
+
+      var productList = this.state.products.map(function (item, i) {
+        console.log(item);
+        return (
+          <div key={i}>
+
+          </div>
+        )
+
+      })
+    }
+    else {
+      return <div>
+        <p></p>
+      </div>
+    }
 
     return (
       <div className={styles.app}>
@@ -217,7 +215,17 @@ class ProductsView extends Component {
 
           </ActionBox>
 
-          {this.renderTable()}
+          <TablePagination
+            headers={ th }
+            data={this.state.products }
+            columns="name.NDC.schedule.packageSize.quantity.cost.value"
+            perPageItemCount={ 10 }
+            totalCount={ this.state.products.length }
+            // arrayOption={ [["size", 'all', ' ']] }
+        />
+
+          {/* {this.renderTable()} */}
+          {productList}
 
         </div>
 

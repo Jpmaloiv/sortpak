@@ -44,10 +44,11 @@ app.use(express.static(path.join(__dirname + '/scriptNotes')));
 app.use(express.static(path.join(__dirname + '/scriptAttachments')));
 app.use(express.static(path.join(__dirname + '/patients')));
 app.use(express.static(path.join(__dirname + '/patientAttachments')));
+app.use(express.static(path.join(__dirname + '/products')));
 app.use(express.static(path.join(__dirname + '/physicians')));
 app.use(express.static(path.join(__dirname + '/visits')));
 
-app.use("scripts/api/products", productRoutes);
+app.use("/api/products", productRoutes);
 //overwriting routes
 
 app.use(["/api/scripts"], jwt({

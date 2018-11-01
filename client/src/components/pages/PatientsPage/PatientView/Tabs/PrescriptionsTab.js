@@ -23,8 +23,8 @@ class PrescriptionsTab extends Component {
         this.setState({
           patientId: resp.data.response[0].id,
           conditions: resp.data.response[0].conditions,
-          allergies: resp.data.response[0].allergies
-
+          allergies: resp.data.response[0].allergies,
+          patientWarning: resp.data.response[0].patientWarning
         })
 
         console.log(this.state.patientId);

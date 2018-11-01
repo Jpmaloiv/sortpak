@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 
+import { Button, ButtonGroup } from 'react-bootstrap';
+
+import axios from 'axios'
+
 import {
   Table,
   Header,
   ActionBox,
   SearchBar,
-  Selector,
-  ToggleSwitch
+  Selector
 } from '../../../common'
 
 import styles from './RefillsView.css'
@@ -16,38 +19,148 @@ class RefillsView extends Component {
     super(props)
     this.state = {
       searchValue: 'Any',
+      refillOK: true,
+      specializstion: ''
     }
+
+    this.handleChange = this.handleChange.bind(this);
   }
+
+  componentDidMount() {
+    const loginToken = window.localStorage.getItem("token");
+
+    axios.get('/api/scripts/search?status=Refill', { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        console.log(resp);
+
+        this.setState({
+          refills: resp.data.response,
+          refillNum: resp.data.response.length
+        })
+
+      }).catch((err) => {
+        console.error(err)
+      })
+
+    axios.get('/api/scripts/search?status=Renew', { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        console.log(resp);
+
+        this.setState({
+          renewals: resp.data.response,
+          renewNum: resp.data.response.length
+        })
+
+      }).catch((err) => {
+        console.error(err)
+      })
+  }
+
+  submitSearch() {
+    console.log(this.state.specialization);
+    const loginToken = window.localStorage.getItem("token");
+    let searchParams = ''
+    if (this.state.refillOK) {
+      searchParams = 'Refill'
+    } else {
+      searchParams = 'Renew'
+    }
+    // searchParams += '&specialization=' + this.state.specialization
+    axios.get('/api/scripts/search?status=' + searchParams, { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        console.log(resp);
+
+        this.setState({
+          refills: resp.data.response
+
+        })
+
+      }).catch((err) => {
+        console.error(err)
+      })
+  }
+
+
+  handleChange(e) {
+    const key = e.target.value; // e.g. 'A'
+    if (key === 'refill') { this.setState({ refillOK: true }, this.submitSearch) }
+    else if (key === 'renew') { this.setState({ refillOK: false }, this.submitSearch) }
+  }
+
+
 
   renderTableHead() {
     return (
       <thead>
-        <tr>
-          <th>
-            Process On
-          </th>
-          <th>
-            Physician
-          </th>
-          <th>
-            Patient
-          </th>
-          <th>
-            Medication
-          </th>
-          <th>
-            Rx Number
-          </th>
-        </tr>
+        {this.state.refillOK ?
+          <tr>
+            <th>Process On</th>
+            <th>Physician</th>
+            <th>Patient</th>
+            <th>Medication</th>
+            <th>Rx Number</th>
+          </tr>
+          :
+          <tr>
+            <th>Refill On</th>
+            <th>Physician</th>
+            <th>Patient</th>
+            <th>Medication</th>
+            <th>Rx Number</th>
+            <th>Dob</th>
+            <th>Last Faxed</th>
+          </tr>
+        }
       </thead>
     )
   }
 
   renderTableBody() {
-    return (
-      <tbody>
-      </tbody>
-    )
+    if (this.state.refillOK) {
+      return (
+        <tbody>
+          {this.state.refills.map(this.renderTableRow.bind(this))}
+        </tbody>
+      )
+    } else {
+      return (
+        <tbody>
+          {this.state.renewals.map(this.renderTableRow.bind(this))}
+        </tbody>
+
+      )
+    }
+  }
+
+  handleClick(value) {
+    window.location = `/scripts/${value}`
+  }
+
+  renderTableRow(script) {
+    if (this.state.refillOK) {
+      return (
+        <tr value={script.id} onClick={() => this.handleClick(script.id)}>
+          <td>{script.processedOn}</td>
+          <td>Dr. {script.Physician.firstName} {script.Physician.lastName}</td>
+          <td>{script.Patient.firstName} {script.Patient.lastName}</td>
+          <td>{script.medication}</td>
+          <td></td>
+        </tr>
+      )
+    }
+    else {
+      return (
+        <tr value={script.id} onClick={() => this.handleClick(script.id)}>
+          <td>{script.processedOn}</td>
+          <td>Dr. {script.Physician.firstName} {script.Physician.lastName}</td>
+          <td>{script.Patient.firstName} {script.Patient.lastName}</td>
+          <td>{script.medication}</td>
+          <td></td>
+          <td>{script.Patient.dob}</td>
+          <td></td>
+        </tr>
+      )
+    }
   }
 
   renderTable() {
@@ -62,16 +175,16 @@ class RefillsView extends Component {
   render() {
     const { searchValue } = this.state
 
-    const typeOptions = [
-      'OK to Refill',
-      'Refill Request'
-    ]
-
     const reps = [
       'All Reps'
     ]
 
+    const refillNum = this.state.refillNum;
+
+    
+
     const specOptions = [
+      'All Specializations',
       'Internal Medicine',
       'Home Health',
       'Hospice',
@@ -96,6 +209,25 @@ class RefillsView extends Component {
       'Pulmonology'
     ]
 
+    if (this.state.refills) {
+      // const self = this;
+
+      var refillList = this.state.refills.map(function (item, i) {
+        console.log(item);
+        return (
+          <div key={i}>
+
+          </div>
+        )
+
+      })
+    }
+    else {
+      return <div>
+        <p></p>
+      </div>
+    }
+
     return (
       <div className={styles.app}>
         <Header>
@@ -106,15 +238,34 @@ class RefillsView extends Component {
         <div className="body">
           <ActionBox>
             <div className="main">
-              <ToggleSwitch
-                  label="Type"
-                  options={typeOptions}
-                  /* selected={filterValue}
-                  onSelect={filterValue => this.setState({ filterValue })} */
-                />
+              <ButtonGroup
+                className="scriptSearch"
+                value={this.state.value}
+                onClick={this.handleChange}
+              >
+                <label>Type</label>
+                <Button className="first" value='refill' autofocus='true' >
+                {this.state.refillNum ?
+                <span>
+                OK to Refill ({this.state.refillNum})
+                </span>
+                :
+                <span>OK to Refill</span>
+                }
+                </Button>
+                <Button className="last" value='renew'>
+                {this.state.renewNum ?
+                <span>
+                Refill Request ({this.state.renewNum})
+                </span>
+                :
+                <span>Refill Request</span>
+                }</Button>
+              </ButtonGroup>
+
             </div>
           </ActionBox>
-          
+
           <ActionBox>
             <div className="main">
               <SearchBar
@@ -131,15 +282,14 @@ class RefillsView extends Component {
               <Selector
                 wide
                 label="Specialization"
-                placeholder="Specialization"
                 options={specOptions}
-                /* value={specialization}
-                onSelect={specialization => this.setState({ specialization })} */
+                onSelect={specialization => this.setState({ specialization }, this.submitSearch)}
               />
             </div>
-           </ActionBox>
-          
+          </ActionBox>
+
           {this.renderTable()}
+          {refillList}
 
         </div>
       </div>

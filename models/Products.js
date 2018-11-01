@@ -1,26 +1,31 @@
 module.exports = function(sequelize, DataTypes) {
-    var products = sequelize.define("products", {
-        DrugName: {
+    var Products = sequelize.define("Products", {
+        name: {
             type: DataTypes.STRING,
             allowNull: true
         },
-        DrugNdc: {
+        NDC: {
             type: DataTypes.STRING,
             allowNull: true
         },
-        DrugQty: {
+        quantity: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        packageSize: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        cost: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        value: {
             type: DataTypes.STRING,
             allowNull: true
         }
     })
 
 
-products.associate = function(models) {
-    models.products.belongsTo(models.User, {
-        foreignKey: {
-            allowNull: false
-        }
-    });
-};
-return products; 
+return Products; 
 };
