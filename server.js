@@ -25,6 +25,14 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 const isDev = process.env.NODE_ENV === 'production';
 
+app.get('/*', function(req, res) {
+    res.sendFile(path.join(__dirname, './client/build/index.html'), function(err) {
+      if (err) {
+        res.status(500).send(err)
+      }
+    })
+  })
+
 //fileupload middleware
 app.use(fileUpload())
 // Requiring our models for syncing
@@ -94,13 +102,7 @@ app.use("/api/profile", profileRoutes);
 app.use("/api/current", currentPatientRoutes);
 
 
-app.get('/*', function(req, res) {
-    res.sendFile(path.join(__dirname, './client/build/index.html'), function(err) {
-      if (err) {
-        res.status(500).send(err)
-      }
-    })
-  })
+
 
 
 

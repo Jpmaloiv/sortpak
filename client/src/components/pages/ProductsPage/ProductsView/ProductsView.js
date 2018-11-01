@@ -161,7 +161,6 @@ class ProductsView extends Component {
       // const self = this;
 
       var productList = this.state.products.map(function (item, i) {
-        console.log(item);
         return (
           <div key={i}>
 
