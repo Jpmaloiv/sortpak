@@ -313,8 +313,6 @@ class PatientView extends Component {
 
           </div>
           <div id="contactInfo" className={styles.contactInfo}>
-
-
             <div>
               <Span icon="phone">
                 {this.state.phone}
