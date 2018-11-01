@@ -19,7 +19,6 @@ const fileUpload = require('express-fileupload');
 //middleware
 const bodyParser = require('body-parser');
 
-
 //express setup
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -100,10 +99,6 @@ app.use(["/api/visits"], jwt({
 app.use("/api/visits", visitRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/current", currentPatientRoutes);
-
-
-
-
 
 
 db.sequelize.sync({ force: false, logging: console.log }).then(function () {
