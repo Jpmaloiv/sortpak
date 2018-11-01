@@ -31,7 +31,7 @@ class ProductsView extends Component {
 
   componentDidMount() {
     const loginToken = window.localStorage.getItem("token");
-    axios.get('/api/products/search', { headers: { "Authorization": "Bearer " + loginToken } })
+    axios.get('/api/products/search/', { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
         console.log(resp);
 
