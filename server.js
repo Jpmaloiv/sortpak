@@ -48,8 +48,7 @@ app.use(express.static(path.join(__dirname + '/products')));
 app.use(express.static(path.join(__dirname + '/physicians')));
 app.use(express.static(path.join(__dirname + '/visits')));
 
-app.use("/api/products", productRoutes);
-//overwriting routes
+
 
 app.use(["/api/scripts"], jwt({
     secret: process.env.JWT_SECRET,
@@ -81,6 +80,11 @@ app.use("/api/patients", patientRoutes);
 //     userProperty: 'payload'
 // }));
 app.use("/api/physicians", physicianRoutes);
+app.use(["/api/products"], jwt({
+    secret: process.env.JWT_SECRET,
+    userProperty: 'payload'
+}));
+app.use("/api/products", productRoutes);
 app.use(["/api/visits"], jwt({
     secret: process.env.JWT_SECRET,
     userProperty: 'payload'
@@ -88,7 +92,6 @@ app.use(["/api/visits"], jwt({
 app.use("/api/visits", visitRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/current", currentPatientRoutes);
-// app.use("scripts/api/medications", medicationRoutes);
 
 
 app.get('/*', function(req, res) {
