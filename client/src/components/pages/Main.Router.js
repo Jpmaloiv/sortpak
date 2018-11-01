@@ -10,7 +10,7 @@ import {
 import AgendaPage from './AgendaPage/AgendaPage'
 import PhysiciansPage from './PhysiciansPage/PhysiciansPage'
 import PatientsPage from './PatientsPage/PatientsPage' */
-import ScriptsPage from './Scripts/ScriptsPage'
+// import ScriptsPage from './Scripts/ScriptsPage'
 /* import RefillsPage from './RefillsPage/RefillsPage'
 import TeamPage from './TeamPage/TeamPage'
 import ProfilePage from './ProfilePage/ProfilePage'
@@ -50,10 +50,10 @@ const MainRouter = props => (
       component={PatientsPage}
     /> */}
 
-    <Route
+    {/* <Route
       path="/scripts"
       component={ScriptsPage}
-    />
+    /> */}
 
     {/* <Route
       path="/refills"
