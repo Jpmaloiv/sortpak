@@ -24,7 +24,7 @@ class PrescriptionsTab extends Component {
           patientId: resp.data.response[0].id,
           conditions: resp.data.response[0].conditions,
           allergies: resp.data.response[0].allergies,
-          patientWarning: resp.data.response[0].patientWarning
+          patientWarning: resp.data.response[0].patientWarning,
         })
 
         console.log(this.state.patientId);
@@ -91,7 +91,7 @@ class PrescriptionsTab extends Component {
         </td>
 
         <td>
-
+          {script.Product.name}
         </td>
 
         <td>

@@ -10,12 +10,12 @@ module.exports = function(sequelize, DataTypes) {
             allowNull: true
         } 
     }); 
-    Visits.associate = function(models) {
-        models.Visits.belongsTo(models.User, {
-            foreignKey: {
-                allowNull: false
-            }
-        });
-    };
+    // Visits.associate = function(models) {
+    //     models.Visits.belongsTo(models.User, {
+    //         foreignKey: {
+    //             allowNull: false
+    //         }
+    //     });
+    // };
     return Visits; 
   };

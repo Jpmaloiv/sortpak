@@ -52,7 +52,8 @@ router.post("/add", (req, res) => {
         paymentOption: req.query.paymentOption,
         link: scriptLink,
         PatientId: req.query.patientId,
-        PhysicianId: req.query.physicianId
+        PhysicianId: req.query.physicianId,
+        ProductId: req.query.productId
     }
 
     fs.mkdir("./scripts/", (err) => {
@@ -95,6 +96,10 @@ router.get("/search", (req, res) => {
             attributes: ["firstName", "lastName", 'specialization', "rep", "contact", "phone", "physicianWarning"],
         },
         {
+            model: db.Products,
+           
+        },
+        {
             model: db.scriptNotes,
             attributes: ['note', 'createdAt', 'UserId']
         }
@@ -119,6 +124,10 @@ router.get("/search", (req, res) => {
 
     if (req.query.physicianId) {
         searchParams.where.PhysicianId = req.query.physicianId
+    }
+
+    if (req.query.productId) {
+        searchParams.where.ProductId = req.query.productId
     }
 
 

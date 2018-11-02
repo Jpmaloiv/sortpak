@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import moment from 'moment'
 
+import axios from 'axios'
+import { TablePagination } from 'react-pagination-table';
+
 import { hasAuthTokenAsync } from '../../../../lib'
 
 // 3rd Party Components
@@ -28,6 +31,9 @@ import {
 } from '../../../../actions/team'
 
 import styles from './TeamView.css'
+import { replace } from 'react-router-redux';
+
+const th = ['NAME', 'USERNAME', 'EMAIL ADDRESS', 'ROLE', 'DATE ADDED']
 
 class TeamView extends Component {
   constructor(props) {
@@ -39,11 +45,26 @@ class TeamView extends Component {
   }
 
   componentDidMount() {
-    hasAuthTokenAsync()
-      .then(() => {
-        this.props.getTeamMembers()
+    const loginToken = window.localStorage.getItem("token");
+    axios.get('/api/user/search/', { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        console.log(resp);
+        // for (let i = 0; i < resp.data.response.length; i++) {
+          // moment(resp.data.response[0].createdAt, 'YYYY-MM-DD').format('YYYY-MM-DD')
+          // console.log(resp.data.response[0].createdAt);
+          // this.setState({
+          //   user: moment(resp.data.response[0].createdAt, 'YYYY-MM-DD').format('YYYY-MM-DD')
+          // },() => console.log(this.state.user))
+
+          this.setState({
+            users: resp.data.response
+          })
+
+
+
+      }).catch((err) => {
+        console.error(err)
       })
-      .catch(console.log)
   }
 
   filterUsers(search) {
@@ -55,69 +76,6 @@ class TeamView extends Component {
   viewMember(e, user) {
     e.stopPropagation()
     this.props.setMember(user)
-  }
-
-  renderTableHead() {
-    return (
-      <thead>
-        <tr>
-          <th>
-            Name
-          </th>
-          <th>
-            Email Address
-          </th>
-          <th>
-            Role
-          </th>
-          <th>
-            Date Added
-          </th>
-          <th />
-        </tr>
-      </thead>
-    )
-  }
-
-  renderTableBody() {
-    const { users } = this.props
-    return (
-      <tbody>
-        {users.map(this.renderTableRow.bind(this))}
-      </tbody>
-    )
-  }
-
-  renderTableRow(user) {
-    const link = `/team/${user.id}`
-    const date = moment(user.created_at).format('MM/DD/YYYY')
-    return (
-      <Tr
-        to={link}
-        key={user.id}
-      >
-        <td className="bold">
-          {user.nameDisplay}
-        </td>
-        <td>
-          {user.email}
-        </td>
-        <td>
-          {user.roleDisplay}
-        </td>
-        <td>
-          <FontAwesome style={{ marginRight: '10px' }} name="calendar" />
-          {date}
-        </td>
-        <td className={styles.detailsCell}>
-          <Button
-            title="DETAILS"
-            link={`/team/${user.id}`}
-            onClick={e => this.viewMember(e, user)}
-          />
-        </td>
-      </Tr>
-    )
   }
 
   renderTable() {
@@ -156,10 +114,10 @@ class TeamView extends Component {
       },
     ]
   }
+  
 
 
   render() {
-    // const { searchType } = this.state
 
     return (
       <div className={styles.app}>
@@ -183,12 +141,12 @@ class TeamView extends Component {
               />
 
               <Button
-                style={{ backgroundColor: 'lightGray' , minWidth: 80, minHeight: 40, marginRight: 20  }}
+                style={{ backgroundColor: 'lightGray', minWidth: 80, minHeight: 40, marginRight: 20 }}
                 title='Sales'
               />
 
               <Button
-                style={{ backgroundColor: 'lightGray' , minWidth: 80, minHeight: 40, marginRight: 20  }}
+                style={{ backgroundColor: 'lightGray', minWidth: 80, minHeight: 40, marginRight: 20 }}
                 title='Physicians'
               />
 
@@ -197,7 +155,7 @@ class TeamView extends Component {
                 placeholder="First or Last Name..."
               />
 
-            {/* COMMENTED TO MATCH DESIGN
+              {/* COMMENTED TO MATCH DESIGN
               <SearchBar
                 options={this.searchOptions}
                 selected={searchType}
@@ -217,17 +175,29 @@ class TeamView extends Component {
 
             */}
 
-            <Button
-              link='/team/add'
-              icon="plus"
-              title="ADD A NEW USER"
-            />
+              <Button
+                link='/team/add'
+                icon="plus"
+                title="ADD A NEW USER"
+              />
 
             </div>
 
           </ActionBox>
+          {this.state.users ?
+            <TablePagination
+              headers={th}
+              data={this.state.users}
+              columns={"name.username.email.role.createdAt"}
+              perPageItemCount={10}
+              totalCount={this.state.users.length}
+            // arrayOption={ [["size", 'all', ' ']] }
+            />
+            
+            :
+            <div></div>}
 
-          {this.renderTable()}
+          {/* {userList} */}
 
         </div>
 
@@ -236,7 +206,7 @@ class TeamView extends Component {
   }
 }
 
-const mapStateToProps = ({main}) => {
+const mapStateToProps = ({ main }) => {
   const {
     adminsDisplay,
   } = main

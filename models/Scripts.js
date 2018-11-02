@@ -173,6 +173,11 @@ module.exports = function(sequelize, DataTypes) {
                 allowNull: false
             }
         }),
+        models.Scripts.belongsTo(models.Products, {
+            foreignKey: {
+                allowNull: false
+            }
+        }),
         models.Scripts.hasMany(models.scriptNotes, {
             onDelete: "cascade"
         }),

@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios'
 import { connect } from 'react-redux'
-import Medications from '../Medications.js'
+import Autosuggest from 'react-autosuggest';
+// import Medications from '../Medications.js'
 
 import {
     PhysicianModal,
@@ -46,10 +47,15 @@ class AddScript extends Component {
             medicationVal: '',
             status: 'Received',
             physicianId: '',
-            physicianSet: false
+            physicianSet: false,
+            medSearch: false,
+            value: '',
+            suggestions: []
         }
 
         this.handleCheckbox = this.handleCheckbox.bind(this);
+        this.medSearch = this.medSearch.bind(this);
+        this.getMedication = this.getMedication.bind(this);
     }
 
     openNoteModal() {
@@ -63,6 +69,12 @@ class AddScript extends Component {
         })
     }
 
+    medSearch() {
+        this.setState({
+            medSearch: true
+        })
+    }
+
     onUpdate = (val) => {
         this.onCloseModal();
         this.setState({
@@ -73,6 +85,7 @@ class AddScript extends Component {
         )
     };
 
+
     componentDidMount() {
         const loginToken = window.localStorage.getItem("token");
 
@@ -80,7 +93,7 @@ class AddScript extends Component {
             .then((resp) => {
                 console.log(resp);
                 this.setState({
-                    currentPatientID: resp.data.response[0].patientId 
+                    currentPatientID: resp.data.response[0].patientId
                 })
                 console.log(this.state.currentPatientID);
 
@@ -93,7 +106,7 @@ class AddScript extends Component {
                             patientName: patient.firstName + " " + patient.lastName,
                             patientDob: patient.dob,
                             patientPhone: patient.phone,
-                            patientAddress: patient.address1 + "\n" + patient.address2  
+                            patientAddress: patient.address1 + "\n" + patient.address2
                         })
                         console.log(this.state.patientName);
                     }).catch((error) => {
@@ -103,8 +116,111 @@ class AddScript extends Component {
                 console.error(error);
             })
 
-        console.log(this.state.currentPatientID)
+        axios.get('/api/products/search', { headers: { "Authorization": "Bearer " + loginToken } })
+            .then((resp) => {
+                console.log(resp);
+                this.setState({
+                    languages: resp.data.response
+                })
+
+            }).catch((error) => {
+                console.error(error);
+            })
+
+
     }
+
+    // Autosuggest
+
+    // Teach Autosuggest how to calculate suggestions for any given input value.
+    getSuggestions = value => {
+        const inputValue = value.trim().toLowerCase();
+        const inputLength = inputValue.length;
+
+        return inputLength === 0 ? [] : this.state.languages.filter(lang =>
+            lang.name.toLowerCase().slice(0, inputLength) === inputValue
+        );
+    };
+
+        
+    // When suggestion is clicked, Autosuggest needs to populate the input
+    // based on the clicked suggestion. Teach Autosuggest how to calculate the
+    // input value for every given suggestion.
+    getSuggestionValue = suggestion => suggestion.name
+        
+    
+    
+
+    // Use your imagination to render suggestions.
+    renderSuggestion = suggestion =>
+        <Table>
+            <thead>
+                <th>NAME</th>
+                <th>NDC</th>
+                <th>PACKAGE SIZE</th>
+                <th>QUANTITY</th>
+                <th>COST</th>
+            </thead>
+            <tbody>
+                <tr><td>{suggestion.name}</td>
+                    <td>{suggestion.NDC}</td>
+                    <td>{suggestion.packageSize}
+                    </td>
+                    <td>{suggestion.quantity}</td>
+                    <td>{suggestion.cost}</td></tr></tbody>
+        </Table>
+    
+
+    getMedication() {
+        console.log("HI");
+        console.log(this.state.value);
+        const loginToken = window.localStorage.getItem("token");
+
+        axios.get('/api/products/search?name=' + this.state.value, { headers: { "Authorization": "Bearer " + loginToken } })
+            .then((resp) => {
+                console.log(resp);
+                this.setState({
+                    productId: resp.data.response
+                })
+            })
+    }
+
+    onChange = (event, { newValue }) => {
+        this.setState({
+            value: newValue
+        });
+
+    };
+
+    // Autosuggest will call this function every time you need to update suggestions.
+    // You already implemented this logic above, so just use it.
+    onSuggestionsFetchRequested = ({ value }) => {
+        this.setState({
+            suggestions: this.getSuggestions(value)
+        });
+    };
+
+    // Autosuggest will call this function every time you need to clear suggestions.
+    onSuggestionsClearRequested = () => {
+        this.setState({
+            suggestions: []
+        });
+    };
+
+    onSuggestionSelected = (event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) =>{
+        console.log("HI");
+        console.log(suggestionValue);
+         //For example alert the selected value
+         const loginToken = window.localStorage.getItem("token");
+
+         axios.get('/api/products/search?name=' + suggestionValue, { headers: { "Authorization": "Bearer " + loginToken } })
+             .then((resp) => {
+                 console.log(resp);
+                 this.setState({
+                     productId: resp.data.response[0].id
+                 }, () => console.log(this.state.productId))
+             })
+    };
 
 
     onChangeHandler = (event) => {
@@ -146,9 +262,8 @@ class AddScript extends Component {
             status: 'Received'
         })
         const loginToken = window.localStorage.getItem("token");
-        console.log(this.state.physicianId);
         let data = new FormData();
-        axios.post('/api/scripts/add?patientId=' + this.state.patientId + '&physicianId=' + this.state.physicianId + '&processedOn=' + this.state.processedOn + '&pouch=' + this.state.pouch + '&patient=' + this.props.patient + "&medication=" + this.props.medication + "&status=" + this.state.status + "&pharmNPI=" + this.props.pharmNPI
+        axios.post('/api/scripts/add?patientId=' + this.state.patientId + '&physicianId=' + this.state.physicianId + '&productId=' + this.state.productId + '&processedOn=' + this.state.processedOn + '&pouch=' + this.state.pouch + '&patient=' + this.props.patient + "&medication=" + this.props.medication + "&status=" + this.state.status + "&pharmNPI=" + this.props.pharmNPI
             + "&priorAuth=" + this.state.priorAuth + "&location=" + this.props.location + "&pharmDate=" + this.props.pharmDate + "&writtenDate=" + this.props.writtenDate + "&salesCode=" + this.props.salesCode +
             "&billOnDate=" + this.props.billOnDate + "&cost=" + this.props.cost + "&rxNumber=" + this.props.rxNumber + "&primInsPay=" + this.props.primInsPay + "&diagnosis=" + this.state.diagnosis +
             "&secInsPay=" + this.props.secInsPay + "&secDiagnosis=" + this.state.secDiagnosis + "&patientPay=" + this.props.patientPay + "&refills=" + this.props.refills +
@@ -180,6 +295,19 @@ class AddScript extends Component {
 
     render() {
 
+console.log(this.state.productId);
+
+        const { value, suggestions } = this.state;
+
+        // Autosuggest will pass through all these props to the input.
+        const inputProps = {
+            placeholder: 'Search for a medication',
+            value,
+            onChange: this.onChange,
+
+        };
+        
+      console.log(this.state.medication);
         const {
             medication,
             medicationChange,
@@ -318,20 +446,43 @@ class AddScript extends Component {
                             </tr>
                         </Table>
 
-                        <Table>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <Medications
-                                            placeholder="Medication"
-                                            value={medication}
-                                            onChange={medicationChange}
-                                        />
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </Table>
+                        <h4 style={{ marginbottom: 0, marginLeft: 35 }}>Medication</h4>
+                        {this.state.medSearch ?
+                            <div>
+                                <Autosuggest
+                                    suggestions={suggestions}
+                                    onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+                                    onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+                                    getSuggestionValue={this.getSuggestionValue}
+                                    renderSuggestion={this.renderSuggestion}
+                                    onSuggestionSelected={this.onSuggestionSelected}
+                                    inputProps={inputProps}
+                                    // onSuggestionSelected={() => {
+                                    //     console.log('current suggestion')
+                                    //   }}
+                                />
+                            </div>
+                            :
+                            <Table className="addScriptTable">
+                                <thead>
+                                    <th>NAME</th>
+                                    <th>NDC</th>
+                                    <th>PACKAGE SIZE</th>
+                                    <th>QUANTITY</th>
+                                    <th>COST</th>
+                                </thead>
 
+                                <tr>
+                                    <td className="add" onClick={this.medSearch}>
+                                        + Click here to add a medication
+                                         </td>
+                                </tr>
+
+                            </Table>
+
+                        }
+
+                        <h4 style={{ marginbottom: 0, marginLeft: 35 }}>Physician</h4>
                         <Table className="addScriptTable">
                             <thead>
                                 <th>PHYSICIAN NAME</th>
@@ -342,21 +493,21 @@ class AddScript extends Component {
 
                             {this.state.physicianSet ?
                                 <tr>
-                                <td>{this.state.physicianName}</td>
-                                <td>{this.state.physicianGroup}</td>
-                                <td>{this.state.physicianPhone}</td>
-                                
+                                    <td>{this.state.physicianName}</td>
+                                    <td>{this.state.physicianGroup}</td>
+                                    <td>{this.state.physicianPhone}</td>
+
                                     <td>
                                         {this.state.physicianAddressStreet}<br />
                                         {this.state.physicianAddressCity}, {this.state.physicianAddressState}, {this.state.physicianAddressZipCode}
                                     </td>
-                            </tr>
+                                </tr>
                                 :
                                 <tr>
-                                <td className="add" onClick={() => this.openNoteModal()}>
-                                    + Click here to add a physician
+                                    <td className="add" onClick={() => this.openNoteModal()}>
+                                        + Click here to add a physician
                             </td>
-                            </tr>
+                                </tr>
                             }
                         </Table>
 

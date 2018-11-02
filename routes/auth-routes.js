@@ -1,6 +1,12 @@
+const db = require("../models");
 const express = require("express");
 const router = express.Router();
-const authCtrl = require("../controller/auth/auth-ctrl.js");
+const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
+const authCtrl = require("../controller/auth/auth-ctrl");
+const fs = require('fs');
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 
 //user creatiion
 router.post("/new", authCtrl.register);
@@ -11,7 +17,7 @@ router.get("/search", (req, res) => {
     let searchParams = {
         where: {},
         attributes: {
-            exclude: ["createdAt", "updatedAt"]
+            exclude: ['hash','salt', "updatedAt"]
         },
        
     }
@@ -20,7 +26,7 @@ router.get("/search", (req, res) => {
     }
   
     console.log(searchParams);
-    db.Users
+    db.User
         .findAll(searchParams)
         .then((response) => {
             res.json({

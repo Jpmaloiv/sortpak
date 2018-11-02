@@ -26,6 +26,12 @@ module.exports = function(sequelize, DataTypes) {
         }
     })
 
+    Products.associate = function(models) {
+        models.Products.hasMany(models.Scripts, {
+            onDelete: "cascade"
+        });
+    };
+
 
 return Products; 
 };

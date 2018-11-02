@@ -91,7 +91,7 @@ class ScriptsTab extends Component {
                 </td>
 
                 <td>
-
+                    {script.Product.name}
                 </td>
 
                 <td>

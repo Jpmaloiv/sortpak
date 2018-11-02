@@ -20,15 +20,15 @@ const Day = ({day, reps, onClick, today}) => {
         <Icon>
           {day}
         </Icon>
-        {/* {reps.map(rep => (
+        {reps.map(rep => (
           <span
             key={rep.id}
             className="rep-name"
             onClick={() => onClick(rep)}
           >
-            {rep.nameDisplay || 'Rep'}
+            {rep.nameDisplay & 'HELLO'|| 'Rep'}
           </span>
-        ))} */}
+        ))}
       </div>
     )
   }

@@ -60,13 +60,13 @@ class DashboardView extends Component {
           />
         </Header>
 
-        {!me ? (
+        {/* {!me ? (
           null
-        ) : isAdmin ? (
+        ) : isAdmin ? ( */}
           <AdminDashboard />
-        ) : (
-          <RepDashboard />
-        )}
+        {/* ) : ( */}
+          {/* <RepDashboard /> */}
+        {/* )} */}
       </div>
     );
   }

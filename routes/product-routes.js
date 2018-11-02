@@ -16,6 +16,14 @@ router.get("/search", (req, res) => {
             exclude: ["createdAt", "updatedAt"]
         },
     }
+
+    if (req.query.name) {
+        searchParams.where.name = req.query.name
+    }
+
+    if (req.query.productId) {
+        searchParams.where.id = req.query.productId
+    }
   
     console.log(searchParams);
     db.Products

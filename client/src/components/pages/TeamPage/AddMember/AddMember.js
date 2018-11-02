@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import validator from 'validator'
 
+import axios from 'axios'
+
 import {
   Selector,
   Button,
@@ -26,38 +28,85 @@ class AddMember extends Component {
       lastName: '',
       email: '',
       role: '',
+      username: '',
+      password: '',
+      confirmpw: '',
+      active: false
     }
+
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleCheckbox = this.handleCheckbox.bind(this);
   }
 
-  onSubmit(e) {
-    e.preventDefault()
+  handleChange(event) {
+    this.setState({
+      [event.target.name]: event.target.value
+    });
+  }
+
+  handleCheckbox(event) {
+    const target = event.target
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const name = target.name;
+
+    this.setState({
+      [name]: value
+    });
+
+  }
+
+  handleSubmit(event) {
+    event.preventDefault()
     const {
       firstName,
       lastName,
       email,
       role,
+      active
     } = this.state
     const data = {
       firstName,
       lastName,
       email,
       role,
+      active
     }
-    // console.log('onSubmit', data)
-    this.props.createTeamMember(data)
+    if (this.state.password === this.state.confirmpw) {
+      axios.post("/api/user/new",
+        {
+          username: this.state.username,
+          name: this.state.name,
+          email: this.state.email,
+          password: this.state.password,
+          role: this.state.role,
+          active: this.state.active,
+        })
+        .then((resp) => {
+          window.localStorage.setItem("token", resp.data.token);
+          window.location = '/team';
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    } else {
+      alert("Passwords do not match");
+    }
   }
 
   render() {
     const {
-      firstName,
-      lastName,
+      username,
+      name,
       email,
+      password,
+      confirmpw,
       role,
+      active
     } = this.state
 
     const invalid = (
-      !firstName
-      || !lastName
+      !name
       || !validator.isEmail(email)
       || !role
     )
@@ -67,38 +116,62 @@ class AddMember extends Component {
         display: 'Select Role...'
       },
       {
-        value: 'admin',
+        value: 'Admin',
         display: 'Admin',
       },
       {
-        value: 'rep',
+        value: 'Rep',
         display: 'Sales Rep',
       },
+      {
+        value: 'Physician',
+        display: 'Physician'
+      }
     ]
 
     return (
-      <div>
+      <div className='addMember'>
         <Header>
-          <h3>Add a New Team Member</h3>
+          <h2>Access</h2>
+          <div className='action'>
+            <Button
+              large
+              cancel
+              link="/team"
+              title="CANCEL"
+              style={{ marginRight: 10 }}
+            />
+            <Button
+              onClick={this.handleSubmit}
+              title="SAVE"
+              className="submit btn btn-default"
+              type="submit"
+              value="Submit"
+            style={{ marginRight: 8 }}
+            />
+          </div>
         </Header>
         <Body className={styles.body}>
           <Form
             className="form"
-            onSubmit={this.onSubmit.bind(this)}
+            onSubmit={this.handleSubmit}
           >
+            <Input
+              label='User Name'
+              placeholder='Enter A User Name...'
+              name='username'
+              value={username}
+              onChange={username => this.setState({ username })}
+            />
             <label>
-              Team Member Name:
+              Name:
             </label>
             <Input
-              placeholder="First Name"
-              value={firstName}
-              onChange={firstName => this.setState({ firstName })}
+              placeholder="Name"
+              value={name}
+              onChange={name => this.setState({ name })}
             />
-            <Input
-              placeholder="Last Name"
-              value={lastName}
-              onChange={lastName => this.setState({ lastName })}
-            />
+
 
             <br />
 
@@ -113,6 +186,30 @@ class AddMember extends Component {
 
             <br />
 
+            <Input
+              label='Password:'
+              name='password'
+              type='password'
+              value={password}
+              onChange={password => this.setState({ password })}
+            />
+
+            <Input
+              label='Confirm Password:'
+              name='confirmpw'
+              type='confirmpw'
+              value={confirmpw}
+              onChange={confirmpw => this.setState({ confirmpw })}
+            />
+            {/* <label>
+              Password:
+            <input name="password" type="password" value={this.state.password} onChange={this.handleChange} />
+            </label><br />
+            <label>
+              Password:
+                    <input name="confirmpw" type="password" value={this.state.confirmpw} onChange={this.handleChange} />
+            </label><br /> */}
+
             <label>
               Role:
             </label>
@@ -123,31 +220,25 @@ class AddMember extends Component {
               onSelect={role => this.setState({ role })}
             />
 
-            <br />
-
-            <div className="buttons">
-              <Button
-                large
-                cancel
-                link="/team"
-                title="CANCEL"
-              />
-              <Button
-                large
-                type="submit"
-                title="CREATE MEMBER"
-                inactive={invalid}
-                onClick={this.onSubmit.bind(this)}
-              />
+            <div className='check'>
+            <input
+              type="checkbox"
+              name="active"
+              checked={this.state.active}
+              onChange={this.handleCheckbox}
+            />
+            <label>ACTIVE</label>
             </div>
+
+            <br />
           </Form>
         </Body>
-      </div>
+      </div >
     );
   }
 }
 
-const mapStateToProps = ({main}) => {
+const mapStateToProps = ({ main }) => {
   const {
     loading,
   } = main

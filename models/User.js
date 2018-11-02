@@ -13,6 +13,18 @@ module.exports = function(sequelize, DataTypes) {
             allowNull: false,
             unique: true
         },
+        name: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        role: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        active: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
         hash: {
             type: DataTypes.STRING(1500),
             allowNull: false
@@ -20,15 +32,7 @@ module.exports = function(sequelize, DataTypes) {
         salt: {
             type: DataTypes.STRING,
             allowNull: false
-        },
-        /* role: {
-            type: DataTypes.STRING,
-            allowNull: true
-        },
-        active: {
-            type: DataTypes.STRING,
-            allowNull: true
-        } */
+        }
     }); 
     User.associate = function(models) {
       models.User.hasMany(models.Scripts, {

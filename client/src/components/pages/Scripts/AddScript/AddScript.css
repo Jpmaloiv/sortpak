@@ -66,8 +66,14 @@ td.check label {display: inline;}
     font-size: 1.2em;
 }
 
-#addScript .addScriptTable table tr {background: #fff;
+#addScript .addScriptTable table tr {background-color: #fff !important; height: initial;
     box-shadow: 0px 0px 2px #efefef;}
 
     #addScript .addScriptTable table td {    padding: 1%;
         border-right: 1px solid #e5e6e6;}
+
+        input.react-autosuggest__input {
+            margin: 2% 0;
+            margin-left: 30px;
+            padding: .5%;
+        }

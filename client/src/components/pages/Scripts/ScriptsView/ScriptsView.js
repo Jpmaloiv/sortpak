@@ -5,8 +5,6 @@ import ScriptSearch from './ScriptSearch/ScriptSearch'
 import ScriptList from './ScriptList/ScriptList'
 
 
-// import { hasAuthTokenAsync } from '../../../../lib'
-
 import { Header } from '../../../common'
 
 import styles from './ScriptsView.css'
@@ -84,27 +82,4 @@ class ScriptsView extends Component {
   }
 }
 
-/* const mapStateToProps = ({ main }) => {
-  const {
-    // scripts,
-    scriptsDisplay,
-    loading,
-    error,
-  } = main
-
-  return {
-    scripts: scriptsDisplay,
-    loading,
-    error,
-  }
-}
-
-const actions = {
-  getScripts,
-  setScript,
-  /* filterScriptsByName,
-  filterScriptsByDob, */
-// } */
-
-// export default connect(mapStateToProps, actions)(ScriptsView);
 export default ScriptsView;

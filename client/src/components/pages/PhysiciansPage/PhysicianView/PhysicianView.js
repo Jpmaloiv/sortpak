@@ -45,18 +45,18 @@ class PhysicianView extends Component {
     super(props)
     this.tabOptions = [
       {
-        value: 'notes',
-        display: 'Schedule/Notes',
-        renderComponent: () => this.renderScheduleTab(),
-      },
-      {
         value: 'scripts',
         display: 'Scripts',
         renderComponent: () => this.renderScriptsTab(),
       },
       {
-        value: 'online',
-        display: 'Online Access',
+        value: 'notes',
+        display: 'Appointments/Notes',
+        renderComponent: () => this.renderScheduleTab(),
+      },
+      {
+        value: 'group',
+        display: 'Group Members',
         renderComponent: () => this.renderOnlineTab(),
       },
     ]
@@ -518,7 +518,7 @@ class PhysicianView extends Component {
               {this.state.group || 'No Group Available'}
             </span>
             <div className="action">
-              <Button
+              {/* <Button
                 search
                 icon="edit"
                 title="EDIT PHYSICIAN"
@@ -530,7 +530,7 @@ class PhysicianView extends Component {
                 icon="lock"
                 title="GIVE ACCESS"
                 style={{ marginLeft: 8 }}
-              />
+              /> */}
             </div>
           </h2>
         </Header>

@@ -41,6 +41,7 @@ class Login extends React.Component {
                 window.location = '/scripts';
             })
             .catch((err) => {
+                alert('Login failed');
                 console.error(err);
             })
     }

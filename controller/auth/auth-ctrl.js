@@ -59,31 +59,43 @@ ctrl.register = function(req, res) {
     console.log("register")
     var user = {
         username: req.body.username.trim(),
-        email: req.body.email.trim().toLowerCase()
+        name: req.body.name,
+        email: req.body.email.trim().toLowerCase(),
+        role: req.body.role,
+        active: req.body.active
     }
     var salt = getSalt();
     var hash = getHash(req.body.password, salt);
     user.salt = salt;
-    user.hash= hash;
+    user.hash = hash;
     models.User.create(user)
     .then(function(resp) {
-        fs.mkdir("./public/assets/images/users/" + resp.dataValues.id, (err) => {
-            if ((err) && (err.code !== 'EEXIST')) {
-                console.error(err)
-            } else {
-                fs.copyFile("./public/assets/images/defaultUser.png", "./public/assets/images/users/" + resp.dataValues.id + "/user.png", (err) => {
-                    if (err) {
-                        console.error(err)
-                    } else {
-                        res.json({success: true, token: generateJWT(resp)});
-                    }
-                })
-            }
-        })
+        res.json({success: true, token: generateJWT(resp)});
+        return;
     })
+    // .then(function(resp) {
+    //     console.log(resp);
+    //     fs.mkdir("./public/assets/images/users/" + resp.dataValues.id, (err) => {
+    //         if ((err) && (err.code !== 'EEXIST')) {
+    //             console.error(err)
+    //             window.location = '/team';
+    //         } else {
+    //             fs.copyFile("./public/assets/images/defaultUser.png", "./public/assets/images/users/" + resp.dataValues.id + "/user.png", (err) => {
+    //                 if (err) {
+    //                     console.error(err)
+    //                     window.location = '/team';
+    //                 } else {
+    //                     res.json({success: true, token: generateJWT(resp)});
+    //                     window.location = '/team';
+    //                 }
+    //             })
+    //         }
+    //     })
+    // })
     .catch(function(err) {
         console.error(err);
         return res.status(500).end('Registration FAILED' + err.toString());
+        window.location = '/team';
         throw err;
     });
 };

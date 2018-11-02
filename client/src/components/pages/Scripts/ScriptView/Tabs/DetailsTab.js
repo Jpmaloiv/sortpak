@@ -50,6 +50,9 @@ class DetailsTab extends Component {
           physicianPhone: script.Physician.phone,
           physicianRep: script.Physician.rep,
           physicianWarning: script.Physician.physicianWarning,
+          productName: script.Product.name,
+          productNDC: script.Product.NDC,
+          productQuantity: script.Product.quantity,
           billOnDate: script.billOnDate,
           rxNumber: script.rxNumber,
           phone: script.phone,
@@ -245,13 +248,6 @@ class DetailsTab extends Component {
                       </Link></td>
                     <td className="field">Refill #</td>
                     <td className="value">
-                      {/*  <Button
-                    className="plus"
-                    icon="plus"
-                    editing={editing}
-                    value={this.state.refills}
-                    onClick={this.handleClick}
-                  /> */}
                       <Span
                         editing={editing}
                         placeholder={this.state.refills}
@@ -315,7 +311,7 @@ class DetailsTab extends Component {
                 <tbody>
                   <tr>
                     <td className="field">Medicine</td>
-                    <td></td>
+                    <td>{this.state.productName}</td>
                     <td className="field">Sales Code</td>
                     <td>
                       <Span
@@ -330,7 +326,7 @@ class DetailsTab extends Component {
                   </tr>
                   <tr>
                     <td className="field">NDC</td>
-                    <td></td>
+                    <td>{this.state.productNDC}</td>
                     <td className="field">Cost</td>
                     <td>
                       <Span
@@ -345,7 +341,7 @@ class DetailsTab extends Component {
                   </tr>
                   <tr>
                     <td className="field">On Hand</td>
-                    <td></td>
+                    <td>{this.state.productQuantity}</td>
                     <td className="field">Primary Insurance Pay</td>
                     <td>
                       <Span

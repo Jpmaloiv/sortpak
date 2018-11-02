@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
+import axios from 'axios'
 
 // Helpers
 import { formatCurrencyOptions } from '../../../../lib'
@@ -14,6 +15,13 @@ import {
 import styles from './AdminDashboard.css'
 
 class AdminDashboard extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      patientNum: '',
+      physicianNum: ''
+    }
+  }
   renderCard({title, content}) {
     return (
       <SummaryItem
@@ -25,33 +33,58 @@ class AdminDashboard extends Component {
     )
   }
 
+  componentDidMount() {
+    const loginToken = window.localStorage.getItem("token");
+    axios.get('api/patients/search/', { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        console.log(resp.data.response);
+        this.setState({
+          patientNum: resp.data.response.length
+        })
+        console.log(this.state.patients)
+      }).catch((error) => {
+        console.error(error);
+      })
+
+      axios.get('api/physicians/search/', { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        console.log(resp.data.response);
+        this.setState({
+          physicianNum: resp.data.response.length
+        })
+        console.log(this.state.patients)
+      }).catch((error) => {
+        console.error(error);
+      })
+  }
+
+  
   renderCards() {
     const patients = this.props.patients.length
     const repeatPatients = this.props.patients.filter(el => el.scripts).length
     const newPhysicians = this.props.physicians.filter(el => !el.repId).length
-    const cardData = [
-      { title: 'Avg. Daily Revenue' },
-      { title: 'Avg. Daily Profit' },
-      { title: 'Cost' },
-      { title: 'Sales (scripts)' },
-      {
-        title: 'Patients',
-        content: patients,
-      },
-      {
-        title: 'Repeat Patients',
-        content: repeatPatients,
-      },
-      {
-        title: 'New Physicians',
-        content: newPhysicians,
-      },
+    const cardData1 = [
+      { title: 'Revenue', content: '$0' },
+      { title: 'Daily AVG Revenue', content: '$0' },
+      { title: 'Cost', content: '$0' },
+      { title: 'Profit', content: '$0' },
+      { title: 'Daily AVG Profit', content: '$0' }
+    ]
+    const cardData2 = [
+      { title: 'Sales', content: '$0' },
+      { title: 'Revenue per Sale', content: '$0' },
+      { title: 'Repeat Patients', content: '0' },
+      { title: 'New Patients', content: this.state.patientNum || '-' },
+      { title: 'New Physicians', content: this.state.physicianNum || '-' }
     ]
 
-    return (
+    return (<div className="cardStack">
       <div className="cards">
-        {cardData.map(this.renderCard.bind(this))}
+        {cardData1.map(this.renderCard.bind(this))}
       </div>
+      <div className="cards">
+      {cardData2.map(this.renderCard.bind(this))}
+    </div></div>
     )
   }
 
@@ -152,14 +185,14 @@ class AdminDashboard extends Component {
   render() {
     return (
       <div className={styles.body}>
-        <div className="graph">
-        </div>
+        {/* <div className="graph">
+        </div> */}
         {this.renderCards()}
 
-        <div className="cards">
+        {/* <div className="cards">
           {this.renderRepScorecard()}
           {this.renderUnassignedPhysicians()}
-        </div>
+        </div> */}
       </div>
     );
   }

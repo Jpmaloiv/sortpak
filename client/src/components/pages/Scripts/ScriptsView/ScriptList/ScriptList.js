@@ -36,20 +36,6 @@ class ScriptList extends React.Component {
     )
   }
 
-  // getPhysician() {
-  //   axios.get('/api/physicians/search?physicianId=', { headers: { "Authorization": "Bearer " + loginToken } })
-  //     .then((resp) => {
-  //       console.log(resp);
-
-  //       this.setState({
-
-  //       })
-
-  //     }).catch((error) => {
-  //       console.error(error);
-  //     })
-
-  // }
 
   handleClick(value) {
     window.location = `/scripts/${value}`
@@ -87,7 +73,7 @@ class ScriptList extends React.Component {
         </td>
 
         <td>
-          {script.medication}
+          {script.Product.name}
         </td>
 
         <td>
