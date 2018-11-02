@@ -25,7 +25,6 @@ const PORT = process.env.PORT || 3001;
 const isDev = process.env.NODE_ENV === 'production';
 
 
-
 //fileupload middleware
 app.use(fileUpload())
 // Requiring our models for syncing
