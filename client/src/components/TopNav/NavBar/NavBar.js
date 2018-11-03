@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import { NavLink } from 'react-router-dom'
-import jwt_decode from 'jwt-decode'
+// import jwt_decode from 'jwt-decode'
 import axios from 'axios'
 
 import qs from 'query-string'
@@ -24,20 +24,20 @@ class NavBar extends Component {
     }
   }
 
-  componentDidMount() {
-    const token = localStorage.getItem('token')
-    var decoded = jwt_decode(token);
-    console.log(decoded);
-    axios.get('../api/user/search?userId=' + decoded.id, { headers: { "Authorization": "Bearer " + token } })
-      .then((resp) => {
-        console.log(resp.data.response);
-        this.setState({
-          userRole: resp.data.response[0].role,
-        }, () => console.log(this.state.userRole));
-      }).catch((error) => {
-        console.error(error);
-      })
-  }
+  // componentDidMount() {
+  //   const token = localStorage.getItem('token')
+  //   var decoded = jwt_decode(token);
+  //   console.log(decoded);
+  //   axios.get('../api/user/search?userId=' + decoded.id, { headers: { "Authorization": "Bearer " + token } })
+  //     .then((resp) => {
+  //       console.log(resp.data.response);
+  //       this.setState({
+  //         userRole: resp.data.response[0].role,
+  //       }, () => console.log(this.state.userRole));
+  //     }).catch((error) => {
+  //       console.error(error);
+  //     })
+  // }
 
   callAgendaActions() {
     this.props.getVisits()
@@ -64,7 +64,7 @@ class NavBar extends Component {
   }
 
   render() {
-    if (this.state.userRole === 'Admin' || (this.state.userRole === 'Rep')) {
+    // if (this.state.userRole === 'Admin' || (this.state.userRole === 'Rep')) {
       return (
         <div className={styles.navBar}>
 
@@ -137,23 +137,23 @@ class NavBar extends Component {
 
         </div>
       )
-    } else if (this.state.userRole === 'Physician') {
-      return (
-        <div className={styles.navBar}>
-          <NavLink
-            to="/patients"
-          >
-            <Icon name="heart-o" />
-            Patients
-      </NavLink>
-        </div >
-      )
+    // } else if (this.state.userRole === 'Physician') {
+    //   return (
+    //     <div className={styles.navBar}>
+    //       <NavLink
+    //         to="/patients"
+    //       >
+    //         <Icon name="heart-o" />
+    //         Patients
+    //   </NavLink>
+    //     </div >
+    //   )
 
-    } else {
-      return (
-        <div></div>
-      )
-    }
+    // } else {
+    //   return (
+    //     <div></div>
+    //   )
+    // }
   }
 }
 
