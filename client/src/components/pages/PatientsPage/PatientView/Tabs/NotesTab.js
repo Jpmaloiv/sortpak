@@ -1,56 +1,136 @@
 import React, { Component } from 'react';
 
+import axios from 'axios'
+import Moment from 'react-moment'
+import jwt_decode from 'jwt-decode'
+
 // Components
 import {
   Span,
   Button,
-  DateBox,
+  Table
 } from '../../../../common'
 
 import {
-  NoteModal,
+  NoteModalPatient,
 } from '../../../../shared'
 
+// import styles from './NotesTab.css'
+
+
 class NotesTab extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      test: ''
+    }
+  }
+
   openNoteModal() {
     this.props.setState({ noteModal: {} })
   }
 
+  componentDidMount() {
+    const loginToken = window.localStorage.getItem("token");
+    axios.get('/api/patients/notes/search/?PatientId=' + this.props.state.id, { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        console.log(resp);
+        this.setState({
+          notes: resp.data.response,
+        })
+        console.log(this.state)
+      }).catch((error) => {
+        console.error(error);
+      })
+  }
+
+  renderTableHead() {
+    console.log(this.state);
+    return (
+      <thead>
+
+      </thead>
+    )
+  }
+
+  renderTableBody() {
+    return (
+      <tbody>
+        {this.state.notes.map(this.renderTableRow.bind(this))}
+      </tbody>
+    )
+  }
+
+  renderTableRow(note) {
+    console.log(this.state.note);
+    return (<div>
+
+    </div>
+
+    )
+  }
+
+  renderTable() {
+    return (
+      <Table>
+        {this.renderTableHead()}
+        {this.renderTableBody()}
+      </Table>
+    )
+  }
+
+
   render() {
+
+    if (this.state.notes) {
+
+      var noteList = 
+      
+      //   .sort((a, b) => a.createdAt < b.createdAt)
+        this.state.notes.reverse().map((item, i) =>
+          <div key={i}>
+          <Table  className="nt" key={item.id}>
+        <thead><th>{item.name}</th></thead>
+
+
+        <tr>
+          <td>{item.note}</td>
+        </tr>
+      </Table>
+
+      <Table className="noteDateTime" key={item.id}>
+        <td>
+          <Span icon="calendar" />
+          <Moment format={"MM/DD/YY"}>{item.createdAt}</Moment>
+          &nbsp;&nbsp;
+        <Span icon="clock-o" />
+          <Moment format={"hh:mm A"}>{item.createdAt}</Moment>
+        </td>
+      </Table>
+      </div>
+        );
+      
+    }
+    else {
+      return <div>
+        <p></p>
+      </div>
+    }
+
     const {
-      patient,
       state,
-      setState,
       className,
       onCloseModal,
       onCreateNote,
     } = this.props
 
-    const notes = patient.notes || []
     const {
-      warning,
-      editing,
-      noteModal,
+      noteModal
     } = state
-    return (
-      <div className={className}>
-        <h2>
-          More Info
-        </h2>
-        <Span
-          type="textarea"
-          editing={editing}
-          label="Patient Warning"
-          placeholder="Patient Warning"
-          value={warning}
-          onChange={warning => setState({ warning })}
-        >
-          {patient.warning || 'None'}
-        </Span>
 
-        <h2>
-          Notes
-        </h2>
+    return (
+      <div id="notesTab" className={className}>
+
         <Button
           icon="plus"
           title="ADD NOTE"
@@ -58,16 +138,14 @@ class NotesTab extends Component {
         />
 
         <div className="notes">
-          {notes.map(note => (
-            <DateBox
-              key={note.id}
-              note={note}
-            />
-          ))}
+          {this.renderTable()}
+          {noteList}
         </div>
 
-        <NoteModal
+        <NoteModalPatient
           content={noteModal}
+          state={this.state}
+          props={this.props}
           onClickAway={onCloseModal}
           onSubmit={onCreateNote}
         />

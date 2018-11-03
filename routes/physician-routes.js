@@ -72,6 +72,10 @@ router.get("/search", (req, res) => {
     if (req.query.physicianId) {
         searchParams.where.id = req.query.physicianId
     }
+
+    if (req.query.group) {
+        searchParams.where.group = req.query.group
+    }
   
     console.log(searchParams);
     db.Physicians

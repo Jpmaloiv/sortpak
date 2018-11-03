@@ -68,8 +68,9 @@ class EditScript extends Component {
                         homeCare: script.homeCare,
                         hcHome: script.hcHome,
                         hcPhone: script.hcPhone,
-                        PatientId: script.PatientId,
-                        PhysicianId: script.PhysicianId
+                        patientId: script.PatientId,
+                        physicianId: script.PhysicianId,
+                        productId: script.ProductId
                     }, () => console.log(this.state.status))
 
                     this.handleCopayApproval();
@@ -141,7 +142,7 @@ class EditScript extends Component {
     addScript() {
         const loginToken = window.localStorage.getItem("token");
         let data = new FormData();
-        axios.post('/api/scripts/add?patientId=' + this.state.PatientId + '&physicianId=' + this.state.PhysicianId + '&processedOn=' + this.state.newProcessedOn + '&pouch=' + this.state.pouch + "&medication=" + this.state.medication + "&status=" + this.state.newStatus + "&pharmNPI=" + this.state.pharmNPI
+        axios.post('/api/scripts/add?patientId=' + this.state.patientId + '&physicianId=' + this.state.physicianId + '&productId=' + this.state.productId + '&processedOn=' + this.state.newProcessedOn + '&pouch=' + this.state.pouch + "&medication=" + this.state.medication + "&status=" + this.state.newStatus + "&pharmNPI=" + this.state.pharmNPI
             + "&priorAuth=" + this.state.priorAuth + "&location=" + this.state.location + "&pharmDate=" + this.state.pharmDate + "&writtenDate=" + this.state.writtenDate + "&salesCode=" + this.state.salesCode +
             "&billOnDate=" + this.state.billOnDate + "&cost=" + this.state.cost + "&rxNumber=" + this.state.rxNumber + "&primInsPay=" + this.state.primInsPay + "&diagnosis=" + this.state.diagnosis +
             "&secInsPay=" + this.state.secInsPay + "&secDiagnosis=" + this.state.secDiagnosis + "&patientPay=" + this.state.patientPay + "&refills=" + this.state.newRefills +

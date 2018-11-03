@@ -244,23 +244,27 @@ class RefillsView extends Component {
                 onClick={this.handleChange}
               >
                 <label>Type</label>
-                <Button className="first" value='refill' autofocus='true' >
                 {this.state.refillNum ?
-                <span>
+                <Button className="first" value='refill' autofocus='true' >
+                
                 OK to Refill ({this.state.refillNum})
-                </span>
-                :
-                <span>OK to Refill</span>
-                }
                 </Button>
-                <Button className="last" value='renew'>
-                {this.state.renewNum ?
-                <span>
-                Refill Request ({this.state.renewNum})
-                </span>
                 :
-                <span>Refill Request</span>
-                }</Button>
+                <Button className="first" value='refill' autofocus='true' >
+                OK to Refill
+                
+                </Button>
+                }
+                
+                {this.state.renewNum ?
+                <Button className="last" value='renew'>
+                
+                Refill Request ({this.state.renewNum})
+           </Button>
+                :
+                <Button className="last" value='renew'>
+               Refill Request
+                </Button>}
               </ButtonGroup>
 
             </div>

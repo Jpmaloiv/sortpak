@@ -28,7 +28,7 @@ class NavBar extends Component {
     const token = localStorage.getItem('token')
     var decoded = jwt_decode(token);
     console.log(decoded);
-    axios.get('api/user/search?userId=' + decoded.id, { headers: { "Authorization": "Bearer " + token } })
+    axios.get('../api/user/search?userId=' + decoded.id, { headers: { "Authorization": "Bearer " + token } })
       .then((resp) => {
         console.log(resp.data.response);
         this.setState({
@@ -64,7 +64,7 @@ class NavBar extends Component {
   }
 
   render() {
-    if (this.state.userRole === ('Admin' || 'Rep')) {
+    if (this.state.userRole === 'Admin' || (this.state.userRole === 'Rep')) {
       return (
         <div className={styles.navBar}>
 
@@ -118,7 +118,8 @@ class NavBar extends Component {
 
           <NavLink
             to="/products"
-            activeStyle={{ color: 'red' }}
+            activeStyle={{ backgroundColor: '#ff7d38 !important',
+              color: '#fff !important;' }}
           >
             <Icon name="tint" />
             Products

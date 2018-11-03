@@ -2,6 +2,7 @@ import AttachmentModal from './AttachmentModal/AttachmentModal'
 import FileModal from './FileModal/FileModal'
 import VisitModal from './VisitModal/VisitModal'
 import NoteModal from './NoteModal/NoteModal'
+import NoteModalPatient from './NoteModalPatient/NoteModal'
 import SwitchTable from './SwitchTable/SwitchTable'
 import ContactBox from './ContactBox/ContactBox'
 import AddressModal from './AddressModal/AddressModal'
@@ -15,6 +16,7 @@ export {
   FileModal,
   VisitModal,
   NoteModal,
+  NoteModalPatient,
   SwitchTable,
   ContactBox,
   AddressModal,

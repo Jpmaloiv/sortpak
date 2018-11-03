@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import axios from 'axios'
 import Moment from 'react-moment'
+import jwt_decode from 'jwt-decode'
 
 // Components
 import {
@@ -13,6 +14,8 @@ import {
 import {
   NoteModal,
 } from '../../../../shared'
+
+import styles from './NotesTab.css'
 
 
 class NotesTab extends Component {
@@ -86,8 +89,8 @@ class NotesTab extends Component {
       //   .sort((a, b) => a.createdAt < b.createdAt)
         this.state.notes.reverse().map((item, i) =>
           <div key={i}>
-          <Table className="nt" key={item.id}>
-        <thead><th>Admin</th></thead>
+          <Table  className="nt" key={item.id}>
+        <thead><th>{item.name}</th></thead>
 
 
         <tr>

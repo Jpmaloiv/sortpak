@@ -98,6 +98,9 @@ module.exports = function(sequelize, DataTypes) {
     Patients.associate = function(models) {
         models.Patients.hasMany(models.Scripts, {
             onDelete: "cascade"
+        }),
+        models.Patients.hasMany(models.patientNotes, {
+            onDelete: "cascade"
         });
     };
     return Patients; 

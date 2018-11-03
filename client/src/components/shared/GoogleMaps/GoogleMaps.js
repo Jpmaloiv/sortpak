@@ -12,9 +12,12 @@ export class MapContainer extends Component {
     // Enable or disable logs. Its optional.
     Geocode.enableDebug();
 
+    console.log(this.props.address);
+
     // Get latidude & longitude from address.
     Geocode.fromAddress(this.props.address).then(
       response => {
+          console.log(response);
         const { lat, lng } = response.results[0].geometry.location;
         console.log(lat, lng);
         this.setState(

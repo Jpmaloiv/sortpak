@@ -37,6 +37,7 @@ import {
 import { Line } from 'react-chartjs-2';
 
 import ScriptsTab from './Tabs/ScriptsTab'
+import GroupTab from './Tabs/GroupTab'
 
 import styles from './PhysicianView.css'
 
@@ -57,7 +58,7 @@ class PhysicianView extends Component {
       {
         value: 'group',
         display: 'Group Members',
-        renderComponent: () => this.renderOnlineTab(),
+        renderComponent: () => this.renderGroupTab(),
       },
     ]
 
@@ -97,6 +98,8 @@ class PhysicianView extends Component {
         })
     }
   }
+
+
 
   get initialState() {
     const physician = this.props.physician || {}
@@ -451,22 +454,32 @@ class PhysicianView extends Component {
     )
   }
 
-  renderOnlineTab() {
-    const {
-      editing,
-    } = this.state
+  renderGroupTab() {
+    // const {
+    //   editing,
+    // } = this.state
 
-    const {
-      username,
-      password,
-      lastLogin,
-    } = this.props.physician
+    // const {
+    //   username,
+    //   password,
+    //   lastLogin,
+    // } = this.props.physician
 
-    const loginDate = lastLogin ? moment(lastLogin).format('M/D/YY @ hh:mm A') : `Hasn't Logged In`
+    // const loginDate = lastLogin ? moment(lastLogin).format('M/D/YY @ hh:mm A') : `Hasn't Logged In`
 
-    return (
-      <div className={styles.onlineTab}>
-        <div className="item">
+    return(
+      <GroupTab
+        className={styles.scriptsTab}
+        pID={this.props}
+        state={this.state}
+        patient={this.props.patient}
+        setState={this.setState.bind(this)}
+      />
+    )
+
+    // return (
+    //   <div className={styles.onlineTab}>
+        {/* <div className="item">
           <label>
             Username
           </label>
@@ -504,7 +517,7 @@ class PhysicianView extends Component {
         </div>
       </div>
     )
-  }
+  } */}}
 
   render() {
 
@@ -514,7 +527,7 @@ class PhysicianView extends Component {
         <Header className={styles.header}>
           <h2>
             Dr. {this.state.name}
-            <span className="group">
+            <span onClick={this.renderGroupTab.bind(this)} className="group">
               {this.state.group || 'No Group Available'}
             </span>
             <div className="action">

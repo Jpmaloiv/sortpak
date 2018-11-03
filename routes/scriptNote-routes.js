@@ -10,13 +10,12 @@ const Op = Sequelize.Op;
 
 
 router.post("/add", (req, res) => {
-    const noteLink = '/notes/' + req.payload.id ;
+    const noteLink = '/notes/' ;
     const note = {
         name: req.query.name,
         note: req.query.note,
         link: noteLink,
-        ScriptId: req.query.scriptId,
-        UserId: req.payload.id
+        ScriptId: req.query.scriptId
     }
 
     fs.mkdir("./notes/", (err) => {

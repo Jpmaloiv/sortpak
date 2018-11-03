@@ -25,11 +25,11 @@ module.exports = function (sequelize, DataTypes) {
                 allowNull: false
             }
         })
-        models.scriptNotes.belongsTo(models.User, {
-            foreignKey: {
-                allowNull: false
-            }
-        });
+    //     models.scriptNotes.belongsTo(models.User, {
+    //         foreignKey: {
+    //             allowNull: false
+    //         }
+    //     });
     };
 
     return scriptNotes;

@@ -184,6 +184,7 @@ class PatientView extends Component {
   closeModal() {
     this.setState({
       attachmentModal: null,
+      noteModal: null
     })
   }
 
@@ -389,7 +390,7 @@ class PatientView extends Component {
         state={this.state}
         patient={this.props.patient}
         setState={this.setState.bind(this)}
-        onCreateNote={this.createNote.bind(this)}
+        // onCreateNote={this.createNote.bind(this)}
         onCloseModal={() => this.closeModal()}
       />
     )

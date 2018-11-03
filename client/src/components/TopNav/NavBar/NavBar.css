@@ -17,7 +17,7 @@
     display: flex;
     align-items: center;
     transition: 100ms; }
-    :local(.navBar) > a:focus {
+    :local(.navBar) > a:focus, :local(.navBar) > a:target {
       background-color: #ff7d38 !important;
       color: #fff !important;
     }

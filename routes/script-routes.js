@@ -101,7 +101,7 @@ router.get("/search", (req, res) => {
         },
         {
             model: db.scriptNotes,
-            attributes: ['note', 'createdAt', 'UserId']
+            attributes: ['note', 'createdAt']
         }
         ]
 

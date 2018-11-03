@@ -35,7 +35,8 @@
     font-size: 18px;
     font-weight: lighter;
     padding: 0px 10px;
-    color: #aaa; }
+    color: #aaa;
+    cursor: pointer; }
 
 :local(.body) {
   padding: 0px; }

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios'
+import jwt_decode from 'jwt-decode'
 
 // Components
 import {
@@ -26,13 +27,22 @@ export default class VisitModal extends Component {
     return !note
   }
 
+  componentDidMount() {
+    const token = localStorage.getItem('token')
+    var decoded = jwt_decode(token);
+    this.setState({
+      username: decoded.username
+    })
+  }
+
   onSubmit(e) {
     e.preventDefault()
+    console.log(this.props);
         const scriptId = this.props.props.state.id;
-        console.log(scriptId);
+        console.log(this.props.props);
         const loginToken = window.localStorage.getItem("token");
         let data = new FormData();
-        axios.post('/api/scripts/notes/add?scriptId=' + scriptId + '&note=' + this.state.note, 
+        axios.post('/api/scripts/notes/add?scriptId=' + scriptId + '&name=' + this.state.username + '&note=' + this.state.note, 
         data, { headers: { "Authorization": "Bearer " + loginToken } })
             .then((data) => {
                 console.log(data);
