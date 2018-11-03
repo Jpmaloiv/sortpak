@@ -91,3 +91,10 @@
     :local(.contactInfo) > div.transfer > div {
       margin-right: 10px; }
 
+      .insuranceTab table {
+        display: inline-block;
+    width: 50%;
+    padding: 0 5%;
+      }
+
+      .insuranceTab label {font-weight: bold;}

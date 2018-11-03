@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios'
+import Moment from 'react-moment'
 
 import { Span, Table, TextArea } from '../../../../common'
 
@@ -12,14 +13,11 @@ class PrescriptionsTab extends Component {
   }
 
   componentDidMount() {
-    console.log(this.props);
-    console.log(this.state);
     const patientNum = this.props.pID.match.params.patientId;
     const loginToken = window.localStorage.getItem("token");
     axios.get('/api/patients/search?patientId=' + patientNum, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
         console.log(resp);
-        // let patient = resp.data.response[0];
         this.setState({
           patientId: resp.data.response[0].id,
           conditions: resp.data.response[0].conditions,
@@ -82,7 +80,7 @@ class PrescriptionsTab extends Component {
       <tr value={script.id} onClick={() => this.handleClick(script.id)}>
         <td>
           <Span icon="calendar">
-            {script.processedOn}
+          <Moment format='MM-DD-YYYY'>{script.processedOn}</Moment>
           </Span>
         </td>
 

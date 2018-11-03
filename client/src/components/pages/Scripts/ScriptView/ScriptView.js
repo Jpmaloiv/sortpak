@@ -115,7 +115,8 @@ class ScriptView extends Component {
                   copayApproval: script.copayApproval,
                   copayNetwork: script.copayNetwork,
                   patientPay: script.patientPay,
-                  directions: script.directions
+                  directions: script.directions,
+                  patientId: script.PatientId
               }, () => console.log(this.state.status))
               
                 this.setState({

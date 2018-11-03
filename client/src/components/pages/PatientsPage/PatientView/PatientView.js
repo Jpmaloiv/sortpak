@@ -79,8 +79,20 @@ class PatientView extends Component {
             sex: patient.sex,
             patientSince: patient.createdAt,
             phone: patient.phone,
-            address: patient.address1 + "\n" + patient.address2,
-            email: patient.email
+            address: patient.address1 + patient.address2,
+            address1: patient.address1,
+            address2: patient.address2,
+            email: patient.email,
+            primInsPlan: patient.primInsPlan,
+            primInsBIN: patient.primInsBIN,
+            primInsID: patient.primInsID,
+            primInsPCN: patient.primInsPCN,
+            primInsType: patient.primInsType,
+            secInsPlan: patient.secInsPlan,
+            secInsBIN: patient.secInsBIN,
+            secInsID: patient.secInsID,
+            secInsPCN: patient.secInsPCN,
+            secInsType: patient.secInsType
           })
         }).catch((err) => {
           console.error(err)
@@ -303,7 +315,7 @@ class PatientView extends Component {
               Sex: {this.state.sex}
             </div>
             <div>
-              Patient Since: <Moment format={"YYYY-MM-DD"}>{this.state.createdAt}</Moment>
+              Patient Since: &nbsp;<Moment format={"YYYY-MM-DD"}>{this.state.createdAt}</Moment>
             </div>
           </div>
           <div id="contactInfo" className={styles.contactInfo}>
@@ -315,17 +327,17 @@ class PatientView extends Component {
           </div>
           <div id="contactInfo" className={styles.contactInfo}>
             <div>
-              <Span icon="phone">
+              <Span style={{marginLeft: 0}} icon="phone">
                 {this.state.phone}
               </Span>
             </div>
             <div>
-              <Span icon="building">
-                {this.state.address}
+              <Span icon="building" style={{'line-height': '25px', marginLeft: 0}}>
+                {this.state.address1}<br />{this.state.address2}
               </Span>
             </div>
             <div>
-              <Span className="blue" icon="envelope">
+              <Span style={{marginLeft: 0}} className="blue" icon="envelope">
                 {this.state.email}
               </Span>
             </div>
@@ -411,18 +423,18 @@ class PatientView extends Component {
         <Header className={styles.header}>
           <h2>{this.state.name}
             <div className="action">
-              <Button
+              {/* <Button
                 search
                 icon="edit"
                 title="EDIT PATIENT"
                 style={{ marginLeft: 8 }}
-              />
+              /> */}
 
               <Button
                 icon="plus"
                 title="ADD A NEW SCRIPT"
                 link="/scripts/add"
-                style={{ marginLeft: 8 }}
+                style={{ 'display': 'block',marginLeft: 15, marginBottom: 7 }}
               />
 
             </div>

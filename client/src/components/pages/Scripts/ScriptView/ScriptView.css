@@ -253,4 +253,7 @@ td.setValue a, td.setValue a:visited {
 
 .notes span {display: inline !important;}
 
+/* RX History Tab */
+.rxHistoryTab table {margin: 0; width: 100%}
+
 
