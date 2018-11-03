@@ -114,14 +114,14 @@ class AgendaPage extends Component {
       const visitYear = visitDate.getFullYear()
       return (visitMonth === month) && (visitYear === year)
     }
-    let filteredVisits = this.props.visits.filter(isThisMonth)
+    // let filteredVisits = this.props.visits.filter(isThisMonth)
 
-    if (selectedRepId) {
-      // filter by rep if one is selected
-      filteredVisits = filteredVisits.filter(visit => {
-        return visit.rep.id === selectedRepId
-      })
-    }
+    // if (selectedRepId) {
+    //   // filter by rep if one is selected
+    //   filteredVisits = filteredVisits.filter(visit => {
+    //     return visit.rep.id === selectedRepId
+    //   })
+    // }
 
     return (
       <div className={styles.body}>
@@ -140,7 +140,7 @@ class AgendaPage extends Component {
         <Agenda
           month={month}
           year={year}
-          visits={filteredVisits}
+          // visits={filteredVisits}
           onSelectRep={this.viewRep.bind(this)}
         />
 

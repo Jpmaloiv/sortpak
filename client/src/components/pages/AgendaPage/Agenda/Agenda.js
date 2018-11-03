@@ -44,7 +44,7 @@ class Agenda extends Component {
       return visitDay === day
     }
     const { visits } = this.props
-    const filteredVisits = day ? visits.filter(isToday) : []
+    // const filteredVisits = day ? visits.filter(isToday) : []
     const reduceVisitsToReps = (acc, curr) => {
       const existingRep = acc.find(el => el.id === curr.rep.id)
       if (existingRep) {
@@ -56,14 +56,14 @@ class Agenda extends Component {
       return acc
     }
 
-    const reps = filteredVisits.reduce(reduceVisitsToReps, [])
+    // const reps = filteredVisits.reduce(reduceVisitsToReps, [])
 
     return (
       <Day
         onClick={rep => this.props.onSelectRep({rep, day})}
         key={key}
         day={day}
-        reps={reps}
+        // reps={reps}
         today={isCurrentDay}
       />
     )
