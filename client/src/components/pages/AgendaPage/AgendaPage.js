@@ -123,20 +123,21 @@ class AgendaPage extends Component {
 
     // filter visits by checking the current month
    
-    const isThisMonth = visit => {
-      const visitDate = new Date(visit.dateTime)
-      const visitMonth = visitDate.getMonth()
-      const visitYear = visitDate.getFullYear()
-      return (visitMonth === month) && (visitYear === year)
-    }
-    let filteredVisits = this.props.visits.filter(isThisMonth)
-
-    // if (selectedRepId) {
-      // filter by rep if one is selected
-      filteredVisits = filteredVisits.filter(visit => {
-        return visit.rep.id === selectedRepId
-      })
+    // const isThisMonth = visit => {
+    //   const visitDate = new Date(visit.dateTime)
+    //   const visitMonth = visitDate.getMonth()
+    //   const visitYear = visitDate.getFullYear()
+    //   return (visitMonth === month) && (visitYear === year)
     // }
+    // console.log(this.props);
+    // let filteredVisits = this.props.visits.filter(isThisMonth)
+
+    // // if (selectedRepId) {
+    //   // filter by rep if one is selected
+    //   filteredVisits = filteredVisits.filter(visit => {
+    //     return visit.rep.id === selectedRepId
+    //   })
+    // // }
   
 if (this.state.visits) {
     return (
