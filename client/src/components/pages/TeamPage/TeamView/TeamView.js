@@ -1,18 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
-import moment from 'moment'
 
 import axios from 'axios'
 import { TablePagination } from 'react-pagination-table';
 
-import { hasAuthTokenAsync } from '../../../../lib'
-
-// 3rd Party Components
-import FontAwesome from 'react-fontawesome'
 
 // Components
 import {
-  Tr,
   Header,
   ActionBox,
   Button,
@@ -31,7 +25,6 @@ import {
 } from '../../../../actions/team'
 
 import styles from './TeamView.css'
-import { replace } from 'react-router-redux';
 
 const th = ['NAME', 'USERNAME', 'EMAIL ADDRESS', 'ROLE', 'DATE ADDED']
 

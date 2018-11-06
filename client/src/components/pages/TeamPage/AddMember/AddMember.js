@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
-import validator from 'validator'
+// import validator from 'validator'
 
 import axios from 'axios'
 
@@ -58,20 +58,20 @@ class AddMember extends Component {
 
   handleSubmit(event) {
     event.preventDefault()
-    const {
-      firstName,
-      lastName,
-      email,
-      role,
-      active
-    } = this.state
-    const data = {
-      firstName,
-      lastName,
-      email,
-      role,
-      active
-    }
+    // const {
+    //   firstName,
+    //   lastName,
+    //   email,
+    //   role,
+    //   active
+    // } = this.state
+    // const data = {
+    //   firstName,
+    //   lastName,
+    //   email,
+    //   role,
+    //   active
+    // }
     if (this.state.password === this.state.confirmpw) {
       axios.post("/api/user/new",
         {
@@ -101,15 +101,14 @@ class AddMember extends Component {
       email,
       password,
       confirmpw,
-      role,
-      active
+      role
     } = this.state
 
-    const invalid = (
-      !name
-      || !validator.isEmail(email)
-      || !role
-    )
+    // const invalid = (
+    //   !name
+    //   || !validator.isEmail(email)
+    //   || !role
+    // )
 
     const roleOptions = [
       {

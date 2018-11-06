@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 
 import axios from 'axios'
 import Moment from 'react-moment'
-import jwt_decode from 'jwt-decode'
 
 // Components
 import {
@@ -15,7 +14,6 @@ import {
   NoteModal,
 } from '../../../../shared'
 
-import styles from './NotesTab.css'
 
 
 class NotesTab extends Component {

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import { NavLink } from 'react-router-dom'
 // import jwt_decode from 'jwt-decode'
-import axios from 'axios'
 
 import qs from 'query-string'
 import { getDateObject } from '../../../lib'

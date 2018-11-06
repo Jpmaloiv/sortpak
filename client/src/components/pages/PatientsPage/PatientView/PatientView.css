@@ -33,6 +33,11 @@
   font-weight: lighter;
 }
 
+.editButton {
+  line-height: 1;
+  height: 38px !important;
+}
+
 
 :local(.header) > h2 {
   display: flex;

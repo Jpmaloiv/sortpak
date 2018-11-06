@@ -172,7 +172,6 @@ class AddScript extends Component {
     
 
     getMedication() {
-        console.log("HI");
         console.log(this.state.value);
         const loginToken = window.localStorage.getItem("token");
 
@@ -309,8 +308,6 @@ console.log(this.state.productId);
         
       console.log(this.state.medication);
         const {
-            medication,
-            medicationChange,
             pharmNPI,
             pharmNPIChange,
             location,

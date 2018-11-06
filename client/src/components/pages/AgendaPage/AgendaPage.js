@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import qs from 'query-string'
+import axios from 'axios'
 
 import { hasAuthTokenAsync, getDateObject } from '../../../lib'
 
@@ -29,6 +30,7 @@ class AgendaPage extends Component {
       rep: null,
       day: null,
       sideBarFlipped: false,
+      visits: ''
     }
   }
 
@@ -41,6 +43,18 @@ class AgendaPage extends Component {
         }
       })
       .catch(console.log)
+
+    const loginToken = window.localStorage.getItem("token");
+
+    axios.get('/api/visits/search', { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        console.log(resp);
+        this.setState({
+          visits: resp.data.response
+        })
+      }).catch((err) => {
+        console.error(err)
+      })
   }
 
   get params() {
@@ -61,7 +75,7 @@ class AgendaPage extends Component {
   }
 
   setParams(newParams) {
-    const search = qs.stringify({...this.params, ...newParams})
+    const search = qs.stringify({ ...this.params, ...newParams })
     this.props.history.push({
       search,
     })
@@ -69,7 +83,7 @@ class AgendaPage extends Component {
 
   setToCurrentDate() {
     const { month, year } = getDateObject()
-    this.setParams({month, year})
+    this.setParams({ month, year })
   }
 
   setMonth(newParams) {
@@ -80,7 +94,7 @@ class AgendaPage extends Component {
     this.setParams({ rep: rep || null })
   }
 
-  viewRep({rep, day}) {
+  viewRep({ rep, day }) {
     const dayOfWeek = (new Date(this.year, this.month, day)).getDay()
     const sideBarFlipped = dayOfWeek > 3
     this.setState({ rep, day, sideBarFlipped })
@@ -92,7 +106,7 @@ class AgendaPage extends Component {
       rep,
       date,
     }
-    this.setState({ visitModal, rep: null, day: null})
+    this.setState({ visitModal, rep: null, day: null })
   }
 
   closeSideBar() {
@@ -108,21 +122,23 @@ class AgendaPage extends Component {
     } = this
 
     // filter visits by checking the current month
+   
     const isThisMonth = visit => {
       const visitDate = new Date(visit.dateTime)
       const visitMonth = visitDate.getMonth()
       const visitYear = visitDate.getFullYear()
       return (visitMonth === month) && (visitYear === year)
     }
-    // let filteredVisits = this.props.visits.filter(isThisMonth)
+    let filteredVisits = this.props.visits.filter(isThisMonth)
 
     // if (selectedRepId) {
-    //   // filter by rep if one is selected
-    //   filteredVisits = filteredVisits.filter(visit => {
-    //     return visit.rep.id === selectedRepId
-    //   })
+      // filter by rep if one is selected
+      filteredVisits = filteredVisits.filter(visit => {
+        return visit.rep.id === selectedRepId
+      })
     // }
-
+  
+if (this.state.visits) {
     return (
       <div className={styles.body}>
         {/* Header */}
@@ -140,14 +156,16 @@ class AgendaPage extends Component {
         <Agenda
           month={month}
           year={year}
-          // visits={filteredVisits}
+          visits={this.state.visits}
           onSelectRep={this.viewRep.bind(this)}
         />
 
         {/* Modal */}
         <VisitModal
+          month={month}
+          year={year}
           content={this.state.visitModal}
-          onClickAway={() => this.setState({visitModal: null})}
+          onClickAway={() => this.setState({ visitModal: null })}
           onSubmit={this.props.createVisit.bind(this)}
         />
 
@@ -164,8 +182,8 @@ class AgendaPage extends Component {
         />
       </div>
     );
-  }
-}
+  } else {return (<div></div>)}
+}}
 
 const mapStateToProps = ({ main }) => {
   const {

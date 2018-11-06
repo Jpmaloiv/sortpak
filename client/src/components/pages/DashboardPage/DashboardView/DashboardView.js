@@ -8,7 +8,7 @@ import {
   ButtonGroup,
 } from '../../../common'
 
-import RepDashboard from '../RepDashboard/RepDashboard'
+// import RepDashboard from '../RepDashboard/RepDashboard'
 import AdminDashboard from '../AdminDashboard/AdminDashboard'
 
 class DashboardView extends Component {
@@ -38,20 +38,20 @@ class DashboardView extends Component {
       { option: 'Year',  value: 'year'  },
     ]
 
-    const { me, isAdmin } = this.props
+    // const { me, isAdmin } = this.props
 
     return (
       <div>
         <Header>
-          {isAdmin ? (
+          {/* {isAdmin ? (
             <h2>
               Revenue / Profit
             </h2>
-          ) : (
+          ) : ( */}
             <h2>
               Dashboard
             </h2>
-          )}
+          {/* )} */}
 
           <ButtonGroup
             options={buttonOptions}

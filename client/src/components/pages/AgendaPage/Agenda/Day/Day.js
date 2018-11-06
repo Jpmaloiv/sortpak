@@ -8,6 +8,7 @@ import {
 
 import styles from './Day.css'
 
+
 const Day = ({day, reps, onClick, today}) => {
   const className = cn(styles.day, { outside: !day, today })
   if (!day) {
@@ -15,20 +16,22 @@ const Day = ({day, reps, onClick, today}) => {
       <div className={className}/>
     )
   } else {
+    console.log({reps})
     return (
       <div className={className}>
         <Icon>
           {day}
         </Icon>
-        {/* {reps.map(rep => (
+        {reps.map(rep => (
           <span
             key={rep.id}
             className="rep-name"
-            onClick={() => onClick(rep)}
+            // onClick={() => onClick(rep)}
           >
-            {rep.nameDisplay & 'HELLO'|| 'Rep'}
+          {rep.Rep}
+            {/* {rep.nameDisplay & 'HELLO'|| 'Rep'} */}
           </span>
-        ))} */}
+        ))}
       </div>
     )
   }

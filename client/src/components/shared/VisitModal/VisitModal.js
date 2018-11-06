@@ -19,15 +19,18 @@ class VisitModal extends Component {
   constructor(props) {
     super(props)
     this.state = this.initialState
+
+      this.setDateTime = this.setDateTime.bind(this);
+    // this.submit = this.submit.bind(this);
   }
 
   get initialState() {
     const date = moment().add(1, 'day').format('YYYY-MM-DD')
     const initialState = {
-      rep: '',
+      Rep: '',
       date,
       time: '10:00',
-      physician: '',
+      Physician: '',
     }
     return initialState
   }
@@ -36,7 +39,30 @@ class VisitModal extends Component {
     return newProps.content || null
   }
 
-  /* get inactive() {
+  componentDidMount() {
+    const loginToken = window.localStorage.getItem("token");
+    axios.get('/api/user/search?role=Rep', { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        console.log(resp);
+        this.setState({
+          reps: resp.data.response
+        })
+      }).catch((err) => {
+        console.error(err)
+      })
+
+    axios.get('/api/physicians/search', { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        console.log(resp);
+        this.setState({
+          physicians: resp.data.response
+        })
+      }).catch((err) => {
+        console.error(err)
+      })
+  }
+
+  get inactive() {
     const {
       date,
       time,
@@ -44,10 +70,16 @@ class VisitModal extends Component {
     } = this.state
     const rep = this.props.isAdmin ? this.state.rep : this.props.me
     return !rep || !date || !time || !physician
-  } */
+  }
 
-  submit(e) {
-    
+  setDateTime(e) {
+    e.preventDefault();
+    this.setState({
+      dateTime: moment(`${this.state.date} ${this.state.time}`, 'YYYY-MM-DD HH:mm').toISOString()
+    }, this.submitVisit)
+  }
+
+  submitVisit() {
     /* const {
       date,
       time,
@@ -64,24 +96,22 @@ class VisitModal extends Component {
       // physicianId: physician.id || physician,
     }
     console.log(dateTime); */
+    console.log(this.state.Rep)
 
-        const loginToken = window.localStorage.getItem("token");
-        let data = new FormData();
-        axios.post('/api/visits/add?date=' + this.state.date + '&time=' + this.state.time, 
-        data, { headers: { "Authorization": "Bearer " + loginToken } })
-            .then((data) => {
-                console.log(data);
-                this.props.onClickAway()
-                // this.setState({ scriptFile: '', type: '' })
-                window.location.reload();
-                // this.props.history.push("/scripts");              
-            }).catch((error) => {
-                console.error(error);
-            })
-          }
+    const loginToken = window.localStorage.getItem("token");
+    let data = new FormData();
+    axios.post('/api/visits/add?dateTime=' + this.state.dateTime + '&Rep=' + this.state.Rep + '&Physician=' + this.state.Physician,
+      data, { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((data) => {
+        console.log(data);
+        window.location.reload();
+        // this.props.onClickAway();
         
-    // this.props.onClickAway()
-  
+      }).catch((error) => {
+        console.error(error);
+      })
+  }
+
 
   renderSelectByType(type) {
     const { content } = this.props
@@ -90,7 +120,7 @@ class VisitModal extends Component {
     let defaultOption
     let dataSource
 
-    switch(type) {
+    switch (type) {
       case 'physician':
         defaultOption = 'Select Physician'
         dataSource = this.props.physicians
@@ -140,6 +170,7 @@ class VisitModal extends Component {
   }
 
   render() {
+    console.log(this.state);
     const {
       content,
       onClickAway,
@@ -147,73 +178,117 @@ class VisitModal extends Component {
 
     const { date, time } = this.state
 
-    return (
-      <FormModal
-        title="Schedule New Visit"
-        onClickAway={onClickAway}
-        visible={!!content}
-        onSubmit={this.submit.bind(this)}
-        className={styles.modal}
-      >
-        {/* Rep */}
-        <label>
-          Rep
+    if (this.state.reps && this.state.physicians) {
+      const repOptions = [
+        {
+          key: '',
+          value: '',
+          display: '--',
+        },
+        ...this.state.reps.map(rep => ({
+          key: rep.id,
+          value: rep.name,
+          display: rep.name,
+        })),
+      ]
+
+      const physicianOptions = [
+        {
+          key: '',
+          value: '',
+          display: '--',
+        },
+        ...this.state.physicians.map(physician => ({
+          key: physician.id,
+          value: 'Dr.' + physician.firstName + ' ' + physician.lastName,
+          display: 'Dr.' + physician.firstName + ' ' + physician.lastName
+        })),
+      ]
+
+
+
+
+      return (
+        <FormModal
+          title="Schedule New Visit"
+          onClickAway={onClickAway}
+          visible={!!content}
+          onSubmit={this.setDateTime}
+          className={styles.modal}
+        >
+          {/* Rep */}
+          <label>
+            Rep
         </label>
-        {this.renderSelectByType('rep')}
-
-        <br />
-
-        {/* Date */}
-        <label>
-          Date
-        </label>
-        <Input
-          type="date"
-          value={date}
-          onChange={date => this.setState({ date })}
-        />
-
-        <br />
-
-        {/* Time */}
-        <label>
-          Time
-        </label>
-        <Input
-          type="time"
-          value={time}
-          onChange={time => this.setState({ time })}
-        />
-
-        <br />
-
-        {/* Physician */}
-        <label>
-          Physician
-        </label>
-        {this.renderSelectByType('physician')}
-
-        <div className="buttons">
-          <Button
-            large
-            cancel
-            type="button"
-            title="Cancel"
-            onClick={onClickAway}
+          <Selector
+            wide
+            options={repOptions}
+            value={this.state.Rep}
+            // onSelect={this.props.on ChangeValue}
+            onSelect={Rep => this.setState({ Rep })}
           />
-          <Button
-            large
-            // inactive={this.inactive}
-            type="submit"
-            title="Schedule"
+
+          <br />
+
+          {/* Date */}
+          <label>
+            Date
+        </label>
+          <Input
+            type="date"
+            value={date}
+            onChange={date => this.setState({ date })}
           />
-        </div>
-      </FormModal>
-    )
+
+          <br />
+
+          {/* Time */}
+          <label>
+            Time
+        </label>
+          <Input
+            type="time"
+            value={time}
+            onChange={time => this.setState({ time })}
+          />
+
+          <br />
+
+          {/* Physician */}
+          <label>
+            Physician
+        </label>
+          <Selector
+            wide
+            options={physicianOptions}
+            value={this.state.Physician}
+            // onSelect={this.props.on ChangeValue}
+            onSelect={Physician => this.setState({ Physician })}
+          />
+
+
+          <div className="buttons">
+            <Button
+              large
+              cancel
+              type="button"
+              title="Cancel"
+              onClick={onClickAway}
+            />
+            <Button
+              large
+              // inactive={this.inactive}
+              type="submit"
+              title="Schedule"
+            />
+          </div>
+        </FormModal>
+      )
+    } else { return (<div></div>) }
   }
 }
 
-const mapStateToProps = ({auth, main}) => {
+const mapStateToProps = ({ auth, main }) => {
   const {
     reps,
     physicians,

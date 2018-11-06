@@ -179,10 +179,6 @@ class RefillsView extends Component {
       'All Reps'
     ]
 
-    const refillNum = this.state.refillNum;
-
-    
-
     const specOptions = [
       'All Specializations',
       'Internal Medicine',

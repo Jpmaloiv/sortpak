@@ -31,7 +31,7 @@ router.post("/add", (req, res) => {
         primInsType: req.query.primInsType,
         secInsPlan: req.query.secInsPlan,
         secInsBIN: req.query.secInsBIN,
-        secInsPCN: req.query.secInsPCN, 
+        secInsPCN: req.query.secInsPCN,
         secInsID: req.query.secInsID,
         secInsGroup: req.query.secInsGroup,
         secInsType: req.query.secInsType,
@@ -45,17 +45,17 @@ router.post("/add", (req, res) => {
         } else {
             const patientPath = './patients/' + req.payload.id + '/' + req.query.firstName.trim() + ".pdf";
             // console.log("dir created");
-                    // console.log("file saved");
-                    db.Patients
-                        .create(patient)
-                        .then((resp) => {
-                            res.status(200).json({ message: "Upload successful!" });
-                        })
-                        .catch((err) => {
-                            console.error(err);
-                            res.status(500).json({ message: "Internal server error.", error: err });
-                        })
-                
+            // console.log("file saved");
+            db.Patients
+                .create(patient)
+                .then((resp) => {
+                    res.status(200).json({ message: "Upload successful!" });
+                })
+                .catch((err) => {
+                    console.error(err);
+                    res.status(500).json({ message: "Internal server error.", error: err });
+                })
+
         }
     })
 });
@@ -75,12 +75,12 @@ router.get("/search", (req, res) => {
         //         attributes: ['id', 'firstName', 'lastName']
         //     }]
         // }]
-        
+
     }
     if (req.query.patientId) {
         searchParams.where.id = req.query.patientId
     }
-  
+
     console.log(searchParams);
     db.Patients
         .findAll(searchParams)
@@ -94,7 +94,46 @@ router.get("/search", (req, res) => {
             console.error(err);
             res.status(500).json({ message: "Error (500): Internal Server Error", error: err })
         })
-    })
+})
+
+router.put("/update", function (req, res) {
+    console.log("update")
+    const patient = {
+        firstName: req.query.firstName,
+        lastName: req.query.lastName,
+        dob: req.query.dob,
+        sex: req.query.sex,
+        phone: req.query.phone,
+        email: req.query.email,
+        patientWarning: req.query.patientWarning,
+        conditions: req.query.conditions,
+        allergies: req.query.allergies,
+        address1: req.query.address1,
+        address2: req.query.address2,
+        primInsPlan: req.query.primInsPlan,
+        primInsBIN: req.query.primInsBIN,
+        primInsPCN: req.query.primInsPCN,
+        primInsID: req.query.primInsID,
+        primInsGroup: req.query.primInsGroup,
+        primInsType: req.query.primInsType,
+        secInsPlan: req.query.secInsPlan,
+        secInsBIN: req.query.secInsBIN,
+        secInsPCN: req.query.secInsPCN,
+        secInsID: req.query.secInsID,
+        secInsGroup: req.query.secInsGroup,
+        secInsType: req.query.secInsType,
+    }
+
+    db.Patients.update(patient, { where: { id: req.query.id } })
+        .then(function (resp) {
+            res.json({ success: true });
+        })
+        .catch(function (err) {
+            console.error(err);
+            return res.status(500).end('Update FAILED' + err.toString());
+            throw err;
+        });
+})
 
 
 module.exports = router;

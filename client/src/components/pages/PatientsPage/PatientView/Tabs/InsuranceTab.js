@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 
 // Components
 import {
-  Form,
-  Span,
+  Span
 } from '../../../../common'
 
 class InsuranceTab extends Component {
@@ -21,10 +20,10 @@ class InsuranceTab extends Component {
   }
 
   renderInsuranceForm({ title, key }) {
-    const { editing } = this.props.state
-    const state = this.props.state[key] || {}
-    const insurance = this.props.patient[key] || {}
-    const onChange = newState => this.handleInsuranceChange(newState, key)
+    // const { editing } = this.props.state
+    // const state = this.props.state[key] || {}
+    // const insurance = this.props.patient[key] || {}
+    // const onChange = newState => this.handleInsuranceChange(newState, key)
     return (
       // <div>
       //   <h2>
@@ -85,17 +84,17 @@ class InsuranceTab extends Component {
   }
 
   render() {
-    const { className } = this.props
-    const insurancesArray = [
-      {
-        title: 'Primary Insurance',
-        key: 'primaryInsurance',
-      },
-      {
-        title: 'Secondary Insurance',
-        key: 'secondaryInsurance',
-      },
-    ]
+    // const { className } = this.props
+    // const insurancesArray = [
+    //   {
+    //     title: 'Primary Insurance',
+    //     key: 'primaryInsurance',
+    //   },
+    //   {
+    //     title: 'Secondary Insurance',
+    //     key: 'secondaryInsurance',
+    //   },
+    // ]
     return (
       <div className='insuranceTab'>
         {/* {insurancesArray.map(this.renderInsuranceForm.bind(this))} */}

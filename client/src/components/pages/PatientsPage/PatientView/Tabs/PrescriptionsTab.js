@@ -80,7 +80,7 @@ class PrescriptionsTab extends Component {
       <tr value={script.id} onClick={() => this.handleClick(script.id)}>
         <td>
           <Span icon="calendar">
-          <Moment format='MM-DD-YYYY'>{script.processedOn}</Moment>
+          <Moment format='MM/DD/YYYY'>{script.processedOn}</Moment>
           </Span>
         </td>
 

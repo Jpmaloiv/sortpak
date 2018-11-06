@@ -5,12 +5,10 @@ import axios from 'axios'
 import { TablePagination } from 'react-pagination-table';
 
 import {
-  // Span,
-  Table,
   Header,
   ActionBox,
   Button,
-  SearchBar,
+  SearchBar
 } from '../../../common'
 
 

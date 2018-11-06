@@ -1,0 +1,4 @@
+.scriptSearch button {
+    -webkit-transition: all 500ms !important;
+    transition: all 500ms !important;
+}

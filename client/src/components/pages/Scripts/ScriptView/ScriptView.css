@@ -7,6 +7,12 @@
     border-collapse: initial;
     border-spacing: 15px;
 }
+
+#scriptViewHead button {
+    -webkit-transition: all 500ms !important;
+    transition: all 500ms !important;
+}
+
 #scriptView {
     background-color: #fff; box-shadow: none !important;
 }
@@ -194,6 +200,7 @@ td.field {
 
 td.value {
     color: #333;
+    font-weight: normal;
 }
 
 td.setValue a, td.setValue a:visited {

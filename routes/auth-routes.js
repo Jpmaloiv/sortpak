@@ -24,7 +24,11 @@ router.get("/search", (req, res) => {
     if (req.query.userId) {
         searchParams.where.id = req.query.userId
     }
-  
+
+    if (req.query.role) {
+        searchParams.where.role = req.query.role
+    }
+
     console.log(searchParams);
     db.User
         .findAll(searchParams)

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import axios from 'axios'
-import moment from 'moment'
 
 import { formatNumber, unformatNumber } from '../../../../lib/phoneHelper'
 
@@ -479,7 +478,7 @@ class PhysicianView extends Component {
 
     // return (
     //   <div className={styles.onlineTab}>
-        {/* <div className="item">
+        /* <div className="item">
           <label>
             Username
           </label>
@@ -517,7 +516,7 @@ class PhysicianView extends Component {
         </div>
       </div>
     )
-  } */}}
+  } */}
 
   render() {
 

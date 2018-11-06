@@ -301,21 +301,14 @@ class PatientView extends Component {
             </div>
 
             <div>
-              Date of Birth:
-              <Span
-                editing={editing}
-                type="date"
-                value={dob}
-                onChange={dob => this.setState({ dob })}
-              >
-                {this.state.dob}
-              </Span>
+              Date of Birth:&nbsp;
+              <Moment format="MM/DD/YYYY">{this.state.dob}</Moment>
             </div>
             <div>
               Sex: {this.state.sex}
             </div>
             <div>
-              Patient Since: &nbsp;<Moment format={"YYYY-MM-DD"}>{this.state.createdAt}</Moment>
+              Patient Since: &nbsp;<Moment format={"MM/DD/YYYY"}>{this.state.createdAt}</Moment>
             </div>
           </div>
           <div id="contactInfo" className={styles.contactInfo}>
@@ -409,6 +402,7 @@ class PatientView extends Component {
   }
 
   render() {
+    console.log(this.props);
     const { patient } = this.props
     if (!patient) {
       return null
@@ -422,13 +416,15 @@ class PatientView extends Component {
       <div>
         <Header className={styles.header}>
           <h2>{this.state.name}
-            <div className="action">
-              {/* <Button
+            <div className="action" style={{'display': 'inherit'}}>
+              <Button
                 search
+                className='editButton'
                 icon="edit"
                 title="EDIT PATIENT"
+                link={`/patients/${this.props.match.params.patientId}/edit`}
                 style={{ marginLeft: 8 }}
-              /> */}
+              />
 
               <Button
                 icon="plus"

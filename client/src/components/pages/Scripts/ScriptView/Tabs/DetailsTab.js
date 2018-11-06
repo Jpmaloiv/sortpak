@@ -41,6 +41,8 @@ class DetailsTab extends Component {
           patientDob: script.Patient.dob,
           patientPhone: script.Patient.phone,
           patientEmail: script.Patient.email,
+          primInsPlan: script.Patient.primInsPlan, primInsBIN: script.Patient.primInsBIN, primInsGroup: script.Patient.primInsGroup, primInsID: script.Patient.primInsID, primInsPCN: script.Patient.primInsPCN, primInsType: script.Patient.primInsType,
+          secInsPlan: script.Patient.secInsPlan, secInsBIN: script.Patient.secInsBIN, secInsGroup: script.Patient.secInsGroup, secInsID: script.Patient.secInsID, secInsPCN: script.Patient.secInsPCN, secInsType: script.Patient.secInsType,
           conditions: script.Patient.conditions,
           allergies: script.Patient.allergies,
           patientWarning: script.Patient.patientWarning,
@@ -192,7 +194,7 @@ class DetailsTab extends Component {
                   </tr>
                   <tr>
                     <td className="field">Date of Birth</td>
-                    <td className="value">{this.state.patientDob}</td>
+                    <td className="value"><Moment format="MM/DD/YYYY">{this.state.patientDob}</Moment></td>
                     <td className="field">RX Number</td>
                     <td className="value">
                       <Span
@@ -293,7 +295,7 @@ class DetailsTab extends Component {
                     <td className="field">Rep</td>
                     <td className="value">{this.state.physicianRep}</td>
                     <td className="field">Days Supply</td>
-                    <td>
+                    <td className='value'>
                       <Span
                         editing={editing}
                         placeholder={this.state.daysSupply}
@@ -311,9 +313,9 @@ class DetailsTab extends Component {
                 <tbody>
                   <tr>
                     <td className="field">Medicine</td>
-                    <td>{this.state.productName}</td>
+                    <td className='value'>{this.state.productName}</td>
                     <td className="field">Sales Code</td>
-                    <td>
+                    <td className='value'>
                       <Span
                         editing={editing}
                         placeholder={this.state.salesCode}
@@ -326,9 +328,9 @@ class DetailsTab extends Component {
                   </tr>
                   <tr>
                     <td className="field">NDC</td>
-                    <td>{this.state.productNDC}</td>
+                    <td className='value'>{this.state.productNDC}</td>
                     <td className="field">Cost</td>
-                    <td>
+                    <td className='value'>
                       <Span
                         editing={editing}
                         placeholder={this.state.cost}
@@ -341,9 +343,9 @@ class DetailsTab extends Component {
                   </tr>
                   <tr>
                     <td className="field">On Hand</td>
-                    <td>{this.state.productQuantity}</td>
+                    <td className='value'>{this.state.productQuantity}</td>
                     <td className="field">Primary Insurance Pay</td>
-                    <td>
+                    <td className='value'>
                       <Span
                         editing={editing}
                         placeholder={this.state.primInsPay}
@@ -356,9 +358,9 @@ class DetailsTab extends Component {
                   </tr>
                   <tr>
                     <td className="field">Prior Authorization</td>
-                    <td></td>
+                    <td className='value'></td>
                     <td className="field">Secondary Insurance Pay</td>
-                    <td>
+                    <td className='value'>
                       <Span
                         editing={editing}
                         placeholder={this.state.secInsPay}
@@ -371,7 +373,7 @@ class DetailsTab extends Component {
                   </tr>
                   <tr>
                     <td className="field">Location</td>
-                    <td>
+                    <td className='value'>
                       <Span
                         editing={editing}
                         placeholder={this.state.location}
@@ -382,7 +384,7 @@ class DetailsTab extends Component {
                       </Span>
                     </td>
                     <td className="field">Copay Assistance Status</td>
-                    <td>
+                    <td className='value'>
                       {editing ? (
                         <Selector
                           placeholder={this.state.copayApproval}
@@ -399,9 +401,9 @@ class DetailsTab extends Component {
                   </tr>
                   <tr>
                     <td className="field">Ship On</td>
-                    <td>{this.state.shipOn}</td>
+                    <td className='value'><Moment format="MM/DD/YYYY">{this.state.shipOn}</Moment></td>
                     <td className="field">Copay Assistance Network</td>
-                    <td>
+                    <td className='value'>
                       {editing ? (
                         <Selector
                           placeholder={this.state.copayNetwork}
@@ -418,15 +420,15 @@ class DetailsTab extends Component {
                   </tr>
                   <tr>
                     <td className="field">Delivery Method</td>
-                    <td>{this.state.deliveryMethod}</td>
+                    <td className='value'>{this.state.deliveryMethod}</td>
                     <td className="field">Copay Assistance Amount</td>
-                    <td>{this.state.networkPay}</td>
+                    <td className='value'>{this.state.networkPay}</td>
                   </tr>
                   <tr>
                     <td className="field">Tracking Number</td>
-                    <td>{this.state.trackNum}</td>
+                    <td className='value'>{this.state.trackNum}</td>
                     <td className="field">Patient Pay</td>
-                    <td>
+                    <td className='value'>
                       <Span
                         editing={editing}
                         placeholder={this.state.patientPay}
@@ -439,13 +441,13 @@ class DetailsTab extends Component {
                   </tr>
                   <tr>
                     <td className="field">ETA</td>
-                    <td>{this.state.ETA}</td>
+                    <td className='value'><Moment format="MM/DD/YYYY">{this.state.ETA}</Moment></td>
                     <td className="field">Payment Option</td>
-                    <td>{this.state.paymentOption}</td>
+                    <td className='value'>{this.state.paymentOption}</td>
                   </tr>
                   <tr>
                     <td className="field">Status</td>
-                    <td>
+                    <td className='value'>
                       {editing ? (
                         <Selector
                           placeholder={this.state.status}
@@ -463,22 +465,38 @@ class DetailsTab extends Component {
                     <td></td>
                   </tr>
                   <tr>
-                    <td className="field">Primary Insurance</td>
-                    <td></td>
-                    <td className="field">Profile</td>
-                    <td></td>
+                    <td className="field">Instructions</td>
+                    <td className='value'>{this.state.directions}</td>
+                    <td className="field">Profit</td>
+                    <td className='value'></td>
                   </tr>
                   <tr>
                     <td className="field"></td>
-                    <td></td>
+                    <td className='value'></td>
                     <td className="field">Margin</td>
-                    <td></td>
+                    <td className='value'></td>
                   </tr>
+                </tbody>
+              </table>
+
+              <table>
+                <tbody>
                   <tr>
-                    <td className="field">Instructions</td>
-                    <td>{this.state.directions}</td>
-                    <td className="field">Secondary Insurance</td>
-                    <td className="value"></td>
+                    <td className="field" style={{ 'vertical-align': 'top' }}>Primary Insurance</td>
+                    <td className='value'>
+                      Plan: {this.state.primInsPlan}<br />
+                      BIN: {this.state.primInsBIN}<br />
+                      Group: {this.state.primInsGroup}<br />
+                      ID: {this.state.primInsID}<br />
+                      PCN: {this.state.primInsPCN}<br />
+                      Type: {this.state.primInsType}</td>
+                    <td className="field" style={{ 'vertical-align': 'top' }}>Secondary Insurance</td>
+                    <td className="value">Plan: {this.state.secInsPlan}<br />
+                      BIN: {this.state.secInsBIN}<br />
+                      Group: {this.state.secInsGroup}<br />
+                      ID: {this.state.secInsID}<br />
+                      PCN: {this.state.secInsPCN}<br />
+                      Type: {this.state.secInsType}</td>
                   </tr>
                 </tbody>
               </table>
@@ -541,7 +559,7 @@ class DetailsTab extends Component {
           </div>
 
         </Body>
-      </div>
+      </div >
     )
   }
 }

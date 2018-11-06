@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import axios from 'axios'
+import Moment from 'react-moment'
 
 
 import { Span, Table, Header, Button, ActionBox, SearchBar } from '../../../common'
@@ -100,7 +101,7 @@ class PatientsView extends Component {
 
         <td>
           <Span icon="calendar">
-            {patient.dob || 'None'}
+            <Moment format="MM/DD/YYYY">{patient.dob || 'None'}</Moment>
           </Span>
         </td>
 

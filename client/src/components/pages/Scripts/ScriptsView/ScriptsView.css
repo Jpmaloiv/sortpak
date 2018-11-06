@@ -18,9 +18,9 @@ tr {
     background-color: #fff;
     font-size: 14px;
     cursor: pointer;
-    -webkit-transition: all 150ms;
-    -o-transition: all 150ms;
-    transition: all 150ms;
+    -webkit-transition: all 500ms !important;
+    -o-transition: all 500ms !important;
+    transition: all 500ms !important;
     border: 1px solid #dfe1e2;
 }
 

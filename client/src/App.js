@@ -12,6 +12,7 @@ import EditScript from './components/pages/Scripts/AddScript/EditScript'
 import Attachment from './components/pages/Scripts/ScriptView/Attachment'
 import PatientsPage from './components/pages/PatientsPage/PatientsPage'
 import AddPatient from './components/pages/PatientsPage/AddPatient/AddPatient'
+import EditPatient from './components/pages/PatientsPage/AddPatient/EditPatient'
 import PatientView from './components/pages/PatientsPage/PatientView/PatientView'
 import PatientFile from './components/pages/PatientsPage/PatientView/Tabs/PatientFile'
 import DashboardPage from './components/pages/DashboardPage/DashboardPage'
@@ -72,6 +73,7 @@ class App extends Component {
               <Route exact path="/scripts/:scriptId/edit" component={EditScript} />
               <Route exact path="/patients" component={PatientsPage} />
               <Route exact path="/patients/add" component={AddPatient} />
+              <Route exact path="/patients/:patientId/edit" component={EditPatient} />
               <Route exact path="/patients/:patientId" component={PatientView} />
               <Route exact path="/dashboard" component={DashboardPage} />
               <Route exact path="/physicians" component={PhysiciansPage} />

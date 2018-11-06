@@ -89,7 +89,9 @@ router.get("/search", (req, res) => {
         },
         include: [{
             model: db.Patients,
-            attributes: ["firstName", "lastName", "dob", "phone", "email", "patientWarning", "conditions", "allergies"],
+            attributes: ["firstName", "lastName", "dob", "phone", "email", "patientWarning", "conditions", "allergies", 'primInsPlan',
+                        'primInsBIN', 'primInsGroup', 'primInsID', 'primInsPCN', 'primInsType','secInsPlan', 'secInsBIN', 'secInsGroup',
+                        'secInsID', 'secInsPCN', 'secInsType']
         },
         {
             model: db.Physicians,

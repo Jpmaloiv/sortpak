@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
+import axios from 'axios' 
 
 import calendarJs from 'calendar-js'
 
@@ -11,6 +12,12 @@ import Day from './Day/Day'
 import styles from './Agenda.css'
 
 class Agenda extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      reps: '',
+    }
+  }
   renderWeekday(day) {
     return (
       <div key={day} className="day">
@@ -18,6 +25,21 @@ class Agenda extends Component {
       </div>
     )
   }
+
+  componentDidMount() {
+    const loginToken = window.localStorage.getItem("token");
+
+      axios.get('/api/user/search', { headers: { "Authorization": "Bearer " + loginToken } })
+        .then((resp) => {
+          console.log(resp);
+            this.setState({
+              reps: resp.data.response
+            })
+        }).catch((err) => {
+          console.error(err)
+        })
+  }
+  
 
   renderWeekdaysHead() {
     const weekdays = calendarJs().weekdaysAbbr()
@@ -29,8 +51,10 @@ class Agenda extends Component {
   }
 
   renderDay(weekIndex, day, dayIndex) {
-    const { date, month, year } = getDateObject()
-
+  
+    // const { date, month, year } = getDateObject()
+    const { date } = getDateObject();
+    const { month, year } = this.props
     const isCurrentDay = (
       date === day
       && month === this.props.month
@@ -38,24 +62,38 @@ class Agenda extends Component {
     )
 
     const key = `${weekIndex}-${dayIndex}`
+
+    const isThisMonth = visit => {
+      const visitDate = new Date(visit.dateTime)
+      const visitMonth = visitDate.getMonth()
+      const visitYear = visitDate.getFullYear()
+      return (visitMonth === month) && (visitYear === year)
+    }
+    const filteredMonth = this.props.visits.filter(isThisMonth)
+    // console.log(filteredMonth);
+  
+    console.log(this.props);
     const isToday = visit => {
       const visitDate = new Date(visit.dateTime)
       const visitDay = visitDate.getDate()
       return visitDay === day
     }
-    const { visits } = this.props
-    // const filteredVisits = day ? visits.filter(isToday) : []
-    const reduceVisitsToReps = (acc, curr) => {
-      const existingRep = acc.find(el => el.id === curr.rep.id)
-      if (existingRep) {
-        existingRep.visits.push(curr)
-      } else {
-        const rep = { ...curr.rep, visits: [curr] }
-        acc.push(rep)
-      }
-      return acc
-    }
+    // console.log(day);
 
+    // const { visits } = this.props
+    const filteredVisits = day ? filteredMonth.filter(isToday) : []
+    // const reduceVisitsToReps = (acc, curr) => {
+    //   const existingRep = acc.find(el => el.id === curr.rep.id)
+    //   if (existingRep) {
+    //     existingRep.visits.push(curr)
+    //   } else {
+    //     const rep = { ...curr.rep, visits: [curr] }
+    //     acc.push(rep)
+    //   }
+    //   return acc
+    // }
+  
+    const reps = filteredVisits;
     // const reps = filteredVisits.reduce(reduceVisitsToReps, [])
 
     return (
@@ -63,11 +101,12 @@ class Agenda extends Component {
         onClick={rep => this.props.onSelectRep({rep, day})}
         key={key}
         day={day}
-        // reps={reps}
+        reps={reps}
         today={isCurrentDay}
       />
-    )
-  }
+    )} 
+  
+
 
   renderWeek(week, weekIndex) {
     const { month, year } = this.props

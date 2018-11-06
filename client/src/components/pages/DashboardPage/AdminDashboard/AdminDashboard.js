@@ -60,9 +60,9 @@ class AdminDashboard extends Component {
 
   
   renderCards() {
-    const patients = this.props.patients.length
-    const repeatPatients = this.props.patients.filter(el => el.scripts).length
-    const newPhysicians = this.props.physicians.filter(el => !el.repId).length
+    // const patients = this.props.patients.length
+    // const repeatPatients = this.props.patients.filter(el => el.scripts).length
+    // const newPhysicians = this.props.physicians.filter(el => !el.repId).length
     const cardData1 = [
       { title: 'Revenue', content: '$0' },
       { title: 'Daily AVG Revenue', content: '$0' },

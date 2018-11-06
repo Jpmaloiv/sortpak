@@ -10,10 +10,11 @@ const Op = Sequelize.Op;
 
 
 router.post("/add", (req, res) => {
-    const visitLink = '/visits/' + req.payload.id + '/' + req.query.date.trim() + ".pdf";
+    const visitLink = '/visits/' + req.payload.id;
     const visit = {
-        date: req.query.date,
-        time: req.query.time,
+        dateTime: req.query.dateTime,
+        Rep: req.query.Rep,
+        Physician: req.query.Physician,
         link: visitLink,
         UserId: req.payload.id
     }
@@ -22,7 +23,7 @@ router.post("/add", (req, res) => {
         if ((err) && (err.code !== 'EEXIST')) {
             console.error(err)
         } else {
-            const visitPath = './visits/' + req.payload.id + '/' + req.query.date.trim() + ".pdf";
+            const visitPath = './visits/' + req.payload.id;
             // console.log("dir created");
                     // console.log("file saved");
                     db.Visits
@@ -44,12 +45,8 @@ router.get("/search", (req, res) => {
     let searchParams = {
         where: {},
         attributes: {
-            exclude: ["createdAt", "updatedAt", "UserId"]
-        },
-        include: [{
-            model: db.User,
-            attributes: ["id", "username"]
-        }]
+            exclude: ["createdAt", "updatedAt"]
+        }
     }
     if (req.query.visitId) {
         searchParams.where.id = req.query.visitId

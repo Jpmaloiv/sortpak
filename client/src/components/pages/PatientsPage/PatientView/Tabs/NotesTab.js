@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 
 import axios from 'axios'
 import Moment from 'react-moment'
-import jwt_decode from 'jwt-decode'
 
 // Components
 import {
