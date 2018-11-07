@@ -45,7 +45,7 @@ app.use(express.static(path.join(__dirname + '/scripts')));
 // app.use(express.static(path.join(__dirname + '/scriptNotes')));
 // app.use(express.static(path.join(__dirname + '/scriptAttachments')));
 // app.use(express.static(path.join(__dirname + '/notes')));
-// app.use(express.static(path.join(__dirname + '/attachments')));
+app.use(express.static(path.join(__dirname + '/attachments')));
 
 app.use(express.static(path.join(__dirname + '/patients')));
 app.use(express.static(path.join(__dirname + '/patientNotes')));
@@ -62,11 +62,11 @@ app.use(["/api/scripts"], jwt({
     userProperty: 'payload'
 }));
 // app.use(express.static("attachments"))
-// app.use(jwt({
-//     secret: process.env.JWT_SECRET,
-//     userProperty: 'payload'
-// }));
-// app.use("/api/attachments", scriptAttachmentRoutes);
+app.use(jwt({
+    secret: process.env.JWT_SECRET,
+    userProperty: 'payload'
+}));
+app.use("/api/attachments", scriptAttachmentRoutes);
 app.use("/api/scripts/notes", scriptNoteRoutes);
 app.use(["/api/scripts/notes"], jwt({
     secret: process.env.JWT_SECRET,
