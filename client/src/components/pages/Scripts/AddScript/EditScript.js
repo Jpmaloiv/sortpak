@@ -140,6 +140,7 @@ class EditScript extends Component {
     }
 
     addScript() {
+        console.log(this.state.newProcessedOn);
         const loginToken = window.localStorage.getItem("token");
         let data = new FormData();
         axios.post('/api/scripts/add?patientId=' + this.state.patientId + '&physicianId=' + this.state.physicianId + '&productId=' + this.state.productId + '&processedOn=' + this.state.newProcessedOn + '&pouch=' + this.state.pouch + "&medication=" + this.state.medication + "&status=" + this.state.newStatus + "&pharmNPI=" + this.state.pharmNPI
@@ -151,7 +152,7 @@ class EditScript extends Component {
             data, { headers: { "Authorization": "Bearer " + loginToken } })
             .then((data) => {
                 console.log(data);
-                window.location = '/refills';
+                // window.location = '/refills';
             }).catch((error) => {
                 console.error(error);
             })
@@ -186,7 +187,7 @@ class EditScript extends Component {
             newRefills: count,
             newRefillsRemaining: this.state.refillsRemaining - 1,
             newStatus: newStatus
-        }, this.refillLogic)
+        }, (this.refillLogic))
     }
 
 

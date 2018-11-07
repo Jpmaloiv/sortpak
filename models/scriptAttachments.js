@@ -1,9 +1,8 @@
-
 module.exports = function(sequelize, DataTypes) {
     var scriptAttachments = sequelize.define("scriptAttachments", {
-        dateAttached: {
+        title: {
             type: DataTypes.STRING,
-            allowNull: true
+            allowNull: false
         },
         attachedBy: {
             type: DataTypes.STRING,
@@ -15,20 +14,15 @@ module.exports = function(sequelize, DataTypes) {
         },
         link: {
             type: DataTypes.STRING,
-            allowNull: true
-        }    
+            allowNull: false
+        }
     }); 
-    scriptAttachments.associate = function(models) {
-        models.scriptAttachments.belongsTo(models.Scripts, {
-            foreignKey: {
-                allowNull: false
-            }
-        })
-        models.scriptAttachments.belongsTo(models.User, {
-            foreignKey: {
-                allowNull: false
-            }
-        });
-    };
+    // PublishedBooks.associate = function(models) {
+    //     models.PublishedBooks.belongsTo(models.User, {
+    //         foreignKey: {
+    //             allowNull: false
+    //         }
+    //     });
+    // };
     return scriptAttachments; 
   };

@@ -229,6 +229,8 @@ td.setValue a, td.setValue a:visited {
     margin: 2% 0;
 }
 
+
+/* Attachments Tab */
 :local(.attachmentsTab) {
     padding: 10px; }
     :local(.attachmentsTab) .span, :local(.notesTab) .input {
@@ -241,6 +243,17 @@ td.setValue a, td.setValue a:visited {
     :local(.attachmentsTab) > .notes {
       border-top: 1px solid #dfe1e2;
       border-bottom: 1px solid #dfe1e2; }
+
+      canvas {
+          display: block !important;
+          margin: 2% auto;
+      }
+
+      nav#prev-next {
+        width: 70%;
+        margin: 0 auto;
+        margin-top: -750px;
+      }
 
 
 /* Notes Tab */

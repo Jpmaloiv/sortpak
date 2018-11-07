@@ -180,10 +180,10 @@ module.exports = function(sequelize, DataTypes) {
         }),
         models.Scripts.hasMany(models.scriptNotes, {
             onDelete: "cascade"
-        }),
-        models.Scripts.hasMany(models.scriptAttachments, {
-            onDelete: "cascade"
-        });
+        })
+        // models.Scripts.hasMany(models.scriptAttachments, {
+        //     onDelete: "cascade"
+        // });
         
     };
 

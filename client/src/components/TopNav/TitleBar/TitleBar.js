@@ -19,11 +19,19 @@ class TitleBar extends Component {
   constructor(props) {
     super(props)
     this.state = this.initialState
+    this.logout = this.logout.bind(this);
   }
 
   get initialState() {
     return {
       showDropdown: false,
+    }
+  }
+
+  logout() {
+    if (window.confirm('Log out?')) {
+      localStorage.clear()
+      window.location.href = '/';
     }
   }
 
@@ -47,9 +55,12 @@ class TitleBar extends Component {
               Settings
             </NavLink>
           </div>
+
+          {/* Logout  */}
           <div
             className="option"
-            onClick={() => this.props.logout()}
+            // onClick={() => this.props.logout()}
+            onClick={this.logout}
           >
             <span>
               <FontAwesome name="sign-out" />

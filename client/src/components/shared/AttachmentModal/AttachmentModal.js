@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios'
+import jwt_decode from 'jwt-decode'
 
 // Components
 import {
@@ -14,19 +15,26 @@ export default class AttachmentModal extends Component {
   /* constructor(props) {
     super(props)
   } */
-    state = {
-      attachmentFile: '',
-      dateAttached: '',
-      attachedBy: '',
-      type: ''
-    }
-  
+  state = {
+    attachmentFile: '',
+    dateAttached: '',
+    attachedBy: '',
+    type: ''
+  }
+
+  componentDidMount() {
+    const token = localStorage.getItem('token')
+    var decoded = jwt_decode(token);
+    this.setState({
+      username: decoded.username
+    })
+  }
 
   onChangeHandler = (event) => {
     this.setState({
-        [event.target.name]: event.target.value
+      [event.target.name]: event.target.value
     })
-}
+  }
 
   get inactive() {
     const {
@@ -39,22 +47,21 @@ export default class AttachmentModal extends Component {
   }
 
   onSubmit(e) {
+    console.log(this.state.type);
     e.preventDefault()
-        const loginToken = window.localStorage.getItem("token");
-        let data = new FormData();
-        data.append("attachmentFile", document.getElementById("pdf-file").files[0])
-        axios.post('/api/scripts/attachments/add?dateAttached=' + this.state.dateAttached + "&attachedBy=" + this.state.attachedBy + "&type=" + this.state.type, 
-        data, { headers: { "Authorization": "Bearer " + loginToken } })
-            .then((data) => {
-                console.log(data);
-                this.props.onClickAway()
-                // this.setState({ scriptFile: '', type: '' })
-                window.location.reload();
-                // this.props.history.push("/scripts");              
-            }).catch((error) => {
-                console.error(error);
-            })
-          }
+    const loginToken = window.localStorage.getItem("token");
+    let data = new FormData();
+    data.append("attachmentFile", document.getElementById("pdf-file").files[0])
+    axios.post('/api/attachments/upload?attachedBy=' + this.state.username + '&type=' + this.state.type,
+      data, { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((data) => {
+        console.log(data);
+        // this.props.onClickAway()
+        // window.location.reload();
+      }).catch((error) => {
+        console.error(error);
+      })
+  }
 
 
   render() {
@@ -77,9 +84,10 @@ export default class AttachmentModal extends Component {
       'Income Documents',
       'Shipping Label',
       'Other'
-    ]  
+    ]
 
     return (
+
       <FormModal
         title="Add Attachment"
         onClickAway={onClickAway}
@@ -87,18 +95,18 @@ export default class AttachmentModal extends Component {
         onSubmit={this.onSubmit.bind(this)}
         className={styles.modal}
       >
+
         <label htmlFor="attachmentFile">Select PDF:</label>
-        <input name="attachmentFile" selected={attachmentFile} onSelect={attachmentFile => this.setState({ attachmentFile })} onChange={this.onChangeHandler} accept=".pdf" id="pdf-file" type="file" />
+        <input name="attachmentFile" onChange={this.onChangeHandler} accept=".pdf" id="pdf-file" type="file" />
+        <br />
+        <Selector
+          wide
+          selected={type}
+          options={typeOptions}
+          onSelect={type => this.setState({ type })}
+        />
 
         <br />
-
-        <Selector
-            wide
-            selected={type}
-            options={typeOptions}
-            onSelect={type => this.setState({ type })}
-          />
-
         <div className="buttons">
           <Button
             large

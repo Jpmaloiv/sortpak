@@ -24,6 +24,8 @@ import RefillsPage from './components/pages/RefillsPage/RefillsPage'
 import ProductsPage from './components/pages/ProductsPage/ProductsPage'
 import TeamPage from './components/pages/TeamPage/TeamPage'
 import AddMember from './components/pages/TeamPage/AddMember/AddMember'
+
+
 import { Provider } from 'react-redux'
 import ReduxThunk from 'redux-thunk'
 import reducers from './reducers'
@@ -84,8 +86,9 @@ class App extends Component {
               <Route exact path="/products" component={ProductsPage} />
               <Route exact path="/team" component={TeamPage} />
               <Route exact path="/team/add" component={AddMember} />
-              <Route exact path="/scripts/attachment/:attachmentId" component={Attachment} />
-              <Route exact path="/attachment/:id" component={PatientFile} />
+              {/* <Route exact path="/scripts/attachment/:attachmentId" component={Attachment} /> */}
+              <Route exact path="/attachment/:attachmentId" component={Attachment} />
+            <Route exact path="/book/:bookId" component={Attachment} />
 
             </Switch>
           </div>
