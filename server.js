@@ -61,8 +61,7 @@ app.use(["/api/scripts"], jwt({
     secret: process.env.JWT_SECRET,
     userProperty: 'payload'
 }));
-// app.use(express.static("attachments"))
-app.use(jwt({
+app.use(["/api/attachments"], jwt({
     secret: process.env.JWT_SECRET,
     userProperty: 'payload'
 }));
