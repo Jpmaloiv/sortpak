@@ -56,8 +56,8 @@ export default class AttachmentModal extends Component {
       data, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((data) => {
         console.log(data);
-        // this.props.onClickAway()
-        // window.location.reload();
+        this.props.onClickAway()
+        window.location.reload();
       }).catch((error) => {
         console.error(error);
       })

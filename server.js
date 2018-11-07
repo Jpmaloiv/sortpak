@@ -26,7 +26,7 @@ const PORT = process.env.PORT || 3001;
 const isDev = process.env.NODE_ENV === 'production';
 
 
-//fileupload middleware
+// file upload middleware
 app.use(fileUpload())
 // Requiring our models for syncing
 const db = require(path.join(__dirname + '/models'));
@@ -37,13 +37,12 @@ app.use(bodyParser.json({ type: "application/vnd.api+json" }));
 
 app.use(express.static(path.join(__dirname, 'client/build')));
 
-//routes
+// Routes
 app.use(express.static(path.join(__dirname + '/public')));
 // app.use("/api/user", authRoutes);
 app.use(express.static(path.join(__dirname + '/user')));
 app.use(express.static(path.join(__dirname + '/scripts')));
 // app.use(express.static(path.join(__dirname + '/scriptNotes')));
-// app.use(express.static(path.join(__dirname + '/scriptAttachments')));
 // app.use(express.static(path.join(__dirname + '/notes')));
 app.use(express.static(path.join(__dirname + '/attachments')));
 
