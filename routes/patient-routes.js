@@ -66,20 +66,48 @@ router.get("/search", (req, res) => {
         where: {},
         attributes: {
             exclude: ["updatedAt", "UserId"]
-        },
-        // include: [{
-        //     model: db.Scripts,
-        //     attributes: ["id", "patient", "processedOn", "status"],
-        //     include: [{
-        //         model: db.Physicians,
-        //         attributes: ['id', 'firstName', 'lastName']
-        //     }]
-        // }]
-
+        }
     }
     if (req.query.patientId) {
         searchParams.where.id = req.query.patientId
     }
+
+//     if (req.query.name) {
+//         searchParams.where.firstName = { 
+//             [Op.or]: [{
+//                 firstName: {
+//                     like: '%' + req.query.name + '%'
+//                 }
+//         }, {
+//             lastName: {
+//                 like: '%' + req.query.name + '%'
+//             }
+//         }]
+//     }
+// }
+
+if (req.query.name) {
+    searchParams = {
+        attributes: ['firstName', 'lastName'],
+        where: {
+            [Op.or]:  [{
+                firstName: {
+                    like: '%'+ req.query.name + '%'
+                }
+            }, {
+                lastName: {
+                    like: '%' + req.query.name + '%'
+                }
+            }]
+        }
+    }
+}
+
+if (req.query.address) {
+    searchParams = {
+        attributes: ['address1', 'address2']
+    }
+}
 
     console.log(searchParams);
     db.Patients

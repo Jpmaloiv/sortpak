@@ -61,9 +61,7 @@ router.post("/add", (req, res) => {
             console.error(err)
         } else {
             const scriptPath = './scripts/' + req.payload.id;
-            // const scriptPath = './scripts/' + req.payload.id + '/' + req.query.patient.trim() + ".pdf";
-            // console.log("dir created");
-            // console.log("file saved");
+            
             db.Scripts
                 .create(script)
                 .then((resp) => {
@@ -104,6 +102,10 @@ router.get("/search", (req, res) => {
         {
             model: db.scriptNotes,
             attributes: ['note', 'createdAt']
+        },
+        {
+            model: db.scriptAttachments,
+            attributes: ['id']
         }
         ]
 

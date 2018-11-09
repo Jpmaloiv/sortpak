@@ -226,7 +226,7 @@ class PhysicianView extends Component {
               </div>
             ) : (
                 <div>
-                  Name: Dr. {this.state.name}
+                  Name: {this.state.name}
                 </div>
               )}
 
@@ -525,7 +525,7 @@ class PhysicianView extends Component {
       <div>
         <Header className={styles.header}>
           <h2>
-            Dr. {this.state.name}
+            {this.state.name}
             <span onClick={this.renderGroupTab.bind(this)} className="group">
               {this.state.group || 'No Group Available'}
             </span>

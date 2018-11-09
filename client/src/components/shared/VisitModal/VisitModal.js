@@ -200,8 +200,8 @@ class VisitModal extends Component {
         },
         ...this.state.physicians.map(physician => ({
           key: physician.id,
-          value: 'Dr.' + physician.firstName + ' ' + physician.lastName,
-          display: 'Dr.' + physician.firstName + ' ' + physician.lastName
+          value: physician.firstName + ' ' + physician.lastName,
+          display: physician.firstName + ' ' + physician.lastName
         })),
       ]
 

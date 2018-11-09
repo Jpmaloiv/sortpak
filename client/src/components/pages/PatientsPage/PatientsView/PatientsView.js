@@ -4,7 +4,7 @@ import axios from 'axios'
 import Moment from 'react-moment'
 
 
-import { Span, Table, Header, Button, ActionBox, SearchBar } from '../../../common'
+import { Span, Table, Input, Header, Button, ActionBox, SearchBar } from '../../../common'
 
 import {
   getPatients,
@@ -26,8 +26,13 @@ class PatientsView extends Component {
       dob: '',
       address: '',
       phone: '',
-      file: ''
+      file: '',
+      searchName: '',
+      searchDOB: '',
+      searchAddress: '',
+      searchPhone: ''
     }
+    this.searchQuery = this.searchQuery.bind(this);
   }
   componentDidMount() {
     const loginToken = window.localStorage.getItem("token");
@@ -35,29 +40,35 @@ class PatientsView extends Component {
       .then((resp) => {
         console.log(resp.data.response);
         this.setState({
-          patients: resp.data.response,
-          // id: resp.data.response.id,   
+          patients: resp.data.response
         })
-        console.log(this.state.patients)
       }).catch((error) => {
         console.error(error);
       })
   }
 
-  /* searchByName(name) {
-    const dob = ''
-    this.setState({ name, dob })
-    this.props.filterPatientsByName(name)
+  searchQuery() {
+    console.log(this.state.searchDOB)
+    const loginToken = window.localStorage.getItem("token");
+    axios.get('api/patients/search?name=' + this.state.searchName + '&address=' + this.state.searchAddress, { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        console.log(resp.data.response);
+        this.setState({
+          patients: resp.data.response,
+        }, () => console.log(this.state.patients))
+      }).catch((error) => {
+        console.error(error);
+      })
   }
 
-  searchByDob(dob) {
-    const name = ''
-    this.setState({ name, dob })
-    this.props.filterPatientsByDob(dob)
-  } */
+  enterPressed(event) {
+    var code = event.keyCode || event.which;
+    if (code === 13) { //13 is the enter keycode
+      this.searchQuery();
+    }
+  }
 
   renderTableHead() {
-    console.log(this.state.patients);
     return (
       <thead>
         <tr>
@@ -73,14 +84,12 @@ class PatientsView extends Component {
           <th>
             Address
           </th>
-          <th />
         </tr>
       </thead>
     )
   }
 
   renderTableBody() {
-    // const { patients } = this.props
     return (
       <tbody>
         {this.state.patients.map(this.renderTableRow.bind(this))}
@@ -132,32 +141,12 @@ class PatientsView extends Component {
   render() {
 
     if (this.state.patients) {
-      // const self = this;
-
       var patientList = this.state.patients.map(function (item, i) {
         console.log(item);
         return (
           <div key={i}>
-            {/* <div className="story-title-author">
-                          <h3 className="story-title">{item.patient}</h3>
-                
-                      <h5 className="story-author">
-                          {!(self.props.match.params.username)
-                              ?
-                              <div style={{ marginLeft: "5px" }} className="btn-group" role="group">
-                                  <button onClick={() => self.showUpdForm(item)} type="button" className="btn btn-primary btn-xs"><span className="glyphicon glyphicon-pencil"></span></button>
-                                  <button onClick={() => self.deleteBook(item.id)} type="button" className="btn btn-primary btn-xs"><span className="glyphicon glyphicon-remove"></span></button>
-                              </div>
-                              : null
-                          }
-                      </h5>
-                  </div>
-                  
-                  <p>{item.description}</p>
-                  <br /> */}
           </div>
         )
-
       })
     }
     else {
@@ -194,40 +183,46 @@ class PatientsView extends Component {
 
         <div className="body">
 
-          <ActionBox>
-            <div className="main">
+          <ActionBox className='searchBar'>
+            <div className="main" style={{ paddingTop: 0 }}>
 
-              <SearchBar
+              <Input
                 label="Search By Name"
                 placeholder="First or Last Name..."
-              // value={name}
-              // onChange={this.searchByName.bind(this)}
+                value={this.state.searchName}
+                onChange={searchName => this.setState({ searchName })}
+                onKeyPress={this.enterPressed.bind(this)}
               />
-              <SearchBar
+              <Input
                 label="Search By DOB"
                 type="date"
-              // value={dob}
-              // onChange={this.searchByDob.bind(this)}
+                value={this.state.searchDOB}
+                onChange={searchDOB => this.setState({ searchDOB })}
+                onKeyPress={this.enterPressed.bind(this)}
               />
-              <SearchBar
+              <Input
                 label="Search By Address"
-                type="address"
                 placeholder="Address or City"
+                value={this.state.searchAddress}
+                onChange={searchAddress => this.setState({ searchAddress })}
+                onKeyPress={this.enterPressed.bind(this)}
               />
-              <SearchBar
+              <Input
                 label="Search by Phone"
                 type="phone"
                 placeholder="(---) --- ---"
+                value={this.state.searchPhone}
+                onChange={searchPhone => this.setState({ searchPhone })}
+                onKeyPress={this.enterPressed.bind(this)}
               />
 
-              {/*
-              TODO: Automatic filter, no search button
               <Button
                 search
                 icon="search"
                 title="SEARCH"
+                onClick={this.searchQuery}
               />
-            */}
+
 
             </div>
 

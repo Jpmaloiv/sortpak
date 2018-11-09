@@ -141,7 +141,7 @@ class RefillsView extends Component {
       return (
         <tr value={script.id} onClick={() => this.handleClick(script.id)}>
           <td>{script.processedOn}</td>
-          <td>Dr. {script.Physician.firstName} {script.Physician.lastName}</td>
+          <td>{script.Physician.firstName} {script.Physician.lastName}</td>
           <td>{script.Patient.firstName} {script.Patient.lastName}</td>
           <td>{script.medication}</td>
           <td></td>
@@ -152,7 +152,7 @@ class RefillsView extends Component {
       return (
         <tr value={script.id} onClick={() => this.handleClick(script.id)}>
           <td>{script.processedOn}</td>
-          <td>Dr. {script.Physician.firstName} {script.Physician.lastName}</td>
+          <td>{script.Physician.firstName} {script.Physician.lastName}</td>
           <td>{script.Patient.firstName} {script.Patient.lastName}</td>
           <td>{script.medication}</td>
           <td></td>

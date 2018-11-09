@@ -2,14 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import axios from 'axios'
 
-import {
-  Table,
-  Header,
-  ActionBox,
-  Button,
-  // Selector,
-  SearchBar,
-} from '../../../common'
+import { Table, Header, Input, ActionBox, Button, Selector } from '../../../common'
 
 import {
   getPhysicians,
@@ -29,32 +22,43 @@ class PhysiciansView extends Component {
       filterValue: 0,
       searchType: '',
       search: '',
-      physicians: ''
+      physicians: '',
+      searchName: '',
+      searchAddress: ''
     }
+    this.searchQuery = this.searchQuery.bind(this);
   }
 
   componentDidMount() {
-    /* hasAuthTokenAsync()
-      .then(() => {
-        this.props.getPhysicians()
-      })
-      .catch(console.log) */
-
     const loginToken = window.localStorage.getItem("token");
     axios.get('api/physicians/search/', { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
-        console.log(resp);
-        console.log(resp.data);
-        console.log(resp.data.response);
         this.setState({
           physicians: resp.data.response,
-          // id: resp.data.response.id,
-
         })
-        console.log(this.state.physicians)
       }).catch((error) => {
         console.error(error);
       })
+  }
+
+  searchQuery() {
+    const loginToken = window.localStorage.getItem("token");
+    axios.get('api/physicians/search?name=' + this.state.searchName + '&address=' + this.state.searchAddress, { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        console.log(resp.data.response);
+        this.setState({
+          physicians: resp.data.response,
+        })
+      }).catch((error) => {
+        console.error(error);
+      })
+  }
+
+  enterPressed(event) {
+    var code = event.keyCode || event.which;
+    if (code === 13) { //13 is the enter keycode
+      this.searchQuery();
+    }
   }
 
   renderTableHead() {
@@ -101,8 +105,7 @@ class PhysiciansView extends Component {
       <tr value={physician.id} onClick={() => this.handleClick(physician.id)}>
 
         <td>
-          Dr. {physician.firstName} {physician.lastName}
-
+          {physician.firstName} {physician.lastName}
         </td>
 
         <td>
@@ -123,7 +126,7 @@ class PhysiciansView extends Component {
 
         <td>
           {physician.addressStreet}<br />
-          {physician.addressCity}, {physician.addressState}, {physician.addressZipCode} 
+          {physician.addressCity}, {physician.addressState}, {physician.addressZipCode}
         </td>
 
       </tr>
@@ -140,65 +143,13 @@ class PhysiciansView extends Component {
   }
 
   render() {
-    /* const {
-      filterValue,
-      searchType,
-      search,
-    } = this.state */
-
-    /* const {
-      reps,
-    } = this.props */
-
-    /* const filterOptions = [
-      {
-        value: '',
-        display: 'All',
-      },
-      ...reps.map(rep => ({
-        value: rep.id,
-        display: rep.nameDisplay,
-      })),
-    ]
-
-    const searchOptions = [
-      {
-        value: '',
-        display: 'Any',
-      },
-      {
-        value: 'name',
-        display: 'Name',
-      },
-    ] */
-
     if (this.state.physicians) {
-      // const self = this;
-
       var physicianList = this.state.physicians.map(function (item, i) {
         console.log(item);
         return (
           <div key={i}>
-            {/* <div className="story-title-author">
-                          <h3 className="story-title">{item.patient}</h3>
-                
-                      <h5 className="story-author">
-                          {!(self.props.match.params.username)
-                              ?
-                              <div style={{ marginLeft: "5px" }} className="btn-group" role="group">
-                                  <button onClick={() => self.showUpdForm(item)} type="button" className="btn btn-primary btn-xs"><span className="glyphicon glyphicon-pencil"></span></button>
-                                  <button onClick={() => self.deleteBook(item.id)} type="button" className="btn btn-primary btn-xs"><span className="glyphicon glyphicon-remove"></span></button>
-                              </div>
-                              : null
-                          }
-                      </h5>
-                  </div>
-                  
-                  <p>{item.description}</p>
-                  <br /> */}
           </div>
         )
-
       })
     }
     else {
@@ -206,6 +157,31 @@ class PhysiciansView extends Component {
         <p></p>
       </div>
     }
+
+    const specOptions = [
+      'Internal Medicine',
+      'Home Health',
+      'Hospice',
+      'Skilled Nursing Center',
+      'Assisted Living',
+      'Hospital',
+      'Residential Living',
+      'Oncology',
+      'Rheumatology',
+      'Dermatology',
+      'Nephrology',
+      'Neurology',
+      'Gastroenterology',
+      'Allergy',
+      'Infectious Disease',
+      'Transplant',
+      'Orthopedic',
+      'Endocrinology',
+      'Urology',
+      'Cardiology',
+      'Hepatology',
+      'Pulmonology'
+    ]
 
     return (
       <div className={styles.app}>
@@ -234,72 +210,56 @@ class PhysiciansView extends Component {
 
         <div className="body">
 
-          <ActionBox>
+          <ActionBox className='searchBar'>
             <div className="main">
 
-              <SearchBar
+              <Input
                 label="Search By Name"
                 placeholder="First or Last Name..."
-                type='name'
+                value={this.state.searchName}
+                onChange={searchName => this.setState({ searchName })}
+                onKeyPress={this.enterPressed.bind(this)}
               />
 
-              <SearchBar
+              <Input
                 label="Search By Group"
                 placeholder="Group Name..."
-                type='groupName'
+                value={this.state.searchGroup}
+                onChange={searchGroup => this.setState({ searchGroup })}
+                onKeyPress={this.enterPressed.bind(this)}
               />
 
-              <SearchBar
+              <Input
                 label="Search By Address"
-                placeholder="Adress or City..."
-                type='address'
+                placeholder="Address or City..."
+                value={this.state.searchAddress}
+                onChange={searchAddress => this.setState({ searchAddress })}
+                onKeyPress={this.enterPressed.bind(this)}
               />
 
-              <SearchBar
+              <Input
                 label="Search By Phone"
                 placeholder="(---) --- ---"
-                type='phone'
+                value={this.state.searchPhone}
+                onChange={searchPhone => this.setState({ searchPhone })}
+                onKeyPress={this.enterPressed.bind(this)}
               />
 
-              <SearchBar
+              <Selector
                 label="Search By Specialty"
                 placeholder="Specialty..."
-                type='specialty'
+                options={specOptions}
+                value={this.state.searchName}
+                onSelect={searchName => this.setState({ searchName })}
+                onKeyPress={this.enterPressed.bind(this)}
               />
 
-              {/*
-              TODO: Automatic filter, no search button
               <Button
                 search
                 icon="search"
                 title="SEARCH"
+                onClick={this.searchQuery}
               />
-            */}
-
-              {/* TODO: Filter Select */}
-              {/* WARNING: : PREVIOUS CODE
-              <Selector
-                label="Filter"
-                selected={filterValue}
-                options={filterOptions}
-                onSelect={filterValue => this.setState({ filterValue })}
-              />
-              <SearchBar
-                options={searchOptions}
-                selected={searchType}
-                onSelect={searchType => this.setState({ searchType })}
-                label="Search"
-                placeholder="First or Last Name..."
-                value={search}
-                onChange={this.filterPhysicians.bind(this)}
-              />
-              <Button
-                search
-                icon="search"
-                title="SEARCH"
-              />
-
-              */}
 
             </div>
 

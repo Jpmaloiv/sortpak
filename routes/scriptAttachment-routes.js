@@ -18,17 +18,20 @@ router.post("/upload", (req, res) => {
         attachedBy: req.query.attachedBy,
         type: req.query.type,
         link: attachmentLink,
+        ScriptId: req.query.scriptId
+        // title: req.query.title,
+        // link: req.query.link
     }
 
     fs.mkdir("./attachments/attachments/" + req.payload.id.toString(), (err) => {
         if ((err) && (err.code !== 'EEXIST')) {
             console.error(err)
         } else {
-            const attachmentPath = './attachments/attachments/' + req.payload.id + '/' + title.trim() + ".pdf";
+            // const attachmentPath = './attachments/attachments/' + req.payload.id + '/' + title.trim() + ".pdf";
             // console.log("dir created");
-            attachmentFile
-                .mv(attachmentPath)
-                .then((response) => {
+            // attachmentFile
+                // .mv(attachmentPath)
+                // .then((response) => {
                     // console.log("file saved");
                     db.scriptAttachments
                         .create(attachment)
@@ -39,7 +42,7 @@ router.post("/upload", (req, res) => {
                             console.error(err);
                             res.status(500).json({ message: "Internal server error.", error: err });
                         })
-                })
+                
                 .catch((err) => {
                     console.error(err);
                     res.status(500).json({ message: "Internal server error.", error: err });
@@ -63,6 +66,10 @@ router.get("/search", (req, res) => {
         searchParams.where.title = {
             [Op.like]: '%' + req.query.title + '%'
         }
+    }
+
+    if (req.query.ScriptId) {
+        searchParams.where.ScriptId = req.query.ScriptId
     }
   
     console.log(searchParams)

@@ -81,7 +81,7 @@ class GroupTab extends Component {
         return (
             <tr value={physician.id} onClick={() => this.handleClick(physician.id)}>
                 <td>
-                    Dr. {physician.firstName} {physician.lastName}
+                    {physician.firstName} {physician.lastName}
                 </td>
 
                 <td>

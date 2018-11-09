@@ -29,6 +29,7 @@ class NotesTab extends Component {
   }
 
   componentDidMount() {
+    console.log(this.props);
     const loginToken = window.localStorage.getItem("token");
     axios.get('/api/scripts/notes/search/?ScriptId=' + this.props.state.id, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {

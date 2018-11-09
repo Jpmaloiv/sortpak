@@ -65,7 +65,7 @@ class ScriptList extends React.Component {
         </td>
 
         <td>
-          Dr. {script.Physician.firstName} {script.Physician.lastName}
+          {script.Physician.firstName} {script.Physician.lastName}
         </td>
 
         <td>

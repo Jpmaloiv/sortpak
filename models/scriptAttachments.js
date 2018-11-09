@@ -24,5 +24,12 @@ module.exports = function(sequelize, DataTypes) {
     //         }
     //     });
     // };
+    scriptAttachments.associate = function (models) {
+        models.scriptAttachments.belongsTo(models.Scripts, {
+            foreignKey: {
+                allowNull: false
+            }
+        })
+    }
     return scriptAttachments; 
   };

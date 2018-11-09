@@ -23,6 +23,7 @@ export default class AttachmentModal extends Component {
   }
 
   componentDidMount() {
+    console.log(this.props);
     const token = localStorage.getItem('token')
     var decoded = jwt_decode(token);
     this.setState({
@@ -47,12 +48,12 @@ export default class AttachmentModal extends Component {
   }
 
   onSubmit(e) {
-    console.log(this.state.type);
     e.preventDefault()
     const loginToken = window.localStorage.getItem("token");
+    const scriptId = this.props.props.state.id;
     let data = new FormData();
     data.append("attachmentFile", document.getElementById("pdf-file").files[0])
-    axios.post('/api/attachments/upload?attachedBy=' + this.state.username + '&type=' + this.state.type,
+    axios.post('/api/attachments/upload?scriptId=' + scriptId + 'attachedBy=' + this.state.username + '&type=' + this.state.type + '&link=2&title=2',
       data, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((data) => {
         console.log(data);

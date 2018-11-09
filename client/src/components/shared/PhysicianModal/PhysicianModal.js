@@ -67,7 +67,7 @@ export default class PhysicianModal extends Component {
         ...this.state.physicians.map(physician => ({
           key: physician.id,
           value: physician.id,
-          display: "Dr. " + physician.firstName + " " + physician.lastName,
+          display: physician.firstName + " " + physician.lastName,
         })),
       ]
 

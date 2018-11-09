@@ -47,7 +47,7 @@ class DetailsTab extends Component {
           allergies: script.Patient.allergies,
           patientWarning: script.Patient.patientWarning,
           physicianId: script.PhysicianId,
-          physicianName: "Dr. " + script.Physician.firstName + " " + script.Physician.lastName,
+          physicianName: script.Physician.firstName + " " + script.Physician.lastName,
           physicianContact: script.Physician.contact,
           physicianPhone: script.Physician.phone,
           physicianRep: script.Physician.rep,

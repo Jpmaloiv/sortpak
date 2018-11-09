@@ -124,23 +124,6 @@ class RXHistoryTab extends Component {
         console.log(item);
         return (
           <div key={i}>
-            {/* <div className="story-title-author">
-                          <h3 className="story-title">{item.patient}</h3>
-                
-                      <h5 className="story-author">
-                          {!(self.props.match.params.username)
-                              ?
-                              <div style={{ marginLeft: "5px" }} className="btn-group" role="group">
-                                  <button onClick={() => self.showUpdForm(item)} type="button" className="btn btn-primary btn-xs"><span className="glyphicon glyphicon-pencil"></span></button>
-                                  <button onClick={() => self.deleteBook(item.id)} type="button" className="btn btn-primary btn-xs"><span className="glyphicon glyphicon-remove"></span></button>
-                              </div>
-                              : null
-                          }
-                      </h5>
-                  </div>
-                  
-                  <p>{item.description}</p>
-                  <br /> */}
           </div>
         )
 

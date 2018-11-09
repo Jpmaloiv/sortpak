@@ -36,7 +36,7 @@ import createHistory from 'history/createBrowserHistory'
 // import restricted from './components/restricted'
 
 
-// import './App.css';
+import './App.css';
 
 class App extends Component {
   render() {

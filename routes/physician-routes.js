@@ -58,17 +58,9 @@ router.get("/search", (req, res) => {
         where: {},
         attributes: {
             exclude: ["createdAt", "updatedAt"]
-        },
-        // include: [{
-        //     model: db.Scripts,
-        //     attributes: ["status", "processedOn", 'PatientId'],
-        //     include: [{
-        //         model: db.Patients,
-        //         attributes: ['id', "firstName", 'lastName']
-        //     }
-        //     ]
-        // }]
+        }
     }
+
     if (req.query.physicianId) {
         searchParams.where.id = req.query.physicianId
     }
@@ -76,6 +68,68 @@ router.get("/search", (req, res) => {
     if (req.query.group) {
         searchParams.where.group = req.query.group
     }
+
+    if (req.query.name) {
+        searchParams = {
+            where: {
+                [Op.or]:  [{
+                    firstName: {
+                        like: '%'+ req.query.name + '%'
+                    }
+                }, {
+                    lastName: {
+                        like: '%' + req.query.name + '%'
+                    }
+                }]
+            }
+        }
+    }
+
+    if (req.query.address) {
+        searchParams = {
+            where: {
+                [Op.or]:  [{
+                    addressStreet: {
+                        like: '%'+ req.query.address + '%'
+                    }
+                }, {
+                    addressCity: {
+                        like: '%' + req.query.address + '%'
+                    }
+                }]
+            }
+        }
+    }
+
+    // if (req.query.address) {
+    //     searchParams.where.addressStreet = {
+    //         [Op.like]: '%' + req.query.address + '%'
+    //     }
+    // }
+
+    // if (req.query.address) {
+    //     searchParams = {
+    //         where: {
+    //             [Op.or]: [{
+    //                 addressStreet: {
+    //                     like: '%' + req.query.address + '%'
+    //                 }
+    //             }, {
+    //                 addressCity: {
+    //                     like: '%' + req.query.address + '%'
+    //                 }
+    //             }, {
+    //                 addressState: {
+    //                     like: '%' + req.query.address + '%'
+    //                 }
+    //             }, {
+    //                 addressZipCode: {
+    //                     like: '%' + req.query.address + '%'
+    //                 }
+    //             }]
+    //         }
+    //     }
+    // }
   
     console.log(searchParams);
     db.Physicians

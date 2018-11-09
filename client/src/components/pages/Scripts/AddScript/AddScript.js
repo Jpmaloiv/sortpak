@@ -238,7 +238,7 @@ class AddScript extends Component {
                 console.log(data);
                 let physician = data.data.response[0]
                 this.setState({
-                    physicianName: "Dr. " + physician.firstName + " " + physician.lastName,
+                    physicianName: physician.firstName + " " + physician.lastName,
                     physicianGroup: physician.group,
                     physicianPhone: physician.phone,
                     physicianAddressStreet: physician.addressStreet,

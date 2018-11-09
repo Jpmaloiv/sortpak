@@ -20,21 +20,22 @@ class AttachmentsTab extends Component {
   }
 
 
-openNoteModal() {
-  this.props.setState({ attachmentModal: {} })
-}
+  openNoteModal() {
+    this.props.setState({ attachmentModal: {} })
+  }
 
   componentDidMount() {
-      const loginToken = window.localStorage.getItem("token");
-        axios.get('/api/attachments/search/', { headers: { "Authorization": "Bearer " + loginToken } })
-          .then((resp) => {
-            this.setState({
-                attachments: resp.data.response,
-            })
-            console.log(this.state)
-          }).catch((error) => {
-            console.error(error);
+    const loginToken = window.localStorage.getItem("token");
+    axios.get('/api/attachments/search?ScriptId=' + this.props.state.id, { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        console.log(resp); 
+        this.setState({
+          attachments: resp.data.response,
         })
+        console.log(this.state)
+      }).catch((error) => {
+        console.error(error);
+      })
   }
 
 
@@ -75,11 +76,11 @@ openNoteModal() {
       <tr key={attachment.id}>
         <td>
           <Link to={'../attachment/' + attachment.id} activeClassName="active">
-              <h3>{attachment.title}</h3>
+            <h3>{attachment.title}</h3>
           </Link>
         </td>
-        <td>        
-        <Moment format={"MM/DD/YYYY"}>{attachment.createdAt}</Moment>
+        <td>
+          <Moment format={"MM/DD/YYYY"}>{attachment.createdAt}</Moment>
         </td>
 
         <td>
@@ -102,43 +103,62 @@ openNoteModal() {
     )
   }
 
+  // AWS Test
+  // getSignedRequest(file){
+  //   const xhr = new XMLHttpRequest();
+  //   xhr.open('GET', `/sign-s3?file-name=${file.name}&file-type=${file.type}`);
+  //   xhr.onreadystatechange = () => {
+  //     if(xhr.readyState === 4){
+  //       if(xhr.status === 200){
+  //         console.log(xhr.responseText);
+  //         const xhrResponse = JSON.stringify(xhr.responseText)
+  //         const response = JSON.parse(xhrResponse);
+  //         this.uploadFile(file, response.signedRequest, response.url);
+  //       }
+  //       else{
+  //         alert('Could not get signed URL.');
+  //       }
+  //     }
+  //   };
+  //   xhr.send();
+  // }
+
+  // uploadFile(file, signedRequest, url){
+  //   const xhr = new XMLHttpRequest();
+  //   xhr.open('POST', signedRequest);
+  //   xhr.onreadystatechange = () => {
+  //     if(xhr.readyState === 4){
+  //       if(xhr.status === 200){
+  //         document.getElementById('preview').src = url;
+  //         document.getElementById('avatar-url').value = url;
+  //       }
+  //       else{
+  //         alert('Could not upload file.');
+  //       }
+  //     }
+  //   };
+  //   xhr.send(file);
+  // }
+  // 
+
   render() {
-console.log(this.props);
-console.log(this.state);
+    console.log(this.props);
+    console.log(this.state);
     if (this.state.attachments) {
-      // const self = this;
+      var attachmentList = this.state.attachments.map(function (item, i) {
+        console.log(item);
+        return (
+          <div key={i}>
+          </div>
+        )
 
-var attachmentList = this.state.attachments.map(function (item, i) {
-          console.log(item);
-          return (
-              <div key={i}>
-                  {/* <div className="story-title-author">
-                          <h3 className="story-title">{item.patient}</h3>
-
-                      <h5 className="story-author">
-                          {!(self.props.match.params.username)
-                              ?
-                              <div style={{ marginLeft: "5px" }} className="btn-group" role="group">
-                                  <button onClick={() => self.showUpdForm(item)} type="button" className="btn btn-primary btn-xs"><span className="glyphicon glyphicon-pencil"></span></button>
-                                  <button onClick={() => self.deleteBook(item.id)} type="button" className="btn btn-primary btn-xs"><span className="glyphicon glyphicon-remove"></span></button>
-                              </div>
-                              : null
-                          }
-                      </h5>
-                  </div>
-
-                  <p>{item.description}</p>
-                  <br /> */}
-              </div>
-              )
-
-            })
-        }
-        else {
-            return <div>
-                <p></p>
-            </div>
-        }
+      })
+    }
+    else {
+      return <div>
+        <p></p>
+      </div>
+    }
 
     console.log(this.state.attachments);
 
@@ -158,11 +178,11 @@ var attachmentList = this.state.attachments.map(function (item, i) {
     return (
       <div className={className}>
 
-<Button
-  icon="plus"
-  title="ATTACH FILE"
-  onClick={() => this.openNoteModal()}
-/>
+        <Button
+          icon="plus"
+          title="ATTACH FILE"
+          onClick={() => this.openNoteModal()}
+        />
 
         <div className="notes">
 
@@ -176,7 +196,40 @@ var attachmentList = this.state.attachments.map(function (item, i) {
           content={attachmentModal}
           onClickAway={onCloseModal}
           onSubmit={onCreateNote}
+          state={this.state}
+          props={this.props}
         />
+
+        {/* <input type="file" id="file-input" onChange={ () => {
+            const files = document.getElementById('file-input').files;
+            const file = files[0];
+            if (file == null) {
+              return alert('No file selected.');
+            }
+            this.getSignedRequest(file);
+          }} />
+        <p id="status">Please select a file</p>
+        <img id="preview" src="/images/default.png" />
+
+        <form method="POST" action="/save-details">
+          <input type="hidden" id="avatar-url" name="avatar-url" value="/images/default.png" />
+          <input type="text" name="username" placeholder="Username" /><br />
+          <input type="text" name="full-name" placeholder="Full name" /><br /><br />
+          <input type="submit" value="Update profile" />
+        </form> */}
+
+      {/* AWS Test */}
+        {/* (() => {
+          document.getElementById("file-input").onchange = () => {
+            const files = document.getElementById('file-input').files;
+            const file = files[0];
+            if (file == null) {
+              return alert('No file selected.');
+            }
+            this.getSignedRequest(file);
+          }
+        })(); */}
+
       </div>
     )
   }
@@ -184,12 +237,12 @@ var attachmentList = this.state.attachments.map(function (item, i) {
 
 export default AttachmentsTab;
 
-// import React from 'react'
-// import ReactDOM from 'react-dom'
-// import { Link } from 'react-router-dom';
-// import axios from 'axios'
-// // import ProfileChange from '../components/ProfileChange.js'
-// // import UserIcon from '../images/user.png'
+                // import React from 'react'
+                // import ReactDOM from 'react-dom'
+// import {Link} from 'react-router-dom';
+                    // import axios from 'axios'
+                    // // import ProfileChange from '../components/ProfileChange.js'
+                    // // import UserIcon from '../images/user.png'
 
 // class Profile extends React.Component {
 
