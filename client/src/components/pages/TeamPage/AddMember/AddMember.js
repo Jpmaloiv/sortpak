@@ -31,12 +31,17 @@ class AddMember extends Component {
       username: '',
       password: '',
       confirmpw: '',
-      active: false
+      active: false,
     }
 
+    
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleCheckbox = this.handleCheckbox.bind(this);
+  }
+
+  state = {
+    picFile: ''
   }
 
   handleChange(event) {
@@ -56,8 +61,14 @@ class AddMember extends Component {
 
   }
 
-  handleSubmit(event) {
-    event.preventDefault()
+  onChangeHandler = (event) => {
+    this.setState({
+      [event.target.name]: event.target.value
+    })
+  }
+
+  handleSubmit(e) {
+    e.preventDefault()
     // const {
     //   firstName,
     //   lastName,
@@ -73,22 +84,43 @@ class AddMember extends Component {
     //   active
     // }
     if (this.state.password === this.state.confirmpw) {
-      axios.post("/api/user/new",
-        {
-          username: this.state.username,
-          name: this.state.name,
-          email: this.state.email,
-          password: this.state.password,
-          role: this.state.role,
-          active: this.state.active,
-        })
-        .then((resp) => {
-          window.localStorage.setItem("token", resp.data.token);
-          window.location = '/team';
-        })
-        .catch((err) => {
-          console.error(err);
-        });
+      // const loginToken = window.localStorage.getItem("token");
+      // let data = new FormData()
+      // data.append("picFile", document.getElementById("pic-file").files[0]);
+      // console.log(data);
+
+      // axios.post("/api/user/new",
+      //   {
+      //     username: this.state.username,
+      //     name: this.state.name,
+      //     email: this.state.email,
+      //     password: this.state.password,
+      //     role: this.state.role,
+      //     active: this.state.active,
+      //   }, data)
+        
+      //   .then((resp) => {
+      //     window.localStorage.setItem("token", resp.data.token);
+      //     window.location = '/team';
+      //   })
+      //   .catch((err) => {
+      //     console.error(err);
+      //   });
+
+  
+    const loginToken = window.localStorage.getItem("token");
+
+    let data = new FormData();
+    data.append("picFile", document.getElementById("pic-file").files[0])
+    axios.post('/api/user/new?username=' + this.state.username + '&name=' + this.state.name + '&email=' + this.state.email +
+    '&password=' + this.state.password + '&role=' + this.state.role + '&active=' + this.state.active,
+      data, { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((data) => {
+        console.log(data);
+        
+      }).catch((error) => {
+        console.error(error);
+      })
     } else {
       alert("Passwords do not match");
     }
@@ -146,7 +178,7 @@ class AddMember extends Component {
               className="submit btn btn-default"
               type="submit"
               value="Submit"
-            style={{ marginRight: 8 }}
+              style={{ marginRight: 8 }}
             />
           </div>
         </Header>
@@ -218,15 +250,17 @@ class AddMember extends Component {
               options={roleOptions}
               onSelect={role => this.setState({ role })}
             />
+            <label htmlFor="picFile">Select Profile Image:</label>
+            <input name="picFile" onChange={this.onChangeHandler} accept=".png" id="pic-file" type="file" />
 
             <div className='check'>
-            <input
-              type="checkbox"
-              name="active"
-              checked={this.state.active}
-              onChange={this.handleCheckbox}
-            />
-            <label>ACTIVE</label>
+              <input
+                type="checkbox"
+                name="active"
+                checked={this.state.active}
+                onChange={this.handleCheckbox}
+              />
+              <label>ACTIVE</label>
             </div>
 
             <br />

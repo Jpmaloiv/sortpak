@@ -27,3 +27,12 @@
       margin-bottom: 5px; }
     :local(.contactInfo) > div input, :local(.contactInfo) > div span, :local(.contactInfo) > div button {
       margin-left: 5px; }
+
+      :local(.contactInfo) img {
+        width: 200px;
+        height: auto;
+        border-radius: 50%;
+      }
+      :local(.contactInfo) {
+        flex: 1 1;
+      }

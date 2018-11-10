@@ -12,6 +12,7 @@ const Op = Sequelize.Op;
 router.post("/upload", (req, res) => {
     const attachmentFile = req.files.attachmentFile;
     const title = req.files.attachmentFile.name;
+    console.log(req.payload);
     const attachmentLink = '/attachments/' + req.payload.id + '/' + title.trim() + ".pdf";
     const attachment = {
         title,
@@ -27,12 +28,12 @@ router.post("/upload", (req, res) => {
         if ((err) && (err.code !== 'EEXIST')) {
             console.error(err)
         } else {
-            // const attachmentPath = './attachments/attachments/' + req.payload.id + '/' + title.trim() + ".pdf";
-            // console.log("dir created");
-            // attachmentFile
-                // .mv(attachmentPath)
-                // .then((response) => {
-                    // console.log("file saved");
+            const attachmentPath = './attachments/attachments/' + req.payload.id + '/' + title.trim() + ".pdf";
+            console.log("dir created");
+            attachmentFile
+                .mv(attachmentPath)
+                .then((response) => {
+                    console.log("file saved");
                     db.scriptAttachments
                         .create(attachment)
                         .then((resp) => {
@@ -47,7 +48,7 @@ router.post("/upload", (req, res) => {
                     console.error(err);
                     res.status(500).json({ message: "Internal server error.", error: err });
                 })
-        }
+        })}
     })
 });
 

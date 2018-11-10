@@ -763,21 +763,27 @@ class ScriptView extends Component {
         value: 'payments',
         display: 'Payments',
         renderComponent: () => this.renderPaymentsTab()
-      },
-      {
-        display: 'Test',
-        renderComponent: null,
       }
     ]
 
 
     const { tab } = this.state
     return (
-      <SwitchTable
-        tabs={this.tabOptions}
-        selected={tab}
-        onClick={tab => this.setState({ tab })}
-      />
+      <div>
+        <div className='pouch'>
+          
+          <input type="checkbox" checked={this.state.pouch}>
+          </input>
+          <label style={{'vertical-align': 'text-top'}}>POUCH</label>
+        </div>
+
+        <SwitchTable
+          tabs={this.tabOptions}
+          selected={tab}
+          onClick={tab => this.setState({ tab })}
+        />
+      </div>
+
     )
   }
 

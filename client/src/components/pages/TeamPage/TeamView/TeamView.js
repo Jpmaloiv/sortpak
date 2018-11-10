@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 
 import axios from 'axios'
+import Moment from 'react-moment'
 import { TablePagination } from 'react-pagination-table';
 
 
@@ -43,21 +44,25 @@ class TeamView extends Component {
       .then((resp) => {
         console.log(resp);
         // for (let i = 0; i < resp.data.response.length; i++) {
-          // moment(resp.data.response[0].createdAt, 'YYYY-MM-DD').format('YYYY-MM-DD')
-          // console.log(resp.data.response[0].createdAt);
-          // this.setState({
-          //   user: moment(resp.data.response[0].createdAt, 'YYYY-MM-DD').format('YYYY-MM-DD')
-          // },() => console.log(this.state.user))
+        // moment(resp.data.response[0].createdAt, 'YYYY-MM-DD').format('YYYY-MM-DD')
+        // console.log(resp.data.response[0].createdAt);
+        // this.setState({
+        //   user: moment(resp.data.response[0].createdAt, 'YYYY-MM-DD').format('YYYY-MM-DD')
+        // },() => console.log(this.state.user))
 
-          this.setState({
-            users: resp.data.response
-          })
+        this.setState({
+          users: resp.data.response
+        })
 
 
 
       }).catch((err) => {
         console.error(err)
       })
+  }
+
+  handleClick(value) {
+    window.location = `/team/${value}`
   }
 
   filterUsers(search) {
@@ -77,6 +82,59 @@ class TeamView extends Component {
         {this.renderTableHead()}
         {this.renderTableBody()}
       </Table>
+    )
+  }
+
+  renderTableHead() {
+    return (
+      <thead>
+        <tr>
+          <th>
+            Name
+          </th>
+          <th>
+            Username
+          </th>
+          <th>
+            Email Address
+          </th>
+          <th>
+            Role
+          </th>
+          <th>Date Added</th>
+        </tr>
+      </thead>
+    )
+  }
+
+  renderTableBody() {
+    return (
+      <tbody>
+        {this.state.users.map(this.renderTableRow.bind(this))}
+      </tbody>
+    )
+  }
+
+  renderTableRow(user) {
+    return (
+      <tr value={user.id} onClick={() => this.handleClick(user.id)}>
+        <td>
+          {user.name || ''}
+        </td>
+
+        <td>
+          {user.username || ''}
+        </td>
+
+        <td>
+          {user.email || ''}
+        </td>
+
+        <td>
+          {user.role || ''}
+        </td>
+        <td><Moment format="MM/DD/YYYY">{user.createdAt || ''}</Moment></td>
+      </tr>
     )
   }
 
@@ -107,10 +165,25 @@ class TeamView extends Component {
       },
     ]
   }
-  
+
 
 
   render() {
+
+    if (this.state.users) {
+      var userList = this.state.users.map(function (item, i) {
+        console.log(item);
+        return (
+          <div key={i}>
+          </div>
+        )
+      })
+    }
+    else {
+      return <div>
+        <p></p>
+      </div>
+    }
 
     return (
       <div className={styles.app}>
@@ -177,7 +250,7 @@ class TeamView extends Component {
             </div>
 
           </ActionBox>
-          {this.state.users ?
+          {/* {this.state.users ?
             <TablePagination
               headers={th}
               data={this.state.users}
@@ -188,9 +261,9 @@ class TeamView extends Component {
             />
             
             :
-            <div></div>}
-
-          {/* {userList} */}
+            <div></div>} */}
+          {this.renderTable()}
+          {userList}
 
         </div>
 

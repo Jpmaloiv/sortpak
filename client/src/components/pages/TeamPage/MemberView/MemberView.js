@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
+import axios from 'axios'
 
 import { hasAuthTokenAsync } from '../../../../lib'
 
@@ -10,7 +11,7 @@ import {
 
 import {
   Input,
-  Icon,
+  Button,
   Header,
   Body,
   Span,
@@ -73,12 +74,30 @@ class MemberView extends Component {
   }
 
   componentDidMount() {
-    hasAuthTokenAsync()
-      .then(() => {
-        const { memberId } = this.props.match.params
-        this.props.getMemberById(memberId)
-      })
-      .catch(console.log)
+    if (this.props.match.params.userId) {
+      const loginToken = window.localStorage.getItem("token");
+      axios.get('/api/user/search?userId=' + this.props.match.params.userId, { headers: { "Authorization": "Bearer " + loginToken } })
+        .then((resp) => {
+          console.log(resp);
+          let user = resp.data.response[0]
+          this.setState({
+            id: user.id,
+            name: user.name,
+            group: user.group,
+            username: user.username,
+            email: user.email,
+            link: '/images/' + user.id + '/' + user.link
+          }, this.setImageLink)
+        }).catch((err) => {
+          console.error(err)
+        })
+    }
+  }
+
+  setImageLink() {
+    this.setState({
+      image: `${this.state.id}` + `${this.state.link}`
+    })
   }
 
   setEditState(editing) {
@@ -146,6 +165,7 @@ class MemberView extends Component {
   }
 
   renderContactInfo() {
+
     const {
       editing,
       firstName,
@@ -158,6 +178,8 @@ class MemberView extends Component {
     const { user } = this.props
 
     return (
+      <div>
+        <div className="flex-grid">
       <div className={styles.contactInfo}>
         {editing ? (
           <div className="name">
@@ -174,48 +196,39 @@ class MemberView extends Component {
             />
           </div>
         ) : (
-          <div>
-            Name:
+            <div>
+              Name:
             <Span>
-              {user.nameDisplay}
-            </Span>
-          </div>
-        )}
+                {this.state.name || ''}
+              </Span>
+            </div>
+          )}
 
         <div>
           Group:
-          <Span
-            editing={editing}
-            value={group}
-            placeholder="Group Name"
-            onChange={group => this.setState({ group })}
-          >
-            {group || 'None'}
+          <Span>
+            {this.state.group || '-'}
           </Span>
         </div>
         <div>
           Username:
-          <Span
-            editing={editing}
-            value={username}
-            placeholder="Username"
-            onChange={username => this.setState({ username })}
-          >
-            {username || 'None'}
+          <Span>
+            {this.state.username || ''}
           </Span>
         </div>
         <div>
           Email:
-          <Span
-            editing={editing}
-            value={email}
-            type="email"
-            placeholder="user@gmail.com"
-            onChange={email => this.setState({ email })}
-          >
-            {email || 'None'}
+          <Span>
+            {this.state.email || ''}
           </Span>
         </div>
+        </div>
+        
+        <div className={styles.contactInfo}>
+      
+        <img src={this.state.link} />
+
+      </div></div>
       </div>
     )
   }
@@ -238,26 +251,17 @@ class MemberView extends Component {
       <div>
         <Header className={styles.header}>
           <h2>
-            {nameDisplay}
-            {!editing ? (
-              <div>
-                <Icon
-                  edit
-                  onClick={() => this.setEditState(true)}
-                />
-              </div>
-            ) : (
-              <div>
-                <Icon
-                  cancel
-                  onClick={() => this.setEditState(false)}
-                />
-                <Icon
-                  save
-                  onClick={() => this.save()}
-                />
-              </div>
-            )}
+            {this.state.name || ''}
+
+            <Button
+              search
+              className='editButton'
+              icon="edit"
+              title="EDIT MEMBER"
+              link={`/team/${this.props.match.params.userId}/edit`}
+              style={{ marginLeft: 8 }}
+            />
+
           </h2>
         </Header>
         <Body className={styles.body}>

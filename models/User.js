@@ -25,6 +25,10 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.STRING,
             allowNull: true
         },
+        link: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
         hash: {
             type: DataTypes.STRING(1500),
             allowNull: false
