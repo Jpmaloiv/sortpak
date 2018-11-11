@@ -41,7 +41,10 @@ module.exports = function(sequelize, DataTypes) {
     User.associate = function(models) {
       models.User.hasMany(models.Scripts, {
           onDelete: "cascade"
-      });
+      }),
+      models.User.hasMany(models.scriptStatuses, {
+        onDelete: "cascade"
+    });
     };
 
     return User; 

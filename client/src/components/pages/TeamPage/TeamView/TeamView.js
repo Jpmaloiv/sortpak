@@ -61,9 +61,9 @@ class TeamView extends Component {
       })
   }
 
-  handleClick(value) {
-    window.location = `/team/${value}`
-  }
+  // handleClick(value) {
+  //   window.location = `/team/${value}`
+  // }
 
   filterUsers(search) {
     const { searchType } = this.state
@@ -117,7 +117,7 @@ class TeamView extends Component {
 
   renderTableRow(user) {
     return (
-      <tr value={user.id} onClick={() => this.handleClick(user.id)}>
+      <tr value={user.id}>
         <td>
           {user.name || ''}
         </td>

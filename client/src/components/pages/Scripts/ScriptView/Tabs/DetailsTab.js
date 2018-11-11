@@ -173,69 +173,42 @@ class DetailsTab extends Component {
                   <tr style={{ 'line-height': '1.8em' }}>
                     <td className="field">Processed On</td>
                     <td className="value">
-                      <Moment format="MM/DD/YYYY">{this.state.processedOn || 'None'}</Moment>
+                      <Moment format="MM/DD/YYYY">{this.state.processedOn || ''}</Moment>
                     </td>
                     <td className="field">Written Date</td>
                     <td className="value">
-                      <Moment stye={{ 'line-height': '1.8em' }} format="MM/DD/YYYY">{this.state.writtenDate || 'None'}</Moment>
+                      <Moment stye={{ 'line-height': '1.8em' }} format="MM/DD/YYYY">{this.state.writtenDate || ''}</Moment>
                     </td>
                   </tr>
                   <tr style={{ 'line-height': '1.8em' }}>
                     <td className="field">Patient Name</td>
                     <td className="setValue">
                       <Link to={'../patients/' + this.state.patientId} activeClassName="active">
-                        {this.state.patientName}
+                        {this.state.patientName || ''}
                       </Link>
                     </td>
                     <td className="field">Bill On</td>
                     <td className="value">
-                      <Moment format="MM/DD/YYYY">{this.state.billOnDate || 'None'}</Moment>
+                      <Moment format="MM/DD/YYYY">{this.state.billOnDate || ''}</Moment>
                     </td>
                   </tr>
                   <tr>
                     <td className="field">Date of Birth</td>
-                    <td className="value"><Moment format="MM/DD/YYYY">{this.state.patientDob}</Moment></td>
+                    <td className="value"><Moment format="MM/DD/YYYY">{this.state.patientDob || ''}</Moment></td>
                     <td className="field">RX Number</td>
-                    <td className="value">
-                      <Span
-                        editing={editing}
-                        placeholder={this.state.rxNumber}
-                        value={this.state.rxNumber}
-                        onChange={rxNumber => this.setState({ rxNumber })}
-                      >
-                        {this.state.rxNumber}
-                      </Span>
-                    </td>
+                    <td className="value">{this.state.rxNumber || ''} </td>
                   </tr>
                   <tr>
                     <td className="field">Phone</td>
-                    <td className="value">{this.state.patientPhone}</td>
+                    <td className="value">{this.state.patientPhone || ''}</td>
                     <td className="field">Diagnosis</td>
-                    <td className="value">
-                      <Span
-                        editing={editing}
-                        placeholder={this.state.diagnosis}
-                        value={this.state.diagnosis}
-                        onChange={diagnosis => this.setState({ diagnosis })}
-                      >
-                        {this.state.diagnosis}
-                      </Span>
-                    </td>
+                    <td className="value">{this.state.diagnosis || ''}</td>
                   </tr>
                   <tr>
                     <td className="field">Email</td>
-                    <td className="value">{this.state.patientEmail}</td>
+                    <td className="value">{this.state.patientEmail || ''}</td>
                     <td className="field">Secondary Diagnosis</td>
-                    <td className="value">
-                      <Span
-                        editing={editing}
-                        placeholder={this.state.secDiagnosis}
-                        value={this.state.secDiagnosis}
-                        onChange={secDiagnosis => this.setState({ secDiagnosis })}
-                      >
-                        {this.state.secDiagnosis}
-                      </Span>
-                    </td>
+                    <td className="value">{this.state.secDiagnosis || ''}</td>
                   </tr>
                 </tbody>
               </table>
@@ -246,65 +219,28 @@ class DetailsTab extends Component {
                     <td className="field">Physician</td>
                     <td className="setValue">
                       <Link to={'../physicians/' + this.state.physicianId} activeClassName="active">
-                        {this.state.physicianName}
+                        {this.state.physicianName || ''}
                       </Link></td>
                     <td className="field">Refill #</td>
-                    <td className="value">
-                      <Span
-                        editing={editing}
-                        placeholder={this.state.refills}
-                        value={this.state.refills}
-                        onChange={refills => this.setState({ refills })}
-
-                      >
-                        {this.state.refills}
-                      </Span>
-                    </td>
+                    <td className="value">{this.state.refills || ''}</td>
                   </tr>
                   <tr>
                     <td className="field">Contact</td>
-                    <td className="value">{this.state.physicianContact}</td>
+                    <td className="value">{this.state.physicianContact || ''}</td>
                     <td className="field">Refills Remaining</td>
-                    <td className="value">
-                      <Span
-                        editing={editing}
-                        placeholder={this.state.refillsRemaining}
-                        value={this.state.refillsRemaining}
-                        onChange={refillsRemaining => this.setState({ refillsRemaining })}
-                      >
-                        {this.state.refillsRemaining}
-                      </Span>
-                    </td>
+                    <td className="value">{this.state.refillsRemaining || ''}</td>
                   </tr>
                   <tr>
                     <td className="field">Phone</td>
-                    <td className="value">{this.state.physicianPhone}</td>
+                    <td className="value">{this.state.physicianPhone || ''}</td>
                     <td className="field">Quantity</td>
-                    <td className="value">
-                      <Span
-                        editing={editing}
-                        placeholder={this.state.quantity}
-                        value={this.state.quantity}
-                        onChange={quantity => this.setState({ quantity })}
-                      >
-                        {this.state.quantity}
-                      </Span>
-                    </td>
+                    <td className="value">{this.state.quantity || ''}</td>
                   </tr>
                   <tr>
                     <td className="field">Rep</td>
-                    <td className="value">{this.state.physicianRep}</td>
+                    <td className="value">{this.state.physicianRep || ''}</td>
                     <td className="field">Days Supply</td>
-                    <td className='value'>
-                      <Span
-                        editing={editing}
-                        placeholder={this.state.daysSupply}
-                        value={this.state.daysSupply}
-                        onChange={daysSupply => this.setState({ daysSupply })}
-                      >
-                        {this.state.daysSupply}
-                      </Span>
-                    </td>
+                    <td className='value'>{this.state.daysSupply || ''}</td>
                   </tr>
                 </tbody>
               </table>
@@ -313,110 +249,39 @@ class DetailsTab extends Component {
                 <tbody>
                   <tr>
                     <td className="field">Medicine</td>
-                    <td className='value'>{this.state.productName}</td>
+                    <td className='value'>{this.state.productName || ''}</td>
                     <td className="field">Sales Code</td>
-                    <td className='value'>
-                      <Span
-                        editing={editing}
-                        placeholder={this.state.salesCode}
-                        value={this.state.salesCode}
-                        onChange={salesCode => this.setState({ salesCode })}
-                      >
-                        {this.state.salesCode}
-                      </Span>
-                    </td>
+                    <td className='value'>{this.state.salesCode || ''}</td>
                   </tr>
                   <tr>
                     <td className="field">NDC</td>
-                    <td className='value'>{this.state.productNDC}</td>
+                    <td className='value'>{this.state.productNDC || ''}</td>
                     <td className="field">Cost</td>
-                    <td className='value'>
-                      <Span
-                        editing={editing}
-                        placeholder={this.state.cost}
-                        value={this.state.cost}
-                        onChange={cost => this.setState({ cost })}
-                      >
-                        {this.state.cost}
-                      </Span>
-                    </td>
+                    <td className='value'>{this.state.cost || ''}</td>
                   </tr>
                   <tr>
                     <td className="field">On Hand</td>
-                    <td className='value'>{this.state.productQuantity}</td>
+                    <td className='value'>{this.state.productQuantity || ''}</td>
                     <td className="field">Primary Insurance Pay</td>
-                    <td className='value'>
-                      <Span
-                        editing={editing}
-                        placeholder={this.state.primInsPay}
-                        value={this.state.primInsPay}
-                        onChange={primInsPay => this.setState({ primInsPay })}
-                      >
-                        {this.state.primInsPay}
-                      </Span>
-                    </td>
+                    <td className='value'>{this.state.primInsPay || ''}</td>
                   </tr>
                   <tr>
                     <td className="field">Prior Authorization</td>
                     <td className='value'></td>
                     <td className="field">Secondary Insurance Pay</td>
-                    <td className='value'>
-                      <Span
-                        editing={editing}
-                        placeholder={this.state.secInsPay}
-                        value={this.state.secInsPay}
-                        onChange={secInsPay => this.setState({ secInsPay })}
-                      >
-                        {this.state.secInsPay}
-                      </Span>
-                    </td>
+                    <td className='value'>{this.state.secInsPay || ''}</td>
                   </tr>
                   <tr>
                     <td className="field">Location</td>
-                    <td className='value'>
-                      <Span
-                        editing={editing}
-                        placeholder={this.state.location}
-                        value={this.state.location}
-                        onChange={location => this.setState({ location })}
-                      >
-                        {this.state.location}
-                      </Span>
-                    </td>
+                    <td className='value'>{this.state.location || ''}</td>
                     <td className="field">Copay Assistance Status</td>
-                    <td className='value'>
-                      {editing ? (
-                        <Selector
-                          placeholder={this.state.copayApproval}
-                          value={this.state.copayApproval}
-                          options={copayApprovalOptions}
-                          onSelect={copayApproval => this.setState({ copayApproval })}
-                        />
-                      ) : (
-                          <Span>
-                            {this.state.copayApproval}
-                          </Span>
-                        )}
-                    </td>
+                    <td className='value'>{this.state.copayApproval || ''}</td>
                   </tr>
                   <tr>
                     <td className="field">Ship On</td>
-                    <td className='value'><Moment format="MM/DD/YYYY">{this.state.shipOn}</Moment></td>
+                    <td className='value'><Moment format="MM/DD/YYYY">{this.state.shipOn || ''}</Moment></td>
                     <td className="field">Copay Assistance Network</td>
-                    <td className='value'>
-                      {editing ? (
-                        <Selector
-                          placeholder={this.state.copayNetwork}
-                          value={this.state.copayNetwork}
-                          options={copayNetworkOptions}
-                          onSelect={copayNetwork => this.setState({ copayNetwork })}
-                        />
-                      ) : (
-                          <Span>
-                            {this.state.copayNetwork}
-                          </Span>
-                        )}
-                    </td>
+                    <td className='value'>{this.state.copayNetwork}</td>
                   </tr>
                   <tr>
                     <td className="field">Delivery Method</td>
@@ -447,26 +312,13 @@ class DetailsTab extends Component {
                   </tr>
                   <tr>
                     <td className="field">Status</td>
-                    <td className='value'>
-                      {editing ? (
-                        <Selector
-                          placeholder={this.state.status}
-                          value={this.state.status}
-                          options={statusOptions}
-                          onSelect={status => this.setState({ status })}
-                        />
-                      ) : (
-                          <Span>
-                            {this.state.status}
-                          </Span>
-                        )}
-                    </td>
+                    <td className='value'>{this.state.status || ''}</td>
                     <td className="field">Total Pay</td>
                     <td></td>
                   </tr>
                   <tr>
                     <td className="field">Instructions</td>
-                    <td className='value'>{this.state.directions}</td>
+                    <td className='value'>{this.state.directions || ''}</td>
                     <td className="field">Profit</td>
                     <td className='value'></td>
                   </tr>

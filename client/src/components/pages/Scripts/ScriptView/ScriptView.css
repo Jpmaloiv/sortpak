@@ -292,4 +292,30 @@ td.setValue a, td.setValue a:visited {
 /* RX History Tab */
 .rxHistoryTab table {margin: 0; width: 100%}
 
+/* Statuses Tab */
+
+.statusesTab {
+    margin-bottom: 10px;
+    font-size: 12px;
+    line-height: 0;
+    display: flex;
+}
+
+.statusDateTime div {
+    display: inline;
+}
+
+.userImage {
+    width: 50px;
+    height: 50px;
+    -webkit-border-radius: 60px;
+    -webkit-background-clip: padding-box;
+    -moz-border-radius: 60px;
+    -moz-background-clip: padding;
+    border-radius: 60px;
+    background-clip: padding-box;
+    margin: 7px 10px 0 5px;
+    background-size: cover;
+    background-position: center center;
+}
 

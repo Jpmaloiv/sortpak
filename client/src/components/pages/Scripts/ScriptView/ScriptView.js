@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import jwt_decode from 'jwt-decode'
 
 import { Header, Body, Button, Table, Input, Selector } from '../../../common'
 import styles from './ScriptView.css'
@@ -87,7 +88,13 @@ class ScriptView extends Component {
 
 
   componentWillMount() {
-    console.log(this.props);
+    const token = localStorage.getItem('token')
+    var decoded = jwt_decode(token);
+    console.log(decoded);
+    this.setState({
+      userId: decoded.id
+    }, this.getUser)
+
     if (this.props.match.params.scriptId) {
       const loginToken = window.localStorage.getItem("token");
       axios.get('/api/scripts/search?scriptId=' + this.props.match.params.scriptId, { headers: { "Authorization": "Bearer " + loginToken } })
@@ -99,6 +106,7 @@ class ScriptView extends Component {
             processedOn: script.processedOn,
             pouch: script.pouch,
             status: script.status,
+            fromStatus: script.status,
             writtenDate: script.writtenDate,
             patient: script.patient,
             billOnDate: script.billOnDate,
@@ -125,6 +133,7 @@ class ScriptView extends Component {
             PatientId: script.PatientId
           }, this.getRxHistoryNum)
 
+
           this.setState({
             cancelPharmTrans: true
           })
@@ -133,9 +142,20 @@ class ScriptView extends Component {
           console.error(err)
         })
 
-
-
     }
+  }
+
+  getUser() {
+    const loginToken = window.localStorage.getItem("token");
+    axios.get('/api/user/search?userId=' + this.state.userId, { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        console.log(resp);
+        this.setState({
+          name: resp.data.response[0].name
+        })
+      }).catch((err) => {
+        console.error(err)
+      })
   }
 
   getRxHistoryNum() {
@@ -145,6 +165,19 @@ class ScriptView extends Component {
         console.log(resp);
         this.setState({
           rxHistoryNum: resp.data.response.length
+        }, this.getStatusesNum)
+      }).catch((err) => {
+        console.error(err)
+      })
+  }
+
+  getStatusesNum() {
+    const loginToken = window.localStorage.getItem("token");
+    axios.get('/api/scripts/statuses/search?ScriptId=' + this.state.id, { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        console.log(resp);
+        this.setState({
+          statusesNum: resp.data.response.length
         })
       }).catch((err) => {
         console.error(err)
@@ -172,8 +205,23 @@ class ScriptView extends Component {
     axios.put('/api/scripts/update' + updateParams, data, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((data) => {
         console.log(data);
+      }).catch((error) => {
+        console.error(error);
+      })
+    this.statusChange();
+    this.setState({
+      fromStatus: this.state.status
+    })
+  }
+
+  statusChange() {
+    const loginToken = window.localStorage.getItem("token");
+    let data = new FormData();
+    axios.post('/api/scripts/statuses/add?scriptId=' + this.props.match.params.scriptId + '&userId=' + this.state.userId + '&name=' + this.state.name + '&fromStatus=' + this.state.fromStatus + '&toStatus=' + this.state.status,
+      data, { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((data) => {
+        console.log(data);
         console.log(this.state.status)
-        // window.location.reload();
       }).catch((error) => {
         console.error(error);
       })
@@ -727,6 +775,10 @@ class ScriptView extends Component {
       ? <span className='numberCircle'>{this.state.rxHistoryNum}</span>
       : <span></span>}</div>
 
+    const statusesTab = <div>Statuses {this.state.statusesNum > 0
+      ? <span className='numberCircle'>{this.state.statusesNum}</span>
+      : <span></span>}</div>
+
 
     this.tabOptions = [
       {
@@ -756,7 +808,7 @@ class ScriptView extends Component {
       },
       {
         value: 'statuses',
-        display: 'Statuses',
+        display: statusesTab,
         renderComponent: () => this.renderStatusesTab()
       },
       {
@@ -771,10 +823,10 @@ class ScriptView extends Component {
     return (
       <div>
         <div className='pouch'>
-          
+
           <input type="checkbox" checked={this.state.pouch}>
           </input>
-          <label style={{'vertical-align': 'text-top'}}>POUCH</label>
+          <label style={{ 'vertical-align': 'text-top' }}>POUCH</label>
         </div>
 
         <SwitchTable
@@ -839,7 +891,11 @@ class ScriptView extends Component {
 
   renderStatusesTab() {
     return (
-      <StatusesTab />
+      <StatusesTab
+        className={styles.notesTab}
+        state={this.state}
+        patient={this.props.patient}
+        setState={this.setState.bind(this)} />
     )
   }
 

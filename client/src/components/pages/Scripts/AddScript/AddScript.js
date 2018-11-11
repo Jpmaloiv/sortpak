@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios'
+import moment from 'moment'
 import { connect } from 'react-redux'
 import Autosuggest from 'react-autosuggest';
 // import Medications from '../Medications.js'
@@ -50,6 +51,14 @@ class AddScript extends Component {
             physicianSet: false,
             medSearch: false,
             value: '',
+            writtenDate: '',
+            billOn: '',
+            shipOn: '',
+            ETA: '',
+            copayApproval: '',
+            copayNetwork: '',
+            diagnosis: '',
+            secDiagnosis: '',
             suggestions: []
         }
 
@@ -126,6 +135,10 @@ class AddScript extends Component {
             }).catch((error) => {
                 console.error(error);
             })
+
+            this.setState({
+                processedOn: moment().format("MM/DD/YYYY")
+            }, () => console.log(this.state.processedOn))
 
 
     }
@@ -294,6 +307,8 @@ class AddScript extends Component {
 
     render() {
 
+        
+
 console.log(this.state.productId);
 
         const { value, suggestions } = this.state;
@@ -377,7 +392,7 @@ console.log(this.state.productId);
             physicianModal
         } = this.state
 
-
+console.log(this.state.processedOn)
         return (
             <div>
                 <Header>
@@ -409,6 +424,7 @@ console.log(this.state.productId);
                                     <Input
                                         type="date"
                                         label="Process On"
+                                        placeholder={processedOn}
                                         value={processedOn}
                                         onChange={processedOn => this.setState({ processedOn })}
                                     />

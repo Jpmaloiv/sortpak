@@ -8,6 +8,7 @@ const currentPatientRoutes = require("./routes/currentPatient-routes.js");
 const scriptRoutes = require("./routes/script-routes.js");
 const scriptNoteRoutes = require("./routes/scriptNote-routes.js");
 const scriptAttachmentRoutes = require("./routes/scriptAttachment-routes.js");
+const scriptStatusRoutes = require('./routes/scriptStatus-routes.js');
 const patientRoutes = require("./routes/patient-routes.js");
 const patientNoteRoutes = require("./routes/patientNote-routes.js");
 const profileRoutes = require("./routes/profile-routes.js");
@@ -67,6 +68,11 @@ app.use(["/api/attachments"], jwt({
 app.use("/api/attachments", scriptAttachmentRoutes);
 app.use("/api/scripts/notes", scriptNoteRoutes);
 app.use(["/api/scripts/notes"], jwt({
+    secret: process.env.JWT_SECRET,
+    userProperty: 'payload'
+}));
+app.use("/api/scripts/statuses", scriptStatusRoutes);
+app.use(["/api/scripts/statuses"], jwt({
     secret: process.env.JWT_SECRET,
     userProperty: 'payload'
 }));
