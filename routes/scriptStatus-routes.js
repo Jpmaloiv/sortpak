@@ -37,10 +37,10 @@ router.get("/search", (req, res) => {
         attributes: {
             exclude: ["updatedAt"]
         },
-        include: [{
-            model: db.User,
-            attributes: ["id", "role", "link"]
-        }]
+        // include: [{
+        //     model: db.User,
+        //     attributes: ["id", "role", "link"]
+        // }]
     }
 
     if (req.query.ScriptId) {
