@@ -12,6 +12,10 @@ module.exports = function (sequelize, DataTypes) {
         toStatus: {
             type: DataTypes.STRING,
             allowNull: true
+        },
+        userImage: {
+            type: DataTypes.STRING,
+            allowNull: true
         }
     });
 

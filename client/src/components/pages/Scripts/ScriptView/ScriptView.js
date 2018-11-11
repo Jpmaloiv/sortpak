@@ -151,7 +151,8 @@ class ScriptView extends Component {
       .then((resp) => {
         console.log(resp);
         this.setState({
-          name: resp.data.response[0].name
+          name: resp.data.response[0].name,
+          link: resp.data.response[0].link
         })
       }).catch((err) => {
         console.error(err)
@@ -215,9 +216,10 @@ class ScriptView extends Component {
   }
 
   statusChange() {
+    console.log(this.state.link);
     const loginToken = window.localStorage.getItem("token");
     let data = new FormData();
-    axios.post('/api/scripts/statuses/add?scriptId=' + this.props.match.params.scriptId + '&userId=' + this.state.userId + '&name=' + this.state.name + '&fromStatus=' + this.state.fromStatus + '&toStatus=' + this.state.status,
+    axios.post('/api/scripts/statuses/add?scriptId=' + this.props.match.params.scriptId + '&userId=' + this.state.userId + '&userImage=' + this.state.link + '&name=' + this.state.name + '&fromStatus=' + this.state.fromStatus + '&toStatus=' + this.state.status,
       data, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((data) => {
         console.log(data);

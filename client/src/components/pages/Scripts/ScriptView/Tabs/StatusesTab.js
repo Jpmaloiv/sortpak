@@ -74,7 +74,7 @@ class StatusesTab extends Component {
         this.state.statuses.reverse().map((item, i) =>
           <div key={i}>
             <div className="statusesTab" key={item.id}>
-            <div className="userImage" style={{'background-image': `url(/images/${item.User.id}/${item.User.link}`}}>
+            <div className="userImage" style={{'background-image': `url(/images/${item.UserId}/${item.userImage}`}}>
             
             {/* <img src={`/images/${item.User.id}/${item.User.link}`} /> */}
             </div>

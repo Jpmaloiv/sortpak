@@ -10,11 +10,12 @@ const Op = Sequelize.Op;
 
 
 router.post("/add", (req, res) => {
-    // const noteLink = '/notes/' ;
+
     const statusChange = {
         name: req.query.name,
         fromStatus: req.query.fromStatus,
         toStatus: req.query.toStatus,
+        userImage: req.query.userImage,
         ScriptId: req.query.scriptId,
         UserId: req.query.userId
     }
