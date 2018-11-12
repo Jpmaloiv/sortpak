@@ -70,9 +70,7 @@ class Agenda extends Component {
       return (visitMonth === month) && (visitYear === year)
     }
     const filteredMonth = this.props.visits.filter(isThisMonth)
-    // console.log(filteredMonth);
   
-    console.log(this.props);
     const isToday = visit => {
       const visitDate = new Date(visit.dateTime)
       const visitDay = visitDate.getDate()

@@ -14,17 +14,19 @@ import PatientsPage from './components/pages/PatientsPage/PatientsPage'
 import AddPatient from './components/pages/PatientsPage/AddPatient/AddPatient'
 import EditPatient from './components/pages/PatientsPage/AddPatient/EditPatient'
 import PatientView from './components/pages/PatientsPage/PatientView/PatientView'
-import PatientFile from './components/pages/PatientsPage/PatientView/Tabs/PatientFile'
+// import PatientFile from './components/pages/PatientsPage/PatientView/Tabs/PatientFile'
 import DashboardPage from './components/pages/DashboardPage/DashboardPage'
 import AgendaPage from './components/pages/AgendaPage/AgendaPage'
 import PhysiciansPage from './components/pages/PhysiciansPage/PhysiciansPage'
 import AddPhysician from './components/pages/PhysiciansPage/AddPhysician/AddPhysician'
+import EditPhysician from './components/pages/PhysiciansPage/AddPhysician/EditPhysician'
 import PhysicianView from './components/pages/PhysiciansPage/PhysicianView/PhysicianView.js'
 import RefillsPage from './components/pages/RefillsPage/RefillsPage'
 import ProductsPage from './components/pages/ProductsPage/ProductsPage'
 import TeamPage from './components/pages/TeamPage/TeamPage'
 import AddMember from './components/pages/TeamPage/AddMember/AddMember'
-import MemberView from './components/pages/TeamPage/MemberView/MemberView'
+import EditMember from './components/pages/TeamPage/AddMember/EditMember'
+// import MemberView from './components/pages/TeamPage/MemberView/MemberView'
 
 
 import { Provider } from 'react-redux'
@@ -81,12 +83,14 @@ class App extends Component {
               <Route exact path="/dashboard" component={DashboardPage} />
               <Route exact path="/physicians" component={PhysiciansPage} />
               <Route exact path="/physicians/add" component={AddPhysician} />
+              <Route exact path="/physicians/:physicianId/edit" component={EditPhysician} />
               <Route exact path="/physicians/:physicianId" component={PhysicianView} />
               <Route exact path="/agenda" component={AgendaPage} />
               <Route exact path="/refills" component={RefillsPage} />
               <Route exact path="/products" component={ProductsPage} />
               <Route exact path="/team" component={TeamPage} />
               <Route exact path="/team/add" component={AddMember} />
+              <Route exact path="/team/:userId/edit" component={EditMember} />
               {/* <Route exact path="/team/:userId" component={MemberView} /> */}
               {/* <Route exact path="/scripts/attachment/:attachmentId" component={Attachment} /> */}
               <Route exact path="/attachment/:attachmentId" component={Attachment} />

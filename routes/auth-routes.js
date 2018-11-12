@@ -11,7 +11,9 @@ const Op = Sequelize.Op;
 //user creatiion
 router.post("/new", authCtrl.register);
 //user login
-router.post("/login", authCtrl.login)
+router.post("/login", authCtrl.login);
+//user update
+router.put("/update", authCtrl.update);
 
 router.get("/search", (req, res) => {
     let searchParams = {

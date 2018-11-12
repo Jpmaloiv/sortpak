@@ -56,8 +56,10 @@ class EditPatient extends Component {
             patientWarning: patient.patientWarning,
             conditions: patient.conditions,
             allergies: patient.allergies,
-            address1: patient.address1,
-            address2: patient.address2,
+            addressStreet: patient.addressStreet,
+            addressCity: patient.addressCity,
+            addressState: patient.addressState,
+            addressZipCode: patient.addressZipCode,
             primInsPlan: patient.primInsPlan,
             primInsBIN: patient.primInsBIN,
             primInsPCN: patient.primInsPCN,
@@ -92,8 +94,8 @@ class EditPatient extends Component {
         const loginToken = window.localStorage.getItem("token");
         let data = new FormData();
         axios.put('/api/patients/update?id=' + this.state.id + '&firstName=' + this.state.firstName + "&lastName=" + this.state.lastName + "&dob=" + this.state.dob + "&sex=" + this.state.sex + '&phone=' + this.state.phone +
-        '&email=' + this.state.email + '&patientWarning=' + this.state.patientWarning + '&conditions=' + this.state.conditions + '&allergies=' + this.state.allergies + '&address1=' + this.state.address1 +
-        '&address2=' + this.state.address2 + '&primInsPlan=' + this.state.primInsPlan + '&primInsBIN=' + this.state.primInsBIN + '&primInsPCN=' + this.state.primInsPCN + '&primInsID=' + this.state.primInsID +
+        '&email=' + this.state.email + '&patientWarning=' + this.state.patientWarning + '&conditions=' + this.state.conditions + '&allergies=' + this.state.allergies + '&addressStreet=' + this.state.addressStreet + '&addressCity=' + this.state.addressCity +
+        '&addressState=' + this.state.addressState + '&addressZipCode=' + this.state.addressZipCode + '&primInsPlan=' + this.state.primInsPlan + '&primInsBIN=' + this.state.primInsBIN + '&primInsPCN=' + this.state.primInsPCN + '&primInsID=' + this.state.primInsID +
         '&primInsGroup=' + this.state.primInsGroup + '&primInsType=' + this.state.primInsType + '&secInsPlan=' + this.state.secInsPlan + '&secInsBIN=' + this.state.secInsBIN + '&secInsPCN=' + this.state.secInsPCN + 
         '&secInsID=' + this.state.secInsID + '&secInsGroup=' + this.state.secInsGroup + '&secInsType=' + this.state.secInsType, 
         data, { headers: { "Authorization": "Bearer " + loginToken } })
@@ -108,7 +110,7 @@ class EditPatient extends Component {
   render() {
 
     const {
-      firstName, lastName, dob, sex, phone, email, patientWarning, conditions, allergies, address1, address2, primInsPlan, primInsBIN, primInsPCN, primInsID,
+      firstName, lastName, dob, sex, phone, email, patientWarning, conditions, allergies, addressStreet, addressCity, addressState, addressZipCode, primInsPlan, primInsBIN, primInsPCN, primInsID,
       primInsGroup, primInsType, secInsPlan, secInsBIN, secInsPCN, secInsID, secInsGroup, secInsType
     } = this.state
 
@@ -126,6 +128,69 @@ class EditPatient extends Component {
       'Medicaid',
       'Commercial',
       'Patient Pay'
+    ]
+
+    const stateOptions = [
+      "State",
+      "AL",
+      "AK",
+      "AS",
+      "AZ",
+      "AR",
+      "CA",
+      "CO",
+      "CT",
+      "DE",
+      "DC",
+      "FM",
+      "FL",
+      "GA",
+      "GU",
+      "HI",
+      "ID",
+      "IL",
+      "IN",
+      "IA",
+      "KS",
+      "KY",
+      "LA",
+      "ME",
+      "MH",
+      "MD",
+      "MA",
+      "MI",
+      "MN",
+      "MS",
+      "MO",
+      "MT",
+      "NE",
+      "NV",
+      "NH",
+      "NJ",
+      "NM",
+      "NY",
+      "NC",
+      "ND",
+      "MP",
+      "OH",
+      "OK",
+      "OR",
+      "PW",
+      "PA",
+      "PR",
+      "RI",
+      "SC",
+      "SD",
+      "TN",
+      "TX",
+      "UT",
+      "VT",
+      "VI",
+      "VA",
+      "WA",
+      "WV",
+      "WI",
+      "WY"
     ]
 
     return (
@@ -222,14 +287,28 @@ class EditPatient extends Component {
                 <Input 
                   label="Patient Address"
                   placeholder="Click here"
-                  value={address1}
-                  onChange={address1 => this.setState({ address1 })}
+                  value={addressStreet}
+                  onChange={addressStreet => this.setState({ addressStreet })}
                 />
 
                 <Input
                   placeholder="To enter address"
-                  value={address2}
-                  onChange={address2 => this.setState({ address2 })}
+                  value={addressCity}
+                  onChange={addressCity => this.setState({ addressCity })}
+                />
+
+                <Selector
+                  placeholder="State"
+                  options={stateOptions}
+                  selected={addressState}
+                  value={addressState}
+                  onSelect={addressState => this.setState({ addressState })}
+                />
+
+                <Input
+                  placeholder="ZipCode"
+                  value={addressZipCode}
+                  onChange={addressZipCode => this.setState({ addressZipCode })}
                 />
               </div>
             </div>

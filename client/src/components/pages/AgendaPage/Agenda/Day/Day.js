@@ -16,7 +16,7 @@ const Day = ({day, reps, onClick, today}) => {
       <div className={className}/>
     )
   } else {
-    console.log({reps})
+
     return (
       <div className={className}>
         <Icon>

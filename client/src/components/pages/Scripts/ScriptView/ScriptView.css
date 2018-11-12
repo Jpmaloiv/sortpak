@@ -38,6 +38,8 @@ button#white {
     margin: 1% 0;
     margin-right: 10%;
     width: 175%;
+    word-wrap: break-word;
+    max-width: 350px;
     font-size: 15px;
     color: #1d1d1d;
   }
@@ -243,6 +245,8 @@ td.setValue a, td.setValue a:visited {
     width: 175%;
     min-height: 90px;
     margin: 2% 0;
+    max-width: 350px;
+    word-wrap: break-word;
 }
 
 

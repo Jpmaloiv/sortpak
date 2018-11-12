@@ -524,16 +524,17 @@ class PhysicianView extends Component {
     return (
       <div>
         <Header className={styles.header}>
-          <h2>
+          <h2 style={{marginBottom: 25}}>
             {this.state.name}
             <span onClick={this.renderGroupTab.bind(this)} className="group">
               {this.state.group || 'No Group Available'}
             </span>
             <div className="action">
-              {/* <Button
+              <Button
                 search
                 icon="edit"
                 title="EDIT PHYSICIAN"
+                link={`/physicians/${this.props.match.params.physicianId}/edit`}
                 style={{ marginLeft: 8 }}
               />
 
@@ -542,7 +543,8 @@ class PhysicianView extends Component {
                 icon="lock"
                 title="GIVE ACCESS"
                 style={{ marginLeft: 8 }}
-              /> */}
+                link="/team/add"
+              />
             </div>
           </h2>
         </Header>

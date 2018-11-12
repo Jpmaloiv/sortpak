@@ -133,6 +133,9 @@ ctrl.update = function (req, res) {
     if (req.query.username) {
         user.username = req.query.username.trim();
     }
+    if (req.query.name) {
+        user.name = req.query.name
+    }
     if (req.query.email) {
         user.email = req.query.email.trim().toLowerCase()
     }
@@ -141,12 +144,12 @@ ctrl.update = function (req, res) {
         user.hash = getHash(req.query.password, user.salt);
     }
     console.log(user);
-    models.User.update(user, { where: { id: req.params.id } })
+    models.User.update(user, { where: { id: req.query.id } })
         .then(function (resp) {
             res.json({ success: true });
-            if ((req.files) && (req.files.picFile)) {
-                req.files.picFile.mv("./public/assets/images/users/" + req.payload.id + "/user.png")
-            }
+            // if ((req.files) && (req.files.picFile)) {
+            //     req.files.picFile.mv("./public/assets/images/users/" + req.payload.id + "/user.png")
+            // }
         })
         .catch(function (err) {
             console.error(err);

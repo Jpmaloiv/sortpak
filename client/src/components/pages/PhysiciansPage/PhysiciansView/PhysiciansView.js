@@ -24,7 +24,9 @@ class PhysiciansView extends Component {
       search: '',
       physicians: '',
       searchName: '',
-      searchAddress: ''
+      searchAddress: '',
+      searchGroup: '',
+      searchSpec: ''
     }
     this.searchQuery = this.searchQuery.bind(this);
   }
@@ -43,7 +45,8 @@ class PhysiciansView extends Component {
 
   searchQuery() {
     const loginToken = window.localStorage.getItem("token");
-    axios.get('api/physicians/search?name=' + this.state.searchName + '&address=' + this.state.searchAddress, { headers: { "Authorization": "Bearer " + loginToken } })
+    axios.get('api/physicians/search?name=' + this.state.searchName + '&searchGroup=' + this.state.searchGroup + '&address=' + this.state.searchAddress
+    + '&searchSpec=' + this.state.searchSpec, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
         console.log(resp.data.response);
         this.setState({
@@ -159,6 +162,7 @@ class PhysiciansView extends Component {
     }
 
     const specOptions = [
+      '',
       'Internal Medicine',
       'Home Health',
       'Hospice',
@@ -249,8 +253,8 @@ class PhysiciansView extends Component {
                 label="Search By Specialty"
                 placeholder="Specialty..."
                 options={specOptions}
-                value={this.state.searchName}
-                onSelect={searchName => this.setState({ searchName })}
+                value={this.state.searchSpec}
+                onSelect={searchSpec => this.setState({ searchSpec })}
                 onKeyPress={this.enterPressed.bind(this)}
               />
 

@@ -28,22 +28,23 @@ class AddPhysician extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      firstName: '',
-      lastName: '',
-      username: '',
-      specialty: '',
-      group: '',
-      rep: '',
+      firstName: '', lastName: '', username: '', specialty: '', group: '', rep: '', specialization: '', DEA: '', NPI: '', phone: '', fax: '', email: '', contact: '', addressStreet: '', addressCity: '', addressState: '', addressZipCode: '', physicianWarning: '', reps: ''
     }
   }
+  componentDidMount() {
+    const loginToken = window.localStorage.getItem("token");
+    axios.get('/api/user/search?role=Rep', { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        console.log(resp);
 
-  /* componentDidMount() {
-    hasAuthTokenAsync()
-      .then(() => {
-        this.props.getReps()
+        this.setState({
+          reps: resp.data.response
+        })
+
+      }).catch((error) => {
+        console.error(error);
       })
-      .catch(console.log)
-  } */
+  }
 
   submitphysician = (event) => {
     event.preventDefault()
@@ -68,6 +69,25 @@ class AddPhysician extends Component {
     const {
       firstName, lastName, specialization, group, rep, DEA, NPI, phone, fax, email, contact, addressStreet, addressCity, addressState, addressZipCode, physicianWarning
     } = this.state
+
+ if (this.state.reps) {
+      const repOptions = [
+        {
+          key: '',
+          value: '',
+          display: 'Unassigned',
+        },
+        
+        ...this.state.reps.map(rep => ({
+          key: rep.name,
+          value: rep.name,
+          display: rep.name,
+        })),
+      ]
+    
+    
+     
+   
 
     const stateOptions = [
       "State",
@@ -203,12 +223,14 @@ class AddPhysician extends Component {
                   onChange={group => this.setState({ group })}
                 />
 
-                <Input
+                <Selector
                   label="Rep"
                   placeholder="Select Rep"
+                  options={repOptions}
                   value={rep}
-                  onChange={rep => this.setState({ rep })}
+                  onSelect={rep => this.setState({ rep })}
                 />
+
 
                 <Selector
                   wide
@@ -303,6 +325,7 @@ class AddPhysician extends Component {
         </Body>
       </div>
     );
+} else {return(<div></div>)}
   }
 }
 

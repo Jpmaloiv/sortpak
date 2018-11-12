@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import axios from 'axios'
+import jwt_decode from 'jwt-decode'
 
 import moment from 'moment'
 
@@ -40,7 +41,15 @@ class VisitModal extends Component {
   }
 
   componentDidMount() {
+    const token = localStorage.getItem('token')
+    var decoded = jwt_decode(token);
+    console.log(decoded);
+    this.setState({
+      userId: decoded.id
+    }, this.getUser)
+
     const loginToken = window.localStorage.getItem("token");
+    
     axios.get('/api/user/search?role=Rep', { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
         console.log(resp);
@@ -56,6 +65,20 @@ class VisitModal extends Component {
         console.log(resp);
         this.setState({
           physicians: resp.data.response
+        })
+      }).catch((err) => {
+        console.error(err)
+      })
+  }
+
+  getUser() {
+    const loginToken = window.localStorage.getItem("token");
+    axios.get('/api/user/search?userId=' + this.state.userId, { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        console.log(resp);
+        this.setState({
+          currentUser: resp.data.response[0].name,
+          currentRole: resp.data.response[0].role
         })
       }).catch((err) => {
         console.error(err)
@@ -223,8 +246,8 @@ class VisitModal extends Component {
           <Selector
             wide
             options={repOptions}
+            selected={this.state.currentUser}
             value={this.state.Rep}
-            // onSelect={this.props.on ChangeValue}
             onSelect={Rep => this.setState({ Rep })}
           />
 
@@ -258,12 +281,12 @@ class VisitModal extends Component {
           <label>
             Physician
         </label>
-          <Selector
+          <Input
             wide
             options={physicianOptions}
             value={this.state.Physician}
             // onSelect={this.props.on ChangeValue}
-            onSelect={Physician => this.setState({ Physician })}
+            onChange={Physician => this.setState({ Physician }, this.searchQuery)}
           />
 
 

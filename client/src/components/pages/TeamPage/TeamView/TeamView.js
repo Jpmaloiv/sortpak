@@ -115,9 +115,13 @@ class TeamView extends Component {
     )
   }
 
+  handleClick(value) {
+    window.location = `/team/${value}/edit`
+  }
+
   renderTableRow(user) {
     return (
-      <tr value={user.id}>
+      <tr value={user.id} onClick={() => this.handleClick(user.id)}>
         <td>
           {user.name || ''}
         </td>
