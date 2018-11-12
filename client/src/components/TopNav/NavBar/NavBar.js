@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
-import { NavLink } from 'react-router-dom'
+import { NavLink, matchPath } from 'react-router-dom'
 import jwt_decode from 'jwt-decode'
 import axios from 'axios'
 
@@ -25,22 +25,23 @@ class NavBar extends Component {
   }
 
   componentDidMount() {
-    
+
     const token = localStorage.getItem('token')
     if (token) {
-    var decoded = jwt_decode(token);
-    console.log(decoded);
-    axios.get('../api/user/search?userId=' + decoded.id, { headers: { "Authorization": "Bearer " + token } })
-      .then((resp) => {
-        console.log(resp.data.response);
-        this.setState({
-          userRole: resp.data.response[0].role,
-        }, () => console.log(this.state.userRole));
-      }).catch((error) => {
-        console.error(error);
-      })
-    } 
+      var decoded = jwt_decode(token);
+      console.log(decoded);
+      axios.get('../api/user/search?userId=' + decoded.id, { headers: { "Authorization": "Bearer " + token } })
+        .then((resp) => {
+          console.log(resp.data.response);
+          this.setState({
+            userRole: resp.data.response[0].role,
+          }, () => console.log(this.state.userRole));
+        }).catch((error) => {
+          console.error(error);
+        })
+    }
   }
+  
 
   callAgendaActions() {
     this.props.getVisits()
@@ -66,17 +67,26 @@ class NavBar extends Component {
     }
   }
 
+  
+
   render() {
+    
+
     if (this.state.userRole === 'Admin' || (this.state.userRole === 'Rep') || (this.state.userRole === 'Internal Staff')) {
       return (
         <div className={styles.navBar}>
 
+
           <NavLink
+
             to="/scripts"
+          
+
           >
             <Icon name="bookmark-o" />
             Scripts
       </NavLink>
+
 
 
           <NavLink
@@ -121,8 +131,10 @@ class NavBar extends Component {
 
           <NavLink
             to="/products"
-            activeStyle={{ backgroundColor: '#ff7d38 !important',
-              color: '#fff !important;' }}
+            activeStyle={{
+              backgroundColor: '#ff7d38 !important',
+              color: '#fff !important;'
+            }}
           >
             <Icon name="tint" />
             Products
@@ -144,6 +156,7 @@ class NavBar extends Component {
       return (
         <div className={styles.navBar}>
           <NavLink
+            style={{ 'flex': 'initial', width: 200, border: '1px solid #eaeaea' }}
             to="/patients"
           >
             <Icon name="heart-o" />

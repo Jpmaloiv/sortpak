@@ -69,6 +69,69 @@ class AddPhysician extends Component {
       firstName, lastName, specialization, group, rep, DEA, NPI, phone, fax, email, contact, addressStreet, addressCity, addressState, addressZipCode, physicianWarning
     } = this.state
 
+    const stateOptions = [
+      "State",
+      "AL",
+      "AK",
+      "AS",
+      "AZ",
+      "AR",
+      "CA",
+      "CO",
+      "CT",
+      "DE",
+      "DC",
+      "FM",
+      "FL",
+      "GA",
+      "GU",
+      "HI",
+      "ID",
+      "IL",
+      "IN",
+      "IA",
+      "KS",
+      "KY",
+      "LA",
+      "ME",
+      "MH",
+      "MD",
+      "MA",
+      "MI",
+      "MN",
+      "MS",
+      "MO",
+      "MT",
+      "NE",
+      "NV",
+      "NH",
+      "NJ",
+      "NM",
+      "NY",
+      "NC",
+      "ND",
+      "MP",
+      "OH",
+      "OK",
+      "OR",
+      "PW",
+      "PA",
+      "PR",
+      "RI",
+      "SC",
+      "SD",
+      "TN",
+      "TX",
+      "UT",
+      "VT",
+      "VI",
+      "VA",
+      "WA",
+      "WV",
+      "WI",
+      "WY"
+    ]
+
     const specOptions = [
       'Internal Medicine',
       'Home Health',
@@ -209,10 +272,11 @@ class AddPhysician extends Component {
                   onChange={addressCity => this.setState({ addressCity })}
                 />
 
-                <Input
+                <Selector
                   placeholder="State"
+                  options={stateOptions}
                   value={addressState}
-                  onChange={addressState => this.setState({ addressState })}
+                  onSelect={addressState => this.setState({ addressState })}
                 />
 
                 <Input

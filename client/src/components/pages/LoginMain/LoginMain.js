@@ -53,12 +53,16 @@ class Login extends React.Component {
         } = this.props
         return (
             <div className={styles.container}>
-            <FloatBox classname={styles.floatBox} title="Login">
+            <FloatBox classname={styles.floatBox} >
+            <img src="/sortpak-logo.png" className="logo" />
+            <h2 style={{margin: '0 auto', marginBottom: 30}}>Welcome to SortPak</h2>
                 <Form
                     className={styles.body}
                     onSubmit={this.handleSubmit}
-                >          
+                >         
+                <label>Username or Email</label>
                     <input name="user" placeholder="Username" type="text" value={this.state.value} onChange={this.handleChange} />
+                    <label>Password</label> 
                     <input name="password" placeholder="Password" type="password" value={this.state.value} onChange={this.handleChange} />
                     
             <Button
@@ -66,6 +70,7 @@ class Login extends React.Component {
               type="submit"
               title="Login"
               inactive={loading}
+              style={{display: 'block', margin: '25px auto'}}
             />
             <ErrorMessage error={error}/>
             {/* <Link to="login/reset-password">Reset Password</Link> */}

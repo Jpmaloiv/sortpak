@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import { NavLink } from 'react-router-dom'
 import cn from 'classnames'
+import jwt_decode from 'jwt-decode'
+import axios from 'axios'
 
 import FontAwesome from 'react-fontawesome'
 import Spinner from 'react-spinner'
@@ -28,6 +30,30 @@ class TitleBar extends Component {
     }
   }
 
+  componentDidMount() {
+    const token = localStorage.getItem('token')
+    if (token) {
+      var decoded = jwt_decode(token);
+      this.setState({
+        userId: decoded.id
+      }, this.getUser)
+    }
+  }
+
+  getUser() {
+    const loginToken = window.localStorage.getItem("token");
+    axios.get('/api/user/search?userId=' + this.state.userId, { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        console.log(resp);
+        this.setState({
+          name: resp.data.response[0].name,
+          link: resp.data.response[0].link
+        })
+      }).catch((err) => {
+        console.error(err)
+      })
+  }
+
   logout() {
     if (window.confirm('Log out?')) {
       localStorage.clear()
@@ -35,25 +61,29 @@ class TitleBar extends Component {
     }
   }
 
+
+
   renderDropdown() {
     const { nameDisplay } = this.props
     const { showDropdown } = this.state
     return (
       <div
-        className={cn("options", {show: showDropdown})}
-        onClick={() => this.setState({showDropdown: !showDropdown})}
+        className={cn("options", { show: showDropdown })}
+        onClick={() => this.setState({ showDropdown: !showDropdown })}
       >
         {/* Clickable Section */}
-        <span>{nameDisplay}</span>
+        <div className="userImage" style={{ backgroundImage: `url(/images/${this.state.userId}/${this.state.link}`, width: 30, height: 30 }}></div>
+
+        <div>{this.state.name}</div>
         <FontAwesome name="caret-down" />
 
         {/* Dropdown */}
-        <div className={cn("dropdown", {show: showDropdown})}>
+        <div className={cn("dropdown", { show: showDropdown })}>
           <div className="option">
-            <NavLink to="/profile">
+            {/* <NavLink to="/profile">
               <FontAwesome name="cog" />
               Settings
-            </NavLink>
+            </NavLink> */}
           </div>
 
           {/* Logout  */}
@@ -80,10 +110,10 @@ class TitleBar extends Component {
         {/* Title */}
         <div className="title">
           <NavLink to="/">
-            <img alt="SortPak" src="http://www.sortpak.com/site-uploadz/2018/05/sortpak-logo-lg.png" style={imageStyle.logo}/>
+            <img alt="SortPak" src="http://www.sortpak.com/site-uploadz/2018/05/sortpak-logo-lg.png" style={imageStyle.logo} />
             SortPak
           </NavLink>
-          <Spinner className={cn({loading})} />
+          <Spinner className={cn({ loading })} />
         </div>
 
         {/* Dropdown */}
@@ -92,7 +122,7 @@ class TitleBar extends Component {
         {/* Dropdown Overlay */}
         <Overlay
           active={showDropdown}
-          onClick={() => this.setState({showDropdown: false})}
+          onClick={() => this.setState({ showDropdown: false })}
         />
       </div>
     )
@@ -101,7 +131,7 @@ class TitleBar extends Component {
 
 const imageStyle = {
   logo: {
-    padding:'10px',
+    padding: '10px',
     width: '50px'
   },
 }
