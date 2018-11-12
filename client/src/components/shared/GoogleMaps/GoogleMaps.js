@@ -7,6 +7,7 @@ import { Map, InfoWindow, Marker, GoogleApiWrapper } from 'google-maps-react';
 export class MapContainer extends Component {
 
   componentDidMount() {
+    console.log(this.props);
 
     Geocode.setApiKey("AIzaSyBkzOou4Bmtu9y90Hu3uvZbRFmEXCaiz8c");
     // Enable or disable logs. Its optional.

@@ -81,7 +81,7 @@ class PatientView extends Component {
             phone: patient.phone,
             // address1: patient.address1,
             // address2: patient.address2,
-            address: patient.addressStreet + ',' + patient.addressCity + ',' + patient.addressState + ',' + patient.addressZipCode,
+            address: patient.addressStreet + ', ' + patient.addressCity + ', ' + patient.addressState + ', ' + patient.addressZipCode,
             addressStreet: patient.addressStreet,
             addressCity: patient.addressCity,
             addressState: patient.addressState,
@@ -282,7 +282,6 @@ class PatientView extends Component {
     } = this.state
 
 
-
     return (
       <div>
         <div className="flex-grid">
@@ -324,25 +323,26 @@ class PatientView extends Component {
             </div>
           </div>
           <div id="contactInfo" className={styles.contactInfo}>
-
-            <GoogleMaps
-              address={this.state.address}
-             />
+            {this.state.address ?
+              <GoogleMaps
+                address={this.state.address}
+              />
+              : <div></div>}
 
           </div>
           <div id="contactInfo" className={styles.contactInfo}>
             <div>
-              <Span style={{marginLeft: 0}} icon="phone">
+              <Span style={{ marginLeft: 0 }} icon="phone">
                 {this.state.phone}
               </Span>
             </div>
             <div>
-              <Span icon="building" style={{'line-height': '25px', marginLeft: 0}}>
+              <Span icon="building" style={{ 'line-height': '25px', marginLeft: 0 }}>
                 {this.state.addressStreet},<br />{this.state.addressCity}, {this.state.addressState}, {this.state.addressZipCode}
               </Span>
             </div>
             <div>
-              <Span style={{marginLeft: 0}} className="blue" icon="envelope">
+              <Span style={{ marginLeft: 0 }} className="blue" icon="envelope">
                 {this.state.email}
               </Span>
             </div>
@@ -428,7 +428,7 @@ class PatientView extends Component {
       <div>
         <Header className={styles.header}>
           <h2>{this.state.name}
-            <div className="action" style={{'display': 'inherit'}}>
+            <div className="action" style={{ 'display': 'inherit' }}>
               <Button
                 search
                 className='editButton'
@@ -442,7 +442,7 @@ class PatientView extends Component {
                 icon="plus"
                 title="ADD A NEW SCRIPT"
                 link="/scripts/add"
-                style={{ 'display': 'block',marginLeft: 15, marginBottom: 7 }}
+                style={{ 'display': 'block', marginLeft: 15, marginBottom: 7 }}
               />
 
             </div>
