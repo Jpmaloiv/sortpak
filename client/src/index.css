@@ -12,7 +12,7 @@ html {
     width: 100vw;
     height: 100vh;
     background-color: #f6f8fa;
-    color: #333; }
+    color: #000 !important; }
     html body > div#root {
       height: 100vh; }
 

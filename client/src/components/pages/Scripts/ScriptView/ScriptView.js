@@ -216,14 +216,12 @@ class ScriptView extends Component {
   }
 
   statusChange() {
-    console.log(this.state.link);
     const loginToken = window.localStorage.getItem("token");
     let data = new FormData();
     axios.post('/api/scripts/statuses/add?scriptId=' + this.props.match.params.scriptId + '&userId=' + this.state.userId + '&userImage=' + this.state.link + '&name=' + this.state.name + '&fromStatus=' + this.state.fromStatus + '&toStatus=' + this.state.status,
       data, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((data) => {
         console.log(data);
-        console.log(this.state.status)
       }).catch((error) => {
         console.error(error);
       })

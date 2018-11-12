@@ -103,3 +103,12 @@
       }
 
       .insuranceTab label {font-weight: bold;}
+
+
+      /* Info/Notes Tab */
+      .infoNotesTab {
+        display: flex;
+      }
+      .infoNotesTab div {
+        flex: 1 1;
+      }

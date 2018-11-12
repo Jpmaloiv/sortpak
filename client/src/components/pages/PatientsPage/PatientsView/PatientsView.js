@@ -48,9 +48,8 @@ class PatientsView extends Component {
   }
 
   searchQuery() {
-    console.log(this.state.searchDOB)
     const loginToken = window.localStorage.getItem("token");
-    axios.get('api/patients/search?name=' + this.state.searchName + '&address=' + this.state.searchAddress, { headers: { "Authorization": "Bearer " + loginToken } })
+    axios.get('api/patients/search?name=' + this.state.searchName + '&dob=' + this.state.searchDOB + '&address=' + this.state.searchAddress, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
         console.log(resp.data.response);
         this.setState({
@@ -121,9 +120,8 @@ class PatientsView extends Component {
         </td>
 
         <td>
-          {patient.address1}
-          <br />
-          {patient.address2}
+          {patient.addressStreet}<br />
+          {patient.addressCity}, {patient.addressState}, {patient.addressZipCode}
         </td>
       </tr>
     )

@@ -15,7 +15,7 @@
       flex: 1;
       text-align: center;
       padding: 10px;
-      color: #aaa; }
+      color: #000; }
   :local(.calendar) > .weeks {
     border: 1px solid #eee; }
     :local(.calendar) > .weeks > .week {

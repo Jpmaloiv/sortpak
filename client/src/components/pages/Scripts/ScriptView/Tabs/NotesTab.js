@@ -89,7 +89,9 @@ class NotesTab extends Component {
         this.state.notes.reverse().map((item, i) =>
           <div key={i}>
           <Table  className="nt" key={item.id}>
-        <thead><th>{item.name}</th></thead>
+        <thead><th>
+        <div className="userImage" style={{'background-image': `url(/images/${item.UserId}/${item.userImage}`}}></div>
+        <div className='noteName'>{item.name}</div></th></thead>
 
 
         <tr>

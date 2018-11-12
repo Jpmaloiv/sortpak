@@ -115,7 +115,10 @@ class AddScript extends Component {
                             patientName: patient.firstName + " " + patient.lastName,
                             patientDob: patient.dob,
                             patientPhone: patient.phone,
-                            patientAddress: patient.address1 + "\n" + patient.address2
+                            patientAddressStreet: patient.addressStreet,
+                            patientAddressCity: patient.addressCity,
+                            patientAddressState: patient.addressState,
+                            patientZipCode: patient.addressZipCode
                         })
                         console.log(this.state.patientName);
                     }).catch((error) => {
@@ -455,7 +458,8 @@ console.log(this.state.processedOn)
                                 <td>{this.state.patientName}</td>
                                 <td>{this.state.patientDob}</td>
                                 <td>{this.state.patientPhone}</td>
-                                <td>{this.state.patientAddress}</td>
+                                <td>{this.state.patientAddressStreet},<br />
+                                {this.state.patientAddressCity}, {this.state.patientAddressState}, {this.state.patientAddressZipCode}</td>
                             </tr>
                         </Table>
 

@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import Moment from 'react-moment'
 
-// import GoogleMaps from '../../../shared/GoogleMaps/GoogleMaps.js'
+import GoogleMaps from '../../../shared/GoogleMaps/GoogleMaps.js'
 
 import {
   AsYouType,
@@ -79,9 +79,21 @@ class PatientView extends Component {
             sex: patient.sex,
             patientSince: patient.createdAt,
             phone: patient.phone,
-            address: patient.address1 + patient.address2,
-            address1: patient.address1,
-            address2: patient.address2,
+            // address1: patient.address1,
+            // address2: patient.address2,
+            address: patient.addressStreet + ',' + patient.addressCity + ',' + patient.addressState + ',' + patient.addressZipCode,
+            addressStreet: patient.addressStreet,
+            addressCity: patient.addressCity,
+            addressState: patient.addressState,
+            addressZipCode: patient.addressZipCode,
+            address2Street: patient.address2Street,
+            address2City: patient.address2City,
+            address2State: patient.address2State,
+            address2ZipCode: patient.address2ZipCode,
+            address3Street: patient.address3Street,
+            address3City: patient.address3City,
+            address3State: patient.address3State,
+            address3ZipCode: patient.address3ZipCode,
             email: patient.email,
             primInsPlan: patient.primInsPlan,
             primInsBIN: patient.primInsBIN,
@@ -313,9 +325,9 @@ class PatientView extends Component {
           </div>
           <div id="contactInfo" className={styles.contactInfo}>
 
-            {/* <GoogleMaps
+            <GoogleMaps
               address={this.state.address}
-             /> */}
+             />
 
           </div>
           <div id="contactInfo" className={styles.contactInfo}>
@@ -326,7 +338,7 @@ class PatientView extends Component {
             </div>
             <div>
               <Span icon="building" style={{'line-height': '25px', marginLeft: 0}}>
-                {this.state.address1}<br />{this.state.address2}
+                {this.state.addressStreet},<br />{this.state.addressCity}, {this.state.addressState}, {this.state.addressZipCode}
               </Span>
             </div>
             <div>

@@ -16,13 +16,10 @@ router.post("/add", (req, res) => {
         lastName: req.query.lastName,
         dob: req.query.dob,
         sex: req.query.sex,
-        phone: req.query.phone,
         email: req.query.email,
         patientWarning: req.query.patientWarning,
         conditions: req.query.conditions,
         allergies: req.query.allergies,
-        address1: req.query.address1,
-        address2: req.query.address2,
         primInsPlan: req.query.primInsPlan,
         primInsBIN: req.query.primInsBIN,
         primInsPCN: req.query.primInsPCN,
@@ -35,6 +32,21 @@ router.post("/add", (req, res) => {
         secInsID: req.query.secInsID,
         secInsGroup: req.query.secInsGroup,
         secInsType: req.query.secInsType,
+        addressStreet: req.query.addressStreet,
+        addressCity: req.query.addressCity,
+        addressState: req.query.addressState,
+        addressZipCode: req.query.addressZipCode,
+        address2Street: req.query.address2Street,
+        address2City: req.query.address2City,
+        address2State: req.query.address2State,
+        address2ZipCode: req.query.address2ZipCode,
+        address3Street: req.query.address3Street,
+        address3City: req.query.address3City,
+        address3State: req.query.address3State,
+        address3ZipCode: req.query.address3ZipCode,
+        phone: req.query.phone,
+        phone2: req.query.phone2,
+        phone3: req.query.phone3,
         link: patientLink,
         UserId: req.payload.id
     }
@@ -88,7 +100,6 @@ router.get("/search", (req, res) => {
 
 if (req.query.name) {
     searchParams = {
-        attributes: ['firstName', 'lastName'],
         where: {
             [Op.or]:  [{
                 firstName: {
@@ -101,6 +112,10 @@ if (req.query.name) {
             }]
         }
     }
+}
+
+if (req.query.dob) {
+    searchParams.where.dob = req.query.dob
 }
 
 if (req.query.address) {
@@ -131,7 +146,6 @@ router.put("/update", function (req, res) {
         lastName: req.query.lastName,
         dob: req.query.dob,
         sex: req.query.sex,
-        phone: req.query.phone,
         email: req.query.email,
         patientWarning: req.query.patientWarning,
         conditions: req.query.conditions,
@@ -150,6 +164,21 @@ router.put("/update", function (req, res) {
         secInsID: req.query.secInsID,
         secInsGroup: req.query.secInsGroup,
         secInsType: req.query.secInsType,
+        addressStreet: req.query.addressStreet,
+        addressCity: req.query.addressCity,
+        addressState: req.query.addressState,
+        addressZipCode: req.query.addressZipCode,
+        addressStreet2: req.query.addressStreet,
+        addressCity2: req.query.addressCity,
+        addressState2: req.query.addressState,
+        addressZipCode2: req.query.addressZipCode,
+        addressStreet3: req.query.addressStreet,
+        addressCity3: req.query.addressCity,
+        addressState3: req.query.addressState,
+        addressZipCode3: req.query.addressZipCode,
+        phone: req.query.phone,
+        phone2: req.query.phone2,
+        phone3: req.query.phone3,
     }
 
     db.Patients.update(patient, { where: { id: req.query.id } })

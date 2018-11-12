@@ -99,7 +99,7 @@ class EditPatient extends Component {
         data, { headers: { "Authorization": "Bearer " + loginToken } })
             .then((data) => {
                 console.log(data);
-                this.props.history.push("/patients");              
+                this.props.history.push(`/patients/${this.state.id}`);              
             }).catch((error) => {
                 console.error(error);
             })

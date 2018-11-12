@@ -15,7 +15,9 @@ router.post("/add", (req, res) => {
         name: req.query.name,
         note: req.query.note,
         link: noteLink,
-        ScriptId: req.query.scriptId
+        userImage: req.query.userImage,
+        ScriptId: req.query.scriptId,
+        UserId: req.query.userId
     }
 
     fs.mkdir("./notes/", (err) => {

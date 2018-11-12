@@ -83,32 +83,32 @@ class NotesTab extends Component {
 
     if (this.state.notes) {
 
-      var noteList = 
-      
-      //   .sort((a, b) => a.createdAt < b.createdAt)
+      var noteList =
+
+        //   .sort((a, b) => a.createdAt < b.createdAt)
         this.state.notes.reverse().map((item, i) =>
           <div key={i}>
-          <Table  className="nt" key={item.id}>
-        <thead><th>{item.name}</th></thead>
+            <Table className="nt" key={item.id}>
+              <thead><th>{item.name}</th></thead>
 
 
-        <tr>
-          <td>{item.note}</td>
-        </tr>
-      </Table>
+              <tr>
+                <td>{item.note}</td>
+              </tr>
+            </Table>
 
-      <Table className="noteDateTime" key={item.id}>
-        <td>
-          <Span icon="calendar" />
-          <Moment format={"MM/DD/YY"}>{item.createdAt}</Moment>
-          &nbsp;&nbsp;
-        <Span icon="clock-o" />
-          <Moment format={"hh:mm A"}>{item.createdAt}</Moment>
-        </td>
-      </Table>
-      </div>
+            <Table className="noteDateTime" key={item.id}>
+              <td>
+                <Span icon="calendar" />
+                <Moment format={"MM/DD/YY"}>{item.createdAt}</Moment>
+                &nbsp;&nbsp;
+                <Span icon="clock-o" />
+                <Moment format={"hh:mm A"}>{item.createdAt}</Moment>
+              </td>
+            </Table>
+          </div>
         );
-      
+
     }
     else {
       return <div>
@@ -126,28 +126,44 @@ class NotesTab extends Component {
     const {
       noteModal
     } = state
+    console.log(this.state, this.props);
 
     return (
-      <div id="notesTab" className={className}>
+      <div className='infoNotesTab'>
+        <div id='infoTab' className={className}>
+          <h2>Additional Addresses:</h2>
+          {this.props.state.address2Street ?
+            <p>{this.props.state.address2Street},<br />
+              {this.props.state.address2City}, {this.props.state.address2State}, {this.props.state.address2ZipCode}</p>
+            : <p></p>}
+          {this.props.state.address3Street ?
+            <p>{this.props.state.address3Street},<br />
+              {this.props.state.address3City}, {this.props.state.address3State}, {this.props.state.address3ZipCode}</p>
+            : <p></p>}
 
-        <Button
-          icon="plus"
-          title="ADD NOTE"
-          onClick={() => this.openNoteModal()}
-        />
 
-        <div className="notes">
-          {this.renderTable()}
-          {noteList}
         </div>
+        <div id="notesTab" className={className}>
 
-        <NoteModalPatient
-          content={noteModal}
-          state={this.state}
-          props={this.props}
-          onClickAway={onCloseModal}
-          onSubmit={onCreateNote}
-        />
+          <Button
+            icon="plus"
+            title="ADD NOTE"
+            onClick={() => this.openNoteModal()}
+          />
+
+          <div className="notes">
+            {this.renderTable()}
+            {noteList}
+          </div>
+
+          <NoteModalPatient
+            content={noteModal}
+            state={this.state}
+            props={this.props}
+            onClickAway={onCloseModal}
+            onSubmit={onCreateNote}
+          />
+        </div>
       </div>
     )
   }

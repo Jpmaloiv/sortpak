@@ -10,6 +10,7 @@ import {
   Input,
   Body,
   Form,
+  Icon
 } from '../../../common'
 
 // Actions
@@ -35,7 +36,11 @@ class AddPatient extends Component {
       email: '',
       patientWarning: '',
       physicians: '',
-      physicianId: ''
+      physicianId: '',
+      addressNum: 1,
+      phoneNum: 1,
+      conditions: '', allergies: '', primInsPlan: '', primInsBIN: '', primInsGroup: '', primInsID: '', primInsPCN: '', primInsType: '', secInsPlan: '', secInsBIN: '', secInsGroup: '', secInsID: '', secInsPCN: '', secInsType: '',
+      addressStreet: '', addressCity: '', addressState: '', addressZipCode: '', address2Street: '', address2City: '', address2State: '', address2ZipCode: '', address3Street: '', address3City: '', address3State: '', address3ZipCode: '', phone: '', phone2: '', phone3: ''
     }
   }
 
@@ -44,37 +49,53 @@ class AddPatient extends Component {
     axios.get('/api/physicians/search/', { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
         this.setState({
-            physicians: resp.data.response,
-            // id: resp.data.response.id,    
+          physicians: resp.data.response,
+          // id: resp.data.response.id,    
         })
         console.log(this.state.physicians);
       }).catch((error) => {
         console.error(error);
-    })
-} 
+      })
+  }
 
   submitpatient = (event) => {
     event.preventDefault()
-        const loginToken = window.localStorage.getItem("token");
-        let data = new FormData();
-        axios.post('/api/patients/add?firstName=' + this.state.firstName + "&lastName=" + this.state.lastName + "&dob=" + this.state.dob + "&sex=" + this.state.sex + '&phone=' + this.state.phone +
-        '&email=' + this.state.email + '&patientWarning=' + this.state.patientWarning + '&conditions=' + this.state.conditions + '&allergies=' + this.state.allergies + '&address1=' + this.state.address1 +
-        '&address2=' + this.state.address2 + '&primInsPlan=' + this.state.primInsPlan + '&primInsBIN=' + this.state.primInsBIN + '&primInsPCN=' + this.state.primInsPCN + '&primInsID=' + this.state.primInsID +
-        '&primInsGroup=' + this.state.primInsGroup + '&primInsType=' + this.state.primInsType + '&secInsPlan=' + this.state.secInsPlan + '&secInsBIN=' + this.state.secInsBIN + '&secInsPCN=' + this.state.secInsPCN + 
-        '&secInsID=' + this.state.secInsID + '&secInsGroup=' + this.state.secInsGroup + '&secInsType=' + this.state.secInsType, 
-        data, { headers: { "Authorization": "Bearer " + loginToken } })
-            .then((data) => {
-                console.log(data);
-                this.props.history.push("/patients");              
-            }).catch((error) => {
-                console.error(error);
-            })
+    const loginToken = window.localStorage.getItem("token");
+    let data = new FormData();
+    axios.post('/api/patients/add?firstName=' + this.state.firstName + "&lastName=" + this.state.lastName + "&dob=" + this.state.dob + "&sex=" + this.state.sex +
+      '&email=' + this.state.email + '&patientWarning=' + this.state.patientWarning + '&conditions=' + this.state.conditions + '&allergies=' + this.state.allergies +
+      '&primInsPlan=' + this.state.primInsPlan + '&primInsBIN=' + this.state.primInsBIN + '&primInsPCN=' + this.state.primInsPCN + '&primInsID=' + this.state.primInsID +
+      '&primInsGroup=' + this.state.primInsGroup + '&primInsType=' + this.state.primInsType + '&secInsPlan=' + this.state.secInsPlan + '&secInsBIN=' + this.state.secInsBIN + '&secInsPCN=' + this.state.secInsPCN +
+      '&secInsID=' + this.state.secInsID + '&secInsGroup=' + this.state.secInsGroup + '&secInsType=' + this.state.secInsType +
+      '&addressStreet=' + this.state.addressStreet + '&addressCity=' + this.state.addressCity + '&addressState=' + this.state.addressState + '&addressZipCode=' + this.state.addressZipCode +
+      '&address2Street=' + this.state.address2Street + '&address2City=' + this.state.address2City + '&address2State=' + this.state.address2State + '&address2ZipCode=' + this.state.address2ZipCode +
+      '&address3Street=' + this.state.address3Street + '&address3City=' + this.state.address3City + '&address3State=' + this.state.address3State + '&address3ZipCode=' + this.state.address3ZipCode +
+      '&phone=' + this.state.phone + '&phone2=' + this.state.phone2 + '&phone3=' + this.state.phone3,
+      data, { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((data) => {
+        console.log(data);
+        this.props.history.push("/patients");
+      }).catch((error) => {
+        console.error(error);
+      })
+  }
+
+  addAddressField = () => {
+    this.setState(prevState => {
+      return { addressNum: prevState.addressNum + 1 }
+    })
+  }
+
+  addPhoneField = () => {
+    this.setState(prevState => {
+      return { phoneNum: prevState.phoneNum + 1 }
+    })
   }
 
   render() {
 
     const {
-      firstName, lastName, dob, sex, phone, email, patientWarning, conditions, allergies, address1, address2, primInsPlan, primInsBIN, primInsPCN, primInsID,
+      firstName, lastName, dob, sex, phone, phone2, phone3, email, patientWarning, conditions, allergies, addressStreet, addressCity, addressState, addressZipCode, address2Street, address2City, address2State, address2ZipCode, address3Street, address3City, address3State, address3ZipCode, primInsPlan, primInsBIN, primInsPCN, primInsID,
       primInsGroup, primInsType, secInsPlan, secInsBIN, secInsPCN, secInsID, secInsGroup, secInsType
     } = this.state
 
@@ -94,32 +115,95 @@ class AddPatient extends Component {
       'Patient Pay'
     ]
 
+    const stateOptions = [
+      "State",
+      "AL",
+      "AK",
+      "AS",
+      "AZ",
+      "AR",
+      "CA",
+      "CO",
+      "CT",
+      "DE",
+      "DC",
+      "FM",
+      "FL",
+      "GA",
+      "GU",
+      "HI",
+      "ID",
+      "IL",
+      "IN",
+      "IA",
+      "KS",
+      "KY",
+      "LA",
+      "ME",
+      "MH",
+      "MD",
+      "MA",
+      "MI",
+      "MN",
+      "MS",
+      "MO",
+      "MT",
+      "NE",
+      "NV",
+      "NH",
+      "NJ",
+      "NM",
+      "NY",
+      "NC",
+      "ND",
+      "MP",
+      "OH",
+      "OK",
+      "OR",
+      "PW",
+      "PA",
+      "PR",
+      "RI",
+      "SC",
+      "SD",
+      "TN",
+      "TX",
+      "UT",
+      "VT",
+      "VI",
+      "VA",
+      "WA",
+      "WV",
+      "WI",
+      "WY"
+    ]
+
     return (
       <div className={styles.app} id="addPatient">
         <Header>
           <h2>Add Patient</h2>
           <div className="action">
-              <Button
-                cancel
-                type="button"
-                title="CANCEL"
-                link="/patients"
-                style={{ marginRight: 10 }}
-              />
-              <Button
-                onClick={this.submitpatient}
-                title="CREATE PATIENT"
-                className="submit btn btn-default"
-                type="submit"
-                value="Submit"
-                style={{ marginRight: 8 }}
-              />
-            </div>
+            <Button
+              cancel
+              type="button"
+              title="CANCEL"
+              link="/patients"
+              style={{ marginRight: 10 }}
+            />
+            <Button
+              onClick={this.submitpatient}
+              title="CREATE PATIENT"
+              className="submit btn btn-default"
+              type="submit"
+              value="Submit"
+              style={{ marginRight: 8 }}
+            />
+          </div>
         </Header>
         <Body className={styles.body}>
           <Form className="form">
             <div class="flex-grid">
-              <div class="col">         
+              <div class="col">
                 <Input
                   label="Patient Name"
                   placeholder="First Name"
@@ -131,7 +215,7 @@ class AddPatient extends Component {
                   value={lastName}
                   onChange={lastName => this.setState({ lastName })}
                 />
-      
+
                 <Input
                   label="Date of Birth"
                   type="date"
@@ -146,19 +230,40 @@ class AddPatient extends Component {
                   onSelect={sex => this.setState({ sex })}
                 />
 
+                <div className='phoneFields'>
+                  <h5 style={{ 'font-weight': 'bold' }}>Phone</h5>
+                  {this.state.phoneNum <= 2 ?
+                    <span className='addFields' onClick={this.addPhoneField}>+ Add Additional Phone #</span>
+                    : <span></span>}
+
+                </div>
                 <Input
-                  label="Phone"
                   value={phone}
                   onChange={phone => this.setState({ phone })}
                 />
+                {this.state.phoneNum >= 2 ?
+                  <Input
+                    style={{ marginTop: 15 }}
+                    value={phone2}
+                    onChange={phone2 => this.setState({ phone2 })}
+                  />
+                  : <div></div>}
+                {this.state.phoneNum >= 3 ?
+                  <Input
+                    style={{ marginTop: 15 }}
+                    value={phone3}
+                    onChange={phone3 => this.setState({ phone3 })}
+                  />
+                  : <div></div>}
 
-                <Input 
+
+                <Input
                   label="Email"
                   value={email}
                   onChange={email => this.setState({ email })}
                 />
 
-                <Input 
+                <Input
                   label="Patient Warning"
                   className="textarea"
                   value={patientWarning}
@@ -168,10 +273,10 @@ class AddPatient extends Component {
               </div>
               <div class="col">
 
-                <Input 
+                <Input
                   label="Co-morbid Conditions"
                   className="textarea"
-                  placeholder="Conditions"
+                  placeholder="Conditions (separate with ' , ')"
                   value={conditions}
                   onChange={conditions => this.setState({ conditions })}
                 />
@@ -179,23 +284,102 @@ class AddPatient extends Component {
                 <Input
                   label="Allergies"
                   className="textarea"
-                  placeholder="Conditions"
+                  placeholder="Conditions (separate with ' , ')"
                   value={allergies}
                   onChange={allergies => this.setState({ allergies })}
                 />
 
-                <Input 
-                  label="Patient Address"
-                  placeholder="Click here"
-                  value={address1}
-                  onChange={address1 => this.setState({ address1 })}
+                <div className='addressFields'>
+                  <h5 style={{ 'font-weight': 'bold' }}>Patient Address</h5>
+                  {this.state.addressNum <= 2 ?
+                    <span className='addFields' onClick={this.addAddressField}>+ Add Additional Address</span>
+                    : <span></span>}
+                </div>
+
+                <Input
+                  placeholder="Street"
+                  value={addressStreet}
+                  onChange={addressStreet => this.setState({ addressStreet })}
                 />
 
                 <Input
-                  placeholder="To enter address"
-                  value={address2}
-                  onChange={address2 => this.setState({ address2 })}
+                  placeholder="City"
+                  value={addressCity}
+                  onChange={addressCity => this.setState({ addressCity })}
                 />
+
+                <Selector
+                  placeholder="State"
+                  options={stateOptions}
+                  value={addressState}
+                  onSelect={addressState => this.setState({ addressState })}
+                />
+
+                <Input
+                  placeholder="ZipCode"
+                  value={addressZipCode}
+                  onChange={addressZipCode => this.setState({ addressZipCode })}
+                />
+
+
+                {this.state.addressNum >= 2 ?
+                  <div style={{ marginTop: 15 }}>
+                    <Input
+                      placeholder="Street"
+                      value={address2Street}
+                      onChange={address2Street => this.setState({ address2Street })}
+                    />
+
+                    <Input
+                      placeholder="City"
+                      value={address2City}
+                      onChange={address2City => this.setState({ address2City })}
+                    />
+
+                    <Selector
+                      placeholder="State"
+                      options={stateOptions}
+                      value={address2State}
+                      onSelect={address2State => this.setState({ address2State })}
+                    />
+
+                    <Input
+                      placeholder="ZipCode"
+                      value={address2ZipCode}
+                      onChange={address2ZipCode => this.setState({ address2ZipCode })}
+                    />
+                  </div>
+                  : <div></div>}
+
+                {this.state.addressNum >= 3 ?
+                  <div style={{ marginTop: 15 }}>
+                    <Input
+                      placeholder="Street"
+                      value={address3Street}
+                      onChange={address3Street => this.setState({ address3Street })}
+                    />
+
+                    <Input
+                      placeholder="City"
+                      value={address3City}
+                      onChange={address3City => this.setState({ address3City })}
+                    />
+
+                    <Selector
+                      placeholder="State"
+                      options={stateOptions}
+                      value={address3State}
+                      onSelect={address3State => this.setState({ address3State })}
+                    />
+
+                    <Input
+                      placeholder="ZipCode"
+                      value={address3ZipCode}
+                      onChange={address3ZipCode => this.setState({ address3ZipCode })}
+                    />
+                  </div>
+                  : <div></div>}
+
               </div>
             </div>
 
@@ -269,7 +453,7 @@ class AddPatient extends Component {
                 />
               </div>
             </div>
-            
+
           </Form>
         </Body>
       </div>
@@ -277,7 +461,7 @@ class AddPatient extends Component {
   }
 }
 
-const mapStateToProps = ({main}) => {
+const mapStateToProps = ({ main }) => {
   const {
     loading
   } = main

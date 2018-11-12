@@ -30,28 +30,44 @@ export default class VisitModal extends Component {
   componentDidMount() {
     const token = localStorage.getItem('token')
     var decoded = jwt_decode(token);
+    console.log(decoded);
     this.setState({
+      userId: decoded.id,
       username: decoded.username
-    })
+    }, this.getUserInfo)
+  }
+
+  getUserInfo() {
+    const loginToken = window.localStorage.getItem("token");
+    axios.get('/api/user/search?userId=' + this.state.userId, { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        console.log(resp);
+        this.setState({
+          userName: resp.data.response[0].name,
+          userImage: resp.data.response[0].link
+        })
+      }).catch((err) => {
+        console.error(err)
+      })
   }
 
   onSubmit(e) {
     e.preventDefault()
     console.log(this.props);
-        const scriptId = this.props.props.state.id;
-        console.log(this.props.props);
-        const loginToken = window.localStorage.getItem("token");
-        let data = new FormData();
-        axios.post('/api/scripts/notes/add?scriptId=' + scriptId + '&name=' + this.state.username + '&note=' + this.state.note, 
-        data, { headers: { "Authorization": "Bearer " + loginToken } })
-            .then((data) => {
-                console.log(data);
-                this.props.onClickAway()
-                window.location.reload();             
-            }).catch((error) => {
-                console.error(error);
-            })
-          }
+    const scriptId = this.props.props.state.id;
+    console.log(this.props.props);
+    const loginToken = window.localStorage.getItem("token");
+    let data = new FormData();
+    axios.post('/api/scripts/notes/add?scriptId=' + scriptId + '&userId=' + this.state.userId + '&name=' + this.state.userName + '&note=' + this.state.note + '&userImage=' + this.state.userImage,
+      data, { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((data) => {
+        console.log(data);
+        this.props.onClickAway()
+        window.location.reload();
+      }).catch((error) => {
+        console.error(error);
+      })
+  }
 
   render() {
 
