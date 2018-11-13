@@ -1,6 +1,7 @@
 
 import React from 'react'
 import axios from 'axios'
+import jwt_decode from 'jwt-decode'
 
 import styles from './LoginMain.css'
 
@@ -9,7 +10,7 @@ import {
     FloatBox,
     Button,
     Form,
-  } from '../../common'
+} from '../../common'
 
 class Login extends React.Component {
     constructor(props) {
@@ -29,6 +30,33 @@ class Login extends React.Component {
         });
     }
 
+    getUserRole() {
+        const loginToken = window.localStorage.getItem("token");
+        var decoded = jwt_decode(loginToken);
+        console.log(decoded);
+        this.setState({
+            userId: decoded.id
+        })
+
+        axios.get('/api/user/search?userId=' + this.state.userId, { headers: { "Authorization": "Bearer " + loginToken } })
+            .then((resp) => {
+                console.log(resp);
+                this.setState({
+                    userRole: resp.data.response[0].role
+                }, this.redirect)
+            }).catch((err) => {
+                console.error(err)
+            })
+    }
+
+    redirect() {
+        if (this.state.userRole === "Physician") {
+            window.location = '/patients';
+        } else {
+            window.location = '/scripts';
+        }
+    }
+
     handleSubmit(event) {
         event.preventDefault();
         axios.post("/api/user/login",
@@ -38,13 +66,16 @@ class Login extends React.Component {
             })
             .then((resp) => {
                 window.localStorage.setItem("token", resp.data.token);
-                window.location = '/scripts';
+                this.getUserRole();
+                
             })
             .catch((err) => {
                 alert('Login failed');
                 console.error(err);
             })
     }
+
+
 
     render() {
         const {
@@ -53,29 +84,29 @@ class Login extends React.Component {
         } = this.props
         return (
             <div className={styles.container}>
-            <FloatBox classname={styles.floatBox} >
-            <img src="/sortpak-logo.png" className="logo" />
-            <h2 style={{margin: '0 auto', marginBottom: 30}}>Welcome to SortPak</h2>
-                <Form
-                    className={styles.body}
-                    onSubmit={this.handleSubmit}
-                >         
-                <label>Username or Email</label>
-                    <input name="user" placeholder="Username" type="text" value={this.state.value} onChange={this.handleChange} />
-                    <label>Password</label> 
-                    <input name="password" placeholder="Password" type="password" value={this.state.value} onChange={this.handleChange} />
-                    
-            <Button
-              className="button"
-              type="submit"
-              title="Login"
-              inactive={loading}
-              style={{display: 'block', margin: '25px auto'}}
-            />
-            <ErrorMessage error={error}/>
-            {/* <Link to="login/reset-password">Reset Password</Link> */}
-          </Form>
-        </FloatBox>
+                <FloatBox classname={styles.floatBox} >
+                    <img src="/sortpak-logo.png" className="logo" />
+                    <h2 style={{ margin: '0 auto', marginBottom: 30 }}>Welcome to SortPak</h2>
+                    <Form
+                        className={styles.body}
+                        onSubmit={this.handleSubmit}
+                    >
+                        <label>Username or Email</label>
+                        <input name="user" placeholder="Username" type="text" value={this.state.value} onChange={this.handleChange} />
+                        <label>Password</label>
+                        <input name="password" placeholder="Password" type="password" value={this.state.value} onChange={this.handleChange} />
+
+                        <Button
+                            className="button"
+                            type="submit"
+                            title="Login"
+                            inactive={loading}
+                            style={{ display: 'block', margin: '25px auto' }}
+                        />
+                        <ErrorMessage error={error} />
+                        {/* <Link to="login/reset-password">Reset Password</Link> */}
+                    </Form>
+                </FloatBox>
             </div>
         );
     }

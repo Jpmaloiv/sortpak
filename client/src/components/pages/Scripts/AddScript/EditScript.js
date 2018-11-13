@@ -45,7 +45,7 @@ class EditScript extends Component {
                         transDate: script.transDate,
                         writtenDate: script.writtenDate,
                         salesCode: script.salesCode,
-                        billOn: script.billOn,
+                        billOnDate: script.billOnDate,
                         cost: script.cost,
                         rxNumber: script.rxNumber,
                         diagnosis: script.diagnosis,
@@ -70,8 +70,9 @@ class EditScript extends Component {
                         hcPhone: script.hcPhone,
                         patientId: script.PatientId,
                         physicianId: script.PhysicianId,
-                        productId: script.ProductId
-                    }, () => console.log(this.state.status))
+                        productId: script.ProductId,
+                        cost: script.Product.cost
+                    }, () => console.log(this.state))
 
                     this.handleCopayApproval();
 
@@ -125,7 +126,7 @@ class EditScript extends Component {
         let data = new FormData();
         axios.put('/api/scripts/update?id=' + this.state.id + '&processedOn=' + this.state.processedOn + '&pouch=' + this.state.pouch + '&patient=' + this.state.patient + "&medication=" + this.state.medication +
             '&status=' + this.state.status + '&priorAuth=' + this.state.priorAuth + '&location=' + this.state.location + '&transNPI=' + this.state.transNPI + '&transDate=' + this.state.transDate +
-            '&writtenDate=' + this.state.writtenDate + '&salesCode=' + this.state.salesCode + '&billOn=' + this.state.billOn + '&cost=' + this.state.cost + '&rxNumber=' +
+            '&writtenDate=' + this.state.writtenDate + '&salesCode=' + this.state.salesCode + '&billOnDate=' + this.state.billOnDate + '&cost=' + this.state.cost + '&rxNumber=' +
             this.state.rxNumber + '&primInsPay=' + this.state.primInsPay + '&diagnosis=' + this.state.diagnosis + '&secInsPay=' + this.state.secInsPay + '&secDiagnosis=' + this.state.secDiagnosis + '&patientPay=' + this.state.patientPay + '&refills=' + this.state.refills + '&refillsRemaining=' +
             this.state.refillsRemaining + '&quantity=' + this.state.quantity + '&daysSupply=' + this.state.daysSupply + '&directions=' + this.state.directions + '&copayApproval=' + this.state.copayApproval + '&copayNetwork=' +
             this.state.copayNetwork + '&networkPay=' + this.state.networkPay + '&shipOn=' + this.state.shipOn + '&deliveryMethod=' + this.state.deliveryMethod + '&trackNum=' + this.state.trackNum + '&ETA=' + this.state.ETA + '&paymentOption=' + this.state.paymentOption +
@@ -133,7 +134,7 @@ class EditScript extends Component {
             data, { headers: { "Authorization": "Bearer " + loginToken } })
             .then((data) => {
                 console.log(data);
-                this.props.history.push(`/scripts/${this.state.id}`);
+                this.props.history.push(`/scripts/${this.props.match.params.scriptId}`);
             }).catch((error) => {
                 console.error(error);
             })
@@ -256,7 +257,7 @@ class EditScript extends Component {
         ]
 
 
-
+console.log(this.state.writtenDate, this.state.billOnDate)
 
         return (
             <div>
@@ -406,9 +407,9 @@ class EditScript extends Component {
                                     <Input
                                         type="date"
                                         label="Bill On"
-                                        placeholder={this.state.billOn}
-                                        value={this.state.billOn}
-                                        onChange={billOn => this.setState({ billOn })}
+                                        placeholder={this.state.billOnDate}
+                                        value={this.state.billOnDate}
+                                        onChange={billOnDate => this.setState({ billOnDate })}
                                     />
                                 </td>
                                 <td>

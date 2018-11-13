@@ -66,6 +66,20 @@ class AddPhysician extends Component {
       }).catch((error) => {
         console.error(error);
       })
+
+
+    axios.get('/api/user/search?role=Rep', { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        console.log(resp);
+
+        this.setState({
+          reps: resp.data.response
+        })
+
+      }).catch((error) => {
+        console.error(error);
+      })
+  
   }
 
   updatePhysician = (event) => {
@@ -180,6 +194,22 @@ class AddPhysician extends Component {
       'Pulmonology'
     ]
 
+    if (this.state.reps) {
+      const repOptions = [
+        {
+          key: '',
+          value: '',
+          display: 'Unassigned',
+        },
+        
+        ...this.state.reps.map(rep => ({
+          key: rep.name,
+          value: rep.name,
+          display: rep.name,
+        })),
+      ]
+
+      console.log(this.state.rep);
 
     return (
       <div className={styles.app} id="addPhysician">
@@ -226,11 +256,12 @@ class AddPhysician extends Component {
                   onChange={group => this.setState({ group })}
                 />
 
-                <Input
+                <Selector
                   label="Rep"
-                  placeholder="Select Rep"
+                  options={repOptions}
+                  selected={this.state.rep}
                   value={rep}
-                  onChange={rep => this.setState({ rep })}
+                  onSelect={rep => this.setState({ rep })}
                 />
 
                 <Selector
@@ -327,7 +358,10 @@ class AddPhysician extends Component {
         </Body>
       </div>
     );
+  } else { return (<div></div>)}
+    
   }
+  
 }
 
 const mapStateToProps = ({ main }) => {

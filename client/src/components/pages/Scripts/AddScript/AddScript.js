@@ -44,7 +44,7 @@ class AddScript extends Component {
         this.state = {
             pouch: false,
             homeCare: false,
-            processedOn: '',
+            processedOn: moment().format("YYYY-MM-DD"),
             medicationVal: '',
             status: 'Received',
             physicianId: '',
@@ -52,7 +52,7 @@ class AddScript extends Component {
             medSearch: false,
             value: '',
             writtenDate: '',
-            billOn: '',
+            billOnDate: '',
             shipOn: '',
             ETA: '',
             copayApproval: '',
@@ -139,9 +139,7 @@ class AddScript extends Component {
                 console.error(error);
             })
 
-            this.setState({
-                processedOn: moment().format("MM/DD/YYYY")
-            }, () => console.log(this.state.processedOn))
+
 
 
     }
@@ -158,14 +156,14 @@ class AddScript extends Component {
         );
     };
 
-        
+
     // When suggestion is clicked, Autosuggest needs to populate the input
     // based on the clicked suggestion. Teach Autosuggest how to calculate the
     // input value for every given suggestion.
     getSuggestionValue = suggestion => suggestion.name
-        
-    
-    
+
+
+
 
     // Use your imagination to render suggestions.
     renderSuggestion = suggestion =>
@@ -185,7 +183,7 @@ class AddScript extends Component {
                     <td>{suggestion.quantity}</td>
                     <td>{suggestion.cost}</td></tr></tbody>
         </Table>
-    
+
 
     getMedication() {
         console.log(this.state.value);
@@ -222,19 +220,19 @@ class AddScript extends Component {
         });
     };
 
-    onSuggestionSelected = (event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) =>{
-        console.log("HI");
-        console.log(suggestionValue);
-         //For example alert the selected value
-         const loginToken = window.localStorage.getItem("token");
+    onSuggestionSelected = (event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) => {
+        
 
-         axios.get('/api/products/search?name=' + suggestionValue, { headers: { "Authorization": "Bearer " + loginToken } })
-             .then((resp) => {
-                 console.log(resp);
-                 this.setState({
-                     productId: resp.data.response[0].id
-                 }, () => console.log(this.state.productId))
-             })
+        const loginToken = window.localStorage.getItem("token");
+
+        axios.get('/api/products/search?name=' + suggestionValue, { headers: { "Authorization": "Bearer " + loginToken } })
+            .then((resp) => {
+                console.log(resp);
+                this.setState({
+                    productId: resp.data.response[0].id,
+                    cost: resp.data.response[0].cost
+                }, this.forceUpdate)
+            })
     };
 
 
@@ -273,9 +271,6 @@ class AddScript extends Component {
 
     submitscript = (event) => {
         event.preventDefault();
-        this.setState({
-            status: 'Received'
-        })
         const loginToken = window.localStorage.getItem("token");
         let data = new FormData();
         axios.post('/api/scripts/add?patientId=' + this.state.patientId + '&physicianId=' + this.state.physicianId + '&productId=' + this.state.productId + '&processedOn=' + this.state.processedOn + '&pouch=' + this.state.pouch + '&patient=' + this.props.patient + "&medication=" + this.props.medication + "&status=" + this.state.status + "&pharmNPI=" + this.props.pharmNPI
@@ -287,7 +282,6 @@ class AddScript extends Component {
             data, { headers: { "Authorization": "Bearer " + loginToken } })
             .then((data) => {
                 console.log(data);
-                // window.location = '/profile';
                 this.props.history.push("/scripts");
             }).catch((error) => {
                 console.error(error);
@@ -310,9 +304,21 @@ class AddScript extends Component {
 
     render() {
 
-        
-
-console.log(this.state.productId);
+        const statusOptions = [
+            'Received',
+            'Review',
+            'Prior Auth',
+            'Process',
+            'Copay Assistance',
+            'Schedule',
+            'QA',
+            'Fill',
+            'Shipped',
+            'Done',
+            'Cancelled',
+            'Refill',
+            'Renew'
+        ]
 
         const { value, suggestions } = this.state;
 
@@ -323,8 +329,7 @@ console.log(this.state.productId);
             onChange: this.onChange,
 
         };
-        
-      console.log(this.state.medication);
+
         const {
             pharmNPI,
             pharmNPIChange,
@@ -360,9 +365,7 @@ console.log(this.state.productId);
             directionsChange
         } = this.props
 
-        const {
-            processedOn
-        } = this.state
+
 
         const priorAuthOptions = [
             'Approved',
@@ -395,7 +398,6 @@ console.log(this.state.productId);
             physicianModal
         } = this.state
 
-console.log(this.state.processedOn)
         return (
             <div>
                 <Header>
@@ -427,8 +429,9 @@ console.log(this.state.processedOn)
                                     <Input
                                         type="date"
                                         label="Process On"
-                                        placeholder={processedOn}
-                                        value={processedOn}
+                                        placeholder="2018/11/12"
+                                        selected={this.state.processedOn}
+                                        value={this.state.processedOn}
                                         onChange={processedOn => this.setState({ processedOn })}
                                     />
                                 </td>
@@ -444,6 +447,17 @@ console.log(this.state.processedOn)
                                     </div>
                                 </td>
                             </tr>
+                            <tr>
+                                <td style={{padding: '10px 0'}}>
+                                    <Selector
+                                        options={statusOptions}
+                                        value={this.state.status}
+                                        onSelect={status => this.setState({ status })}
+                                    />
+                                </td>
+                                <td><Button
+                                    title="DO NOT REFILL"
+                                /></td></tr>
                         </Table>
 
                         <h4 style={{ marginLeft: 30, marginBottom: 0 }}>Patient</h4>
@@ -459,7 +473,7 @@ console.log(this.state.processedOn)
                                 <td>{this.state.patientDob}</td>
                                 <td>{this.state.patientPhone}</td>
                                 <td>{this.state.patientAddressStreet},<br />
-                                {this.state.patientAddressCity}, {this.state.patientAddressState}, {this.state.patientAddressZipCode}</td>
+                                    {this.state.patientAddressCity}, {this.state.patientAddressState}, {this.state.patientAddressZipCode}</td>
                             </tr>
                         </Table>
 
@@ -474,9 +488,9 @@ console.log(this.state.processedOn)
                                     renderSuggestion={this.renderSuggestion}
                                     onSuggestionSelected={this.onSuggestionSelected}
                                     inputProps={inputProps}
-                                    // onSuggestionSelected={() => {
-                                    //     console.log('current suggestion')
-                                    //   }}
+                                // onSuggestionSelected={() => {
+                                //     console.log('current suggestion')
+                                //   }}
                                 />
                             </div>
                             :
@@ -607,6 +621,7 @@ console.log(this.state.processedOn)
                                     <td>
                                         <Input
                                             label="Cost"
+                                            placeholder={this.state.cost}
                                             value={cost}
                                             onChange={costChange}
                                         />

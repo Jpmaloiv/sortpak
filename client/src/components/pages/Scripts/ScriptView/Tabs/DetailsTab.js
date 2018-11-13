@@ -17,12 +17,13 @@ import {
 class DetailsTab extends Component {
   constructor(props) {
     super(props)
-    this.state = { refills: 0 }
+    this.state = { 
+      refills: 0 }
   }
   state = {
     script: ''
   }
-
+  
 
   componentDidMount() {
     let scriptNum = this.props.sID.match.params.scriptId;
@@ -54,6 +55,7 @@ class DetailsTab extends Component {
           physicianWarning: script.Physician.physicianWarning,
           productName: script.Product.name,
           productNDC: script.Product.NDC,
+          cost: script.Product.cost,
           productQuantity: script.Product.quantity,
           billOnDate: script.billOnDate,
           rxNumber: script.rxNumber,
@@ -66,7 +68,6 @@ class DetailsTab extends Component {
           quantity: script.quantity,
           daysSupply: script.daysSupply,
           salesCode: script.salesCode,
-          cost: script.cost,
           primInsPay: script.primInsPay,
           secInsPay: script.secInsPay,
           location: script.location,
@@ -79,14 +80,16 @@ class DetailsTab extends Component {
           deliveryMethod: script.deliveryMethod,
           trackNum: script.trackNum,
           ETA: script.ETA,
-          paymentOption: script.paymentOption
-        }, () => console.log(this.state.status))
+          paymentOption: script.paymentOption,
+          
+        })
+        
 
       }).catch((err) => {
         console.error(err)
       })
-
   }
+
 
   setEditState(editing) {
     this.setState({ ...this.initialState, editing })
@@ -147,6 +150,7 @@ class DetailsTab extends Component {
       'Copay Card'
     ]
 
+    const totalPay = ""
 
     const {
       editing
@@ -159,6 +163,11 @@ class DetailsTab extends Component {
     if (this.state.allergies) {
       var allergies = this.state.allergies.split(",").join("\n")
     }
+
+    // if (this.state.primInsPay) {
+    //   const totalPay = this.state.primInsPay - this.state.secInsPay
+    //   return totalPay;
+    // }
 
     return (
       <div>
@@ -314,7 +323,7 @@ class DetailsTab extends Component {
                     <td className="field">Status</td>
                     <td className='value'>{this.state.status || ''}</td>
                     <td className="field">Total Pay</td>
-                    <td></td>
+                    <td className="value">{this.state.primInsPay - this.state.secInsPay}</td>
                   </tr>
                   <tr>
                     <td className="field">Instructions</td>
