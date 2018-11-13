@@ -3,7 +3,8 @@
   display: flex;
   background-color: #fff;
   flex-wrap: wrap;
-  min-height: 63px; }
+  min-height: 63px;
+  border-top: 1px solid #eaeaea !important; }
   :local(.navBar) > a {
     display: flex;
     justify-content: center;
@@ -13,7 +14,7 @@
     text-decoration: none;
     text-align: center;
     padding: 10px;
-    border-top: 1px solid #eaeaea;
+    border-top: 1px solid #eaeaea !important;
     display: flex;
     align-items: center;
     transition: 100ms; }
