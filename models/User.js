@@ -1,11 +1,11 @@
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
     var User = sequelize.define("User", {
         email: {
             type: DataTypes.STRING,
             allowNull: false,
             unique: true,
             validate: {
-              isEmail: true
+                isEmail: true
             }
         },
         username: {
@@ -22,7 +22,7 @@ module.exports = function(sequelize, DataTypes) {
             allowNull: true
         },
         active: {
-            type: DataTypes.STRING,
+            type: DataTypes.BOOLEAN,
             allowNull: true
         },
         link: {
@@ -37,15 +37,21 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.STRING,
             allowNull: false
         }
-    }); 
-    User.associate = function(models) {
-      models.User.hasMany(models.Scripts, {
-          onDelete: "cascade"
-      }),
-      models.User.hasMany(models.scriptStatuses, {
-        onDelete: "cascade"
     });
-    };
+    User.associate = function (models) {
+        models.User.hasMany(models.Scripts, {
+            onDelete: "cascade"
+        })
+        models.User.hasMany(models.scriptStatuses, {
+            onDelete: "cascade"
+        })
+        models.User.belongsTo(models.Physicians, {
+            foreignKey: {
+                name: 'PhysicianId',
+                allowNull: true
+            }
+        })
+    }
 
-    return User; 
-  };
+    return User;
+};

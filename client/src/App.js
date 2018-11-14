@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import axios from 'axios'
+import jwt_decode from 'jwt-decode'
 import TopNav from './components/TopNav/TopNav'
 // import PrivateRoute from './components/ProtectedRoute';
 // import Main from './components/pages/Main'
@@ -20,7 +22,8 @@ import AgendaPage from './components/pages/AgendaPage/AgendaPage'
 import PhysiciansPage from './components/pages/PhysiciansPage/PhysiciansPage'
 import AddPhysician from './components/pages/PhysiciansPage/AddPhysician/AddPhysician'
 import EditPhysician from './components/pages/PhysiciansPage/AddPhysician/EditPhysician'
-import PhysicianView from './components/pages/PhysiciansPage/PhysicianView/PhysicianView.js'
+import PhysicianAccess from './components/pages/PhysiciansPage/PhysicianAccess/PhysicianAccess'
+import PhysicianView from './components/pages/PhysiciansPage/PhysicianView/PhysicianView'
 import RefillsPage from './components/pages/RefillsPage/RefillsPage'
 import ProductsPage from './components/pages/ProductsPage/ProductsPage'
 import TeamPage from './components/pages/TeamPage/TeamPage'
@@ -41,8 +44,39 @@ import createHistory from 'history/createBrowserHistory'
 
 import './App.css';
 
+
 class App extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      userRole: ''
+    }
+  }
+
+  
+
+  componentWillMount() {
+
+    const loginToken = window.localStorage.getItem("token");
+    if (loginToken) {
+      var decoded = jwt_decode(loginToken);
+      console.log(decoded);
+      axios.get('../api/user/search?userId=' + decoded.id, { headers: { "Authorization": "Bearer " + loginToken } })
+        .then((resp) => {
+          this.setState({
+            userRole: resp.data.response[0].role,
+          });
+        }).catch((error) => {
+          console.error(error);
+        })
+    } else {
+      return;
+    }
+  }
+
   render() {
+
+
 
     const history = createHistory()
     const historyMiddleware = routerMiddleware(history)
@@ -52,56 +86,71 @@ class App extends Component {
       {},
       applyMiddleware(historyMiddleware, ReduxThunk),
     )
+
+    const MyPatientsPage = (props) => {
+      return (
+        <PatientsPage 
+          state={this.state}
+          {...props}
+        />
+      );
+    }
     return (
       <Provider store={store}>
-      <Router>
-        <div>
-          <TopNav />
-          <div className="container">
-            <Switch>
-            <Route
-              path="/login"
-              component={Login}
-            />
-            <Route
-              path="/signup"
-              component={Signup}
-            />
-            {/* <Route
+        <Router>
+          <div>
+            <TopNav />
+            <div className="container">
+              <Switch>
+                <Route
+                  path="/login"
+                  component={Login}
+                />
+                <Route
+                  path="/signup"
+                  component={Signup}
+                />
+                {/* <Route
               path="/"
               render={restricted(Main, 'auth')}
             /> */}
-              <Route exact path="/" component={Login} />
-              <Route exact path="/scripts" component={ScriptsPage} />
-              <Route exact path="/scripts/add" component={AddScript} />
-              <Route exact path="/scripts/:scriptId" component={ScriptView} />
-              <Route exact path="/scripts/:scriptId/edit" component={EditScript} />
-              <Route exact path="/patients" component={PatientsPage} />
-              <Route exact path="/patients/add" component={AddPatient} />
-              <Route exact path="/patients/:patientId/edit" component={EditPatient} />
-              <Route exact path="/patients/:patientId" component={PatientView} />
-              <Route exact path="/dashboard" component={DashboardPage} />
-              <Route exact path="/physicians" component={PhysiciansPage} />
-              <Route exact path="/physicians/add" component={AddPhysician} />
-              <Route exact path="/physicians/:physicianId/edit" component={EditPhysician} />
-              <Route exact path="/physicians/:physicianId" component={PhysicianView} />
-              <Route exact path="/agenda" component={AgendaPage} />
-              <Route exact path="/refills" component={RefillsPage} />
-              <Route exact path="/products" component={ProductsPage} />
-              <Route exact path="/team" component={TeamPage} />
-              <Route exact path="/team/add" component={AddMember} />
-              <Route exact path="/team/:userId/edit" component={EditMember} />
-              {/* <Route exact path="/team/:userId" component={MemberView} /> */}
-              {/* <Route exact path="/scripts/attachment/:attachmentId" component={Attachment} /> */}
-              <Route exact path="/attachment/:attachmentId" component={Attachment} />
-            <Route exact path="/book/:bookId" component={Attachment} />
 
-            </Switch>
+
+                <Route exact path="/" component={Login} />
+                <Route exact path="/scripts" component={ScriptsPage} />
+                <Route exact path="/scripts/add" component={AddScript} />
+                <Route exact path="/scripts/:scriptId" component={ScriptView} />
+                <Route exact path="/scripts/:scriptId/edit" component={EditScript} />
+                
+                  <Route exact path="/patients" render={MyPatientsPage} />
+                  
+                <Route exact path="/patients/add" component={AddPatient} />
+                <Route exact path="/patients/:patientId/edit" component={EditPatient} />
+                <Route exact path="/patients/:patientId" component={PatientView} />
+                <Route exact path="/dashboard" component={DashboardPage} />
+                <Route exact path="/physicians" component={PhysiciansPage} />
+                <Route exact path="/physicians/add" component={AddPhysician} />
+                <Route exact path="/physicians/:physicianId/edit" component={EditPhysician} />
+                <Route exact path="/physicians/:physicianId" component={PhysicianView} />
+                <Route exact path="/physicians/:physicianId/access" component={PhysicianAccess} />
+                <Route exact path="/agenda" component={AgendaPage} />
+                <Route exact path="/refills" component={RefillsPage} />
+                <Route exact path="/products" component={ProductsPage} />
+                <Route exact path="/team" component={TeamPage} />
+                <Route exact path="/team/add" component={AddMember} />
+                <Route exact path="/team/:userId/edit" component={EditMember} />
+
+                <Route exact path="/attachment/:attachmentId" component={Attachment} />
+                <Route exact path="/book/:bookId" component={Attachment} />
+
+
+
+              </Switch>
+            </div>
           </div>
-        </div>
-      </Router>
+        </Router>
        </Provider>
-    );
+    )
   }
 }
 

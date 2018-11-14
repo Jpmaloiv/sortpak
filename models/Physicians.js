@@ -72,6 +72,9 @@ module.exports = function(sequelize, DataTypes) {
         models.Physicians.hasMany(models.Scripts, {
             onDelete: "cascade"
         });
+        models.Physicians.hasMany(models.User, {
+            onDelete: "cascade"
+        });
     };
 
     return Physicians; 

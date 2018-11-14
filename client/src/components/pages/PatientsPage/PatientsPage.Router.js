@@ -6,35 +6,53 @@ import {
 
 // Components
 import PatientsView from './PatientsView/PatientsView'
+import PatientsViewPhysician from './PatientsView_Physician/PatientsViewPhysician'
 import PatientView from './PatientView/PatientView'
 import AddPatient from './AddPatient/AddPatient'
 import NotFound from '../../NotFound/NotFound'
 
-const PatientsPageRouter = props => (
+console.log(this.props);
+
+// const PatientsPageRouter = props => (
+  class PatientsPageRouter extends React.Component {
+  render() {
+    console.log(this.props.state.state.userRole);
+    return(
+  
   <Switch>
-    <Route
-      exact
-      path="/patients"
-      component={PatientsView}
-    />
+    {this.props.state.state.userRole === "Admin" ?
+      <Route
+        exact
+        path="/patients"
+        component={PatientsView}
+      />
+      :
+      <Route
+        exact
+        path="/patients"
+        component={PatientsViewPhysician}
+      />
+} 
 
-    <Route
-      exact
-      path="/patients/add"
-      component={AddPatient}
-    />
+      <Route
+        exact
+        path="/patients/add"
+        component={AddPatient}
+      />
 
-    <Route
-      exact
-      path="/patients/:patientId"
-      component={PatientView}
-    />
+      <Route
+        exact
+        path="/patients/:patientId"
+        component={PatientView}
+      />
 
-    <Route
-      component={NotFound}
-    />
+      <Route
+        component={NotFound}
+      />
   </Switch>
-)
-
-
-export default PatientsPageRouter
+  )
+}
+  }
+  
+  
+  export default PatientsPageRouter

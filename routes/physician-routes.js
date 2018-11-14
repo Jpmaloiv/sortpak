@@ -61,6 +61,8 @@ router.get("/search", (req, res) => {
         }
     }
 
+    // searchParams.where.id === 2;
+
     if (req.query.physicianId) {
         searchParams.where.id = req.query.physicianId
     }

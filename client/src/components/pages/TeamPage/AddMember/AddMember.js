@@ -32,6 +32,7 @@ class AddMember extends Component {
       password: '',
       confirmpw: '',
       active: false,
+      physicianId: 1
     }
 
     
@@ -112,11 +113,12 @@ class AddMember extends Component {
 
     let data = new FormData();
     data.append("picFile", document.getElementById("pic-file").files[0])
-    axios.post('/api/user/new?username=' + this.state.username + '&name=' + this.state.name + '&email=' + this.state.email +
+    axios.post('/api/user/new?physicianId=' + this.state.physicianId + '&username=' + this.state.username + '&name=' + this.state.name + '&email=' + this.state.email +
     '&password=' + this.state.password + '&role=' + this.state.role + '&active=' + this.state.active,
       data, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((data) => {
         console.log(data);
+        this.props.history.push("/team");
         
       }).catch((error) => {
         console.error(error);

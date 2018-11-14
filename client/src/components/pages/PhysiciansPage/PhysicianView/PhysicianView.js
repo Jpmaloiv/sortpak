@@ -543,7 +543,7 @@ class PhysicianView extends Component {
                 icon="lock"
                 title="GIVE ACCESS"
                 style={{ marginLeft: 8 }}
-                link="/team/add"
+                link={`/physicians/${this.props.match.params.physicianId}/access`}
               />
             </div>
           </h2>

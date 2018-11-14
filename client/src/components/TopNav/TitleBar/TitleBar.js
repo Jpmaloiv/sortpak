@@ -44,7 +44,6 @@ class TitleBar extends Component {
     const loginToken = window.localStorage.getItem("token");
     axios.get('/api/user/search?userId=' + this.state.userId, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
-        console.log(resp);
         this.setState({
           name: resp.data.response[0].name,
           link: resp.data.response[0].link

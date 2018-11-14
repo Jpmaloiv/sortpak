@@ -5,9 +5,11 @@ import styles from './PatientsPage.css'
 
 class PatientsPage extends Component {
   render() {
+console.log(this.props);
     return (
       <div className={styles.app}>
-        <Router />
+        <Router
+          state={this.props} />
       </div>
     );
   }

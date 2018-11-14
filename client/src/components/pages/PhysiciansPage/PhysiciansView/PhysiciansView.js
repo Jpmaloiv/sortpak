@@ -31,16 +31,26 @@ class PhysiciansView extends Component {
     this.searchQuery = this.searchQuery.bind(this);
   }
 
-  componentDidMount() {
+  componentWillMount() {
     const loginToken = window.localStorage.getItem("token");
-    axios.get('api/physicians/search/', { headers: { "Authorization": "Bearer " + loginToken } })
+    axios.get('api/physicians/search?physicianId!=1', { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
+        console.log(resp);
         this.setState({
           physicians: resp.data.response,
-        })
+        }, this.removeNullPhysician)
       }).catch((error) => {
         console.error(error);
       })
+  }
+
+  // unsure why this works, only place physicianData is used
+  removeNullPhysician() {
+    this.setState({
+      physicianData: this.state.physicians.shift()
+    })
+    
+
   }
 
   searchQuery() {
@@ -51,11 +61,14 @@ class PhysiciansView extends Component {
         console.log(resp.data.response);
         this.setState({
           physicians: resp.data.response,
-        })
+        }, this.removeNullPhysician)
+        
       }).catch((error) => {
         console.error(error);
       })
   }
+
+ 
 
   enterPressed(event) {
     var code = event.keyCode || event.which;

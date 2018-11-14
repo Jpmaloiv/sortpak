@@ -68,7 +68,8 @@ ctrl.register = function (req, res) {
         email: req.query.email.trim().toLowerCase(),
         role: req.query.role,
         link: title,
-        active: req.query.active
+        active: req.query.active,
+        PhysicianId: req.query.physicianId
     }
     var salt = getSalt();
     var hash = getHash(req.query.password, salt);
@@ -142,6 +143,9 @@ ctrl.update = function (req, res) {
     if (req.query.password) {
         user.salt = getSalt();
         user.hash = getHash(req.query.password, user.salt);
+    }
+    if (req.query.active) {
+        user.active = req.query.active;
     }
     console.log(user);
     models.User.update(user, { where: { id: req.query.id } })

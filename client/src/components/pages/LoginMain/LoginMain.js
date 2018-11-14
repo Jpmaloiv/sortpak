@@ -30,30 +30,41 @@ class Login extends React.Component {
         });
     }
 
-    getUserRole() {
+    decode() {
         const loginToken = window.localStorage.getItem("token");
         var decoded = jwt_decode(loginToken);
         console.log(decoded);
         this.setState({
             userId: decoded.id
-        })
+        }, this.getUserRole)
 
-        axios.get('/api/user/search?userId=' + this.state.userId, { headers: { "Authorization": "Bearer " + loginToken } })
-            .then((resp) => {
-                console.log(resp);
-                this.setState({
-                    userRole: resp.data.response[0].role
-                }, this.redirect)
-            }).catch((err) => {
-                console.error(err)
-            })
     }
 
+    getUserRole() {
+        const loginToken = window.localStorage.getItem("token");
+        axios.get('/api/user/search?userId=' + this.state.userId, { headers: { "Authorization": "Bearer " + loginToken } })
+        .then((resp) => {
+            console.log(resp);
+            this.setState({
+                userRole: resp.data.response[0].role,
+                active: resp.data.response[0].active
+            }, this.redirect)
+        }).catch((err) => {
+            console.error(err)
+        })
+    }
+    
     redirect() {
-        if (this.state.userRole === "Physician") {
-            window.location = '/patients';
-        } else {
-            window.location = '/scripts';
+        console.log(this.state.active);
+        if (this.state.active === true) {
+            if (this.state.userRole === "Physician") {
+                window.location = '/patients';
+            } else {
+                window.location = '/scripts';
+            }
+        } else if (this.state.active === false) {
+            localStorage.clear()
+            window.alert("User is inactive");
         }
     }
 
@@ -66,8 +77,8 @@ class Login extends React.Component {
             })
             .then((resp) => {
                 window.localStorage.setItem("token", resp.data.token);
-                this.getUserRole();
-                
+                this.decode();
+
             })
             .catch((err) => {
                 alert('Login failed');

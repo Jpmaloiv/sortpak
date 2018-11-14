@@ -115,7 +115,6 @@ class EditMember extends Component {
       email,
       password,
       confirmpw,
-      role
     } = this.state
 
     // const invalid = (
