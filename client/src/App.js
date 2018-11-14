@@ -9,6 +9,8 @@ import Signup from './components/Signup'
 import Login from './components/pages/LoginMain/LoginMain';
 import ScriptsPage from './components/pages/Scripts/ScriptsPage';
 import ScriptView from './components/pages/Scripts/ScriptView/ScriptView'
+import ScriptViewPhysician from './components/pages/Scripts/ScriptView_Physician/ScriptViewPhysician'
+
 import AddScript from './components/pages/Scripts/AddScript/AddScript'
 import EditScript from './components/pages/Scripts/AddScript/EditScript'
 import Attachment from './components/pages/Scripts/ScriptView/Attachment'
@@ -16,6 +18,7 @@ import PatientsPage from './components/pages/PatientsPage/PatientsPage'
 import AddPatient from './components/pages/PatientsPage/AddPatient/AddPatient'
 import EditPatient from './components/pages/PatientsPage/AddPatient/EditPatient'
 import PatientView from './components/pages/PatientsPage/PatientView/PatientView'
+import PatientViewPhysician from './components/pages/PatientsPage/PatientView_Physician/PatientViewPhysician'
 // import PatientFile from './components/pages/PatientsPage/PatientView/Tabs/PatientFile'
 import DashboardPage from './components/pages/DashboardPage/DashboardPage'
 import AgendaPage from './components/pages/AgendaPage/AgendaPage'
@@ -63,6 +66,7 @@ class App extends Component {
       console.log(decoded);
       axios.get('../api/user/search?userId=' + decoded.id, { headers: { "Authorization": "Bearer " + loginToken } })
         .then((resp) => {
+          console.log(resp);
           this.setState({
             userRole: resp.data.response[0].role,
           });
@@ -119,14 +123,18 @@ class App extends Component {
                 <Route exact path="/" component={Login} />
                 <Route exact path="/scripts" component={ScriptsPage} />
                 <Route exact path="/scripts/add" component={AddScript} />
+                {this.state.userRole === "Admin" || this.state.userRole === "Rep" ?
                 <Route exact path="/scripts/:scriptId" component={ScriptView} />
+          : <Route exact path="/scripts/:scriptId" component={ScriptViewPhysician} /> }
                 <Route exact path="/scripts/:scriptId/edit" component={EditScript} />
                 
                   <Route exact path="/patients" render={MyPatientsPage} />
                   
                 <Route exact path="/patients/add" component={AddPatient} />
                 <Route exact path="/patients/:patientId/edit" component={EditPatient} />
+                {this.state.userRole === "Admin" || this.state.userRole === "Rep" ?
                 <Route exact path="/patients/:patientId" component={PatientView} />
+                : <Route exact path="/patients/:patientId" component={PatientViewPhysician} /> }
                 <Route exact path="/dashboard" component={DashboardPage} />
                 <Route exact path="/physicians" component={PhysiciansPage} />
                 <Route exact path="/physicians/add" component={AddPhysician} />

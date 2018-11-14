@@ -147,6 +147,9 @@ ctrl.update = function (req, res) {
     if (req.query.active) {
         user.active = req.query.active;
     }
+    if (req.query.physicianId) {
+        user.PhysicianId = req.query.physicianId
+    }
     console.log(user);
     models.User.update(user, { where: { id: req.query.id } })
         .then(function (resp) {

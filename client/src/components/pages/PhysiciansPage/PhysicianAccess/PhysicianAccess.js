@@ -13,6 +13,8 @@ class PhysicianAccess extends Component {
 
         }
 
+        this.giveAccess = this.giveAccess.bind(this);
+
     }
 
     componentDidMount() {
@@ -55,6 +57,43 @@ class PhysicianAccess extends Component {
             })
     }
 
+
+
+    accessConfirm(value) {
+        if (window.confirm('Give access to this user?')) {
+            this.giveAccess(value);
+        } else {
+            return;
+        }
+    }
+
+    giveAccess(value) {
+        const loginToken = window.localStorage.getItem("token");
+        let data = new FormData();
+        axios.put('/api/user/update?id=' + value + '&physicianId=' + this.props.match.params.physicianId + `&active=${true}`,
+            data, { headers: { "Authorization": "Bearer " + loginToken } })
+            .then((data) => {
+                console.log(data);
+                this.reRender();
+
+            }).catch((error) => {
+                console.error(error);
+            })
+    }
+
+    reRender() {
+        const loginToken = window.localStorage.getItem("token");
+        axios.get('/api/user/search?role=Physician', { headers: { "Authorization": "Bearer " + loginToken } })
+            .then((resp) => {
+                this.setState({
+                    users: resp.data.response
+                })
+
+            }).catch((error) => {
+                console.error(error);
+            })
+    }
+
     enterPressed(event) {
         var code = event.keyCode || event.which;
         if (code === 13) { //13 is the enter keycode
@@ -91,6 +130,7 @@ class PhysicianAccess extends Component {
 
 
     renderTableRow(user) {
+        console.log(user.PhysicianId, this.props.match.params.physicianId)
         return (
             <tr value={user.id}>
 
@@ -98,18 +138,24 @@ class PhysicianAccess extends Component {
                     {user.username}
                 </td>
 
-                <td>
+                <td style={{ 'width': '60%' }}>
 
                 </td>
 
                 <td>
+                    {user.PhysicianId == this.props.match.params.physicianId ?
+                    
+                    <div>Access Granted</div> :
+                    
                     <Button
+                        className="access"
                         search
                         icon="lock"
                         title="GIVE ACCESS"
                         style={{ marginLeft: 8 }}
-                        onClick={this.giveAccess}
+                        onClick={() => this.accessConfirm(user.id)}
                     />
+                    }
                 </td>
 
             </tr>
@@ -152,52 +198,52 @@ class PhysicianAccess extends Component {
                         <span className="group">
                             {this.state.group || 'No Group Available'}
                         </span>
-                        </h2>
-                        <div className="action">
-                            <Button
-                                cancel
-                                title="CANCEL"
-                                link={`/physicians/${this.props.match.params.physicianId}`}
-                            />
+                    </h2>
+                    <div className="action">
+                        <Button
+                            cancel
+                            title="CANCEL"
+                            link={`/physicians/${this.props.match.params.physicianId}`}
+                        />
 
-                            
-                        </div>
-
-                </Header>
-
-                    <div className="body">
-
-                        <ActionBox className='searchBar'>
-                            <div className="main">
-
-                                <Input
-                                    label="Search By Name"
-                                    placeholder="First or Last Name..."
-                                    value={this.state.searchName}
-                                    onChange={searchName => this.setState({ searchName })}
-                                    onKeyPress={this.enterPressed.bind(this)}
-                                />
-
-
-
-                                <Button
-                                    search
-                                    icon="search"
-                                    title="SEARCH"
-                                    onClick={this.searchQuery}
-                                />
-
-                            </div>
-
-                        </ActionBox>
-
-                        {this.renderTable()}
-                        {userList}
 
                     </div>
+                </Header>
+
+                <div className="body">
+                    <p style={{ marginBottom: -15, marginLeft: 40 }}>Give a user access to this physician</p>
+
+                    <ActionBox className='searchBar'>
+                        <div className="main">
+
+                            <Input
+                                label="Search By Name"
+                                placeholder="First or Last Name..."
+                                value={this.state.searchName}
+                                onChange={searchName => this.setState({ searchName })}
+                                onKeyPress={this.enterPressed.bind(this)}
+                            />
+
+
+
+                            <Button
+                                search
+                                icon="search"
+                                title="SEARCH"
+                                onClick={this.searchQuery}
+                            />
+
+                        </div>
+
+                    </ActionBox>
+
+                    {this.renderTable()}
+                    {userList}
+
+                </div>
             </div>
-                );
-            }
-        }
-        
-        export default PhysicianAccess;
+        );
+    }
+}
+
+export default PhysicianAccess;

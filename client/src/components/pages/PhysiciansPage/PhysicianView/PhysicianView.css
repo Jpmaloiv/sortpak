@@ -18,6 +18,14 @@
   max-width: 350px;
 }
 
+.access {
+  line-height: 1;
+}
+
+.access span {
+  line-height: 1 !important;
+}
+
 .chartjs-size-monitor {
   position: relative !important;
 }

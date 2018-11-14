@@ -9,7 +9,8 @@ console.log(this.props);
     return (
       <div className={styles.app}>
         <Router
-          state={this.props} />
+          props={this.props}
+        />
       </div>
     );
   }
