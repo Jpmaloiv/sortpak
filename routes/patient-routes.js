@@ -78,11 +78,7 @@ router.get("/search", (req, res) => {
         where: {},
         attributes: {
             exclude: ["updatedAt", "UserId"]
-        },
-        include: [{
-            model: db.Scripts,
-            
-        }]
+        }
     }
     if (req.query.patientId) {
         searchParams.where.id = req.query.patientId
