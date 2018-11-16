@@ -42,14 +42,15 @@ class PatientsViewPhysician extends Component {
     this.setState({
       userId: decoded.id
     }, this.getUserInfo)
-    axios.get('api/patients/search/', { headers: { "Authorization": "Bearer " + loginToken } })
-      .then((resp) => {
-        this.setState({
-          patients: resp.data.response
-        })
-      }).catch((error) => {
-        console.error(error);
-      })
+      // axios.get('api/patients/search/', { headers: { "Authorization": "Bearer " + loginToken } })
+      // .then((resp) => {
+      //   console.log(resp.data);
+      //   this.setState({
+      //     patients: resp.data.response
+      //   })
+      // }).catch((error) => {
+      //   console.error(error);
+      // })
   }
 
   getUserInfo() {
@@ -58,22 +59,22 @@ class PatientsViewPhysician extends Component {
       .then((resp) => {
         this.setState({
           physicianId: resp.data.response[0].PhysicianId
-        }, this.getScriptsJunction)
+        }, this.getRelativePatients)
       }).catch((err) => {
         console.error(err)
       })
   }
 
-  getScriptsJunction() {
+  getRelativePatients() {
     const loginToken = window.localStorage.getItem("token");
-    axios.get('/api/scripts/search?physicianId=' + this.state.physicianId, { headers: { "Authorization": "Bearer " + loginToken } })
+    axios.get('api/profile/find?physicianId=' + this.state.physicianId, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
-        console.log(resp);
+        console.log(resp.data);
         this.setState({
-
+          patients: resp.data
         })
-      }).catch((err) => {
-        console.error(err)
+      }).catch((error) => {
+        console.error(error);
       })
   }
 
