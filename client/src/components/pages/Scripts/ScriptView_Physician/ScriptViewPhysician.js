@@ -12,9 +12,9 @@ import {
 } from '../../../shared'
 
 import DetailsTab from './Tabs/DetailsTab'
-import NotesTab from './Tabs/NotesTab'
-import AttachmentsTab from './Tabs/AttachmentsTab'
-import RXHistoryTab from './Tabs/RXHistoryTab'
+import NotesTab from '../ScriptView/Tabs/NotesTab'
+import AttachmentsTab from '../ScriptView/Tabs/AttachmentsTab'
+import RXHistoryTab from '../ScriptView/Tabs/RXHistoryTab'
 
 
 

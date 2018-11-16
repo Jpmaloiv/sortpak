@@ -45,13 +45,11 @@ class DetailsTab extends Component {
           secInsPlan: script.Patient.secInsPlan, secInsBIN: script.Patient.secInsBIN, secInsGroup: script.Patient.secInsGroup, secInsID: script.Patient.secInsID, secInsPCN: script.Patient.secInsPCN, secInsType: script.Patient.secInsType,
           conditions: script.Patient.conditions,
           allergies: script.Patient.allergies,
-          patientWarning: script.Patient.patientWarning,
           physicianId: script.PhysicianId,
           physicianName: script.Physician.firstName + " " + script.Physician.lastName,
           physicianContact: script.Physician.contact,
           physicianPhone: script.Physician.phone,
           physicianRep: script.Physician.rep,
-          physicianWarning: script.Physician.physicianWarning,
           productName: script.Product.name,
           productNDC: script.Product.NDC,
           cost: script.Product.cost,
@@ -221,9 +219,9 @@ class DetailsTab extends Component {
                   <tr>
                     <td className="field">Physician</td>
                     <td className="setValue">
-                      <Link to={'../physicians/' + this.state.physicianId} activeClassName="active">
+                      {/* <Link to={'../physicians/' + this.state.physicianId} activeClassName="active"> */}
                         {this.state.physicianName || ''}
-                      </Link></td>
+                      {/* </Link></td> */}</td>
                     <td className="field">Refill #</td>
                     <td className="value">{this.state.refills || ''}</td>
                   </tr>
@@ -299,30 +297,6 @@ class DetailsTab extends Component {
                         id='symptoms'
                         placeholder={allergies}
                       /></Span>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <label style={{ fontSize: 14 }}>
-                      Patient Warning
-                    </label>
-                    <div id="patientWarning">
-                      <Span>
-                        {this.state.patientWarning || 'None'}
-                      </Span>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <label style={{ fontSize: 14 }}>
-                      Physician Warning
-                    </label>
-                    <div id="physicianWarning">
-                      <Span>
-                        {this.state.physicianWarning || 'None'}
-                      </Span>
-                    </div>
                   </td>
                 </tr>
               </table>

@@ -20,7 +20,7 @@ import { SwitchTable, AddressModal } from '../../../shared'
 
 import { Body, Button, Header, Input, Span } from '../../../common'
 
-import PrescriptionsTab from '../PatientView/Tabs/PrescriptionsTab'
+import PrescriptionsTab from './Tabs/PrescriptionsTab'
 import InsuranceTab from '../PatientView/Tabs/InsuranceTab'
 import FilesTab from '../PatientView/Tabs/FilesTab'
 import NotesTab from '../PatientView/Tabs/NotesTab'
