@@ -94,7 +94,7 @@ class PatientsViewPhysician extends Component {
   enterPressed(event) {
     var code = event.keyCode || event.which;
     if (code === 13) { //13 is the enter keycode
-      this.searchQuery();
+      this.getRelativePatients.bind(this);
     }
   }
 
@@ -239,7 +239,7 @@ class PatientsViewPhysician extends Component {
                 search
                 icon="search"
                 title="SEARCH"
-                onClick={this.searchQuery}
+                onClick={this.getRelativePatients.bind(this)}
               />
 
 
