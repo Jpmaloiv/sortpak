@@ -18,10 +18,14 @@ const productRoutes = require("./routes/product-routes.js");
 const visitRoutes = require("./routes/visit-routes.js");
 const fileUpload = require('express-fileupload');
 
+
+
 const aws = require('aws-sdk');
 
 //middleware
 const bodyParser = require('body-parser');
+
+
 
 //express setup
 const app = express();
@@ -38,6 +42,21 @@ app.use(bodyParser.text());
 app.use(bodyParser.json({ type: "application/vnd.api+json" }));
 
 app.use(express.static(path.join(__dirname, 'client/build')));
+
+// Stripe
+const stripe = require("stripe")("sk_test_OVr1Ou3Gc5Vx4uqaZ888w1bz");
+app.use(require("body-parser").text());
+
+app.post("/charge", async (req, res) => {
+    return stripe.charges
+    .create({
+      amount: 2000, // Unit: cents
+      currency: 'us',
+      source: req.body.tokenId,
+      description: 'Test payment',
+    })
+    .then(result => res.status(200).json(result));
+});
 
 // Routes
 app.use(express.static(path.join(__dirname + '/public')));

@@ -30,7 +30,6 @@ class DetailsTab extends Component {
     const loginToken = window.localStorage.getItem("token");
     axios.get('/api/scripts/search?scriptId=' + scriptNum, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
-        console.log(resp);
         let script = resp.data.response[0];
         this.setState({
           id: script.id,
@@ -179,17 +178,17 @@ class DetailsTab extends Component {
               <table>
                 {/* <table className={styles.scriptView}> */}
                 <tbody>
-                  <tr style={{ 'line-height': '1.8em' }}>
+                  <tr style={{ lineHeight: '1.8em' }}>
                     <td className="field">Processed On</td>
                     <td className="value">
                       <Moment format="MM/DD/YYYY">{this.state.processedOn || ''}</Moment>
                     </td>
                     <td className="field">Written Date</td>
                     <td className="value">
-                      <Moment stye={{ 'line-height': '1.8em' }} format="MM/DD/YYYY">{this.state.writtenDate || ''}</Moment>
+                      <Moment stye={{ lineHeight: '1.8em' }} format="MM/DD/YYYY">{this.state.writtenDate || ''}</Moment>
                     </td>
                   </tr>
-                  <tr style={{ 'line-height': '1.8em' }}>
+                  <tr style={{ lineHeight: '1.8em' }}>
                     <td className="field">Patient Name</td>
                     <td className="setValue">
                       <Link to={'../patients/' + this.state.patientId} activeClassName="active">

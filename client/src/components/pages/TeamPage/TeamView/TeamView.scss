@@ -4,10 +4,7 @@
 }
 
 :local(.table) {
-  > tbody {
-    > tr {
-    }
-  }
+  margin: 0 !important;
 }
 
 :local(.detailsCell) {

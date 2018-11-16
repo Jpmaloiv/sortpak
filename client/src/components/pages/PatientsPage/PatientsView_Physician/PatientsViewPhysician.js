@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import axios from 'axios'
 import Moment from 'react-moment'
+import jwt_decode from 'jwt-decode'
 
 
 import { Span, Table, Input, Header, Button, ActionBox, SearchBar } from '../../../common'
@@ -34,16 +35,45 @@ class PatientsViewPhysician extends Component {
     }
     this.searchQuery = this.searchQuery.bind(this);
   }
+
   componentDidMount() {
     const loginToken = window.localStorage.getItem("token");
+    var decoded = jwt_decode(loginToken);
+    this.setState({
+      userId: decoded.id
+    }, this.getUserInfo)
     axios.get('api/patients/search/', { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
-        console.log(resp.data.response);
         this.setState({
           patients: resp.data.response
         })
       }).catch((error) => {
         console.error(error);
+      })
+  }
+
+  getUserInfo() {
+    const loginToken = window.localStorage.getItem("token");
+    axios.get('/api/user/search?userId=' + this.state.userId, { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        this.setState({
+          physicianId: resp.data.response[0].PhysicianId
+        }, this.getScriptsJunction)
+      }).catch((err) => {
+        console.error(err)
+      })
+  }
+
+  getScriptsJunction() {
+    const loginToken = window.localStorage.getItem("token");
+    axios.get('/api/scripts/search?physicianId=' + this.state.physicianId, { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        console.log(resp);
+        this.setState({
+
+        })
+      }).catch((err) => {
+        console.error(err)
       })
   }
 
@@ -163,7 +193,7 @@ class PatientsViewPhysician extends Component {
           </h2>
 
           <div className="action">
-      
+
 
           </div>
 

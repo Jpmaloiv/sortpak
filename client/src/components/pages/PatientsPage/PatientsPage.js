@@ -5,7 +5,7 @@ import styles from './PatientsPage.css'
 
 class PatientsPage extends Component {
   render() {
-console.log(this.props);
+console.log(this.props, this.state);
     return (
       <div className={styles.app}>
         <Router

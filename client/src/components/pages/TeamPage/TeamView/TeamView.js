@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import Moment from 'react-moment'
 import { TablePagination } from 'react-pagination-table';
+import { ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 
 
 // Components
@@ -43,27 +44,13 @@ class TeamView extends Component {
     axios.get('/api/user/search/', { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
         console.log(resp);
-        // for (let i = 0; i < resp.data.response.length; i++) {
-        // moment(resp.data.response[0].createdAt, 'YYYY-MM-DD').format('YYYY-MM-DD')
-        // console.log(resp.data.response[0].createdAt);
-        // this.setState({
-        //   user: moment(resp.data.response[0].createdAt, 'YYYY-MM-DD').format('YYYY-MM-DD')
-        // },() => console.log(this.state.user))
-
         this.setState({
           users: resp.data.response
         })
-
-
-
       }).catch((err) => {
         console.error(err)
       })
   }
-
-  // handleClick(value) {
-  //   window.location = `/team/${value}`
-  // }
 
   filterUsers(search) {
     const { searchType } = this.state
@@ -78,7 +65,7 @@ class TeamView extends Component {
 
   renderTable() {
     return (
-      <Table className={styles.table} hoverable>
+      <Table className="userTable" hoverable>
         {this.renderTableHead()}
         {this.renderTableBody()}
       </Table>
@@ -170,6 +157,30 @@ class TeamView extends Component {
     ]
   }
 
+  submitSearch() {
+    let roles = ''
+    if (this.state.searchAdmin) roles += ',Admin'
+    if (this.state.searchReps) roles += ',Rep'
+    if (this.state.searchPhysicians) roles += ',Physician'
+    var roleFilter = roles.substring(1);
+    const loginToken = window.localStorage.getItem("token");
+    axios.get('api/user/search?userRole=' + roleFilter, { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        console.log(resp)
+        this.setState({
+          users: resp.data.response
+        })
+      }).catch((error) => {
+        console.error(error);
+      })
+  }
+
+  userSearch(e) {
+    this.setState({ searchAdmin: e.includes(1) }, this.submitSearch)
+    this.setState({ searchReps: e.includes(2) }, this.submitSearch)
+    this.setState({ searchPhysicians: e.includes(3) }, this.submitSearch)
+  }
+
 
 
   render() {
@@ -192,19 +203,14 @@ class TeamView extends Component {
     return (
       <div className={styles.app}>
 
-        <Header>
-          <h2>
-            Team Members
-          </h2>
-        </Header>
 
-        <div className="body">
+        <div className="body" style={{ marginTop: 1 }}>
 
           <ActionBox>
 
             <div className="main">
 
-              <Button
+              {/* <Button
                 style={{ backgroundColor: 'gray', minWidth: 80, minHeight: 40, marginRight: 20 }}
                 title='Admin'
 
@@ -218,7 +224,19 @@ class TeamView extends Component {
               <Button
                 style={{ backgroundColor: 'lightGray', minWidth: 80, minHeight: 40, marginRight: 20 }}
                 title='Physicians'
-              />
+              /> */}
+
+              <ToggleButtonGroup
+                name='teamSearch'
+                type='checkbox'
+                className="teamSearch"
+                value={this.state.value}
+                onChange={this.userSearch.bind(this)}
+              >
+                <ToggleButton value={1}>Admin</ToggleButton>
+                <ToggleButton value={2}>Sales</ToggleButton>
+                <ToggleButton value={3}>Physicians</ToggleButton>
+              </ToggleButtonGroup>
 
               <SearchBar
                 label="Search By Name"

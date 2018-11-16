@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 
-import { Button, ButtonGroup } from 'react-bootstrap';
+import { ButtonGroup } from 'react-bootstrap';
+import { FaxModal } from '../../../shared/'
 
 import axios from 'axios'
 
 import {
   Table,
+  Button,
   Header,
   ActionBox,
   SearchBar,
@@ -20,10 +22,14 @@ class RefillsView extends Component {
     this.state = {
       searchValue: 'Any',
       refillOK: true,
-      specializstion: ''
+      specialization: ''
     }
 
     this.handleChange = this.handleChange.bind(this);
+  }
+
+  openFaxModal() {
+    this.props.setState({ faxModal: {} })
   }
 
   componentDidMount() {
@@ -54,6 +60,14 @@ class RefillsView extends Component {
       }).catch((err) => {
         console.error(err)
       })
+  }
+
+ 
+
+  closeModal() {
+    this.setState({
+      faxModal: null
+    })
   }
 
   submitSearch() {
@@ -143,19 +157,26 @@ class RefillsView extends Component {
           <td>{script.processedOn}</td>
           <td>{script.Physician.firstName} {script.Physician.lastName}</td>
           <td>{script.Patient.firstName} {script.Patient.lastName}</td>
-          <td>{script.medication}</td>
-          <td></td>
+          <td>{script.Product.name}</td>
+          <td>{script.rxNumber}</td>
         </tr>
       )
     }
     else {
       return (
         <tr value={script.id} onClick={() => this.handleClick(script.id)}>
-          <td>{script.processedOn}</td>
+          <td>
+          <Button
+            icon="print"
+            style={{padding: 2, 'min-width': '100px'}}
+            onClick={() => this.openFaxModal()}
+            title="FAX"
+          />
+          &nbsp;&nbsp;&nbsp;{script.processedOn}</td>
           <td>{script.Physician.firstName} {script.Physician.lastName}</td>
           <td>{script.Patient.firstName} {script.Patient.lastName}</td>
-          <td>{script.medication}</td>
-          <td></td>
+          <td>{script.Product.name}</td>
+          <td>{script.rxNumber}</td>
           <td>{script.Patient.dob}</td>
           <td></td>
         </tr>
@@ -204,6 +225,18 @@ class RefillsView extends Component {
       'Hepatology',
       'Pulmonology'
     ]
+
+
+    const {
+      state,
+      className,
+      onCloseModal,
+      onCreateFax,
+    } = this.props
+
+    // const {
+    //   faxModal
+    // } = state
 
     if (this.state.refills) {
       // const self = this;
@@ -290,6 +323,16 @@ class RefillsView extends Component {
 
           {this.renderTable()}
           {refillList}
+
+<div className={className}>
+          <FaxModal
+          // content={faxModal}
+          onClickAway={onCloseModal}
+          onSubmit={onCreateFax}
+          state={this.state}
+          props={this.props}
+        />
+        </div>
 
         </div>
       </div>

@@ -13,19 +13,21 @@ import PatientViewPhysician from './PatientView_Physician/PatientViewPhysician'
 import AddPatient from './AddPatient/AddPatient'
 import NotFound from '../../NotFound/NotFound'
 
-console.log(this.props);
 
-// const PatientsPageRouter = props => (
 class PatientsPageRouter extends React.Component {
-  // constructor(props) {
-  //   super(props)
-  //   this.state = {
-  //     userRole: ''
-  //   }
-  // }
+
   render() {
-    // console.log(this.props);
+
     console.log(this.props.props.state.userRole);
+
+    const PatientsViewPhysicianPage = (props) => {
+      return (
+        <PatientsViewPhysician
+          state={this.state}
+          {...props}
+        />
+      );
+    }
     return (
 
       <Switch>
@@ -39,10 +41,10 @@ class PatientsPageRouter extends React.Component {
           <Route
             exact
             path="/patients"
-            component={PatientsViewPhysician}
+            render={PatientsViewPhysicianPage}
           />
-    }
-        
+        }
+
 
         <Route
           exact
@@ -51,27 +53,17 @@ class PatientsPageRouter extends React.Component {
         />
 
 
-          <Route
-            exact
-            path="/patients/:patientId"
-            component={PatientView}
-          />
-          
-          <Route
-            exact
-            path="/patients/:patientId"
-            component={PatientViewPhysician}
-          />
-      
+        <Route
+          exact
+          path="/patients/:patientId"
+          component={PatientView}
+        />
 
-
-
-
-
-
-
-
-
+        <Route
+          exact
+          path="/patients/:patientId"
+          component={PatientViewPhysician}
+        />
 
         <Route
           component={NotFound}

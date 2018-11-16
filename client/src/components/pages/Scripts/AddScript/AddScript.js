@@ -375,11 +375,13 @@ class AddScript extends Component {
         ]
 
         const copayApprovalOptions = [
+            '-',
             'Approved',
             'Denied'
         ]
 
         const copayNetworkOptions = [
+            '-',
             'Cancer Care Foundation',
             'Chronice Disease Fund',
             'Health Well',
@@ -734,12 +736,12 @@ class AddScript extends Component {
                                     <td>
                                         <Selector
                                             wide
-                                            //  label="Status"
                                             options={copayApprovalOptions}
                                             placeholder="No Status"
                                             onSelect={copayApproval => this.setState({ copayApproval })}
                                         />
                                     </td>
+                                    {this.state.copayApproval === "Approved" ?
                                     <td>
                                         <Selector
                                             wide
@@ -750,6 +752,7 @@ class AddScript extends Component {
                                         />
 
                                     </td>
+                                    :<td></td> }
                                 </tr>
                             </tbody>
                         </Table>

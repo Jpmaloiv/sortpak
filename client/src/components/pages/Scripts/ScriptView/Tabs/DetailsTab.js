@@ -17,20 +17,25 @@ import {
 class DetailsTab extends Component {
   constructor(props) {
     super(props)
-    this.state = { 
-      refills: 0 }
+    this.state = {
+      refills: 0,
+      refresh: false
+    }
   }
   state = {
     script: ''
   }
-  
 
-  componentDidMount() {
+
+  componentWillReceiveProps(props) {
+    this.reMount();
+  }
+
+  reMount() {
     let scriptNum = this.props.sID.match.params.scriptId;
     const loginToken = window.localStorage.getItem("token");
     axios.get('/api/scripts/search?scriptId=' + scriptNum, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
-        console.log(resp);
         let script = resp.data.response[0];
         this.setState({
           id: script.id,
@@ -56,6 +61,7 @@ class DetailsTab extends Component {
           productName: script.Product.name,
           productNDC: script.Product.NDC,
           cost: script.Product.cost,
+          priorAuth: script.priorAuth,
           productQuantity: script.Product.quantity,
           billOnDate: script.billOnDate,
           rxNumber: script.rxNumber,
@@ -81,13 +87,17 @@ class DetailsTab extends Component {
           trackNum: script.trackNum,
           ETA: script.ETA,
           paymentOption: script.paymentOption,
-          
+
         })
-        
+
 
       }).catch((err) => {
         console.error(err)
       })
+  }
+
+  componentDidMount() {
+   this.reMount();
   }
 
 
@@ -113,6 +123,11 @@ class DetailsTab extends Component {
   }
 
   render() {
+
+    const totalPay = +this.state.primInsPay + +this.state.secInsPay + +this.state.networkPay + +this.state.patientPay;
+    console.log(this.state.cost, this.state.totalPay)
+    const profit = totalPay - this.state.cost;
+    const margin = (profit / totalPay * 100).toFixed(1) + '%';
 
     const statusOptions = [
       'No Status',
@@ -150,7 +165,6 @@ class DetailsTab extends Component {
       'Copay Card'
     ]
 
-    const totalPay = ""
 
     const {
       editing
@@ -164,11 +178,6 @@ class DetailsTab extends Component {
       var allergies = this.state.allergies.split(",").join("\n")
     }
 
-    // if (this.state.primInsPay) {
-    //   const totalPay = this.state.primInsPay - this.state.secInsPay
-    //   return totalPay;
-    // }
-
     return (
       <div>
         <Header>
@@ -179,17 +188,17 @@ class DetailsTab extends Component {
               <table>
                 {/* <table className={styles.scriptView}> */}
                 <tbody>
-                  <tr style={{ 'line-height': '1.8em' }}>
+                  <tr style={{ lineHeight: '1.8em' }}>
                     <td className="field">Processed On</td>
                     <td className="value">
                       <Moment format="MM/DD/YYYY">{this.state.processedOn || ''}</Moment>
                     </td>
                     <td className="field">Written Date</td>
                     <td className="value">
-                      <Moment stye={{ 'line-height': '1.8em' }} format="MM/DD/YYYY">{this.state.writtenDate || ''}</Moment>
+                      <Moment stye={{ lineHeight: '1.8em' }} format="MM/DD/YYYY">{this.state.writtenDate || ''}</Moment>
                     </td>
                   </tr>
-                  <tr style={{ 'line-height': '1.8em' }}>
+                  <tr style={{ lineHeight: '1.8em' }}>
                     <td className="field">Patient Name</td>
                     <td className="setValue">
                       <Link to={'../patients/' + this.state.patientId} activeClassName="active">
@@ -276,7 +285,7 @@ class DetailsTab extends Component {
                   </tr>
                   <tr>
                     <td className="field">Prior Authorization</td>
-                    <td className='value'></td>
+                    <td className='value'>{this.state.priorAuth || ''}</td>
                     <td className="field">Secondary Insurance Pay</td>
                     <td className='value'>{this.state.secInsPay || ''}</td>
                   </tr>
@@ -323,19 +332,19 @@ class DetailsTab extends Component {
                     <td className="field">Status</td>
                     <td className='value'>{this.state.status || ''}</td>
                     <td className="field">Total Pay</td>
-                    <td className="value">{this.state.primInsPay - this.state.secInsPay}</td>
+                    <td className="value">{totalPay}</td>
                   </tr>
                   <tr>
                     <td className="field">Instructions</td>
                     <td className='value'>{this.state.directions || ''}</td>
                     <td className="field">Profit</td>
-                    <td className='value'></td>
+                    <td className='value'>{profit}</td>
                   </tr>
                   <tr>
                     <td className="field"></td>
                     <td className='value'></td>
                     <td className="field">Margin</td>
-                    <td className='value'></td>
+                    <td className='value'>{margin}</td>
                   </tr>
                 </tbody>
               </table>
@@ -366,55 +375,57 @@ class DetailsTab extends Component {
             <div className="scriptViewColumn2">
 
               <table>
-                <tr>
-                  <td>
-                    <Span
-                      label="Co-morbid conditions"
-                    >
-                      <TextArea
-                        disabled
-                        id='symptoms'
-                        placeholder={conditions}
-                      />
-                    </Span>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <Span
-                      label="Allergies"
-                    >
-                      <TextArea
-                        disabled
-                        id='symptoms'
-                        placeholder={allergies}
-                      /></Span>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <label style={{ fontSize: 14 }}>
-                      Patient Warning
-                    </label>
-                    <div id="patientWarning">
-                      <Span>
-                        {this.state.patientWarning || 'None'}
+                <tbody>
+                  <tr>
+                    <td>
+                      <Span
+                        label="Co-morbid conditions"
+                      >
+                        <TextArea
+                          disabled
+                          id='symptoms'
+                          placeholder={conditions}
+                        />
                       </Span>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <label style={{ fontSize: 14 }}>
-                      Physician Warning
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <Span
+                        label="Allergies"
+                      >
+                        <TextArea
+                          disabled
+                          id='symptoms'
+                          placeholder={allergies}
+                        /></Span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <label style={{ fontSize: 14 }}>
+                        Patient Warning
                     </label>
-                    <div id="physicianWarning">
-                      <Span>
-                        {this.state.physicianWarning || 'None'}
-                      </Span>
-                    </div>
-                  </td>
-                </tr>
+                      <div id="patientWarning">
+                        <Span>
+                          {this.state.patientWarning || 'None'}
+                        </Span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <label style={{ fontSize: 14 }}>
+                        Physician Warning
+                    </label>
+                      <div id="physicianWarning">
+                        <Span>
+                          {this.state.physicianWarning || 'None'}
+                        </Span>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
               </table>
             </div>
           </div>

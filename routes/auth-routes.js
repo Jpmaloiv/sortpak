@@ -31,6 +31,27 @@ router.get("/search", (req, res) => {
         searchParams.where.role = req.query.role
     }
 
+    if (req.query.userRole) {
+        if (req.query.userRole.match(/,.*,.*,.*,.*,.*,.*,.*,.*,.*,.*,.*,/)) { // Check if there are 2 commas
+            str = str.replace(',', ''); // Remove the first one
+        }
+        const roles = req.query.userRole.split(',').map((elem) => {
+            return '%' + elem + '%'
+        });
+        if (roles.length > 1) {
+            const opLikes = roles.map((elem) => {
+                return { [Op.like]: elem }
+            })
+            searchParams.where.role = {
+                [Op.or]: opLikes
+            }
+        } else {
+            searchParams.where.role = {
+                [Op.like]: roles[0]
+            }
+        }
+    }
+
     console.log(searchParams);
     db.User
         .findAll(searchParams)

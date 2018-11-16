@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import jwt_decode from 'jwt-decode'
+import { Elements, StripeProvider } from 'react-stripe-elements';
+import CheckoutForm from '../../../shared/CheckoutForm/CheckoutForm';
+import moment from 'moment';
 
 import { Header, Body, Button, Table, Input, Selector } from '../../../common'
 import styles from './ScriptView.css'
@@ -25,7 +28,8 @@ class ScriptView extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      notesNum: ''
+      notesNum: '',
+      chargeModal: ''
     }
     this.tabOptions = [
       {
@@ -75,7 +79,9 @@ class ScriptView extends Component {
     this.reversalPane = this.reversalPane.bind(this);
     this.transferPane = this.transferPane.bind(this);
     this.updateStatus = this.updateStatus.bind(this);
+    this.handlePriorAuth = this.handlePriorAuth.bind(this);
     this.handleShipping = this.handleShipping.bind(this);
+    this.generateRefillScript = this.generateRefillScript.bind(this);
   }
 
   state = {
@@ -83,7 +89,12 @@ class ScriptView extends Component {
     reversal: '',
     transfer: '',
     shipping: '',
-    cancelPharmTrans: ''
+    cancelPharmTrans: '',
+    refresh: false
+  }
+
+  openNoteModal() {
+    this.setState({ chargeModal: {} })
   }
 
 
@@ -99,7 +110,6 @@ class ScriptView extends Component {
       const loginToken = window.localStorage.getItem("token");
       axios.get('/api/scripts/search?scriptId=' + this.props.match.params.scriptId, { headers: { "Authorization": "Bearer " + loginToken } })
         .then((resp) => {
-          console.log(resp);
           let script = resp.data.response[0];
           this.setState({
             id: script.id,
@@ -113,6 +123,7 @@ class ScriptView extends Component {
             rxNumber: script.rxNumber,
             diagnosis: script.diagnosis,
             secDiagnosis: script.secDiagnosis,
+            priorAuth: script.priorAuth,
             refills: script.refills,
             refillsRemaining: script.refillsRemaining,
             quantity: script.quantity,
@@ -130,7 +141,10 @@ class ScriptView extends Component {
             patientId: script.PatientId,
             notesNum: script.scriptNotes.length,
             attachmentsNum: script.scriptAttachments.length,
-            PatientId: script.PatientId
+            PatientId: script.PatientId,
+            physicianId: script.PhysicianId,
+            productId: script.ProductId
+
           }, this.getRxHistoryNum)
 
 
@@ -176,7 +190,6 @@ class ScriptView extends Component {
     const loginToken = window.localStorage.getItem("token");
     axios.get('/api/scripts/statuses/search?ScriptId=' + this.state.id, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
-        console.log(resp);
         this.setState({
           statusesNum: resp.data.response.length
         })
@@ -188,19 +201,21 @@ class ScriptView extends Component {
 
   closeModal() {
     this.setState({
-      attachmentModal: null
+      attachmentModal: null,
+      chargeModal: null
     })
   }
 
 
   updateStatus() {
     const loginToken = window.localStorage.getItem("token");
-    console.log(this.state.homeCare);
+    if (this.state.status === "Shipped") this.refillConfirm();
     let data = new FormData();
     let updateParams = '?id=' + this.props.match.params.scriptId + '&status=' + this.state.status + '&pouch=' + this.state.pouch + '&location=' + this.state.location + '&homeCare=' + this.state.homeCare;
     if (this.state.reversal) updateParams += '&processedOn=' + this.state.processedOn;
     if (this.state.transfer) updateParams += '&transLocation=' + this.state.transLocation + '&transNPI=' + this.state.transNPI + '&transDate=' + this.state.transDate;
-    if (this.state.copayApproval) updateParams += '&patientPay=' + this.state.patientPay + '&copayApproval=' + this.state.copayApproval + '&copayNetwork=' + this.state.copayNetwork;
+    if (this.state.priorAuth) updateParams += '&priorAuth=' + this.state.priorAuth;
+    if (this.state.copayApproval) updateParams += '&patientPay=' + this.state.patientPay + '&copayApproval=' + this.state.copayApproval + '&copayNetwork=' + this.state.copayNetwork + '&networkPay=' + this.state.networkPay;
     if (this.state.shipping) updateParams += '&shipOn=' + this.state.shipOn + '&deliveryMethod=' + this.state.deliveryMethod + '&trackNum=' + this.state.trackNum + '&ETA=' + this.state.ETA + '&paymentOption=' + this.state.paymentOption;
     console.log(updateParams);
     axios.put('/api/scripts/update' + updateParams, data, { headers: { "Authorization": "Bearer " + loginToken } })
@@ -211,7 +226,8 @@ class ScriptView extends Component {
       })
     this.statusChange();
     this.setState({
-      fromStatus: this.state.status
+      fromStatus: this.state.status,
+      refresh: !this.state.refresh
     })
   }
 
@@ -230,9 +246,21 @@ class ScriptView extends Component {
   handleClick(event) {
     this.setState({
       status: event.target.id
-    },
-      this.updateStatus
-    )
+    }, this.updateStatus)
+  }
+
+  handlePriorAuth(event) {
+    if (event.target.id === 'Approved') {
+      this.setState({
+        priorAuth: event.target.id,
+        status: 'Process'
+      }, this.updateStatus)
+    } else {
+      this.setState({
+        priorAuth: event.target.id,
+        status: 'Review'
+      }, this.updateStatus)
+    }
   }
 
   handleCopayApproval(event) {
@@ -280,6 +308,64 @@ class ScriptView extends Component {
     this.setState({
       shipping: true
     }, this.updateStatus)
+  }
+
+  addScript() {
+    console.log(this.state);
+    const loginToken = window.localStorage.getItem("token");
+    let data = new FormData();
+    axios.post('/api/scripts/add?patientId=' + this.state.patientId + '&physicianId=' + this.state.physicianId + '&productId=' + this.state.productId + '&processedOn=' + this.state.newProcessedOn + '&pouch=' + this.state.pouch + "&medication=" + this.state.medication + "&status=" + this.state.newStatus + "&pharmNPI=" + this.state.pharmNPI
+      + "&priorAuth=" + this.state.priorAuth + "&location=" + this.state.location + "&pharmDate=" + this.state.pharmDate + "&writtenDate=" + this.state.writtenDate + "&salesCode=" + this.state.salesCode +
+      "&billOnDate=" + this.state.billOnDate + "&cost=" + this.state.cost + "&rxNumber=" + this.state.rxNumber + "&primInsPay=" + this.state.primInsPay + "&diagnosis=" + this.state.diagnosis +
+      "&secInsPay=" + this.state.secInsPay + "&secDiagnosis=" + this.state.secDiagnosis + "&patientPay=" + this.state.patientPay + "&refills=" + this.state.newRefills +
+      "&refillsRemaining=" + this.state.newRefillsRemaining + "&quantity=" + this.state.quantity + "&daysSupply=" + this.state.daysSupply + "&directions=" + this.state.directions +
+      "&copayApproval=" + this.state.copayApproval + "&copayNetwork=" + this.state.copayNetwork + "&homeCare=" + this.state.homeCare + '&hcHome=' + this.state.hcHome + '&hcPhone=' + this.state.hcPhone,
+      data, { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((data) => {
+        console.log(data);
+        window.location.reload();
+      }).catch((error) => {
+        console.error(error);
+      })
+
+  }
+
+  refillLogic() {
+    console.log(this.state.newRefillsRemaining);
+    if (this.state.newRefillsRemaining < 0) {
+      this.setState({
+        newRefills: '',
+        newRefillsRemaining: ''
+      }, this.addScript)
+    } else {
+      this.addScript();
+    }
+  }
+
+  generateRefillScript() {
+    let count = this.state.refills;
+    count++;
+    let num = this.state.refillsRemaining
+    let newStatus;
+    if (num == 0) {
+      newStatus = 'Renew'
+    } else if (num !== 0) {
+      newStatus = 'Refill'
+    }
+    this.setState({
+      newProcessedOn: moment(this.state.ETA).add(this.state.daysSupply, 'days').subtract(10, 'days').format('MM-DD-YYYY'),
+      newRefills: count,
+      newRefillsRemaining: this.state.refillsRemaining - 1,
+      newStatus: newStatus
+    }, (this.refillLogic))
+  }
+
+  refillConfirm() {
+    if (window.confirm('Generate refill?')) {
+      this.generateRefillScript();
+    } else {
+      return;
+    }
   }
 
   renderActions() {
@@ -380,82 +466,86 @@ class ScriptView extends Component {
           />
           {this.state.reversal ?
             <table>
-              <tr>
-                <td></td>
-                <td>
-                  <p>Reverse the script and specify when it should be processed.</p>
-                </td>
-              </tr>
-              <tr>
-                <td>Process On</td>
-                <td>
-                  <Input
-                    type="date"
-                    placeholder="--/--/----"
-                    value={this.state.processedOn}
-                    onChange={processedOn => this.setState({ processedOn })}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td></td>
-                <td>
-                  <Button
-                    title="REVERSE SCRIPT"
-                    id="Process"
-                    onClick={this.handleClick}
-                    style={{ 'background-color': '#000' }}
-                  />
-                  <Button
-                    title="CANCEL SCRIPT"
-                    id="Cancelled"
-                    onClick={this.handleClick}
-                    style={{ 'background-color': '#000', marginLeft: 10 }}
-                  />
-                </td>
-              </tr>
+              <tbody>
+                <tr>
+                  <td></td>
+                  <td>
+                    <p>Reverse the script and specify when it should be processed.</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Process On</td>
+                  <td>
+                    <Input
+                      type="date"
+                      placeholder="--/--/----"
+                      value={this.state.processedOn}
+                      onChange={processedOn => this.setState({ processedOn })}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>
+                    <Button
+                      title="REVERSE SCRIPT"
+                      id="Process"
+                      onClick={this.handleClick}
+                      style={{ 'background-color': '#000' }}
+                    />
+                    <Button
+                      title="CANCEL SCRIPT"
+                      id="Cancelled"
+                      onClick={this.handleClick}
+                      style={{ 'background-color': '#000', marginLeft: 10 }}
+                    />
+                  </td>
+                </tr>
+              </tbody>
             </table> : <div></div>
           }
           {this.state.transfer ?
             <table>
-              <tr>
-                <td>Location</td>
-                <td>
-                  <Input
-                    placeholder="Enter location here..."
-                    value={this.state.transLocation}
-                    onChange={transLocation => this.setState({ transLocation })}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td>NPI</td>
-                <td>
-                  <Input
-                    value={this.state.transNPI}
-                    onChange={transNPI => this.setState({ transNPI })} />
-                </td>
-              </tr>
-              <tr>
-                <td>Date</td>
-                <td>
-                  <Input
-                    type="Date"
-                    value={this.state.transDate}
-                    onChange={transDate => this.setState({ transDate })}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td></td>
-                <td>
-                  <Button
-                    title="TRANSFER"
-                    id="Cancelled"
-                    onClick={this.handleClick}
-                  />
-                </td>
-              </tr>
+              <tbody>
+                <tr>
+                  <td>Location</td>
+                  <td>
+                    <Input
+                      placeholder="Enter location here..."
+                      value={this.state.location}
+                      onChange={location => this.setState({ location })}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td>NPI</td>
+                  <td>
+                    <Input
+                      value={this.state.transNPI}
+                      onChange={transNPI => this.setState({ transNPI })} />
+                  </td>
+                </tr>
+                <tr>
+                  <td>Date</td>
+                  <td>
+                    <Input
+                      type="Date"
+                      value={this.state.transDate}
+                      onChange={transDate => this.setState({ transDate })}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>
+                    <Button
+                      title="TRANSFER"
+                      id="Cancelled"
+                      onClick={this.handleClick}
+                    />
+                  </td>
+                </tr>
+              </tbody>
             </table> : <div></div>}
         </div>
       )
@@ -465,26 +555,26 @@ class ScriptView extends Component {
           <p>Please process the prior authorization and record the result.</p>
           <Button
             title="APPROVED"
-            id="Process"
-            onClick={this.handleClick}
+            id="Approved"
+            onClick={this.handlePriorAuth}
           />
           <Button
             title="DENIED"
-            id="Review"
-            onClick={this.handleClick}
+            id="Denied"
+            onClick={this.handlePriorAuth}
             style={{ 'background-color': '#000', marginLeft: 10 }}
           />
           <Button
             title="PAYOR RESTRICTION"
-            id="Review"
-            onClick={this.handleClick}
+            id="Payor Restriction"
+            onClick={this.handlePriorAuth}
             className="orange"
             style={{ marginLeft: 10 }}
           />
           <Button
             title="LIMITED DISTRIBUTION"
-            id="Review"
-            onClick={this.handleClick}
+            id="Limited Distribution"
+            onClick={this.handlePriorAuth}
             className="orange"
             style={{ marginLeft: 10 }}
           />
@@ -532,53 +622,58 @@ class ScriptView extends Component {
         <div className="actions">
           <p>Process the copay assistance and update the fields below.</p>
           <table>
-            <tr>
-              <td className="field">Copay Network</td>
-              <td>
-                <Selector
-                  options={copayNetworkOptions}
-                  value={this.state.copayNetwork}
-                  onSelect={copayNetwork => this.setState({ copayNetwork })}
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="field">Network Pay</td>
-              <td>
-                <Input />
-              </td>
-            </tr>
-            <tr>
-              <td className="field">Patient Pay</td>
-              <td>
-                <Input
-                  value={this.state.patientPay}
-                  onChange={patientPay => this.setState({ patientPay })}
-                />
-              </td>
-            </tr>
-            <tr>
-              <td></td>
-              <td>
-                <Button
-                  title="APPROVED"
-                  id="Schedule"
-                  onClick={this.handleCopayApproval}
-                />
-                <Button
-                  title="DENIED"
-                  id="Process"
-                  onClick={this.handleCopayApproval}
-                  style={{ 'background-color': '#000', marginLeft: 10 }}
-                />
-                <Button
-                  title="FLAG FOR REVIEW"
-                  id="Review"
-                  onClick={this.handleClick}
-                  style={{ 'background-color': '#d2000d', marginLeft: 10 }}
-                />
-              </td>
-            </tr>
+            <tbody>
+              <tr>
+                <td className="field">Copay Network</td>
+                <td>
+                  <Selector
+                    options={copayNetworkOptions}
+                    value={this.state.copayNetwork}
+                    onSelect={copayNetwork => this.setState({ copayNetwork })}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="field">Network Pay</td>
+                <td>
+                  <Input
+                    value={this.state.networkPay}
+                    onChange={networkPay => this.setState({ networkPay })}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="field">Patient Pay</td>
+                <td>
+                  <Input
+                    value={this.state.patientPay}
+                    onChange={patientPay => this.setState({ patientPay })}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>
+                  <Button
+                    title="APPROVED"
+                    id="Schedule"
+                    onClick={this.handleCopayApproval}
+                  />
+                  <Button
+                    title="DENIED"
+                    id="Process"
+                    onClick={this.handleCopayApproval}
+                    style={{ 'background-color': '#000', marginLeft: 10 }}
+                  />
+                  <Button
+                    title="FLAG FOR REVIEW"
+                    id="Review"
+                    onClick={this.handleClick}
+                    style={{ 'background-color': '#d2000d', marginLeft: 10 }}
+                  />
+                </td>
+              </tr>
+            </tbody>
           </table>
 
         </div>
@@ -589,82 +684,84 @@ class ScriptView extends Component {
         <div className="actions">
           <p>Call the patient and schedule delivery.</p>
           <table>
-            <tr>
-              <td className='field'>
-                Ship on
+            <tbody>
+              <tr>
+                <td className='field'>
+                  Ship on
                     </td>
-              <td>
-                <Input
-                  type="date"
-                  value={this.state.shipOn}
-                  onChange={shipOn => this.setState({ shipOn })}
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className='field'>
-                Delivery Method
+                <td>
+                  <Input
+                    type="date"
+                    value={this.state.shipOn}
+                    onChange={shipOn => this.setState({ shipOn })}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className='field'>
+                  Delivery Method
                     </td>
-              <td>
-                <Selector
-                  options={deliveryOptions}
-                  value={this.state.deliveryMethod}
-                  onSelect={deliveryMethod => this.setState({ deliveryMethod })}
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="field">
-                Tracking Number
+                <td>
+                  <Selector
+                    options={deliveryOptions}
+                    value={this.state.deliveryMethod}
+                    onSelect={deliveryMethod => this.setState({ deliveryMethod })}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="field">
+                  Tracking Number
                     </td>
-              <td>
-                <Input
-                  value={this.state.trackNum}
-                  onChange={trackNum => this.setState({ trackNum })}
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="field">
-                ETA
+                <td>
+                  <Input
+                    value={this.state.trackNum}
+                    onChange={trackNum => this.setState({ trackNum })}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="field">
+                  ETA
                     </td>
-              <td>
-                <Input
-                  type="date"
-                  value={this.state.ETA}
-                  onChange={ETA => this.setState({ ETA })}
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="field">
-                Payment Option
+                <td>
+                  <Input
+                    type="date"
+                    value={this.state.ETA}
+                    onChange={ETA => this.setState({ ETA })}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="field">
+                  Payment Option
                     </td>
-              <td>
-                <Selector
-                  options={paymentOptions}
-                  value={this.state.paymentOption}
-                  onSelect={paymentOption => this.setState({ paymentOption })}
-                />
-              </td>
-            </tr>
-            <tr>
-              <td></td>
-              <td>
-                <Button
-                  title="SCHEDULE"
-                  id="QA"
-                  onClick={this.handleShipping}
-                  style={{ 'background-color': '#000' }}
-                />
-                <Button
-                  title="FLAG FOR REVIEW"
-                  id="Review"
-                  onClick={this.handleShipping}
-                  style={{ 'background-color': '#d2000d', marginLeft: 10 }}
-                />
-              </td>
-            </tr>
+                <td>
+                  <Selector
+                    options={paymentOptions}
+                    value={this.state.paymentOption}
+                    onSelect={paymentOption => this.setState({ paymentOption })}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>
+                  <Button
+                    title="SCHEDULE"
+                    id="QA"
+                    onClick={this.handleShipping}
+                    style={{ 'background-color': '#000' }}
+                  />
+                  <Button
+                    title="FLAG FOR REVIEW"
+                    id="Review"
+                    onClick={this.handleShipping}
+                    style={{ 'background-color': '#d2000d', marginLeft: 10 }}
+                  />
+                </td>
+              </tr>
+            </tbody>
           </table>
         </div>
       )
@@ -725,19 +822,21 @@ class ScriptView extends Component {
         <div className="actions">
           {this.state.cancelPharmTrans ?
             <table>
-              <thead>Pharmacy Transfer</thead>
-              <tr>
-                <td>Location</td>
-                <td>{this.state.transLocation}</td>
-              </tr>
-              <tr>
-                <td>NPI</td>
-                <td>{this.state.transNPI}</td>
-              </tr>
-              <tr>
-                <td>Date</td>
-                <td>{this.state.transDate}</td>
-              </tr>
+              <tbody>
+                <thead>Pharmacy Transfer</thead>
+                <tr>
+                  <td>Location</td>
+                  <td>{this.state.transLocation}</td>
+                </tr>
+                <tr>
+                  <td>NPI</td>
+                  <td>{this.state.transNPI}</td>
+                </tr>
+                <tr>
+                  <td>Date</td>
+                  <td>{this.state.transDate}</td>
+                </tr>
+              </tbody>
             </table> : <div></div>}
         </div>
       )
@@ -826,7 +925,7 @@ class ScriptView extends Component {
 
           <input type="checkbox" checked={this.state.pouch}>
           </input>
-          <label style={{ 'vertical-align': 'text-top' }}>POUCH</label>
+          <label style={{ verticalAlign: 'text-top' }}>POUCH</label>
         </div>
 
         <SwitchTable
@@ -844,6 +943,7 @@ class ScriptView extends Component {
       <DetailsTab
         className={styles.detailsTab}
         sID={this.props}
+        refresh={this.state.refresh}
       />
     )
   }
@@ -908,7 +1008,20 @@ class ScriptView extends Component {
 
 
   render() {
-    console.log(this.state.notesNum);
+
+    const {
+      state,
+      className,
+      onCloseModal,
+      onCreateNote,
+    } = this.props
+
+
+    const {
+      chargeModal
+    } = this.state
+    console.log(this.props, this.state);
+
     return (
       <div>
         <Header className={styles.header} id="scriptViewHead">
@@ -966,7 +1079,9 @@ class ScriptView extends Component {
                   id="white"
                   title="CHARGE CREDIT CARD"
                   style={{ marginLeft: 50 }}
+                  onClick={() => this.openNoteModal()}
                 />
+
                 <Button
                   id="white"
                   title="RECEIPT"
@@ -987,6 +1102,21 @@ class ScriptView extends Component {
 
           {this.renderActions()}
           {this.renderSwitchTable()}
+
+          <StripeProvider apiKey="pk_test_WdiSIq25nzdEU8SdUQOTSFHz">
+
+            <Elements>
+              <CheckoutForm
+                content={chargeModal}
+                onClickAway={onCloseModal}
+                onSubmit={onCreateNote}
+                state={this.state}
+                props={this.props}
+                onCloseModal={() => this.closeModal()}
+              />
+            </Elements>
+
+          </StripeProvider>
 
         </Body>
       </div>

@@ -54,7 +54,7 @@ class ScriptView extends Component {
     }
 
     this.handleClick = this.handleClick.bind(this);
-    
+
   }
 
   state = {
@@ -69,7 +69,6 @@ class ScriptView extends Component {
   componentWillMount() {
     const token = localStorage.getItem('token')
     var decoded = jwt_decode(token);
-    console.log(decoded);
     this.setState({
       userId: decoded.id
     }, this.getUser)
@@ -172,9 +171,9 @@ class ScriptView extends Component {
   }
 
 
-  
 
-  
+
+
 
   handleClick(event) {
     this.setState({
@@ -184,12 +183,12 @@ class ScriptView extends Component {
     )
   }
 
-  
-  
 
 
-  
-  
+
+
+
+
 
   renderSwitchTable() {
 
@@ -236,12 +235,12 @@ class ScriptView extends Component {
 
     const { tab } = this.state
     return (
-      <div style={{marginTop: 25}}>
+      <div style={{ marginTop: 25 }}>
         <div className='pouch'>
 
           <input type="checkbox" checked={this.state.pouch}>
           </input>
-          <label style={{ 'vertical-align': 'text-top' }}>POUCH</label>
+          <label style={{ verticalAlign: 'text-top' }}>POUCH</label>
         </div>
 
         <SwitchTable
@@ -302,56 +301,57 @@ class ScriptView extends Component {
 
 
   render() {
-    console.log(this.state.notesNum);
     return (
       <div>
         <Header className={styles.header} id="scriptViewHead">
           <Table>
-            <tr>
-              <td>
-                <Button className={(this.state.status === "Received") ? 'currentStatus' : 'inactiveStatus'}>
-                  Received
+            <tbody>
+              <tr>
+                <td>
+                  <Button className={(this.state.status === "Received") ? 'currentStatus' : 'inactiveStatus'}>
+                    Received
                 </Button>
-                <Button className={(this.state.status === "Review") ? 'currentStatus' : 'inactiveStatus'}>
-                  Review
+                  <Button className={(this.state.status === "Review") ? 'currentStatus' : 'inactiveStatus'}>
+                    Review
                 </Button>
-                <Button className={(this.state.status === "Prior Auth") ? 'currentStatus' : 'inactiveStatus'}>
-                  Prior Auth
+                  <Button className={(this.state.status === "Prior Auth") ? 'currentStatus' : 'inactiveStatus'}>
+                    Prior Auth
                 </Button>
-                <Button className={(this.state.status === "Process") ? 'currentStatus' : 'inactiveStatus'}>
-                  Process
+                  <Button className={(this.state.status === "Process") ? 'currentStatus' : 'inactiveStatus'}>
+                    Process
                 </Button>
-                <Button className={(this.state.status === "Copay Assistance") ? 'currentStatus' : 'inactiveStatus'}>
-                  Copay Assistance
+                  <Button className={(this.state.status === "Copay Assistance") ? 'currentStatus' : 'inactiveStatus'}>
+                    Copay Assistance
                 </Button>
-                <Button className={(this.state.status === "Schedule") ? 'currentStatus' : 'inactiveStatus'}>
-                  Schedule
+                  <Button className={(this.state.status === "Schedule") ? 'currentStatus' : 'inactiveStatus'}>
+                    Schedule
                 </Button>
-                <Button className={(this.state.status === "QA") ? 'currentStatus' : 'inactiveStatus'}>
-                  QA
+                  <Button className={(this.state.status === "QA") ? 'currentStatus' : 'inactiveStatus'}>
+                    QA
                 </Button>
-                <Button className={(this.state.status === "Fill") ? 'currentStatus' : 'inactiveStatus'}>
-                  Fill
+                  <Button className={(this.state.status === "Fill") ? 'currentStatus' : 'inactiveStatus'}>
+                    Fill
                 </Button>
-                <Button className={(this.state.status === "Shipped") ? 'currentStatus' : 'inactiveStatus'}>
-                  Shipped
+                  <Button className={(this.state.status === "Shipped") ? 'currentStatus' : 'inactiveStatus'}>
+                    Shipped
                 </Button>
-                <Button className={(this.state.status === "Done") ? 'currentStatus' : 'inactiveStatus'}>
-                  Done
+                  <Button className={(this.state.status === "Done") ? 'currentStatus' : 'inactiveStatus'}>
+                    Done
                 </Button>
-                <Button className={(this.state.status === "Cancelled") ? 'currentStatus' : 'inactiveStatus'}>
-                  Cancelled
+                  <Button className={(this.state.status === "Cancelled") ? 'currentStatus' : 'inactiveStatus'}>
+                    Cancelled
                 </Button>
-                <Button className={(this.state.status === "Refill") ? 'currentStatus' : 'inactiveStatus'}>
-                  Refill
+                  <Button className={(this.state.status === "Refill") ? 'currentStatus' : 'inactiveStatus'}>
+                    Refill
                 </Button>
-              </td>
-            </tr>
-            <tr>
-              <td><h2>Status: {this.state.status}</h2>
-               
-              </td>
-            </tr>
+                </td>
+              </tr>
+              <tr>
+                <td><h2>Status: {this.state.status}</h2>
+
+                </td>
+              </tr>
+            </tbody>
           </Table>
 
         </Header>

@@ -63,10 +63,8 @@ class App extends Component {
     const loginToken = window.localStorage.getItem("token");
     if (loginToken) {
       var decoded = jwt_decode(loginToken);
-      console.log(decoded);
       axios.get('../api/user/search?userId=' + decoded.id, { headers: { "Authorization": "Bearer " + loginToken } })
         .then((resp) => {
-          console.log(resp);
           this.setState({
             userRole: resp.data.response[0].role,
           });
@@ -79,8 +77,6 @@ class App extends Component {
   }
 
   render() {
-
-
 
     const history = createHistory()
     const historyMiddleware = routerMiddleware(history)

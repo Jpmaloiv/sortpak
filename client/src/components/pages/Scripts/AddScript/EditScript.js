@@ -72,9 +72,9 @@ class EditScript extends Component {
                         physicianId: script.PhysicianId,
                         productId: script.ProductId,
                         cost: script.Product.cost
-                    }, () => console.log(this.state))
+                    }, this.handleCopayApproval)
 
-                    this.handleCopayApproval();
+
 
 
 
@@ -197,6 +197,8 @@ class EditScript extends Component {
 
     render() {
 
+        console.log(this.state.copayApproved);
+
         const statusOptions = [
             'Received',
             'Review',
@@ -255,9 +257,6 @@ class EditScript extends Component {
             'Credit Card',
             'No Copay'
         ]
-
-
-console.log(this.state.writtenDate, this.state.billOnDate)
 
         return (
             <div>

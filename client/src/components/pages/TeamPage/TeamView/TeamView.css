@@ -4,3 +4,18 @@
     background-color: #a0a9b0;
     min-width: inherit;
     padding: 12px; }
+
+    .userTable table {margin-top: 0 !important;}
+
+.teamSearch label {
+  background-color: lightgray !important;
+  color: #fff !important;
+  border-radius: 5px;
+  min-width: 80px;
+  min-height: 40px;
+  margin-right: 20px;
+}
+
+.teamSearch button:focus, .btn-group>.btn.active {
+  background-color: gray !important;
+}
