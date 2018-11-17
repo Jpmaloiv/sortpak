@@ -39,7 +39,7 @@ class NavBar extends Component {
         })
     }
   }
-  
+
 
   callAgendaActions() {
     this.props.getVisits()
@@ -65,104 +65,65 @@ class NavBar extends Component {
     }
   }
 
-  
+
 
   render() {
-    
 
-    if (this.state.userRole === 'Admin' || (this.state.userRole === 'Rep') || (this.state.userRole === 'Internal Staff')) {
+
+    if (this.state.userRole === 'Admin') {
       return (
         <div className={styles.navBar}>
-
-
-          <NavLink
-
-            to="/scripts"
-          
-
-          >
-            <Icon name="bookmark-o" />
-            Scripts
-      </NavLink>
-
-
-
-          <NavLink
-            to="/patients"
-          >
-            <Icon name="heart-o" />
-            Patients
-      </NavLink>
-
-          <NavLink
-            to={this.dashboardLink}
-          >
-            <Icon name="bar-chart" />
-            Dashboard
-        </NavLink>
-
-          <NavLink
-            to={this.agendaLink}
-            onClick={() => this.callAgendaActions()}
-          >
-            <Icon name="th-large" />
-            Agenda
-        </NavLink>
-
-          <NavLink
-            to="/physicians"
-          >
-            <Icon name="stethoscope" />
-            Physicians
-        </NavLink>
-
-
-          <NavLink
-            to="/refills"
-          >
-            <Icon name="tint" />
-            Refills
+          <NavLink to="/scripts">
+            <Icon name="bookmark-o" />Scripts
           </NavLink>
-
-
-
-
-          <NavLink
-            to="/products"
-            activeStyle={{
-              backgroundColor: '#ff7d38 !important',
-              color: '#fff !important;'
-            }}
-          >
-            <Icon name="tint" />
-            Products
+          <NavLink to="/patients">
+            <Icon name="heart-o" />Patients
           </NavLink>
-
-
-
-          <NavLink
-            to="/team"
-          >
-            <Icon name="user-o" />
-            My Team
+          <NavLink to={this.dashboardLink}>
+            <Icon name="bar-chart" />Dashboard
           </NavLink>
-
-
+          <NavLink to={this.agendaLink} onClick={() => this.callAgendaActions()}>
+            <Icon name="th-large" />Agenda
+          </NavLink>
+          <NavLink to="/physicians">
+            <Icon name="stethoscope" />Physicians
+          </NavLink>
+          <NavLink to="/refills">
+            <Icon name="tint" />Refills
+          </NavLink>
+          <NavLink to="/products" >
+            <Icon name="tint" />Products
+          </NavLink>
+          <NavLink to="/team">
+            <Icon name="user-o" />My Team
+          </NavLink>
+        </div>
+      )
+    } else if (this.state.userRole === 'Rep') {
+      return (
+        <div className={styles.navBar}>
+          <NavLink style={{ 'flex': 'initial', width: 200, border: '1px solid #eaeaea' }} to="/scripts">
+            <Icon name="bookmark-o" />Scripts
+          </NavLink>
+          <NavLink style={{ 'flex': 'initial', width: 200, border: '1px solid #eaeaea' }} to={this.dashboardLink}>
+            <Icon name="bar-chart" />Dashboard
+          </NavLink>
+          <NavLink style={{ 'flex': 'initial', width: 200, border: '1px solid #eaeaea' }} to={this.agendaLink} onClick={() => this.callAgendaActions()}>
+            <Icon name="th-large" />Agenda
+          </NavLink>
+          <NavLink style={{ 'flex': 'initial', width: 200, border: '1px solid #eaeaea' }} to="/physicians">
+            <Icon name="stethoscope" />Physicians
+          </NavLink>
         </div>
       )
     } else if (this.state.userRole === 'Physician') {
       return (
         <div className={styles.navBar}>
-          <NavLink
-            style={{ 'flex': 'initial', width: 200, border: '1px solid #eaeaea' }}
-            to="/patients"
-          >
-            <Icon name="heart-o" />
-            Patients
-      </NavLink>
+          <NavLink style={{ 'flex': 'initial', width: 200, border: '1px solid #eaeaea' }} to="/patients">
+            <Icon name="heart-o" />Patients
+          </NavLink>
         </div >
       )
-
     } else {
       return (
         <div></div>

@@ -83,8 +83,17 @@ router.get("/search", (req, res) => {
         }
     }
 
+    if ((req.query.dupFirstName) && (req.query.dupLastName)) {
+        searchParams.where.firstName = req.query.dupFirstName,
+        searchParams.where.lastName = req.query.dupLastName
+    }
+
     if (req.query.group) {
         searchParams.where.group = req.query.group
+    }
+
+    if (req.query.rep) {
+        searchParams.where.rep = req.query.rep
     }
 
     if (req.query.searchGroup) {

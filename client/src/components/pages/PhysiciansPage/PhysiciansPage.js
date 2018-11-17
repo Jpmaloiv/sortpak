@@ -7,7 +7,9 @@ class PhysiciansPage extends Component {
   render() {
     return (
       <div className={styles.app}>
-        <Router />
+        <Router
+          props={this.props}
+        />
       </div>
     );
   }

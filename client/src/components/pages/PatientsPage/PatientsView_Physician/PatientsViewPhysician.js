@@ -42,15 +42,6 @@ class PatientsViewPhysician extends Component {
     this.setState({
       userId: decoded.id
     }, this.getUserInfo)
-      // axios.get('api/patients/search/', { headers: { "Authorization": "Bearer " + loginToken } })
-      // .then((resp) => {
-      //   console.log(resp.data);
-      //   this.setState({
-      //     patients: resp.data.response
-      //   })
-      // }).catch((error) => {
-      //   console.error(error);
-      // })
   }
 
   getUserInfo() {
@@ -67,7 +58,7 @@ class PatientsViewPhysician extends Component {
 
   getRelativePatients() {
     const loginToken = window.localStorage.getItem("token");
-    axios.get('api/profile/find?physicianId=' + this.state.physicianId, { headers: { "Authorization": "Bearer " + loginToken } })
+    axios.get('api/profile/find?physicianId=' + this.state.physicianId + '&name=' + this.state.searchName + '&dob=' + this.state.searchDOB + '&address=' + this.state.searchAddress, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
         console.log(resp.data);
         this.setState({
@@ -94,7 +85,7 @@ class PatientsViewPhysician extends Component {
   enterPressed(event) {
     var code = event.keyCode || event.which;
     if (code === 13) { //13 is the enter keycode
-      this.getRelativePatients.bind(this);
+      this.getRelativePatients();
     }
   }
 

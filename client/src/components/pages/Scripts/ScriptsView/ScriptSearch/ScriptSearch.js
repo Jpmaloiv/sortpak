@@ -1,7 +1,8 @@
 import React from 'react'
 
-import { ActionBox, SearchBar, Selector } from '../../../../common'
+import { ActionBox, Button as Search, Input, SearchBar, Selector } from '../../../../common'
 import { Button, ButtonGroup, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
+import axios from 'axios'
 
 class ScriptSearch extends React.Component {
 
@@ -14,6 +15,7 @@ class ScriptSearch extends React.Component {
       special: false,
       SP: false,
       thirdParty: false,
+      textSearch: '',
       statusReceived: '',
       statusReview: '',
       statusPriorAuth: '',
@@ -31,6 +33,19 @@ class ScriptSearch extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.statusQuery = this.statusQuery.bind(this);
+  }
+
+  componentDidMount() {
+    const loginToken = window.localStorage.getItem("token");
+    axios.get('/api/user/search?role=Rep', { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        console.log(resp);
+        this.setState({
+          reps: resp.data.response
+        })
+      }).catch((err) => {
+        console.error(err)
+      })
   }
 
 
@@ -59,6 +74,14 @@ class ScriptSearch extends React.Component {
     })
   }
 
+
+  enterPressed(event) {
+    var code = event.keyCode || event.which;
+    if (code === 13) { //13 is the enter keycode
+      this.submitSearch();
+    } 
+  }
+
   handleChange(e) {
     const key = e.target.value; // e.g. 'A'
     if (key === 'RX') { this.setState({ RX: true, HC: false }, this.submitSearch) }
@@ -69,12 +92,17 @@ class ScriptSearch extends React.Component {
 
 
   submitSearch = (event) => {
+    console.log(this.state.textSearch);
     let searchParams = "?patient=null";
     let status = "";
     if (this.state.RX) searchParams += '&homeCare=0'
     if (this.state.HC) searchParams += '&homeCare=1'
-    if (this.state.thirdParty) searchParams += '&location=' + true
     if (this.state.special) searchParams += '&salesCode=M'
+    if (this.state.SP) searchParams += '&location=' + ""
+    if (this.state.thirdParty) searchParams += '&location!=' + ""
+    if (this.state.textSearch) searchParams += '&textSearch=' + this.state.textSearch
+    if (this.state.rep) searchParams += '&rep=' + this.state.rep
+    if (this.state.specialization) searchParams += '&specialization=' + this.state.specialization
     if (this.state.statusReceived) status += ',Received'
     if (this.state.statusReview) status += ',Review'
     if (this.state.statusPriorAuth) status += ',Prior Auth'
@@ -101,20 +129,49 @@ class ScriptSearch extends React.Component {
       searchValue
     } = this.state
 
-    const RepOptions = [
-      'All Reps',
-      'No Reps',
-      'EE',
+    const SpecializationOptions = [
+      '',
+      'Internal Medicine',
+      'Home Health',
+      'Hospice',
+      'Skilled Nursing Center',
+      'Assisted Living',
+      'Hospital',
+      'Residential Living',
+      'Oncology',
+      'Rheumatology',
+      'Dermatology',
+      'Nephrology',
+      'Neurology',
+      'Gastroenterology',
+      'Allergy',
+      'Infectious Disease',
+      'Transplant',
+      'Orthopedic',
+      'Endocrinology',
+      'Urology',
+      'Cardiology',
+      'Hepatology',
+      'Pulmonology'
     ]
 
-    const SpecializationOptions = [
-      'All Specializations',
-      'No Specialization',
-      'EE'
-    ]
+    if (this.state.reps) {
+      const repOptions = [
+        {
+          key: '',
+          value: '',
+          display: '--',
+        },
+        ...this.state.reps.map(rep => ({
+          key: rep.id,
+          value: rep.name,
+          display: rep.name,
+        })),
+      ]
+    
 
     return (
-      <div className="scriptList">
+      <div className="scriptSearch">
 
         <ActionBox>
           <div className='main'>
@@ -144,16 +201,21 @@ class ScriptSearch extends React.Component {
               <Button className="last" value='Third Party'>Third Party</Button>
             </ButtonGroup>
 
-
-
-            <SearchBar
+            <Input
               className="searchBar"
-              style={{ 'width': '350px' }}
-              selected={searchValue}
-              onSelect={searchValue => this.setState({ searchValue })}
+              style={{ 'width': '325px', 'flex': 'initial' }}
+              value={this.state.textSearch}
+              onChange={textSearch => this.setState({ textSearch })}
               label="Search"
               placeholder="Search..."
+              onKeyPress={this.enterPressed.bind(this)}
             />
+            <Search
+                className='search'
+                search
+                icon="search"
+                onClick={this.submitSearch}
+              />
 
           </div>
         </ActionBox>
@@ -161,15 +223,15 @@ class ScriptSearch extends React.Component {
           <div className="main">
             <Selector
               label="Rep"
-              options={RepOptions}
-              selected={filterValue}
-              onSelect={filterValue => this.setState({ searchValue })}
+              options={repOptions}
+              value={this.state.rep}
+              onSelect={rep => this.setState({ rep }, this.submitSearch )}
             />
             <Selector
               label="Specialization"
               options={SpecializationOptions}
-              selected={filterValue}
-              onSelect={filterValue => this.setState({ searchValue })}
+              selected={this.state.specialization}
+              onSelect={specialization => this.setState({ specialization }, this.submitSearch)}
             />
           </div>
         </ActionBox>
@@ -203,6 +265,7 @@ class ScriptSearch extends React.Component {
         </ActionBox>
       </div>
     )
+  } else { return (<div></div>) }
   }
 }
 

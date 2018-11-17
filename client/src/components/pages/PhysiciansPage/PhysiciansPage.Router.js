@@ -6,35 +6,59 @@ import {
 
 // Components
 import PhysiciansView from './PhysiciansView/PhysiciansView'
+import PhysiciansViewRep from './PhysiciansViewRep/PhysiciansViewRep'
 import PhysicianView from './PhysicianView/PhysicianView'
 import AddPhysician from './AddPhysician/AddPhysician'
 import NotFound from '../../NotFound/NotFound'
 
-const PhysiciansPageRouter = props => (
-  <Switch>
-    <Route
-      exact
-      path="/physicians"
-      component={PhysiciansView}
-    />
+class PhysiciansPageRouter extends React.Component {
 
-    <Route
-      exact
-      path="/physicians/add"
-      component={AddPhysician}
-    />
+  render() {
 
-    <Route
-      exact
-      path="/physicians/:physicianId"
-      component={PhysicianView}
-    />
+    console.log(this.props.props.state.userRole);
 
-    <Route
-      component={NotFound}
-    />
-  </Switch>
-)
+    const PhysiciansViewRepPage = (props) => {
+      return (
+        <PhysiciansViewRep
+          state={this.state}
+          {...props}
+        />
+      );
+    }
+    return (
+      <Switch>
+        {this.props.props.state.userRole === "Admin" ?
+        <Route
+          exact
+          path="/physicians"
+          component={PhysiciansView}
+        />
+        :
+        <Route
+          exact path='/physicians'
+          component={PhysiciansViewRepPage}
+        />
+    }
+
+        <Route
+          exact
+          path="/physicians/add"
+          component={AddPhysician}
+        />
+
+        <Route
+          exact
+          path="/physicians/:physicianId"
+          component={PhysicianView}
+        />
+
+        <Route
+          component={NotFound}
+        />
+      </Switch>
+    )
+  }
+}
 
 
 export default PhysiciansPageRouter

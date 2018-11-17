@@ -87,9 +87,18 @@ class App extends Component {
       applyMiddleware(historyMiddleware, ReduxThunk),
     )
 
-    const MyPatientsPage = (props) => {
+    const ThePatientsPage = (props) => {
       return (
         <PatientsPage 
+          state={this.state}
+          {...props}
+        />
+      );
+    }
+
+    const ThePhysiciansPage = (props) => {
+      return (
+        <PhysiciansPage 
           state={this.state}
           {...props}
         />
@@ -124,7 +133,7 @@ class App extends Component {
           : <Route exact path="/scripts/:scriptId" component={ScriptViewPhysician} /> }
                 <Route exact path="/scripts/:scriptId/edit" component={EditScript} />
                 
-                  <Route exact path="/patients" render={MyPatientsPage} />
+                  <Route exact path="/patients" render={ThePatientsPage} />
                   
                 <Route exact path="/patients/add" component={AddPatient} />
                 <Route exact path="/patients/:patientId/edit" component={EditPatient} />
@@ -132,7 +141,7 @@ class App extends Component {
                 <Route exact path="/patients/:patientId" component={PatientView} />
                 : <Route exact path="/patients/:patientId" component={PatientViewPhysician} /> }
                 <Route exact path="/dashboard" component={DashboardPage} />
-                <Route exact path="/physicians" component={PhysiciansPage} />
+                <Route exact path="/physicians" component={ThePhysiciansPage} />
                 <Route exact path="/physicians/add" component={AddPhysician} />
                 <Route exact path="/physicians/:physicianId/edit" component={EditPhysician} />
                 <Route exact path="/physicians/:physicianId" component={PhysicianView} />

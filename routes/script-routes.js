@@ -61,7 +61,7 @@ router.post("/add", (req, res) => {
             console.error(err)
         } else {
             const scriptPath = './scripts/' + req.payload.id;
-            
+
             db.Scripts
                 .create(script)
                 .then((resp) => {
@@ -80,7 +80,7 @@ router.post("/add", (req, res) => {
 router.get("/search", (req, res) => {
 
     let searchParams = {
-        
+
         where: {},
         attributes: {
             exclude: ["createdAt"]
@@ -88,16 +88,19 @@ router.get("/search", (req, res) => {
         include: [{
             model: db.Patients,
             attributes: ["firstName", "lastName", "dob", "phone", "email", "patientWarning", "conditions", "allergies", 'primInsPlan',
-                        'primInsBIN', 'primInsGroup', 'primInsID', 'primInsPCN', 'primInsType','secInsPlan', 'secInsBIN', 'secInsGroup',
-                        'secInsID', 'secInsPCN', 'secInsType']
+                'primInsBIN', 'primInsGroup', 'primInsID', 'primInsPCN', 'primInsType', 'secInsPlan', 'secInsBIN', 'secInsGroup',
+                'secInsID', 'secInsPCN', 'secInsType']
         },
         {
             model: db.Physicians,
             attributes: ["firstName", "lastName", 'specialization', "rep", "contact", "phone", "physicianWarning"],
+            // where: { 
+            //     [Op.or]: [{specialization: req.query.specialization}]
+            // },
         },
         {
             model: db.Products,
-           
+
         },
         {
             model: db.scriptNotes,
@@ -111,6 +114,45 @@ router.get("/search", (req, res) => {
 
     }
 
+    if (req.query.textSearch) {
+        searchParams = {
+
+            include: [{
+                model: db.Products,
+                where: { name: req.query.textSearch },
+            }],
+        }
+    }
+
+    if (req.query.rep) {
+        searchParams = {
+            include: [{
+                model: db.Patients, attributes: ["firstName", "lastName", "dob", "phone", "email", "patientWarning", "conditions", "allergies", 'primInsPlan',
+                    'primInsBIN', 'primInsGroup', 'primInsID', 'primInsPCN', 'primInsType', 'secInsPlan', 'secInsBIN', 'secInsGroup',
+                    'secInsID', 'secInsPCN', 'secInsType']
+            }, {
+                model: db.Physicians, attributes: ["firstName", "lastName", 'specialization', "rep", "contact", "phone", "physicianWarning"], where: {
+                    [Op.or]: [{ rep: req.query.rep }]
+                },
+            }, { model: db.Products, }, { model: db.scriptNotes, attributes: ['note', 'createdAt'] }, { model: db.scriptAttachments, attributes: ['id'] }]
+        }
+    }
+
+    if (req.query.specialization) {
+        searchParams = {
+            include: [{
+                model: db.Patients, attributes: ["firstName", "lastName", "dob", "phone", "email", "patientWarning", "conditions", "allergies", 'primInsPlan',
+                    'primInsBIN', 'primInsGroup', 'primInsID', 'primInsPCN', 'primInsType', 'secInsPlan', 'secInsBIN', 'secInsGroup',
+                    'secInsID', 'secInsPCN', 'secInsType']
+            }, {
+                model: db.Physicians, attributes: ["firstName", "lastName", 'specialization', "rep", "contact", "phone", "physicianWarning"], where: {
+                    [Op.or]: [{ specialization: req.query.specialization }]
+                },
+            }, { model: db.Products, }, { model: db.scriptNotes, attributes: ['note', 'createdAt'] }, { model: db.scriptAttachments, attributes: ['id'] }]
+        }
+    }
+
+
 
     if (req.query.scriptId) {
         searchParams.where.id = req.query.scriptId
@@ -120,6 +162,9 @@ router.get("/search", (req, res) => {
     }
     if (req.query.homeCare) {
         searchParams.where.homeCare = req.query.homeCare
+    }
+    if (req.query.location) {
+        searchParams.where.location = req.query.location
     }
 
     if (req.query.patientId) {

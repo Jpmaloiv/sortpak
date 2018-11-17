@@ -118,11 +118,10 @@ if (req.query.dob) {
     searchParams.where.dob = req.query.dob
 }
 
-if (req.query.address) {
-    searchParams = {
-        attributes: ['address1', 'address2']
-    }
-}
+// if (req.query.address) {
+//        searchParams.where = {
+//         firstName: { like: '%' + req.query.name + '%' },
+// }
 
     console.log(searchParams);
     db.Patients

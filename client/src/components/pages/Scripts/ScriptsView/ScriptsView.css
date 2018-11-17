@@ -31,9 +31,22 @@ tr {
     outline-offset: -2px;
 }
 
+.scriptSearch button.search:focus {
+    color: #ff7d38; 
+    background-color: #fff;
+}
+
+.scriptSearch .action-box:first-child .main div:nth-child(4) label {padding: 0 !important;}
+
+.scriptSearch input.searchBar {margin-top: 0;}
+
 .scriptSearch label {
     display: block;
 }
+
+.scriptSearch .searchBar {flex: initial !important;}
+.scriptSearch button.search {margin-top: 25px !important;}
+.scriptSearch button.search span {margin: 0 auto;}
 
 label.single.btn.btn-default {
     border-radius: 5px !important;

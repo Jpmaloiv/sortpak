@@ -31,6 +31,7 @@ class AddPhysician extends Component {
       firstName: '', lastName: '', username: '', specialty: '', group: '', rep: '', specialization: '', DEA: '', NPI: '', phone: '', fax: '', email: '', contact: '', addressStreet: '', addressCity: '', addressState: '', addressZipCode: '', physicianWarning: '', reps: ''
     }
   }
+
   componentDidMount() {
     const loginToken = window.localStorage.getItem("token");
     axios.get('/api/user/search?role=Rep', { headers: { "Authorization": "Bearer " + loginToken } })
@@ -46,8 +47,40 @@ class AddPhysician extends Component {
       })
   }
 
-  submitphysician = (event) => {
-    event.preventDefault()
+  checkForDuplicatePhysician() {
+    const loginToken = window.localStorage.getItem("token");
+    axios.get('/api/physicians/search?dupFirstName=' + this.state.firstName + '&dupLastName=' + this.state.lastName, { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        console.log(resp);
+        if (resp.data.response[0]) {
+        this.setState({
+          nameCheck: resp.data.response[0].firstName + " " + resp.data.response[0].lastName
+        }, this.nameCheck)
+      } else {
+        console.log("HERWE")
+        this.submitphysician();
+      }
+
+      }).catch((error) => {
+        console.error(error);
+      })
+  }
+
+  nameCheck() {
+    let name = this.state.firstName + " " + this.state.lastName
+    console.log(name, this.state.nameCheck);
+    if (name = this.state.nameCheck) {
+      if (window.confirm('Duplicate physician named detected. Proceed anyway?')) {
+        this.submitphysician();
+    } else {
+        return;
+    }
+    } else {
+      this.submitphysician();
+    }
+  }
+
+  submitphysician() {
     const loginToken = window.localStorage.getItem("token");
     let data = new FormData();
     axios.post('/api/physicians/add?firstName=' + this.state.firstName + '&lastName=' + this.state.lastName +
@@ -191,7 +224,7 @@ class AddPhysician extends Component {
               style={{ marginRight: 10 }}
             />
             <Button
-              onClick={this.submitphysician}
+              onClick={this.checkForDuplicatePhysician.bind(this)}
               title="CREATE PHYSICIAN"
               className="submit btn btn-default"
               type="submit"
