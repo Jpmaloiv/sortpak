@@ -32,19 +32,6 @@ class PhysiciansViewRep extends Component {
     this.searchQuery = this.searchQuery.bind(this);
   }
 
-  componentWillMount() {
-    const loginToken = window.localStorage.getItem("token");
-    axios.get('api/physicians/search?physicianId!=1', { headers: { "Authorization": "Bearer " + loginToken } })
-      .then((resp) => {
-        console.log(resp);
-        this.setState({
-          physicians: resp.data.response,
-        }, this.removeNullPhysician)
-      }).catch((error) => {
-        console.error(error);
-      })
-  }
-
   componentDidMount() {
     const loginToken = window.localStorage.getItem("token");
     var decoded = jwt_decode(loginToken);

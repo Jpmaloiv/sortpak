@@ -8,6 +8,7 @@ import {
   Header,
   ActionBox,
   Button,
+  Input,
   SearchBar
 } from '../../../common'
 
@@ -40,6 +41,28 @@ class ProductsView extends Component {
       }).catch((err) => {
         console.error(err)
       })
+  }
+
+  searchQuery() {
+    const loginToken = window.localStorage.getItem("token");
+    axios.get('/api/products/search?search=' + this.state.search, { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        console.log(resp);
+
+        this.setState({
+          products: resp.data.response
+        })
+
+      }).catch((err) => {
+        console.error(err)
+      })
+  }
+
+  enterPressed(event) {
+    var code = event.keyCode || event.which;
+    if (code === 13) { //13 is the enter keycode
+      this.searchQuery();
+    } 
   }
 
 
@@ -156,7 +179,6 @@ class ProductsView extends Component {
   render() {
 
     if (this.state.products) {
-      // const self = this;
 
       var productList = this.state.products.map(function (item, i) {
         return (
@@ -195,17 +217,23 @@ class ProductsView extends Component {
         </Header>
         <div className="body">
 
-          <ActionBox>
-            <div className="main">
+          <ActionBox className='productSearch'>
+            <div className="main" style={{paddingTop: 0}}>
 
-              <SearchBar
+              <Input
                 label="Search"
-                placeholder="Product name..."
+                placeholder="Product name or NDC..."
+                value={this.state.search}
+                onChange={search => this.setState({ search })}
+                onKeyPress={this.enterPressed.bind(this)}
+                style={{'width': '100%'}}
               />
               <Button
                 search
                 icon="search"
                 title="SEARCH"
+                onClick={this.searchQuery.bind(this)}
+                style={{marginTop: 30, height: 38, lineHeight: '1px'}}
               />
 
             </div>
@@ -214,7 +242,7 @@ class ProductsView extends Component {
 
           <TablePagination
             headers={ th }
-            data={this.state.products }
+            data={this.state.products}
             columns="name.NDC.schedule.packageSize.quantity.cost.value"
             perPageItemCount={ 10 }
             totalCount={ this.state.products.length }

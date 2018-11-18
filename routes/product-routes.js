@@ -24,6 +24,22 @@ router.get("/search", (req, res) => {
     if (req.query.productId) {
         searchParams.where.id = req.query.productId
     }
+
+    if (req.query.search) {
+        searchParams = {
+            where: {
+                [Op.or]: [{
+                    name: {
+                        like: '%' + req.query.search + '%'
+                    }
+                }, {
+                    NDC: {
+                        like: '%' + req.query.search + '%'
+                    }
+                }]
+            }
+        }
+    }
   
     console.log(searchParams);
     db.Products
