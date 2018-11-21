@@ -49,8 +49,6 @@ class PhysiciansView extends Component {
     this.setState({
       physicianData: this.state.physicians.shift()
     })
-    
-
   }
 
   searchQuery() {

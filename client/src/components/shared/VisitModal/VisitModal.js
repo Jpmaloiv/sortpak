@@ -65,10 +65,16 @@ class VisitModal extends Component {
         console.log(resp);
         this.setState({
           physicians: resp.data.response
-        })
+        }, this.removeNullPhysician )
       }).catch((err) => {
         console.error(err)
       })
+  }
+
+  removeNullPhysician() {
+    this.setState({
+      physicianData: this.state.physicians.shift()
+    })
   }
 
   getUser() {
@@ -77,7 +83,7 @@ class VisitModal extends Component {
       .then((resp) => {
         console.log(resp);
         this.setState({
-          currentUser: resp.data.response[0].name,
+          Rep: resp.data.response[0].name,
           currentRole: resp.data.response[0].role
         })
       }).catch((err) => {
@@ -246,7 +252,7 @@ class VisitModal extends Component {
           <Selector
             wide
             options={repOptions}
-            selected={this.state.currentUser}
+            selected={this.state.Rep}
             value={this.state.Rep}
             onSelect={Rep => this.setState({ Rep })}
           />
@@ -281,12 +287,12 @@ class VisitModal extends Component {
           <label>
             Physician
         </label>
-          <Input
+          <Selector
             wide
             options={physicianOptions}
             value={this.state.Physician}
             // onSelect={this.props.on ChangeValue}
-            onChange={Physician => this.setState({ Physician }, this.searchQuery)}
+            onSelect={Physician => this.setState({ Physician })}
           />
 
 

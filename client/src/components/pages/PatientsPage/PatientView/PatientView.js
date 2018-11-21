@@ -105,30 +105,20 @@ class PatientView extends Component {
             secInsID: patient.secInsID,
             secInsPCN: patient.secInsPCN,
             secInsType: patient.secInsType
-          })
+          }, this.setPatientId)
         }).catch((err) => {
           console.error(err)
         })
     }
 
+  }
+
+  setPatientId() {
     const loginToken = window.localStorage.getItem("token");
-    let patientId = (this.props.match.params.patientId) ? this.props.match.params.patientId : JSON.parse(window.atob(loginToken.split('.')[1])).patientId;
-    axios({
-      url: '/api/profile/' + patientId,
-      method: 'get',
-      headers: { "Authorization": "Bearer " + loginToken }
-    })
-      .then((resp) => {
-        console.log(resp);
-        this.setState({
-          patientId: resp.data.id
-        })
-
-        const loginToken = window.localStorage.getItem("token");
         let data = new FormData();
-        console.log(this.state.patientId);
+        console.log(this.state.id);
 
-        axios.put('/api/current/add?patientId=' + this.state.patientId,
+        axios.put('/api/current/add?patientId=' + this.state.id,
           data, { headers: { "Authorization": "Bearer " + loginToken } })
           .then((data) => {
             console.log(data);
@@ -137,11 +127,6 @@ class PatientView extends Component {
           }).catch((error) => {
             console.error(error);
           })
-
-      }).catch((error) => {
-        console.error(error);
-      })
-
   }
 
   get initialState() {

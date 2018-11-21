@@ -73,7 +73,7 @@ class ScriptList extends React.Component {
         </td>
 
         <td>
-          {script.Product.name}
+          {script.Product.name || ""}
         </td>
 
         <td>

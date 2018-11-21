@@ -36,11 +36,17 @@ export default class PhysicianModal extends Component {
         this.setState({
           physicians: resp.data.response
           // id: resp.data.response.id,    
-        })
+        }, this.removeNullPhysician )
         console.log(this.state.physicians);
       }).catch((error) => {
         console.error(error);
       })
+  }
+
+  removeNullPhysician() {
+    this.setState({
+      physicianData: this.state.physicians.shift()
+    })
   }
 
   onSubmit(e) {

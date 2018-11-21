@@ -100,6 +100,7 @@ router.get("/search", (req, res) => {
         },
         {
             model: db.Products,
+            attribues: ['id','name']
 
         },
         {
