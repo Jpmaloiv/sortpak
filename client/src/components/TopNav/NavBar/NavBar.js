@@ -114,6 +114,9 @@ class NavBar extends Component {
           <NavLink style={{ 'flex': 'initial', width: 200, border: '1px solid #eaeaea' }} to="/physicians">
             <Icon name="stethoscope" />Physicians
           </NavLink>
+          <NavLink style={{ 'flex': 'initial', width: 200, border: '1px solid #eaeaea' }} to="/team">
+            <Icon name="user-o" />My Team
+          </NavLink>
         </div>
       )
     } else if (this.state.userRole === 'Physician') {

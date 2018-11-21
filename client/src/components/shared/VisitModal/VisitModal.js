@@ -12,6 +12,7 @@ import {
   Button,
   Selector,
   FormModal,
+  Table
 } from '../../common'
 
 import styles from './VisitModal.css'
@@ -21,7 +22,7 @@ class VisitModal extends Component {
     super(props)
     this.state = this.initialState
 
-      this.setDateTime = this.setDateTime.bind(this);
+    this.setDateTime = this.setDateTime.bind(this);
     // this.submit = this.submit.bind(this);
   }
 
@@ -32,6 +33,7 @@ class VisitModal extends Component {
       date,
       time: '10:00',
       Physician: '',
+      searchActive: false
     }
     return initialState
   }
@@ -49,7 +51,7 @@ class VisitModal extends Component {
     }, this.getUser)
 
     const loginToken = window.localStorage.getItem("token");
-    
+
     axios.get('/api/user/search?role=Rep', { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
         console.log(resp);
@@ -65,7 +67,7 @@ class VisitModal extends Component {
         console.log(resp);
         this.setState({
           physicians: resp.data.response
-        }, this.removeNullPhysician )
+        }, this.removeNullPhysician)
       }).catch((err) => {
         console.error(err)
       })
@@ -75,6 +77,22 @@ class VisitModal extends Component {
     this.setState({
       physicianData: this.state.physicians.shift()
     })
+  }
+
+  searchQuery() {
+    this.setState({
+      searchActive: true
+    })
+    const loginToken = window.localStorage.getItem("token");
+    axios.get('/api/physicians/search?name=' + this.state.name, { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        console.log(resp);
+        this.setState({
+          physicians: resp.data.response
+        }, this.removeNullPhysician)
+      }).catch((err) => {
+        console.error(err)
+      })
   }
 
   getUser() {
@@ -108,25 +126,14 @@ class VisitModal extends Component {
     }, this.submitVisit)
   }
 
+  setPhysician(value) {
+    this.setState({
+      searchActive: false,
+      Physician: value
+    })
+  }
+
   submitVisit() {
-    /* const {
-      date,
-      time,
-      physician,
-    } = this.state
-
-    const rep = this.props.isAdmin ? this.state.rep : this.props.me */
-
-    /* // combine date and time
-    const dateTime = moment(`${date} ${time}`, 'YYYY-MM-DD HH:mm').toISOString()
-    const data = {
-      // repId: rep.id || rep,
-      dateTime,
-      // physicianId: physician.id || physician,
-    }
-    console.log(dateTime); */
-    console.log(this.state.Rep)
-
     const loginToken = window.localStorage.getItem("token");
     let data = new FormData();
     axios.post('/api/visits/add?dateTime=' + this.state.dateTime + '&Rep=' + this.state.Rep + '&Physician=' + this.state.Physician,
@@ -135,7 +142,7 @@ class VisitModal extends Component {
         console.log(data);
         window.location.reload();
         // this.props.onClickAway();
-        
+
       }).catch((error) => {
         console.error(error);
       })
@@ -198,8 +205,26 @@ class VisitModal extends Component {
     }
   }
 
+  renderPhysicianColumn() {
+    return (
+      <div>
+        {this.state.physicians.map(this.renderPhysicianRow.bind(this))}
+      </div>
+    )
+  }
+
+
+  renderPhysicianRow(physician) {
+    return (
+      <p style={{ 'cursor': 'pointer' }} value={physician.id} onClick={() => this.setPhysician(physician.firstName + ' ' + physician.lastName)}>
+        {physician.firstName} {physician.lastName}
+      </p>
+    )
+  }
+
+
   render() {
-    console.log(this.state);
+
     const {
       content,
       onClickAway,
@@ -234,9 +259,11 @@ class VisitModal extends Component {
         })),
       ]
 
+      const repOption = [
+        `${this.state.Rep}`
+      ];
 
-
-
+console.log(this.state.Rep)
       return (
         <FormModal
           title="Schedule New Visit"
@@ -249,13 +276,22 @@ class VisitModal extends Component {
           <label>
             Rep
         </label>
+        {this.state.currentRole === "Admin" ?
           <Selector
             wide
             options={repOptions}
+            value={this.state.Rep}
+            onSelect={Rep => this.setState({ Rep })}
+          />
+          :
+          <Selector
+            wide
+            options={repOption}
             selected={this.state.Rep}
             value={this.state.Rep}
             onSelect={Rep => this.setState({ Rep })}
           />
+      }
 
           <br />
 
@@ -287,13 +323,31 @@ class VisitModal extends Component {
           <label>
             Physician
         </label>
-          <Selector
+          {/* <Selector
             wide
             options={physicianOptions}
             value={this.state.Physician}
             // onSelect={this.props.on ChangeValue}
             onSelect={Physician => this.setState({ Physician })}
-          />
+          /> */}
+          {this.state.searchActive ?
+            <div style={{ 'background': 'red !important' }}>
+              <Input
+                placeholder="Type name of physician.."
+                value={this.state.name}
+                onChange={name => this.setState({ name }, this.searchQuery)}
+              />
+
+
+              {this.renderPhysicianColumn()}
+            </div>
+            :
+            <Input
+              placeholder="Type name of physician.."
+              value={this.state.Physician}
+              onChange={name => this.setState({ name }, this.searchQuery)}
+            />}
+
 
 
           <div className="buttons">

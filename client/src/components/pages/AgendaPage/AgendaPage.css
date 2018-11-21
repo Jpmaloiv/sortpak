@@ -2,4 +2,5 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  z-index: 0; }
+  z-index: 0;
+overflow: scroll !important;}
