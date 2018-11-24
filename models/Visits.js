@@ -13,14 +13,12 @@ module.exports = function (sequelize, DataTypes) {
         Physician: {
             type: DataTypes.STRING,
             allowNull: true
+        },
+        PhysicianId: {
+            type: DataTypes.STRING,
+            allowNull: true
         }
     });
-    // Visits.associate = function(models) {
-    //     models.Visits.belongsTo(models.User, {
-    //         foreignKey: {
-    //             allowNull: false
-    //         }
-    //     });
-    // };
+  
     return Visits;
 };

@@ -10,7 +10,10 @@
     max-height: 778.68px;
     background-color: #fff;
     position: absolute;
-    top: 106.51px; }
+    height: initial !important;
+    top: 106.51px;
+    left: inherit;
+    right: 0 !important; }
     :local(.sideBar) > .body.flipped {
       left: 0px; }
     :local(.sideBar) > .body:not(.flipped) {
@@ -63,5 +66,6 @@
       margin-right: 10px; }
   :local(.sideBar) > .overlay {
     z-index: 1;
+    height: 130%;
     cursor: pointer;
     background-color: #00000033; }

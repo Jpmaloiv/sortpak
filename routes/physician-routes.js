@@ -55,7 +55,11 @@ router.post("/add", (req, res) => {
 
 router.get("/search", (req, res) => {
     let searchParams = {
-        where: {},
+        where: {
+            id: {
+                [Op.not]: 1
+              }
+        },
         attributes: {
             exclude: ["createdAt", "updatedAt"]
         }
@@ -82,6 +86,8 @@ router.get("/search", (req, res) => {
             }
         }
     }
+
+  
 
     if ((req.query.dupFirstName) && (req.query.dupLastName)) {
         searchParams.where.firstName = req.query.dupFirstName,

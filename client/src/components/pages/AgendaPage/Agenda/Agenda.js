@@ -108,7 +108,7 @@ renderDay(weekIndex, day, dayIndex) {
     const visitYear = visitDate.getFullYear()
     return (visitMonth === month) && (visitYear === year)
   }
-  console.log(this.state.filteredRep)
+
   const filteredMonth = this.state.filteredRep.filter(isThisMonth)
 
   const isToday = visit => {

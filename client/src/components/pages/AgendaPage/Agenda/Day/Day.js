@@ -26,7 +26,7 @@ const Day = ({day, reps, onClick, today}) => {
           <span
             key={rep.id}
             className="rep-name"
-            // onClick={() => onClick(rep)}
+            onClick={() => onClick(rep)}
           >
           {rep.Rep}
             {/* {rep.nameDisplay & 'HELLO'|| 'Rep'} */}

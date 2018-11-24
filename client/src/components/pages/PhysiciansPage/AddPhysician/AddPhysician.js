@@ -57,7 +57,6 @@ class AddPhysician extends Component {
           nameCheck: resp.data.response[0].firstName + " " + resp.data.response[0].lastName
         }, this.nameCheck)
       } else {
-        console.log("HERWE")
         this.submitphysician();
       }
 

@@ -99,11 +99,13 @@ class PatientView extends Component {
             primInsBIN: patient.primInsBIN,
             primInsID: patient.primInsID,
             primInsPCN: patient.primInsPCN,
+            primInsGroup: patient.primInsGroup,
             primInsType: patient.primInsType,
             secInsPlan: patient.secInsPlan,
             secInsBIN: patient.secInsBIN,
             secInsID: patient.secInsID,
             secInsPCN: patient.secInsPCN,
+            secInsGroup: patient.secInsGroup,
             secInsType: patient.secInsType
           }, this.setPatientId)
         }).catch((err) => {
@@ -193,7 +195,8 @@ class PatientView extends Component {
   closeModal() {
     this.setState({
       attachmentModal: null,
-      noteModal: null
+      noteModal: null,
+      insuranceModal: null
     })
   }
 
@@ -367,8 +370,9 @@ class PatientView extends Component {
       <InsuranceTab
         className={styles.insuranceTab}
         state={this.state}
-        patient={this.props.patient}
+        props={this.props}
         setState={this.setState.bind(this)}
+        onCloseModal={() => this.closeModal()}
       />
     )
   }

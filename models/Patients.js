@@ -149,7 +149,10 @@ module.exports = function(sequelize, DataTypes) {
         }),
         models.Patients.hasMany(models.patientNotes, {
             onDelete: "cascade"
-        });
+        }),
+        models.Patients.hasMany(models.pastInsurance, {
+            onDelete: "cascade"
+        })
     };
     return Patients; 
   };

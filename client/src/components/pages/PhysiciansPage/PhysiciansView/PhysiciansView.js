@@ -159,7 +159,6 @@ class PhysiciansView extends Component {
   render() {
     if (this.state.physicians) {
       var physicianList = this.state.physicians.map(function (item, i) {
-        console.log(item);
         return (
           <div key={i}>
           </div>

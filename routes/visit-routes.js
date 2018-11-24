@@ -16,7 +16,7 @@ router.post("/add", (req, res) => {
         Rep: req.query.Rep,
         Physician: req.query.Physician,
         link: visitLink,
-        UserId: req.payload.id
+        PhysicianId: req.query.physicianId
     }
 
     fs.mkdir("./visits/", (err) => {

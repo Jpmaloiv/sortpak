@@ -67,17 +67,17 @@ class VisitModal extends Component {
         console.log(resp);
         this.setState({
           physicians: resp.data.response
-        }, this.removeNullPhysician)
+        })
       }).catch((err) => {
         console.error(err)
       })
   }
 
-  removeNullPhysician() {
-    this.setState({
-      physicianData: this.state.physicians.shift()
-    })
-  }
+  // removeNullPhysician() {
+  //   this.setState({
+  //     physicianData: this.state.physicians.shift()
+  //   })
+  // }
 
   searchQuery() {
     this.setState({
@@ -127,16 +127,32 @@ class VisitModal extends Component {
   }
 
   setPhysician(value) {
+    console.log(value, this.props, this.state);
     this.setState({
       searchActive: false,
-      Physician: value
-    })
+      physicianId: value
+    }, this.getPhysician)
+  }
+
+  getPhysician() {
+    const loginToken = window.localStorage.getItem("token");
+    axios.get('api/physicians/search?physicianId=' + this.state.physicianId,
+      { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        this.setState({
+          Physician: resp.data.response[0].firstName + ' ' + resp.data.response[0].lastName
+        })
+    
+
+      }).catch((error) => {
+        console.error(error);
+      })
   }
 
   submitVisit() {
     const loginToken = window.localStorage.getItem("token");
     let data = new FormData();
-    axios.post('/api/visits/add?dateTime=' + this.state.dateTime + '&Rep=' + this.state.Rep + '&Physician=' + this.state.Physician,
+    axios.post('/api/visits/add?dateTime=' + this.state.dateTime + '&Rep=' + this.state.Rep + '&physicianId=' + this.state.physicianId + '&Physician=' + this.state.Physician,
       data, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((data) => {
         console.log(data);
@@ -216,7 +232,7 @@ class VisitModal extends Component {
 
   renderPhysicianRow(physician) {
     return (
-      <p style={{ 'cursor': 'pointer' }} value={physician.id} onClick={() => this.setPhysician(physician.firstName + ' ' + physician.lastName)}>
+      <p style={{ 'cursor': 'pointer' }} value={physician.id} onClick={() => this.setPhysician(physician.id)}>
         {physician.firstName} {physician.lastName}
       </p>
     )
