@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/dtstrange/sortpak#readme",
   "dependencies": {
+    "@react-pdf/renderer": "^1.0.0-alpha.25",
     "aws-sdk": "^2.351.0",
     "axios": "^0.18.0",
     "babel-cli": "^6.26.0",

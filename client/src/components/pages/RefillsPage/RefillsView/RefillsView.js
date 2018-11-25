@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import { ButtonGroup } from 'react-bootstrap';
-import { FaxModal } from '../../../shared/'
+import { FaxModal } from '../../../shared'
 
 import axios from 'axios'
 
@@ -22,14 +22,25 @@ class RefillsView extends Component {
     this.state = {
       searchValue: 'Any',
       refillOK: true,
-      specialization: ''
+      specialization: '',
+      fax: false
     }
 
     this.handleChange = this.handleChange.bind(this);
   }
 
-  openFaxModal() {
-    this.props.setState({ faxModal: {} })
+  openFax() {
+    this.setState({
+      faxModal: {},
+    })
+  }
+
+  openFaxModal(e) {
+    this.setState({
+      scriptValue: e.target.value,
+      fax: true,
+    }, this.openFax)
+    e.stopPropagation();
   }
 
   componentDidMount() {
@@ -167,9 +178,10 @@ class RefillsView extends Component {
         <tr value={script.id} onClick={() => this.handleClick(script.id)}>
           <td>
           <Button
+            value={script.id}
             icon="print"
             style={{padding: 2, 'min-width': '100px'}}
-            onClick={() => this.openFaxModal()}
+            onClick={this.openFaxModal.bind(this)}
             title="FAX"
           />
           &nbsp;&nbsp;&nbsp;{script.processedOn}</td>
@@ -231,18 +243,17 @@ class RefillsView extends Component {
       state,
       className,
       onCloseModal,
-      onCreateFax,
+      onCreateNote,
     } = this.props
 
-    // const {
-    //   faxModal
-    // } = state
+    const {
+      faxModal
+    } = this.state
 
     if (this.state.refills) {
       // const self = this;
 
       var refillList = this.state.refills.map(function (item, i) {
-        console.log(item);
         return (
           <div key={i}>
 
@@ -324,11 +335,11 @@ class RefillsView extends Component {
           {this.renderTable()}
           {refillList}
 
-<div className={className}>
-          <FaxModal
-          // content={faxModal}
-          onClickAway={onCloseModal}
-          onSubmit={onCreateFax}
+      <div className="faxModal">
+        <FaxModal
+          content={faxModal}
+          onClickAway={() => this.closeModal()}
+          onSubmit={onCreateNote}
           state={this.state}
           props={this.props}
         />
