@@ -10,6 +10,7 @@ const Op = Sequelize.Op;
 
 
 router.post("/upload", (req, res) => {
+    console.log(req.files.attachmentFile);
     const attachmentFile = req.files.attachmentFile;
     const title = req.files.attachmentFile.name;
     console.log(req.payload);

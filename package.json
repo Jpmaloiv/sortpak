@@ -40,6 +40,7 @@
     "mysql2": "^1.5.2",
     "npm": "^5.7.1",
     "phaxio": "^1.0.0",
+    "phaxio-official": "^1.0.0",
     "react-chartjs-2": "^2.7.4",
     "react-geocode": "^0.1.2",
     "react-stripe-elements": "^2.0.1",

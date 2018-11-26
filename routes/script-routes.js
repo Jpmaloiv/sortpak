@@ -87,13 +87,13 @@ router.get("/search", (req, res) => {
         },
         include: [{
             model: db.Patients,
-            attributes: ["firstName", "lastName", "dob", "phone", "email", "patientWarning", "conditions", "allergies", 'primInsPlan',
+            attributes: ["firstName", "lastName", "dob", "phone", "addressStreet", "addressCity", "addressState", "addressZipCode", "email", "patientWarning", "conditions", "allergies", 'primInsPlan',
                 'primInsBIN', 'primInsGroup', 'primInsID', 'primInsPCN', 'primInsType', 'secInsPlan', 'secInsBIN', 'secInsGroup',
                 'secInsID', 'secInsPCN', 'secInsType']
         },
         {
             model: db.Physicians,
-            attributes: ["firstName", "lastName", 'specialization', "rep", "contact", "phone", "physicianWarning"],
+            attributes: ["firstName", "lastName", 'specialization', "rep", "contact", "phone", "fax", "physicianWarning", "addressStreet", "addressCity", "addressState", "addressZipCode"],
             // where: { 
             //     [Op.or]: [{specialization: req.query.specialization}]
             // },

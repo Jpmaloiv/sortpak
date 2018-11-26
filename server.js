@@ -17,6 +17,7 @@ const pastInsuranceRoutes = require("./routes/pastInsurance-routes.js");
 const physicianRoutes = require("./routes/physician-routes.js");
 const productRoutes = require("./routes/product-routes.js");
 const visitRoutes = require("./routes/visit-routes.js");
+const faxRoutes = require("./routes/fax-routes.js");
 const fileUpload = require('express-fileupload');
 
 
@@ -37,8 +38,10 @@ const isDev = process.env.NODE_ENV === 'production';
 app.use(fileUpload())
 // Requiring our models for syncing
 const db = require(path.join(__dirname + '/models'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '50mb' }));
+// app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true, parameterLimit: 50000 }));
 app.use(bodyParser.text());
 app.use(bodyParser.json({ type: "application/vnd.api+json" }));
 
@@ -75,6 +78,7 @@ app.use(express.static(path.join(__dirname + '/pastInsurance')));
 app.use(express.static(path.join(__dirname + '/products')));
 app.use(express.static(path.join(__dirname + '/physicians')));
 app.use(express.static(path.join(__dirname + '/visits')));
+app.use(express.static(path.join(__dirname + '/faxes')));
 
 
 app.use("/api/user", authRoutes);
@@ -133,6 +137,11 @@ app.use(["/api/visits"], jwt({
     userProperty: 'payload'
 }));
 app.use("/api/visits", visitRoutes);
+app.use(["/api/faxes"], jwt({
+    secret: process.env.JWT_SECRET,
+    userProperty: 'payload'
+}));
+app.use("/api/faxes", faxRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/current", currentPatientRoutes);
 

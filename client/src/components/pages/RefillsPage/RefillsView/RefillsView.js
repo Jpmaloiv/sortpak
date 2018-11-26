@@ -48,21 +48,16 @@ class RefillsView extends Component {
 
     axios.get('/api/scripts/search?status=Refill', { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
-        console.log(resp);
-
         this.setState({
           refills: resp.data.response,
           refillNum: resp.data.response.length
         })
-
       }).catch((err) => {
         console.error(err)
       })
 
     axios.get('/api/scripts/search?status=Renew', { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
-        console.log(resp);
-
         this.setState({
           renewals: resp.data.response,
           renewNum: resp.data.response.length
@@ -82,7 +77,6 @@ class RefillsView extends Component {
   }
 
   submitSearch() {
-    console.log(this.state.specialization);
     const loginToken = window.localStorage.getItem("token");
     let searchParams = ''
     if (this.state.refillOK) {
@@ -93,13 +87,9 @@ class RefillsView extends Component {
     // searchParams += '&specialization=' + this.state.specialization
     axios.get('/api/scripts/search?status=' + searchParams, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
-        console.log(resp);
-
         this.setState({
           refills: resp.data.response
-
         })
-
       }).catch((err) => {
         console.error(err)
       })
@@ -251,15 +241,11 @@ class RefillsView extends Component {
     } = this.state
 
     if (this.state.refills) {
-      // const self = this;
-
       var refillList = this.state.refills.map(function (item, i) {
         return (
           <div key={i}>
-
           </div>
         )
-
       })
     }
     else {
