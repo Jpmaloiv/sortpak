@@ -97,7 +97,7 @@ class DetailsTab extends Component {
   }
 
   componentDidMount() {
-   this.reMount();
+    this.reMount();
   }
 
 
@@ -123,6 +123,7 @@ class DetailsTab extends Component {
   }
 
   render() {
+    console.log(this.state.writtenDate);
 
     const totalPay = +this.state.primInsPay + +this.state.secInsPay + +this.state.networkPay + +this.state.patientPay;
     console.log(this.state.cost, this.state.totalPay)
@@ -195,7 +196,11 @@ class DetailsTab extends Component {
                     </td>
                     <td className="field">Written Date</td>
                     <td className="value">
-                      <Moment stye={{ lineHeight: '1.8em' }} format="MM/DD/YYYY">{this.state.writtenDate || ''}</Moment>
+                      {this.state.writtenDate = "" ?
+                        <div>{this.state.writtenDate}</div>
+                        :
+                        <Moment style={{ lineHeight: '1.8em' }} format="MM/DD/YYYY">{this.state.writtenDate || ''}</Moment>
+                      }
                     </td>
                   </tr>
                   <tr style={{ lineHeight: '1.8em' }}>

@@ -110,7 +110,7 @@ class AgendaPage extends Component {
   }
 
   closeSideBar() {
-    this.setState({ rep: null, day: null })
+    this.setState({ rep: null, day: null, visitNotes: []})
   }
 
   render() {
@@ -176,6 +176,7 @@ if (this.state.visits) {
           day={this.state.day}
           month={month}
           year={year}
+          state={this.state}
           flipped={this.state.sideBarFlipped}
           visible={this.state.rep && this.state.day}
           onClickAway={this.closeSideBar.bind(this)}

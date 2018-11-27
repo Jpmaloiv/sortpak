@@ -112,7 +112,7 @@ class AddMember extends Component {
     const loginToken = window.localStorage.getItem("token");
 
     let data = new FormData();
-    data.append("picFile", document.getElementById("pic-file").files[0])
+    // data.append("picFile", document.getElementById("pic-file").files[0])
     axios.post('/api/user/new?physicianId=' + this.state.physicianId + '&username=' + this.state.username + '&name=' + this.state.name + '&email=' + this.state.email +
     '&password=' + this.state.password + '&role=' + this.state.role + '&active=' + this.state.active,
       data, { headers: { "Authorization": "Bearer " + loginToken } })
@@ -252,8 +252,8 @@ class AddMember extends Component {
               options={roleOptions}
               onSelect={role => this.setState({ role })}
             />
-            <label htmlFor="picFile">Select Profile Image:</label>
-            <input name="picFile" onChange={this.onChangeHandler} accept=".png" id="pic-file" type="file" />
+            {/* <label htmlFor="picFile">Select Profile Image:</label>
+            <input name="picFile" onChange={this.onChangeHandler} accept=".png" id="pic-file" type="file" /> */}
 
             <div className='check'>
               <input

@@ -17,6 +17,7 @@ const pastInsuranceRoutes = require("./routes/pastInsurance-routes.js");
 const physicianRoutes = require("./routes/physician-routes.js");
 const productRoutes = require("./routes/product-routes.js");
 const visitRoutes = require("./routes/visit-routes.js");
+const visitNoteRoutes = require("./routes/visitNote-routes.js");
 const faxRoutes = require("./routes/fax-routes.js");
 const fileUpload = require('express-fileupload');
 
@@ -62,13 +63,9 @@ app.post("/charge", async (req, res) => {
 
 // Routes
 app.use(express.static(path.join(__dirname + '/public')));
-// app.use("/api/user", authRoutes);
 app.use(express.static(path.join(__dirname + '/user')));
 app.use(express.static(path.join(__dirname + '/scripts')));
-// app.use(express.static(path.join(__dirname + '/scriptNotes')));
-// app.use(express.static(path.join(__dirname + '/notes')));
 app.use(express.static(path.join(__dirname + '/attachments')));
-
 app.use(express.static(path.join(__dirname + '/patients')));
 app.use(express.static(path.join(__dirname + '/patientNotes')));
 app.use(express.static(path.join(__dirname + '/patientAttachments')));
@@ -135,6 +132,11 @@ app.use(["/api/visits"], jwt({
     userProperty: 'payload'
 }));
 app.use("/api/visits", visitRoutes);
+app.use("/api/visits/notes", visitNoteRoutes);
+app.use(["/api/visits/notes"], jwt({
+    secret: process.env.JWT_SECRET,
+    userProperty: 'payload'
+}));
 app.use(["/api/faxes"], jwt({
     secret: process.env.JWT_SECRET,
     userProperty: 'payload'

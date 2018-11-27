@@ -3,6 +3,7 @@ import CheckoutForm from './CheckoutForm/CheckoutForm'
 import FileModal from './FileModal/FileModal'
 import InsuranceModal from './InsuranceModal/InsuranceModal'
 import VisitModal from './VisitModal/VisitModal'
+import VisitNoteModal from './VisitNoteModal/VisitNoteModal'
 import NoteModal from './NoteModal/NoteModal'
 import NoteModalPatient from './NoteModalPatient/NoteModal'
 import SwitchTable from './SwitchTable/SwitchTable'
@@ -21,6 +22,7 @@ export {
   FileModal,
   InsuranceModal,
   VisitModal,
+  VisitNoteModal,
   NoteModal,
   NoteModalPatient,
   SwitchTable,

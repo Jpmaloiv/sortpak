@@ -279,7 +279,6 @@ class VisitModal extends Component {
         `${this.state.Rep}`
       ];
 
-console.log(this.state.Rep)
       return (
         <FormModal
           title="Schedule New Visit"

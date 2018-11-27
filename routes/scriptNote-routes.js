@@ -10,7 +10,7 @@ const Op = Sequelize.Op;
 
 
 router.post("/add", (req, res) => {
-    const noteLink = '/notes/' ;
+    const noteLink = '/notes/';
     const note = {
         name: req.query.name,
         note: req.query.note,
@@ -24,16 +24,16 @@ router.post("/add", (req, res) => {
         if ((err) && (err.code !== 'EEXIST')) {
             console.error(err)
         } else {
-                    db.scriptNotes
-                        .create(note)
-                        .then((resp) => {
-                            res.status(200).json({ message: "Upload successful!" });
-                        })
-                        .catch((err) => {
-                            console.error(err);
-                            res.status(500).json({ message: "Internal server error.", error: err });
-                        })
-                
+            db.scriptNotes
+                .create(note)
+                .then((resp) => {
+                    res.status(200).json({ message: "Upload successful!" });
+                })
+                .catch((err) => {
+                    console.error(err);
+                    res.status(500).json({ message: "Internal server error.", error: err });
+                })
+
         }
     })
 });
@@ -54,7 +54,7 @@ router.get("/search", (req, res) => {
     if (req.query.ScriptId) {
         searchParams.where.ScriptId = req.query.ScriptId
     }
-  
+
     console.log(searchParams);
     db.scriptNotes
         .findAll(searchParams)
@@ -68,7 +68,7 @@ router.get("/search", (req, res) => {
             console.error(err);
             res.status(500).json({ message: "Error (500): Internal Server Error", error: err })
         })
-    })
+})
 
 
 module.exports = router;

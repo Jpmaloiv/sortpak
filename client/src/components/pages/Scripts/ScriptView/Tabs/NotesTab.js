@@ -29,7 +29,6 @@ class NotesTab extends Component {
   }
 
   componentDidMount() {
-    console.log(this.props);
     const loginToken = window.localStorage.getItem("token");
     axios.get('/api/scripts/notes/search/?ScriptId=' + this.props.state.id, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
@@ -44,10 +43,8 @@ class NotesTab extends Component {
   }
 
   renderTableHead() {
-    console.log(this.state);
     return (
       <thead>
-
       </thead>
     )
   }
@@ -82,35 +79,30 @@ class NotesTab extends Component {
   render() {
 
     if (this.state.notes) {
-
-      var noteList = 
-      
-      //   .sort((a, b) => a.createdAt < b.createdAt)
+      var noteList =
         this.state.notes.reverse().map((item, i) =>
           <div key={i}>
-          <Table  className="nt" key={item.id}>
-        <thead><th>
-        <div className="userImage" style={{'background-image': `url(/images/${item.UserId}/${item.userImage}`}}></div>
-        <div className='noteName'>{item.name}</div></th></thead>
+            <Table className="nt" key={item.id}>
+              <thead><th>
+                <div className="userImage" style={{ 'background-image': `url(/images/${item.UserId}/${item.userImage}` }}></div>
+                <div className='noteName'>{item.name}</div></th></thead>
+              <tr>
+                <td>{item.note}</td>
+              </tr>
+            </Table>
 
-
-        <tr>
-          <td>{item.note}</td>
-        </tr>
-      </Table>
-
-      <Table className="noteDateTime" key={item.id}>
-        <td>
-          <Span icon="calendar" />
-          <Moment format={"MM/DD/YY"}>{item.createdAt}</Moment>
-          &nbsp;&nbsp;
-        <Span icon="clock-o" />
-          <Moment format={"hh:mm A"}>{item.createdAt}</Moment>
-        </td>
-      </Table>
-      </div>
+            <Table className="noteDateTime" key={item.id}>
+              <td>
+                <Span icon="calendar" />
+                <Moment format={"MM/DD/YY"}>{item.createdAt}</Moment>
+                &nbsp;&nbsp;
+                <Span icon="clock-o" />
+                <Moment format={"hh:mm A"}>{item.createdAt}</Moment>
+              </td>
+            </Table>
+          </div>
         );
-      
+
     }
     else {
       return <div>

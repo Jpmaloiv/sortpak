@@ -58,10 +58,8 @@ ctrl.login = function (req, res) {
         })
 };
 ctrl.register = function (req, res) {
-    const imageFile = req.files.picFile;
-    const title = req.files.picFile.name;
-    console.log(req.payload);
 
+    const title = "";
     var user = {
         username: req.query.username.trim(),
         name: req.query.name,
@@ -78,6 +76,9 @@ ctrl.register = function (req, res) {
     models.User.create(user)
         .then(function (resp) {
             res.json({ success: true, token: generateJWT(resp) });
+            if (req.files.picFile) {
+            const imageFile = req.files.picFile;
+            const title = req.files.picFile.name;
             fs.mkdir("./client/public/images/" + resp.dataValues.id, (err) => {
                 if ((err) && (err.code !== 'EEXIST')) {
                     console.error(err)
@@ -100,7 +101,7 @@ ctrl.register = function (req, res) {
                 }
             })
             return;
-        })
+        }})
         // .then(function(resp) {
         //     console.log(resp);
         //     fs.mkdir("./public/assets/images/users/" + resp.dataValues.id, (err) => {

@@ -19,6 +19,12 @@ module.exports = function (sequelize, DataTypes) {
             allowNull: true
         }
     });
-  
+
+    Visits.associate = function (models) {
+        models.Visits.hasMany(models.visitNotes, {
+            onDelete: "cascade"
+        })
+    }
+
     return Visits;
 };

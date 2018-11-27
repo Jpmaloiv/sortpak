@@ -69,3 +69,30 @@
     height: 130%;
     cursor: pointer;
     background-color: #00000033; }
+
+    .addVisitNote {
+      border-radius: 10px;
+      padding: 2px 5px;
+      min-width: initial;
+    }
+
+    .addVisitNote span {
+      margin-right: 0 !important;
+    }
+
+#visitNotesTab table {border-spacing: 15px; margin: 0; box-shadow: none; width: 100%;}
+.vt {box-shadow: 0 1px 2px 0 #afafc5; border-radius: 8px; width: 90%; margin: 0 auto; margin-bottom: 2px;}
+#visitNotesTab thead {background-color: #f7f9fb;}
+#visitNotesTab td {text-align: left; padding: 2% 3%;}
+#visitNotesTab th {text-align: left; display: flex; padding: 5px 10px;}
+#visitNotesTab .userImage {width: 25px; height: 25px;}
+#visitNotesTab tr {padding: 1%;}
+#visitNotesTab .visitNoteName {line-height: 2.7em; font-weight: lighter;}
+
+.visitNoteDateTime {font-size: .8em; width: 90%; margin: 0 auto;
+    color: #9fa9b1;}
+.visitNoteDateTime td {padding: 0% !important;}
+
+.visitNoteDateTime td div {display: inline;}
+
+.visitNotes span {display: inline !important;}

@@ -39,6 +39,7 @@ class AddScript extends Component {
         super(props)
         this.state = {
             pouch: false,
+            priorAuth: '',
             homeCare: false,
             processedOn: moment().format("YYYY-MM-DD"),
             status: 'Received',
