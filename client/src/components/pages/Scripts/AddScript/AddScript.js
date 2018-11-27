@@ -2,12 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios'
 import moment from 'moment'
 import { connect } from 'react-redux'
-import Autosuggest from 'react-autosuggest';
-// import Medications from '../Medications.js'
 
-import {
-    PhysicianModal,
-} from '../../../shared/'
 
 import {
     patientChange,
@@ -37,6 +32,7 @@ import {
 import { Selector, Button, Header, Input, Body, Table, Form, } from '../../../common'
 import styles from './AddScript.css';
 
+
 class AddScript extends Component {
 
     constructor(props) {
@@ -45,11 +41,8 @@ class AddScript extends Component {
             pouch: false,
             homeCare: false,
             processedOn: moment().format("YYYY-MM-DD"),
-            medicationVal: '',
             status: 'Received',
             physicianId: '',
-            physicianSet: false,
-            medSearch: false,
             value: '',
             writtenDate: '',
             billOnDate: '',
@@ -59,40 +52,15 @@ class AddScript extends Component {
             copayNetwork: '',
             diagnosis: '',
             secDiagnosis: '',
-            suggestions: []
+            suggestions: [],
+            setPhysician: 'inactive',
+            setProduct: 'inactive',
+            physSearch: false,
+            prodSearch: false
         }
 
         this.handleCheckbox = this.handleCheckbox.bind(this);
-        this.medSearch = this.medSearch.bind(this);
-        this.getMedication = this.getMedication.bind(this);
     }
-
-    openNoteModal() {
-        console.log("HI");
-        this.setState({ physicianModal: {} })
-    }
-
-    onCloseModal() {
-        this.setState({
-            physicianModal: null
-        })
-    }
-
-    medSearch() {
-        this.setState({
-            medSearch: true
-        })
-    }
-
-    onUpdate = (val) => {
-        this.onCloseModal();
-        this.setState({
-            physicianId: val,
-            physicianSet: true
-        },
-            this.getPhysician
-        )
-    };
 
 
     componentDidMount() {
@@ -128,73 +96,26 @@ class AddScript extends Component {
                 console.error(error);
             })
 
+        axios.get('/api/physicians/search', { headers: { "Authorization": "Bearer " + loginToken } })
+            .then((resp) => {
+                console.log(resp);
+                this.setState({
+                    physicians: resp.data.response
+                })
+            }).catch((err) => {
+                console.error(err)
+            })
+
+
         axios.get('/api/products/search', { headers: { "Authorization": "Bearer " + loginToken } })
             .then((resp) => {
                 console.log(resp);
                 this.setState({
-                    languages: resp.data.response
+                    products: resp.data.response
                 })
 
             }).catch((error) => {
                 console.error(error);
-            })
-
-
-
-
-    }
-
-    // Autosuggest
-
-    // Teach Autosuggest how to calculate suggestions for any given input value.
-    getSuggestions = value => {
-        const inputValue = value.trim().toLowerCase();
-        const inputLength = inputValue.length;
-
-        return inputLength === 0 ? [] : this.state.languages.filter(lang =>
-            lang.name.toLowerCase().slice(0, inputLength) === inputValue
-        );
-    };
-
-
-    // When suggestion is clicked, Autosuggest needs to populate the input
-    // based on the clicked suggestion. Teach Autosuggest how to calculate the
-    // input value for every given suggestion.
-    getSuggestionValue = suggestion => suggestion.name
-
-
-
-
-    // Use your imagination to render suggestions.
-    renderSuggestion = suggestion =>
-        <Table>
-            <thead>
-                <th>NAME</th>
-                <th>NDC</th>
-                <th>PACKAGE SIZE</th>
-                <th>QUANTITY</th>
-                <th>COST</th>
-            </thead>
-            <tbody>
-                <tr><td>{suggestion.name}</td>
-                    <td>{suggestion.NDC}</td>
-                    <td>{suggestion.packageSize}
-                    </td>
-                    <td>{suggestion.quantity}</td>
-                    <td>{suggestion.cost}</td></tr></tbody>
-        </Table>
-
-
-    getMedication() {
-        console.log(this.state.value);
-        const loginToken = window.localStorage.getItem("token");
-
-        axios.get('/api/products/search?name=' + this.state.value, { headers: { "Authorization": "Bearer " + loginToken } })
-            .then((resp) => {
-                console.log(resp);
-                this.setState({
-                    productId: resp.data.response
-                })
             })
     }
 
@@ -205,36 +126,6 @@ class AddScript extends Component {
 
     };
 
-    // Autosuggest will call this function every time you need to update suggestions.
-    // You already implemented this logic above, so just use it.
-    onSuggestionsFetchRequested = ({ value }) => {
-        this.setState({
-            suggestions: this.getSuggestions(value)
-        });
-    };
-
-    // Autosuggest will call this function every time you need to clear suggestions.
-    onSuggestionsClearRequested = () => {
-        this.setState({
-            suggestions: []
-        });
-    };
-
-    onSuggestionSelected = (event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) => {
-        
-
-        const loginToken = window.localStorage.getItem("token");
-
-        axios.get('/api/products/search?name=' + suggestionValue, { headers: { "Authorization": "Bearer " + loginToken } })
-            .then((resp) => {
-                console.log(resp);
-                this.setState({
-                    productId: resp.data.response[0].id,
-                    cost: resp.data.response[0].cost
-                }, this.forceUpdate)
-            })
-    };
-
 
     onChangeHandler = (event) => {
         this.setState({
@@ -242,30 +133,35 @@ class AddScript extends Component {
         })
     }
 
-    getPhysician() {
-        console.log(this.state.physicianId);
+    searchPhysicians() {
+        this.setState({
+            physSearch: true
+        })
         const loginToken = window.localStorage.getItem("token");
-        let data = new FormData();
-        axios.get('/api/physicians/search?physicianId=' + this.state.physicianId,
-            data, { headers: { "Authorization": "Bearer " + loginToken } })
-            .then((data) => {
-                console.log(data);
-                let physician = data.data.response[0]
+        axios.get('/api/physicians/search?name=' + this.state.physicianName, { headers: { "Authorization": "Bearer " + loginToken } })
+            .then((resp) => {
+                console.log(resp);
                 this.setState({
-                    physicianName: physician.firstName + " " + physician.lastName,
-                    physicianGroup: physician.group,
-                    physicianPhone: physician.phone,
-                    physicianAddressStreet: physician.addressStreet,
-                    physicianAddressCity: physician.addressCity,
-                    physicianAddressState: physician.addressStreet,
-                    physicianAddressZipCode: physician.addressZipCode
+                    physicians: resp.data.response
                 })
+            }).catch((err) => {
+                console.error(err)
+            })
+    }
 
-                console.log(this.state);
-
-
-            }).catch((error) => {
-                console.error(error);
+    searchProducts() {
+        this.setState({
+            prodSearch: true
+        })
+        const loginToken = window.localStorage.getItem("token");
+        axios.get('/api/products/search?search=' + this.state.productName, { headers: { "Authorization": "Bearer " + loginToken } })
+            .then((resp) => {
+                console.log(resp);
+                this.setState({
+                    products: resp.data.response
+                })
+            }).catch((err) => {
+                console.error(err)
             })
     }
 
@@ -273,7 +169,7 @@ class AddScript extends Component {
         event.preventDefault();
         const loginToken = window.localStorage.getItem("token");
         let data = new FormData();
-        axios.post('/api/scripts/add?patientId=' + this.state.patientId + '&physicianId=' + this.state.physicianId + '&productId=' + this.state.productId + '&processedOn=' + this.state.processedOn + '&pouch=' + this.state.pouch + '&patient=' + this.props.patient + "&medication=" + this.props.medication + "&status=" + this.state.status + "&pharmNPI=" + this.props.pharmNPI
+        axios.post('/api/scripts/add?patientId=' + this.state.patientId + '&physicianId=' + this.state.physicianId + '&productId=' + this.state.productId + '&processedOn=' + this.state.processedOn + '&pouch=' + this.state.pouch + "&status=" + this.state.status + "&pharmNPI=" + this.props.pharmNPI
             + "&priorAuth=" + this.state.priorAuth + "&location=" + this.props.location + "&pharmDate=" + this.props.pharmDate + "&writtenDate=" + this.props.writtenDate + "&salesCode=" + this.props.salesCode +
             "&billOnDate=" + this.props.billOnDate + "&cost=" + this.props.cost + "&rxNumber=" + this.props.rxNumber + "&primInsPay=" + this.props.primInsPay + "&diagnosis=" + this.state.diagnosis +
             "&secInsPay=" + this.props.secInsPay + "&secDiagnosis=" + this.state.secDiagnosis + "&patientPay=" + this.props.patientPay + "&refills=" + this.props.refills +
@@ -283,6 +179,245 @@ class AddScript extends Component {
             .then((data) => {
                 console.log(data);
                 this.props.history.push("/scripts");
+            }).catch((error) => {
+                console.error(error);
+            })
+    }
+
+    renderPhysician() {
+        if (this.state.setPhysician === 'inactive') {
+            return (
+                <Table className="addScriptTable">
+                    <thead>
+                        <th>PHYSICIAN NAME</th>
+                        <th>GROUP</th>
+                        <th>SPECIALIZATION</th>
+                        <th>PHONE</th>
+                        <th>ADDRESS</th>
+                    </thead>
+                    <tr>
+                        <td style={{borderRight: 'none'}} className="add" onClick={() => this.setState({ setPhysician: 'search' })}>
+                            + Click here to add a physician
+                            </td>
+                    </tr>
+                </Table>
+            )
+        } else if (this.state.setPhysician === 'search') {
+            return (
+                <div>
+                    <Input
+                        style={{ marginLeft: 35 }}
+                        placeholder="Type name of physician.."
+                        value={this.state.physicianName}
+                        onChange={physicianName => this.setState({ physicianName }, this.searchPhysicians)}
+                    />
+                    {this.state.physSearch ?
+                        <div>
+
+
+                            {this.renderPhysicianColumn()}
+                        </div>
+                        :
+                        <div></div>}
+                </div>
+            )
+        } else if (this.state.setPhysician === 'set') {
+            return (
+                <Table className="addScriptTable">
+                    <thead>
+                        <th>PHYSICIAN NAME</th>
+                        <th>GROUP</th>
+                        <th>SPECIALIZATION</th>
+                        <th>PHONE</th>
+                        <th>ADDRESS</th>
+                    </thead>
+                    <tr>
+                        <td>{this.state.physicianName}</td>
+                        <td>{this.state.physicianGroup}</td>
+                        <td>{this.state.physicianSpec}</td>
+                        <td>{this.state.physicianPhone}</td>
+                        <td>
+                            {this.state.physicianAddressStreet}<br />
+                            {this.state.physicianAddressCity}, {this.state.physicianAddressState}, {this.state.physicianAddressZipCode}
+                        </td>
+                    </tr>
+                </Table>
+            )
+        }
+    }
+
+    renderProduct() {
+        if (this.state.setProduct === 'inactive') {
+            return (
+                <Table id="inactiveTable" className="addScriptTable">
+                    <thead>
+                        <th>NAME</th>
+                        <th>NDC</th>
+                        <th>PACKAGE SIZE</th>
+                        <th>QUANTITY</th>
+                        <th>COST</th>
+                    </thead>
+                    <tr>
+                        <td style={{borderRight: 'none'}} className="add" onClick={() => this.setState({ setProduct: 'search' })}>
+                            + Click here to add a medication
+                            </td>
+                    </tr>
+
+                </Table>
+            )
+        } else if (this.state.setProduct === 'search') {
+            return (
+                <div>
+                    <Input
+                        style={{ marginLeft: 35 }}
+                        placeholder="Type name of medication.."
+                        value={this.state.productName}
+                        onChange={productName => this.setState({ productName }, this.searchProducts)}
+                    />
+                    {this.state.prodSearch ?
+                        <div>
+                            {this.renderProductColumn()}
+                        </div>
+                        :
+                        <div></div>}
+                </div>
+            )
+        } else if (this.state.setProduct === 'set') {
+            return (
+                <Table className="addScriptTable">
+                    <thead>
+                        <th>Name</th>
+                        <th>NDC</th>
+                        <th>PACKAGE SIZE</th>
+                        <th>QUANTITY</th>
+                        <th>COST</th>
+                    </thead>
+                    <tr>
+                        <td>{this.state.productName}</td>
+                        <td>{this.state.productNDC}</td>
+                        <td>{this.state.productPackageSize}</td>
+                        <td>{this.state.productQuantity}</td>
+                        <td>{this.state.productCost}</td>
+                    </tr>
+                </Table>
+            )
+        }
+    }
+
+    renderPhysicianColumn() {
+        return (
+            <div style={{ marginLeft: 35 }}>
+                <Table className="addScriptSearch">
+                    <thead>
+                        <th>PHYSICIAN NAME</th>
+                        <th>GROUP</th>
+                        <th>SPECIALIZATION</th>
+                        <th>PHONE</th>
+                        <th>ADDRESS</th>
+                    </thead>
+                    {this.state.physicians.map(this.renderPhysicianRow.bind(this))}
+                </Table>
+            </div>
+        )
+    }
+
+    renderProductColumn() {
+        return (
+            <div style={{ marginLeft: 35 }}>
+                <Table className="addScriptSearch">
+                    <thead>
+                        <th>Name</th>
+                        <th>NDC</th>
+                        <th>PACKAGE SIZE</th>
+                        <th>QUANTITY</th>
+                        <th>COST</th>
+                    </thead>
+                    {this.state.products.map(this.renderProductRow.bind(this))}
+                </Table>
+            </div>
+        )
+    }
+
+
+    renderPhysicianRow(physician) {
+        return (
+            <tr style={{ 'cursor': 'pointer' }} value={physician.id} onClick={() => this.setPhysician(physician.id)}>
+            <td>{physician.firstName} {physician.lastName}</td>
+            <td>{physician.group}</td>
+            <td>{physician.specialization}</td>
+            <td>{physician.phone}</td>
+            <td>{physician.addressStreet}<br />
+                {physician.addressCity}, {physician.addressState}, {physician.addressZipCode}</td>
+            </tr>
+        )
+    }
+
+    renderProductRow(product) {
+        return (
+            <tr style={{ 'cursor': 'pointer', marginBottom: 2 }} value={product.id} onClick={() => this.setProduct(product.id)}>
+                <td>{product.name}</td>
+                <td>{product.NDC}</td>
+                <td>{product.packageSize}</td>
+                <td>{product.quantity}</td>
+                <td>{product.cost}</td>
+            </tr>
+        )
+    }
+
+    setPhysician(value) {
+        this.setState({
+            physSearch: false,
+            physicianId: value,
+            setPhysician: 'set'
+        }, this.getPhysician)
+    }
+
+    setProduct(value) {
+        this.setState({
+            prodSearch: false,
+            productId: value,
+            setProduct: 'set'
+        }, this.getProduct)
+    }
+
+    getPhysician() {
+        console.log(this.state.physicianId)
+        const loginToken = window.localStorage.getItem("token");
+        axios.get('/api/physicians/search?physicianId=' + this.state.physicianId,
+            { headers: { "Authorization": "Bearer " + loginToken } })
+            .then((resp) => {
+                console.log(resp);
+                let physician = resp.data.response[0];
+                this.setState({
+                    physicianName: physician.firstName + " " + physician.lastName,
+                    physicianGroup: physician.group,
+                    physicianSpec: physician.specialization,
+                    physicianPhone: physician.phone,
+                    physicianAddressStreet: physician.addressStreet,
+                    physicianAddressCity: physician.addressCity,
+                    physicianAddressState: physician.addressStreet,
+                    physicianAddressZipCode: physician.addressZipCode
+                })
+            }).catch((error) => {
+                console.error(error);
+            })
+    }
+
+    getProduct() {
+        console.log(this.state.productId)
+        const loginToken = window.localStorage.getItem("token");
+        axios.get('/api/products/search?productId=' + this.state.productId,
+            { headers: { "Authorization": "Bearer " + loginToken } })
+            .then((resp) => {
+                console.log(resp);
+                let product = resp.data.response[0];
+                this.setState({
+                    productName: product.name,
+                    productNDC: product.NDC,
+                    productPackageSize: product.packageSize,
+                    productQuantity: product.quantity,
+                    productCost: product.cost
+                })
             }).catch((error) => {
                 console.error(error);
             })
@@ -320,15 +455,11 @@ class AddScript extends Component {
             'Renew'
         ]
 
-        const { value, suggestions } = this.state;
-
-        // Autosuggest will pass through all these props to the input.
-        const inputProps = {
-            placeholder: 'Search for a medication',
-            value,
-            onChange: this.onChange,
-
-        };
+        if (this.state.quantity) {
+            this.setState({
+                cost: this.state.cost * this.state.quantity
+            })
+        }
 
         const {
             pharmNPI,
@@ -396,9 +527,6 @@ class AddScript extends Component {
             'Copay Card'
         ]
 
-        const {
-            physicianModal
-        } = this.state
 
         return (
             <div>
@@ -450,7 +578,7 @@ class AddScript extends Component {
                                 </td>
                             </tr>
                             <tr>
-                                <td style={{padding: '10px 0'}}>
+                                <td style={{ padding: '10px 0' }}>
                                     <Selector
                                         options={statusOptions}
                                         value={this.state.status}
@@ -480,69 +608,10 @@ class AddScript extends Component {
                         </Table>
 
                         <h4 style={{ marginbottom: 0, marginLeft: 35 }}>Medication</h4>
-                        {this.state.medSearch ?
-                            <div>
-                                <Autosuggest
-                                    suggestions={suggestions}
-                                    onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
-                                    onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-                                    getSuggestionValue={this.getSuggestionValue}
-                                    renderSuggestion={this.renderSuggestion}
-                                    onSuggestionSelected={this.onSuggestionSelected}
-                                    inputProps={inputProps}
-                                // onSuggestionSelected={() => {
-                                //     console.log('current suggestion')
-                                //   }}
-                                />
-                            </div>
-                            :
-                            <Table className="addScriptTable">
-                                <thead>
-                                    <th>NAME</th>
-                                    <th>NDC</th>
-                                    <th>PACKAGE SIZE</th>
-                                    <th>QUANTITY</th>
-                                    <th>COST</th>
-                                </thead>
-
-                                <tr>
-                                    <td className="add" onClick={this.medSearch}>
-                                        + Click here to add a medication
-                                         </td>
-                                </tr>
-
-                            </Table>
-
-                        }
+                        {this.renderProduct()}
 
                         <h4 style={{ marginbottom: 0, marginLeft: 35 }}>Physician</h4>
-                        <Table className="addScriptTable">
-                            <thead>
-                                <th>PHYSICIAN NAME</th>
-                                <th>GROUP</th>
-                                <th>PHONE</th>
-                                <th>ADDRESS</th>
-                            </thead>
-
-                            {this.state.physicianSet ?
-                                <tr>
-                                    <td>{this.state.physicianName}</td>
-                                    <td>{this.state.physicianGroup}</td>
-                                    <td>{this.state.physicianPhone}</td>
-
-                                    <td>
-                                        {this.state.physicianAddressStreet}<br />
-                                        {this.state.physicianAddressCity}, {this.state.physicianAddressState}, {this.state.physicianAddressZipCode}
-                                    </td>
-                                </tr>
-                                :
-                                <tr>
-                                    <td className="add" onClick={() => this.openNoteModal()}>
-                                        + Click here to add a physician
-                            </td>
-                                </tr>
-                            }
-                        </Table>
+                        {this.renderPhysician()}
 
                         <Table>
                             <tbody>
@@ -742,17 +811,17 @@ class AddScript extends Component {
                                         />
                                     </td>
                                     {this.state.copayApproval === "Approved" ?
-                                    <td>
-                                        <Selector
-                                            wide
-                                            label="Copay Network"
-                                            placeholder="No Network"
-                                            options={copayNetworkOptions}
-                                            onSelect={copayNetwork => this.setState({ copayNetwork })}
-                                        />
+                                        <td>
+                                            <Selector
+                                                wide
+                                                label="Copay Network"
+                                                placeholder="No Network"
+                                                options={copayNetworkOptions}
+                                                onSelect={copayNetwork => this.setState({ copayNetwork })}
+                                            />
 
-                                    </td>
-                                    :<td></td> }
+                                        </td>
+                                        : <td></td>}
                                 </tr>
                             </tbody>
                         </Table>
@@ -806,12 +875,7 @@ class AddScript extends Component {
                                 </tr>
                             </tbody>
                         </Table>
-                        <PhysicianModal
-                            content={physicianModal}
-                            onClickAway={() => this.onCloseModal()}
-                            // onSubmit={this.getPhysician}
-                            onUpdate={this.onUpdate}
-                        />
+
                     </Form>
                 </Body>
             </div >

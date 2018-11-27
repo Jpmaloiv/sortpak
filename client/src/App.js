@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import axios from 'axios'
 import jwt_decode from 'jwt-decode'
 import TopNav from './components/TopNav/TopNav'
-// import PrivateRoute from './components/ProtectedRoute';
+import PrivateRoute from './components/ProtectedRoute';
 // import Main from './components/pages/Main'
 import Signup from './components/Signup'
 import Login from './components/pages/LoginMain/LoginMain';
@@ -149,9 +149,9 @@ class App extends Component {
                 <Route exact path="/agenda" component={AgendaPage} />
                 <Route exact path="/refills" component={RefillsPage} />
                 <Route exact path="/products" component={ProductsPage} />
-                <Route exact path="/team" component={TeamPage} />
-                <Route exact path="/team/add" component={AddMember} />
-                <Route exact path="/team/:userId/edit" component={EditMember} />
+                <PrivateRoute exact path="/team" component={TeamPage} />
+                <PrivateRoute exact path="/team/add" component={AddMember} />
+                <PrivateRoute exact path="/team/:userId/edit" component={EditMember} />
 
                 <Route exact path="/attachment/:attachmentId" component={Attachment} />
                 <Route exact path="/book/:bookId" component={Attachment} />

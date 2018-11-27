@@ -9,14 +9,6 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.BOOLEAN,
             allowNull: true
         },
-        patient: {
-            type: DataTypes.STRING,
-            allowNull: true
-        },
-        medication: {
-            type: DataTypes.STRING,
-            allowNull: true
-        },
         status: {
             type: DataTypes.STRING,
             allowNull: true

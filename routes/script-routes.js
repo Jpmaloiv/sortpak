@@ -270,6 +270,9 @@ router.put("/update", function (req, res) {
         trackNum: req.query.trackNum,
         ETA: req.query.ETA,
         paymentOption: req.query.paymentOption,
+        PatientId: req.query.patientId,
+        PhysicianId: req.query.physicianId,
+        ProductId: req.query.productId
     }
     console.log(script);
     db.Scripts.update(script, { where: { id: req.query.id } })

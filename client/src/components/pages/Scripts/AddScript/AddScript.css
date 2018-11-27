@@ -4,7 +4,7 @@
 
 #addScript .clearfix:after, .row:after {clear: none !important;}
 
-
+#addScript .checkboxRow input {width: 75% !important;}
 #addscript table {border-spacing: 25px !important;}
 
 tr.checkboxRow td:nth-child(1) {width: 35% !important;}
@@ -54,12 +54,17 @@ td.check label {display: inline;}
 
 #addScript table > tbody > tr:nth-child(odd) {background-color: transparent;}
 
-#addScript .addScriptTable table {font-size: .9em;}
+#addScript .addScriptTable table {font-size: .9em; background-color: #fff !important;}
+#addScript .addScriptTable table thead {background-color: #fbfcfc !important;}
 #addScript .addScriptTable table th {text-align: left;
     padding: 1%;
     font-weight: lighter;
     color: #abb0b5;
     font-size: .9em;}
+
+#addScript .addScriptSearch {
+    border-spacing: 0 .3em;
+}
 
 #addScript .addScriptTable td.add {
     color: #49d66d;
@@ -67,13 +72,39 @@ td.check label {display: inline;}
 }
 
 #addScript .addScriptTable table tr {background-color: #fff !important; height: initial;
-    box-shadow: 0px 0px 2px #efefef;}
+    /* box-shadow: 0px 0px 2px #efefef; */
+}
 
     #addScript .addScriptTable table td {    padding: 1%;
         border-right: 1px solid #e5e6e6;}
 
-        input.react-autosuggest__input {
-            margin: 2% 0;
-            margin-left: 30px;
-            padding: .5%;
-        }
+#addScript table {background: transparent; box-shadow: none; border-bottom: 1px solid #ebeced;}
+
+#addScript tbody {float: left; width: 30%;}
+#addScript table > tbody > tr > td {border: none;}
+
+#addScript table > tbody > tr:nth-child(odd) {background-color: transparent;}
+
+#addScript .addScriptTable table {font-size: .9em;}
+#addScript .addScriptTable table th {text-align: left;
+    padding: 1%;
+    font-weight: lighter;
+    color: #abb0b5;
+    font-size: .9em;}
+
+#addScript .addScriptSearch {
+    border-spacing: 0 .3em;
+}
+
+#addScript .addScriptTable td.add {
+    color: #49d66d;
+    font-size: 1.2em;
+}
+
+#addScript .addScriptTable table tr {background-color: #fff !important; height: initial;
+    /* box-shadow: 0px 0px 2px #efefef; */
+}
+
+    #addScript .addScriptTable table td {    padding: 1%;
+        border-right: 1px solid #e5e6e6;}
+

@@ -41,7 +41,8 @@ class TeamView extends Component {
 
   componentDidMount() {
     const loginToken = window.localStorage.getItem("token");
-    axios.get('/api/user/search/', { headers: { "Authorization": "Bearer " + loginToken } })
+    console.log(loginToken);
+    axios.get('api/user/search/')
       .then((resp) => {
         console.log(resp);
         this.setState({
