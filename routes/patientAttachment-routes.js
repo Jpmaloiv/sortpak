@@ -56,7 +56,7 @@ router.get("/search", (req, res) => {
     let searchParams = {
         where: {},
         attributes: {
-            exclude: ["updatedAt", "UserId"]
+            exclude: ["updatedAt"]
         },
         include: [{
             model: db.User,
@@ -67,7 +67,6 @@ router.get("/search", (req, res) => {
         searchParams.where.id = req.query.attachmentId
     }
 
-    console.log(searchParams);
     db.patientAttachments
         .findAll(searchParams)
         .then((response) => {
