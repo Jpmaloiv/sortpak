@@ -19,6 +19,11 @@ module.exports = function(sequelize, DataTypes) {
         }    
     }); 
     patientAttachments.associate = function(models) {
+        models.patientAttachments.belongsTo(models.Patients, {
+            foreignKey: {
+                allowNull: false
+            }
+        }),
         models.patientAttachments.belongsTo(models.User, {
             foreignKey: {
                 allowNull: false

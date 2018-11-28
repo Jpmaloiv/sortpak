@@ -106,7 +106,6 @@ class SideBar extends Component {
 
     axios.get('/api/visits/notes/search/?VisitId=' + this.props.rep.id, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
-        console.log(resp);
         this.setState({
           visitNotes: resp.data.response,
         })
@@ -117,7 +116,6 @@ class SideBar extends Component {
 
   render() {
 
-      console.log(this.state.visitNotes);
     const {
       visible,
       flipped,

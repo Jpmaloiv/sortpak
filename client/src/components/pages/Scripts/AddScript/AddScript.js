@@ -49,6 +49,7 @@ class AddScript extends Component {
             billOnDate: '',
             shipOn: '',
             ETA: '',
+            quantity: 1,
             copayApproval: '',
             copayNetwork: '',
             diagnosis: '',
@@ -69,15 +70,12 @@ class AddScript extends Component {
 
         axios.get('/api/current/search', { headers: { "Authorization": "Bearer " + loginToken } })
             .then((resp) => {
-                console.log(resp);
                 this.setState({
                     currentPatientID: resp.data.response[0].patientId
                 })
-                console.log(this.state.currentPatientID);
 
                 axios.get('/api/patients/search?patientId=' + this.state.currentPatientID, { headers: { "Authorization": "Bearer " + loginToken } })
                     .then((resp) => {
-                        console.log(resp);
                         const patient = resp.data.response[0]
                         this.setState({
                             patientId: patient.id,
@@ -89,7 +87,6 @@ class AddScript extends Component {
                             patientAddressState: patient.addressState,
                             patientZipCode: patient.addressZipCode
                         })
-                        console.log(this.state.patientName);
                     }).catch((error) => {
                         console.error(error);
                     })
@@ -99,7 +96,6 @@ class AddScript extends Component {
 
         axios.get('/api/physicians/search', { headers: { "Authorization": "Bearer " + loginToken } })
             .then((resp) => {
-                console.log(resp);
                 this.setState({
                     physicians: resp.data.response
                 })
@@ -110,7 +106,6 @@ class AddScript extends Component {
 
         axios.get('/api/products/search', { headers: { "Authorization": "Bearer " + loginToken } })
             .then((resp) => {
-                console.log(resp);
                 this.setState({
                     products: resp.data.response
                 })
@@ -141,7 +136,6 @@ class AddScript extends Component {
         const loginToken = window.localStorage.getItem("token");
         axios.get('/api/physicians/search?name=' + this.state.physicianName, { headers: { "Authorization": "Bearer " + loginToken } })
             .then((resp) => {
-                console.log(resp);
                 this.setState({
                     physicians: resp.data.response
                 })
@@ -157,7 +151,6 @@ class AddScript extends Component {
         const loginToken = window.localStorage.getItem("token");
         axios.get('/api/products/search?search=' + this.state.productName, { headers: { "Authorization": "Bearer " + loginToken } })
             .then((resp) => {
-                console.log(resp);
                 this.setState({
                     products: resp.data.response
                 })
@@ -172,13 +165,12 @@ class AddScript extends Component {
         let data = new FormData();
         axios.post('/api/scripts/add?patientId=' + this.state.patientId + '&physicianId=' + this.state.physicianId + '&productId=' + this.state.productId + '&processedOn=' + this.state.processedOn + '&pouch=' + this.state.pouch + "&status=" + this.state.status + "&pharmNPI=" + this.props.pharmNPI
             + "&priorAuth=" + this.state.priorAuth + "&location=" + this.props.location + "&pharmDate=" + this.props.pharmDate + "&writtenDate=" + this.props.writtenDate + "&salesCode=" + this.props.salesCode +
-            "&billOnDate=" + this.props.billOnDate + "&cost=" + this.props.cost + "&rxNumber=" + this.props.rxNumber + "&primInsPay=" + this.props.primInsPay + "&diagnosis=" + this.state.diagnosis +
+            "&billOnDate=" + this.props.billOnDate + "&cost=" + this.state.cost + "&rxNumber=" + this.props.rxNumber + "&primInsPay=" + this.props.primInsPay + "&diagnosis=" + this.state.diagnosis +
             "&secInsPay=" + this.props.secInsPay + "&secDiagnosis=" + this.state.secDiagnosis + "&patientPay=" + this.props.patientPay + "&refills=" + this.props.refills +
-            "&refillsRemaining=" + this.props.refillsRemaining + "&quantity=" + this.props.quantity + "&daysSupply=" + this.props.daysSupply + "&directions=" + this.props.directions +
+            "&refillsRemaining=" + this.props.refillsRemaining + "&quantity=" + this.state.quantity + "&daysSupply=" + this.props.daysSupply + "&directions=" + this.props.directions +
             "&copayApproval=" + this.state.copayApproval + "&copayNetwork=" + this.state.copayNetwork + "&homeCare=" + this.state.homeCare + '&hcHome=' + this.state.hcHome + '&hcPhone=' + this.state.hcPhone,
             data, { headers: { "Authorization": "Bearer " + loginToken } })
             .then((data) => {
-                console.log(data);
                 this.props.history.push("/scripts");
             }).catch((error) => {
                 console.error(error);
@@ -382,12 +374,10 @@ class AddScript extends Component {
     }
 
     getPhysician() {
-        console.log(this.state.physicianId)
         const loginToken = window.localStorage.getItem("token");
         axios.get('/api/physicians/search?physicianId=' + this.state.physicianId,
             { headers: { "Authorization": "Bearer " + loginToken } })
             .then((resp) => {
-                console.log(resp);
                 let physician = resp.data.response[0];
                 this.setState({
                     physicianName: physician.firstName + " " + physician.lastName,
@@ -405,12 +395,10 @@ class AddScript extends Component {
     }
 
     getProduct() {
-        console.log(this.state.productId)
         const loginToken = window.localStorage.getItem("token");
         axios.get('/api/products/search?productId=' + this.state.productId,
             { headers: { "Authorization": "Bearer " + loginToken } })
             .then((resp) => {
-                console.log(resp);
                 let product = resp.data.response[0];
                 this.setState({
                     productName: product.name,
@@ -418,10 +406,16 @@ class AddScript extends Component {
                     productPackageSize: product.packageSize,
                     productQuantity: product.quantity,
                     productCost: product.cost
-                })
+                }, this.updateCost)
             }).catch((error) => {
                 console.error(error);
             })
+    }
+
+    updateCost() {
+        this.setState({
+            cost: this.state.productCost.replace(",","") * this.state.quantity
+        })
     }
 
     handleCheckbox(event) {
@@ -456,11 +450,6 @@ class AddScript extends Component {
             'Renew'
         ]
 
-        if (this.state.quantity) {
-            this.setState({
-                cost: this.state.cost * this.state.quantity
-            })
-        }
 
         const {
             pharmNPI,
@@ -694,8 +683,8 @@ class AddScript extends Component {
                                         <Input
                                             label="Cost"
                                             placeholder={this.state.cost}
-                                            value={cost}
-                                            onChange={costChange}
+                                            value={this.state.cost}
+                                            onChange={cost => this.setState({ cost })}
                                         />
                                     </td>
                                 </tr>
@@ -769,8 +758,9 @@ class AddScript extends Component {
                                     <td>
                                         <Input
                                             label="Quantity"
-                                            value={quantity}
-                                            onChange={quantityChange}
+                                            placeholder={this.state.quantity}
+                                            value={this.state.quantity}
+                                            onChange={quantity => this.setState({ quantity }, this.updateCost)}
                                         />
                                     </td>
                                 </tr>

@@ -1,6 +1,6 @@
 import AttachmentModal from './AttachmentModal/AttachmentModal'
+import PatientAttachmentModal from './PatientAttachmentModal/PatientAttachmentModal'
 import CheckoutForm from './CheckoutForm/CheckoutForm'
-import FileModal from './FileModal/FileModal'
 import InsuranceModal from './InsuranceModal/InsuranceModal'
 import VisitModal from './VisitModal/VisitModal'
 import VisitNoteModal from './VisitNoteModal/VisitNoteModal'
@@ -17,9 +17,9 @@ import SummaryRow from './SummaryRow/SummaryRow'
 
 export {
   AttachmentModal,
+  PatientAttachmentModal,
   CheckoutForm,
   FaxModal,
-  FileModal,
   InsuranceModal,
   VisitModal,
   VisitNoteModal,

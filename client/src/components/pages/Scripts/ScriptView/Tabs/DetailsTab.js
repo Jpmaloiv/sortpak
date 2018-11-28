@@ -19,7 +19,8 @@ class DetailsTab extends Component {
     super(props)
     this.state = {
       refills: 0,
-      refresh: false
+      refresh: false,
+      networkPay: ''
     }
   }
   state = {
@@ -60,7 +61,7 @@ class DetailsTab extends Component {
           physicianWarning: script.Physician.physicianWarning,
           productName: script.Product.name,
           productNDC: script.Product.NDC,
-          cost: script.Product.cost,
+          cost: script.cost,
           priorAuth: script.priorAuth,
           productQuantity: script.Product.quantity,
           billOnDate: script.billOnDate,
@@ -88,7 +89,7 @@ class DetailsTab extends Component {
           ETA: script.ETA,
           paymentOption: script.paymentOption,
 
-        })
+        }, this.calcTotalPay)
 
 
       }).catch((err) => {
@@ -100,35 +101,26 @@ class DetailsTab extends Component {
     this.reMount();
   }
 
-
-  setEditState(editing) {
-    this.setState({ ...this.initialState, editing })
-  }
-
-  save() {
-    const loginToken = window.localStorage.getItem("token");
-    let data = new FormData();
-    axios.put('/api/scripts/update?id=' + this.state.id + '&processedOn=' + this.state.processedOn + '&writtenDate=' + this.state.writtenDate
-      + '&billOnDate=' + this.state.billOnDate + '&rxNumber=' + this.state.rxNumber + '&diagnosis=' + this.state.diagnosis + '&secDiagnosis=' + this.state.secDiagnosis
-      + '&refills=' + this.state.refills + '&refillsRemaining=' + this.state.refillsRemaining + '&quantity=' + this.state.quantity + '&daysSupply=' + this.state.daysSupply
-      + '&salesCode=' + this.state.salesCode + '&cost=' + this.state.cost + '&primInsPay=' + this.state.primInsPay + '&secInsPay=' + this.state.secInsPay
-      + '&copayApproval=' + this.state.copayApproval + '&copayNetwork=' + this.state.copayNetwork + '&patientPay=' + this.state.patientPay + '&status=' + this.state.status,
-      data, { headers: { "Authorization": "Bearer " + loginToken } })
-      .then((data) => {
-        console.log(data);
-        window.location.reload();
-      }).catch((error) => {
-        console.error(error);
+  calcTotalPay() {
+    if (this.state.cost && this.state.primInsPay && this.state.secInsPay && this.state.networkPay && this.state.patientPay) {
+      let totalPay = +this.state.primInsPay + +this.state.secInsPay + +this.state.networkPay + +this.state.patientPay;
+      let profit = (totalPay - this.state.cost).toFixed(2);
+      let margin = (profit / totalPay * 100).toFixed(1) + '%';
+      this.setState({
+        totalPay: totalPay,
+        profit: profit,
+        margin: margin
       })
+    } else {
+      this.setState({
+        totalPay: 'Input needed',
+        profit: '',
+        margin: ''
+      })
+    }
   }
 
   render() {
-    console.log(this.state.writtenDate);
-
-    const totalPay = +this.state.primInsPay + +this.state.secInsPay + +this.state.networkPay + +this.state.patientPay;
-    console.log(this.state.cost, this.state.totalPay)
-    const profit = totalPay - this.state.cost;
-    const margin = (profit / totalPay * 100).toFixed(1) + '%';
 
     const statusOptions = [
       'No Status',
@@ -196,10 +188,10 @@ class DetailsTab extends Component {
                     </td>
                     <td className="field">Written Date</td>
                     <td className="value">
-                      {this.state.writtenDate = "" ?
-                        <div>{this.state.writtenDate}</div>
+                      {this.state.writtenDate ?
+                        <Moment style={{ lineHeight: '1.8em' }} format="MM/DD/YYYY">{this.state.writtenDate}</Moment>
                         :
-                        <Moment style={{ lineHeight: '1.8em' }} format="MM/DD/YYYY">{this.state.writtenDate || ''}</Moment>
+                        <span></span>
                       }
                     </td>
                   </tr>
@@ -212,7 +204,11 @@ class DetailsTab extends Component {
                     </td>
                     <td className="field">Bill On</td>
                     <td className="value">
-                      <Moment format="MM/DD/YYYY">{this.state.billOnDate || ''}</Moment>
+                      {this.state.billOnDate ?
+                        <Moment format="MM/DD/YYYY">{this.state.billOnDate}</Moment>
+                        :
+                        <span></span>
+                      }
                     </td>
                   </tr>
                   <tr>
@@ -302,7 +298,11 @@ class DetailsTab extends Component {
                   </tr>
                   <tr>
                     <td className="field">Ship On</td>
-                    <td className='value'><Moment format="MM/DD/YYYY">{this.state.shipOn || ''}</Moment></td>
+                    <td className='value'>{this.state.shipOn ?
+                      <Moment format="MM/DD/YYYY">{this.state.shipOn || ''}</Moment>
+                      :
+                      <span></span>
+                    }</td>
                     <td className="field">Copay Assistance Network</td>
                     <td className='value'>{this.state.copayNetwork}</td>
                   </tr>
@@ -310,7 +310,11 @@ class DetailsTab extends Component {
                     <td className="field">Delivery Method</td>
                     <td className='value'>{this.state.deliveryMethod}</td>
                     <td className="field">Copay Assistance Amount</td>
-                    <td className='value'>{this.state.networkPay}</td>
+                    <td className='value'>{this.state.networkPay ?
+                      <span>{this.state.networkPay}</span>
+                      :
+                      <span></span>
+                    }</td>
                   </tr>
                   <tr>
                     <td className="field">Tracking Number</td>
@@ -329,7 +333,11 @@ class DetailsTab extends Component {
                   </tr>
                   <tr>
                     <td className="field">ETA</td>
-                    <td className='value'><Moment format="MM/DD/YYYY">{this.state.ETA}</Moment></td>
+                    <td className='value'>{this.state.ETA ?
+                      <Moment format="MM/DD/YYYY">{this.state.ETA}</Moment>
+                      :
+                      <span></span>
+                    }</td>
                     <td className="field">Payment Option</td>
                     <td className='value'>{this.state.paymentOption}</td>
                   </tr>
@@ -337,19 +345,19 @@ class DetailsTab extends Component {
                     <td className="field">Status</td>
                     <td className='value'>{this.state.status || ''}</td>
                     <td className="field">Total Pay</td>
-                    <td className="value">{totalPay}</td>
+                    <td className="value">{this.state.totalPay}</td>
                   </tr>
                   <tr>
                     <td className="field">Instructions</td>
                     <td className='value'>{this.state.directions || ''}</td>
                     <td className="field">Profit</td>
-                    <td className='value'>{profit}</td>
+                    <td className='value'>{this.state.profit}</td>
                   </tr>
                   <tr>
                     <td className="field"></td>
                     <td className='value'></td>
                     <td className="field">Margin</td>
-                    <td className='value'>{margin}</td>
+                    <td className='value'>{this.state.margin}</td>
                   </tr>
                 </tbody>
               </table>

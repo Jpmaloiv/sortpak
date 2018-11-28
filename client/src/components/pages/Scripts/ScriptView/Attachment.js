@@ -18,6 +18,7 @@ class Book extends React.Component {
         if (this.props.match.params.attachmentId) {
             axios.get('/api/attachments/search?attachmentId=' + this.props.match.params.attachmentId, { headers: { "Authorization": "Bearer " + loginToken } })
                 .then((resp) => {
+                    console.log(resp);
                     this.setState({
                         file: resp.data.response[0].link,
                         attachment: resp.data.response[0]

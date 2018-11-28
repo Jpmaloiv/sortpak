@@ -17,13 +17,7 @@ module.exports = function(sequelize, DataTypes) {
             allowNull: false
         }
     }); 
-    // PublishedBooks.associate = function(models) {
-    //     models.PublishedBooks.belongsTo(models.User, {
-    //         foreignKey: {
-    //             allowNull: false
-    //         }
-    //     });
-    // };
+
     scriptAttachments.associate = function (models) {
         models.scriptAttachments.belongsTo(models.Scripts, {
             foreignKey: {

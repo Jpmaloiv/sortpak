@@ -10,26 +10,28 @@ const Op = Sequelize.Op;
 
 
 router.post("/add", (req, res) => {
-    const attachmentLink = '/attachments/' + req.payload.id + '/' + req.query.type.trim() + ".pdf";
+    console.log(req.files)
+    const attachmentLink = '/attachments/patients/' + req.query.patientId + '/' + req.files.patientFile.name;
     const attachment = {
         dateAttached: req.query.dateAttached,
         attachedBy: req.query.attachedBy,
         type: req.query.type.trim(),
         link: attachmentLink,
+        PatientId: req.query.patientId,
         UserId: req.payload.id
     }
 
     const attachmentFile = req.files.patientFile;
-    fs.mkdir("./attachments/attachments/" + req.payload.id.toString(), (err) => {
+    fs.mkdir("./attachments/patients/" + req.query.patientId, (err) => {
         if ((err) && (err.code !== 'EEXIST')) {
             console.error(err)
         } else {
-            const attachmentPath = './attachments/attachments/' + req.payload.id + '/' + req.query.type.trim() + ".pdf";
-            // console.log("dir created");
-                    // console.log("file saved");
-                attachmentFile
-                    .mv(attachmentPath)
-                    .then((response) => {
+            const attachmentPath = './attachments/patients/' + req.query.patientId + '/' + req.files.patientFile.name;
+            console.log("dir created");
+            console.log("file saved");
+            attachmentFile
+                .mv(attachmentPath)
+                .then((response) => {
                     db.patientAttachments
                         .create(attachment)
                         .then((resp) => {
@@ -39,12 +41,12 @@ router.post("/add", (req, res) => {
                             console.error(err);
                             res.status(500).json({ message: "Internal server error.", error: err });
                         })
-                    })
-                    .catch((err) => {
-                        console.error(err);
-                        res.status(500).json({ message: "Internal server error.", error: err });
-                    })
-                
+                })
+                .catch((err) => {
+                    console.error(err);
+                    res.status(500).json({ message: "Internal server error.", error: err });
+                })
+
         }
     })
 });
@@ -56,15 +58,15 @@ router.get("/search", (req, res) => {
         attributes: {
             exclude: ["updatedAt", "UserId"]
         },
-        // include: [{
-        //     model: db.User,
-        //     attributes: ["id", "username"]
-        // }]
+        include: [{
+            model: db.User,
+            attributes: ["id", "username"]
+        }]
     }
-    /* if (req.query.attachmentId) {
+    if (req.query.attachmentId) {
         searchParams.where.id = req.query.attachmentId
-    } */
-  
+    }
+
     console.log(searchParams);
     db.patientAttachments
         .findAll(searchParams)
@@ -78,7 +80,7 @@ router.get("/search", (req, res) => {
             console.error(err);
             res.status(500).json({ message: "Error (500): Internal Server Error", error: err })
         })
-    })
+})
 
 
 module.exports = router;
