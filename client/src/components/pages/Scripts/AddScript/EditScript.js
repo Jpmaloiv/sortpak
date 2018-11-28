@@ -73,8 +73,9 @@ class EditScript extends Component {
                         productName: script.Product.name,
                         physicianId: script.PhysicianId,
                         productId: script.ProductId,
-                        productCost: script.Product.cost
-                    })
+                        productCost: script.Product.cost,
+                        productPackageSize: script.Product.packageSize
+                    }, this.calcTabletCost)
                 }).catch((err) => {
                     console.error(err)
                 })
@@ -111,13 +112,6 @@ class EditScript extends Component {
                 console.error(error);
             })
     }
-
-    updateCost() {
-        this.setState({
-            cost: this.state.productCost * this.state.quantity
-        })
-    }
-
 
     onChangeHandler = (event) => {
         this.setState({
@@ -434,6 +428,7 @@ class EditScript extends Component {
             })
     }
 
+
     getProduct() {
         const loginToken = window.localStorage.getItem("token");
         axios.get('/api/products/search?productId=' + this.state.productId,
@@ -441,11 +436,33 @@ class EditScript extends Component {
             .then((resp) => {
                 let product = resp.data.response[0];
                 this.setState({
-                    productName: product.name
-                })
+                    productName: product.name,
+                    productPackageSize: product.packageSize,
+                    quantity: product.packageSize
+                }, this.calcTabletCost)
             }).catch((error) => {
                 console.error(error);
             })
+    }
+
+    calcTabletCost() {
+        console.log(this.state.productCost, this.state.quantity)
+        this.setState({
+            tabletCost: this.state.productCost.replace(",","") / this.state.productPackageSize.replace(",","")
+        }, this.updateCost)
+    }
+
+    updateCost() {
+        console.log(this.state.tabletCost, this.state.quantity)
+        this.setState({
+            cost: this.state.tabletCost * this.state.quantity.replace(",","")
+        }, this.roundtoNearestCent)
+    }
+    
+    roundtoNearestCent() {
+        this.setState({
+            cost: Math.floor(this.state.cost * 100) / 100
+        })
     }
 
     updateScript = (event) => {

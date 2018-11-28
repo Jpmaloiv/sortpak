@@ -1,5 +1,6 @@
 import React from 'react';
 import cn from 'classnames'
+import Moment from 'react-moment'
 
 // Components
 import {
@@ -28,8 +29,7 @@ const Day = ({day, reps, onClick, today}) => {
             className="rep-name"
             onClick={() => onClick(rep)}
           >
-          {rep.Rep}
-            {/* {rep.nameDisplay & 'HELLO'|| 'Rep'} */}
+          {rep.Rep} - <Moment format="HH:mm">{rep.dateTime}</Moment>
           </span>
         ))}
       </div>

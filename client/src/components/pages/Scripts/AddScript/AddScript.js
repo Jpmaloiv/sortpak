@@ -49,7 +49,6 @@ class AddScript extends Component {
             billOnDate: '',
             shipOn: '',
             ETA: '',
-            quantity: 1,
             copayApproval: '',
             copayNetwork: '',
             diagnosis: '',
@@ -405,16 +404,30 @@ class AddScript extends Component {
                     productNDC: product.NDC,
                     productPackageSize: product.packageSize,
                     productQuantity: product.quantity,
-                    productCost: product.cost
-                }, this.updateCost)
+                    productCost: product.cost,
+                    productPackageSize: product.packageSize
+                }, this.calcTabletCost)
             }).catch((error) => {
                 console.error(error);
             })
     }
 
+    calcTabletCost() {
+        this.setState({
+            tabletCost: this.state.productCost.replace(",","") / this.state.productPackageSize.replace(",",""),
+            quantity: this.state.productPackageSize
+        }, this.updateCost)
+    }
+
     updateCost() {
         this.setState({
-            cost: this.state.productCost.replace(",","") * this.state.quantity
+            cost: this.state.tabletCost * this.state.quantity.replace(",","")
+        }, this.roundtoNearestCent)
+    }
+    
+    roundtoNearestCent() {
+        this.setState({
+            cost: Math.floor(this.state.cost * 100) / 100
         })
     }
 

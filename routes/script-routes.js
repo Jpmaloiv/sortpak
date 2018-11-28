@@ -78,9 +78,7 @@ router.post("/add", (req, res) => {
 
 
 router.get("/search", (req, res) => {
-
     let searchParams = {
-
         where: {},
         attributes: {
             exclude: ["createdAt"]
