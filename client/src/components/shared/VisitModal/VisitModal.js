@@ -150,8 +150,8 @@ class VisitModal extends Component {
       data, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((data) => {
         console.log(data);
-        // window.location.reload();
-        this.props.onClickAway();
+        window.location.reload();
+        // this.props.onClickAway();
 
       }).catch((error) => {
         console.error(error);
