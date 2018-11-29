@@ -7,6 +7,10 @@
   padding-left: 5%;
 }
 
+.physicianNotes .nt {
+  width: 90% !important;
+}
+
 #physWarning {
   background-color: #e2f3f9;
   border: 1px solid #00b1ec;

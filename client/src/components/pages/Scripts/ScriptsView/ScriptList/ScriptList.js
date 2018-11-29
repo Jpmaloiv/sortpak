@@ -42,7 +42,9 @@ class ScriptList extends React.Component {
   }
 
   renderTableRow(script) {
-    
+
+ 
+
     return (
 
       <tr value={script.id} onClick={() => this.handleClick(script.id)}>
@@ -96,41 +98,19 @@ class ScriptList extends React.Component {
 
   render() {
 
-
-    /* const {
-     script,
-     date
-   } = this.state 
-
-   var username = this.state.username; */
-
     if (this.props.data) {
-      // const self = this;
+
+      var scriptList = this.props.data.sort(function(a,b) { 
+        return new Date(b.processedOn).getTime() - new Date(a.processedOn).getTime() 
+    });
+
 
       var scriptList = this.props.data.map(function (item, i) {
 
         return (
           <div key={i}>
-            {/* <div className="story-title-author">
-                          <h3 className="story-title">{item.patient}</h3>
-                
-                      <h5 className="story-author">
-                          {!(self.props.match.params.username)
-                              ?
-                              <div style={{ marginLeft: "5px" }} className="btn-group" role="group">
-                                  <button onClick={() => self.showUpdForm(item)} type="button" className="btn btn-primary btn-xs"><span className="glyphicon glyphicon-pencil"></span></button>
-                                  <button onClick={() => self.deleteBook(item.id)} type="button" className="btn btn-primary btn-xs"><span className="glyphicon glyphicon-remove"></span></button>
-                              </div>
-                              : null
-                          }
-                      </h5>
-                  </div>
-                  
-                  <p>{item.description}</p>
-                  <br /> */}
           </div>
         )
-
       })
     }
     else {

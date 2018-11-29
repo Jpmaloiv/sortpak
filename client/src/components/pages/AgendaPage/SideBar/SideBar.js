@@ -282,6 +282,7 @@ class SideBar extends Component {
                 onClickAway={this.closeModal.bind(this)}
                 state={this.state}
                 props={this.props}
+                physicianId={this.props.rep.PhysicianId}
                 onSubmit={onCreateNote}
                 onCloseModal={() => this.closeModal()}
               />

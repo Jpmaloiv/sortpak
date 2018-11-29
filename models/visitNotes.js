@@ -21,6 +21,11 @@ module.exports = function (sequelize, DataTypes) {
                 allowNull: false
             }
         })
+        models.visitNotes.belongsTo(models.Physicians, {
+            foreignKey: {
+                allowNull: false
+            }
+        });
         models.visitNotes.belongsTo(models.User, {
             foreignKey: {
                 allowNull: false

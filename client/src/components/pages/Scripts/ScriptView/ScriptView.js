@@ -858,6 +858,24 @@ class ScriptView extends Component {
         </div>
       )
     }
+    else if (this.state.status === "Renew") {
+      return (
+        <div className="actions">
+          <p className="large">Renew</p>
+          <Button
+            title="RECEIVE"
+            id="Received"
+            onClick={this.handleClick}
+          />
+          <Button
+            title="FLAG FOR REVIEW"
+            id="Review"
+            onClick={this.handleClick}
+            style={{ 'background-color': '#d2000d', marginLeft: 10 }}
+          />
+        </div>
+      )
+    }
   }
 
   renderSwitchTable() {

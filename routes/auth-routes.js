@@ -27,6 +27,10 @@ router.get("/search", (req, res) => {
         searchParams.where.id = req.query.userId
     }
 
+    if (req.query.physicianId) {
+        searchParams.where.PhysicianId = req.query.physicianId
+    }
+
     if (req.query.role) {
         searchParams.where.role = req.query.role
     }

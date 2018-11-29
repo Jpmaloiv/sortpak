@@ -17,6 +17,7 @@ router.post("/add", (req, res) => {
         link: noteLink,
         userImage: req.query.userImage,
         VisitId: req.query.visitId,
+        PhysicianId: req.query.physicianId,
         UserId: req.query.userId
     }
 
@@ -53,6 +54,10 @@ router.get("/search", (req, res) => {
 
     if (req.query.VisitId) {
         searchParams.where.VisitId = req.query.VisitId
+    }
+
+    if (req.query.physicianId) {
+        searchParams.where.PhysicianId = req.query.physicianId
     }
 
     console.log(searchParams);

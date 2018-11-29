@@ -36,7 +36,9 @@ import {
 import { Line } from 'react-chartjs-2';
 
 import ScriptsTab from './Tabs/ScriptsTab'
+import AppointmentsNotesTab from './Tabs/AppointmentsNotesTab'
 import GroupTab from './Tabs/GroupTab'
+import UsersTab from './Tabs/UsersTab'
 
 import styles from './PhysicianView.css'
 
@@ -52,13 +54,18 @@ class PhysicianView extends Component {
       {
         value: 'notes',
         display: 'Appointments/Notes',
-        renderComponent: () => this.renderScheduleTab(),
+        renderComponent: () => this.renderAppointmentsNotesTab(),
       },
       {
         value: 'group',
         display: 'Group Members',
         renderComponent: () => this.renderGroupTab(),
       },
+      {
+        value: 'users',
+        display: 'Users',
+        renderComponent: () => this.renderUsersTab()
+      }
     ]
 
     this.state = {
@@ -402,9 +409,6 @@ class PhysicianView extends Component {
             onClick={() => this.openVisitModal()}
           />
         </div>
-        {/* <div className="visits">
-          {visits.map(this.renderVisit.bind(this))}
-        </div> */}
 
         <VisitModal
           content={visitModal}
@@ -453,18 +457,19 @@ class PhysicianView extends Component {
     )
   }
 
+  renderAppointmentsNotesTab() {
+    return (
+      <AppointmentsNotesTab
+        className={styles.scriptsTab}
+        pID={this.props}
+        state={this.state}
+        patient={this.props.patient}
+        setState={this.setState.bind(this)}
+      />
+    )
+  }
+
   renderGroupTab() {
-    // const {
-    //   editing,
-    // } = this.state
-
-    // const {
-    //   username,
-    //   password,
-    //   lastLogin,
-    // } = this.props.physician
-
-    // const loginDate = lastLogin ? moment(lastLogin).format('M/D/YY @ hh:mm A') : `Hasn't Logged In`
 
     return(
       <GroupTab
@@ -475,51 +480,22 @@ class PhysicianView extends Component {
         setState={this.setState.bind(this)}
       />
     )
+}
 
-    // return (
-    //   <div className={styles.onlineTab}>
-        /* <div className="item">
-          <label>
-            Username
-          </label>
-          <Span
-            placeholder="Username"
-            editing={editing}
-            value={this.state.username}
-            onChange={username => this.setState({ username })}
-          >
-            {username || 'Enter a Username'}
-          </Span>
-        </div>
+renderUsersTab() {
 
-        <div className="item">
-          <label>
-            Password
-          </label>
-          <Span
-            placeholder="Password"
-            editing={editing}
-            value={this.state.password}
-            onChange={password => this.setState({ password })}
-          >
-            {password ? '******' : 'Create a Password'}
-          </Span>
-        </div>
-
-        <div className="item">
-          <label>
-            Last Logged In
-          </label>
-          <Span>
-            {loginDate}
-          </Span>
-        </div>
-      </div>
-    )
-  } */}
+  return(
+    <UsersTab
+      className={styles.scriptsTab}
+      pID={this.props}
+      state={this.state}
+      patient={this.props.patient}
+      setState={this.setState.bind(this)}
+    />
+  )
+}
 
   render() {
-
 
     return (
       <div>

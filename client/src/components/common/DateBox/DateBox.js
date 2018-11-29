@@ -10,11 +10,15 @@ import {
 
 import styles from './DateBox.css'
 
-// Private Components
-const TimeDisplay = ({ time }) => (
-  <span className="time">
+
+const DateTimeDisplay = ({ date, time }) => (
+  <span className="dateTime">
+    <FontAwesome name="calendar-check-o" />
+    {date} 
+    &nbsp;&nbsp;&nbsp;&nbsp;
     <FontAwesome name="clock-o" />
-    {time}
+    {time} 
+    
   </span>
 )
 
@@ -25,7 +29,7 @@ const NameDisplay = ({ name }) => (
   </span>
 )
 
-// Public Componet
+
 export const DateBox = props => {
   const {
     visit,
@@ -39,13 +43,14 @@ export const DateBox = props => {
   let author
   if (note) {
     dateTime = moment(note.created_at)
-    author = note.author
+    author = visit.Rep
   } else {
     dateTime = moment(visit.dateTime)
-    author = visit.rep
+    author = visit.Rep
   }
-  const name = (author && author.nameDisplay) || 'Unknown'
-  const date = dateTime.format('D')
+  const name = author || 'Unknown'
+  const day = dateTime.format('D')
+  const date = dateTime.format('MM/DD/YYYY')
   const month = dateTime.format('MMM')
   const time = dateTime.format('h:mm A')
 
@@ -59,7 +64,7 @@ export const DateBox = props => {
           </span>
 
           <span className="day">
-            {date}
+            {day}
           </span>
         </div>
       </div>
@@ -70,7 +75,7 @@ export const DateBox = props => {
         {note ? (
           <div className="title">
             <NameDisplay name={name} />
-            <TimeDisplay time={time} />
+            <DateTimeDisplay time={time} date={date} />
           </div>
         ) : (
           <div className="title">
@@ -84,7 +89,7 @@ export const DateBox = props => {
           </div>
         ) : (
           <div className="body">
-            <TimeDisplay time={time} />
+            <DateTimeDisplay time={time} date={date} />
             <NameDisplay name={name} />
           </div>
         )}

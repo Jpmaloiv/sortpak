@@ -73,12 +73,6 @@ class VisitModal extends Component {
       })
   }
 
-  // removeNullPhysician() {
-  //   this.setState({
-  //     physicianData: this.state.physicians.shift()
-  //   })
-  // }
-
   searchQuery() {
     this.setState({
       searchActive: true
@@ -89,7 +83,7 @@ class VisitModal extends Component {
         console.log(resp);
         this.setState({
           physicians: resp.data.response
-        }, this.removeNullPhysician)
+        })
       }).catch((err) => {
         console.error(err)
       })
@@ -136,7 +130,7 @@ class VisitModal extends Component {
 
   getPhysician() {
     const loginToken = window.localStorage.getItem("token");
-    axios.get('api/physicians/search?physicianId=' + this.state.physicianId,
+    axios.get('/api/physicians/search?physicianId=' + this.state.physicianId,
       { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
         this.setState({
@@ -156,8 +150,8 @@ class VisitModal extends Component {
       data, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((data) => {
         console.log(data);
-        window.location.reload();
-        // this.props.onClickAway();
+        // window.location.reload();
+        this.props.onClickAway();
 
       }).catch((error) => {
         console.error(error);
@@ -262,19 +256,6 @@ class VisitModal extends Component {
         })),
       ]
 
-      const physicianOptions = [
-        {
-          key: '',
-          value: '',
-          display: '--',
-        },
-        ...this.state.physicians.map(physician => ({
-          key: physician.id,
-          value: physician.firstName + ' ' + physician.lastName,
-          display: physician.firstName + ' ' + physician.lastName
-        })),
-      ]
-
       const repOption = [
         `${this.state.Rep}`
       ];
@@ -334,17 +315,9 @@ class VisitModal extends Component {
 
           <br />
 
-          {/* Physician */}
           <label>
             Physician
         </label>
-          {/* <Selector
-            wide
-            options={physicianOptions}
-            value={this.state.Physician}
-            // onSelect={this.props.on ChangeValue}
-            onSelect={Physician => this.setState({ Physician })}
-          /> */}
           {this.state.searchActive ?
             <div style={{ 'background': 'red !important' }}>
               <Input
