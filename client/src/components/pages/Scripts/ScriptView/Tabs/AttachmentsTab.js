@@ -84,7 +84,7 @@ class AttachmentsTab extends Component {
         </td>
 
         <td>
-          {attachment.User.username}
+          {/* {attachment.User.username} */}
         </td>
 
         <td>
