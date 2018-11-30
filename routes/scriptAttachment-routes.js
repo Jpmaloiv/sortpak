@@ -55,12 +55,12 @@ router.get("/search", (req, res) => {
     let searchParams = {
         where: {},
         attributes: {
-            exclude: ["updatedAt"]
+            exclude: ["createdAt"]
         },
-        // include: [{
-        //     model: db.User,
-        //     where: {},
-        // }],
+        include: [{
+            model: db.User,
+            attributes: ["username"]
+        }]
     }
 
     if (req.query.attachmentId) {

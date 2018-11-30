@@ -66,15 +66,6 @@ class PhysiciansViewRep extends Component {
       })
   }
 
-  // unsure why this works, only place physicianData is used
-  removeNullPhysician() {
-    this.setState({
-      physicianData: this.state.physicians.shift()
-    })
-    
-
-  }
-
   searchQuery() {
     const loginToken = window.localStorage.getItem("token");
     axios.get('api/physicians/search?name=' + this.state.searchName + '&searchGroup=' + this.state.searchGroup + '&address=' + this.state.searchAddress
@@ -83,14 +74,12 @@ class PhysiciansViewRep extends Component {
         console.log(resp.data.response);
         this.setState({
           physicians: resp.data.response,
-        }, this.removeNullPhysician)
+        })
         
       }).catch((error) => {
         console.error(error);
       })
   }
-
- 
 
   enterPressed(event) {
     var code = event.keyCode || event.which;

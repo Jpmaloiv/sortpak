@@ -38,17 +38,10 @@ class PhysiciansView extends Component {
         console.log(resp);
         this.setState({
           physicians: resp.data.response,
-        }, this.removeNullPhysician)
+        })
       }).catch((error) => {
         console.error(error);
       })
-  }
-
-  // unsure why this works, only place physicianData is used
-  removeNullPhysician() {
-    this.setState({
-      physicianData: this.state.physicians.shift()
-    })
   }
 
   searchQuery() {
@@ -59,14 +52,12 @@ class PhysiciansView extends Component {
         console.log(resp.data.response);
         this.setState({
           physicians: resp.data.response,
-        }, this.removeNullPhysician)
+        })
         
       }).catch((error) => {
         console.error(error);
       })
   }
-
- 
 
   enterPressed(event) {
     var code = event.keyCode || event.which;
