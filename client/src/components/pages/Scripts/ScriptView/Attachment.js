@@ -40,7 +40,7 @@ class Book extends React.Component {
                 <BookWindow
                     file={this.state.file}
                 /> :
-                <img src="/assets/images/cantfindbook.jpg" />
+                <div>File Not Found</div>
 
         );
     }

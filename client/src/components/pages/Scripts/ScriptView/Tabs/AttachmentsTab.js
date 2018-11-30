@@ -84,7 +84,7 @@ class AttachmentsTab extends Component {
         </td>
 
         <td>
-          {attachment.attachedBy}
+          {attachment.User.username}
         </td>
 
         <td>
@@ -106,6 +106,10 @@ class AttachmentsTab extends Component {
   render() {
     
     if (this.state.attachments) {
+
+      var attachmentList = this.state.attachments.sort(function(a,b) { 
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime() 
+    });
       var attachmentList = this.state.attachments.map(function (item, i) {
         console.log(item);
         return (

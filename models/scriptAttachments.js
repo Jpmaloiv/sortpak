@@ -1,3 +1,4 @@
+
 module.exports = function(sequelize, DataTypes) {
     var scriptAttachments = sequelize.define("scriptAttachments", {
         title: {
@@ -24,6 +25,11 @@ module.exports = function(sequelize, DataTypes) {
                 allowNull: false
             }
         })
+        models.scriptAttachments.belongsTo(models.User, {
+            foreignKey: {
+                allowNull: false
+            }
+        });
     }
     return scriptAttachments; 
   };

@@ -18,27 +18,24 @@ class FilesTab extends Component {
       type: ''
     }
   }
-  
-  
+
   openNoteModal() {
     this.props.setState({ fileModal: {} })
   }
 
   componentDidMount() {
-      const loginToken = window.localStorage.getItem("token");
-        axios.get('/api/patients/attachments/search/', { headers: { "Authorization": "Bearer " + loginToken } })
-          .then((resp) => {
-            console.log(resp.data.response);
-            this.setState({
-                attachments: resp.data.response,
-            })
-            console.log(this.state.attachments)
-          }).catch((error) => {
-            console.error(error);
+    const loginToken = window.localStorage.getItem("token");
+    axios.get('/api/patientAttachments/search?patientId=' + this.props.state.id, { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        this.setState({
+          attachments: resp.data.response,
         })
+      }).catch((error) => {
+        console.error(error);
+      })
   }
 
-  
+
 
   renderTableHead() {
     return (
@@ -56,7 +53,6 @@ class FilesTab extends Component {
           <th>
             Type
           </th>
-          <th/>
         </tr>
       </thead>
     )
@@ -75,15 +71,15 @@ class FilesTab extends Component {
     return (
       <tr key={attachment.id}>
         <td>
-          <Link to={'../attachment/' + attachment.id} activeClassName="active">
-              <h3>View</h3>
+          <Link to={'../patientAttachment/' + attachment.id} activeClassName="active">
+            <h3>{attachment.title}</h3>
           </Link>
-          
-        </td>
-        
 
-        <td> 
-          <Moment format={"YYYY-MM-DD"}>{`${attachment.createdAt}`}</Moment>
+        </td>
+
+
+        <td>
+          <Moment format={"MM/DD/YYYY"}>{`${attachment.createdAt}`}</Moment>
         </td>
 
         <td>
@@ -110,22 +106,24 @@ class FilesTab extends Component {
 
     if (this.state.attachments) {
 
-var attachmentList = this.state.attachments.map(function (item, i) {
-          console.log(item);
-          return (
-              <div key={i}>
-              </div>
-              )
-            })
-        }
-        else {
-            return <div>
-                <p></p>
-            </div>
-        }
+      var attachmentList = this.state.attachments.sort(function (a, b) {
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      });
 
-    console.log(this.state.attachments);
-    
+      var attachmentList = this.state.attachments.map(function (item, i) {
+        console.log(item);
+        return (
+          <div key={i}>
+          </div>
+        )
+      })
+    }
+    else {
+      return <div>
+        <p></p>
+      </div>
+    }
+
     const {
       state,
       className,
@@ -133,15 +131,13 @@ var attachmentList = this.state.attachments.map(function (item, i) {
       onCreateNote,
     } = this.props
 
-    // const notes = patient.notes || []
     const {
       fileModal
     } = state
 
-    
     return (
       <div className={className}>
-  
+
         <Button
           icon="plus"
           title="ATTACH FILE"
@@ -152,9 +148,8 @@ var attachmentList = this.state.attachments.map(function (item, i) {
 
           {this.renderTable()}
           {attachmentList}
-  
+
         </div>
-            
 
         <PatientAttachmentModal
           props={this.props}

@@ -1,13 +1,9 @@
 
 module.exports = function(sequelize, DataTypes) {
     var patientAttachments = sequelize.define("patientAttachments", {
-        dateAttached: {
+        title: {
             type: DataTypes.STRING,
-            allowNull: true
-        },
-        attachedBy: {
-            type: DataTypes.STRING,
-            allowNull: true
+            allowNull: false
         },
         type: {
             type: DataTypes.STRING,
@@ -15,7 +11,7 @@ module.exports = function(sequelize, DataTypes) {
         },
         link: {
             type: DataTypes.STRING,
-            allowNull: true
+            allowNull: false
         }    
     }); 
     patientAttachments.associate = function(models) {
@@ -23,7 +19,7 @@ module.exports = function(sequelize, DataTypes) {
             foreignKey: {
                 allowNull: false
             }
-        }),
+        })
         models.patientAttachments.belongsTo(models.User, {
             foreignKey: {
                 allowNull: false

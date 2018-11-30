@@ -532,7 +532,7 @@ class EditScript extends Component {
             newStatus = 'Refill'
         }
         this.setState({
-            newProcessedOn: moment(this.state.ETA).add(this.state.daysSupply, 'days').subtract(10, 'days').format('MM-DD-YYYY'),
+            newProcessedOn: moment(this.state.processedOn).add(this.state.daysSupply, 'days').subtract(10, 'days').format('MM-DD-YYYY'),
             newRefills: count,
             newRefillsRemaining: this.state.refillsRemaining - 1,
             newStatus: newStatus

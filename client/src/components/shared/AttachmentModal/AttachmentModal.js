@@ -40,11 +40,10 @@ export default class AttachmentModal extends Component {
   get inactive() {
     const {
       scriptFile,
-      // type
+      type
     } = this.state
 
-    return !scriptFile
-    // return !type
+    return !scriptFile, !type
   }
 
   onSubmit(e) {
@@ -77,6 +76,7 @@ export default class AttachmentModal extends Component {
     } = this.state
 
     const typeOptions = [
+      '--',
       'Rx',
       'Delivery Signature',
       'PA form',
@@ -118,7 +118,7 @@ export default class AttachmentModal extends Component {
           />
           <Button
             large
-            // inactive={this.inactive}
+            inactive={this.inactive}
             type="submit"
             title="Post"
           />

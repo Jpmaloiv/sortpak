@@ -14,6 +14,8 @@ import ScriptViewPhysician from './components/pages/Scripts/ScriptView_Physician
 import AddScript from './components/pages/Scripts/AddScript/AddScript'
 import EditScript from './components/pages/Scripts/AddScript/EditScript'
 import Attachment from './components/pages/Scripts/ScriptView/Attachment'
+import PatientAttachment from './components/pages/PatientsPage/PatientView/PatientAttachment'
+
 import PatientsPage from './components/pages/PatientsPage/PatientsPage'
 import AddPatient from './components/pages/PatientsPage/AddPatient/AddPatient'
 import EditPatient from './components/pages/PatientsPage/AddPatient/EditPatient'
@@ -154,6 +156,8 @@ class App extends Component {
                 <PrivateRoute exact path="/team/:userId/edit" component={EditMember} />
 
                 <Route exact path="/attachment/:attachmentId" component={Attachment} />
+                <Route exact path="/patientAttachment/:attachmentId" component={PatientAttachment} />
+
                 <Route exact path="/book/:bookId" component={Attachment} />
 
 

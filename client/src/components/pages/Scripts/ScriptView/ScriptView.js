@@ -136,7 +136,9 @@ class ScriptView extends Component {
             homeCare: script.homeCare,
             copayApproval: script.copayApproval,
             copayNetwork: script.copayNetwork,
+            networkPay: script.networkPay,
             patientPay: script.patientPay,
+            paymentOption: script.paymentOption,
             directions: script.directions,
             patientId: script.PatientId,
             notesNum: script.scriptNotes.length,
@@ -353,7 +355,7 @@ class ScriptView extends Component {
       newStatus = 'Refill'
     }
     this.setState({
-      newProcessedOn: moment(this.state.ETA).add(this.state.daysSupply, 'days').subtract(10, 'days').format('MM-DD-YYYY'),
+      newProcessedOn: moment(this.state.processedOn).add(this.state.daysSupply, 'days').subtract(10, 'days').format('MM-DD-YYYY'),
       newRefills: count,
       newRefillsRemaining: this.state.refillsRemaining - 1,
       newStatus: newStatus

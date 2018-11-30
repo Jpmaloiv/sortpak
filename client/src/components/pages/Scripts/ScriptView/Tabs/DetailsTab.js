@@ -102,6 +102,7 @@ class DetailsTab extends Component {
   }
 
   calcTotalPay() {
+    console.log(this.state.cost, this.state.primInsPay, this.state.secInsPay, this.state.networkPay, this.state.patientPay)
     if (this.state.cost && this.state.primInsPay && this.state.secInsPay && this.state.networkPay && this.state.patientPay) {
       let totalPay = +this.state.primInsPay + +this.state.secInsPay + +this.state.networkPay + +this.state.patientPay;
       let profit = (totalPay - this.state.cost).toFixed(2);

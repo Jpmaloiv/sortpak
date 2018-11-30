@@ -25,6 +25,7 @@ class InsuranceTab extends Component {
 
 
   componentDidMount() {
+    console.log(this.props, this.state)
     const loginToken = window.localStorage.getItem("token");
     axios.get('/api/pastInsurance/search?patientId=' + this.props.props.match.params.patientId, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {

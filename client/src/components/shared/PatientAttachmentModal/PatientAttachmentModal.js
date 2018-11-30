@@ -31,17 +31,19 @@ export default class PatientAttachmentModal extends Component {
   get inactive() {
     const {
       patientFile,
+      type
     } = this.state
 
-    return !patientFile
+    return !patientFile, !type
   }
 
   onSubmit(e) {
+    console.log(this.state)
     e.preventDefault()
         const loginToken = window.localStorage.getItem("token");
         let data = new FormData();
         data.append("patientFile", document.getElementById("pdf-file").files[0])
-        axios.post('/api/patients/attachments/add?patientId=' + this.props.props.state.id + '&dateAttached=' + this.state.dateAttached + "&attachedBy=" + this.state.attachedBy + "&type=" + this.state.type, 
+        axios.post('/api/patientAttachments/upload?patientId=' + this.props.props.state.id + '&dateAttached=' + this.state.dateAttached + "&attachedBy=" + this.state.attachedBy + "&type=" + this.state.type, 
         data, { headers: { "Authorization": "Bearer " + loginToken } })
             .then((data) => {
                 console.log(data);
@@ -65,6 +67,7 @@ export default class PatientAttachmentModal extends Component {
     } = this.state
 
     const typeOptions = [
+      '--',
       'Insurance Card',
       'Assignment of Benefits',
       'Patient Agreement Form',
@@ -101,7 +104,7 @@ export default class PatientAttachmentModal extends Component {
           />
           <Button
             large
-            // inactive={this.inactive}
+            inactive={this.inactive}
             type="submit"
             title="Post"
           />

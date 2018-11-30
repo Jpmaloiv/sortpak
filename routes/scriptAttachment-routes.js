@@ -17,12 +17,10 @@ router.post("/upload", (req, res) => {
     const attachmentLink = '/attachments/' + req.payload.id + '/' + title.trim() + ".pdf";
     const attachment = {
         title,
-        attachedBy: req.query.attachedBy,
         type: req.query.type,
         link: attachmentLink,
-        ScriptId: req.query.scriptId
-        // title: req.query.title,
-        // link: req.query.link
+        ScriptId: req.query.scriptId,
+        UserId: req.payload.id
     }
 
     fs.mkdir("./attachments/attachments/" + req.payload.id.toString(), (err) => {
@@ -57,8 +55,12 @@ router.get("/search", (req, res) => {
     let searchParams = {
         where: {},
         attributes: {
-            exclude: ["updatedAt", "UserId"]
-        }
+            exclude: ["updatedAt"]
+        },
+        include: [{
+            model: db.User,
+            where: {},
+        }],
     }
 
     if (req.query.attachmentId) {
