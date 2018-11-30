@@ -58,10 +58,10 @@ router.get("/search", (req, res) => {
         attributes: {
             exclude: ["updatedAt"]
         },
-        include: [{
-            model: db.User,
-            where: {},
-        }],
+        // include: [{
+        //     model: db.User,
+        //     where: {},
+        // }],
     }
 
     if (req.query.attachmentId) {
