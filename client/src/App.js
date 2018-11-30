@@ -130,7 +130,7 @@ class App extends Component {
                 <Route exact path="/" component={Login} />
                 <Route exact path="/scripts" component={ScriptsPage} />
                 <Route exact path="/scripts/add" component={AddScript} />
-                {this.state.userRole === "Admin" || this.state.userRole === "Rep" ?
+                {this.state.userRole === "Admin" ?
                 <Route exact path="/scripts/:scriptId" component={ScriptView} />
           : <Route exact path="/scripts/:scriptId" component={ScriptViewPhysician} /> }
                 <Route exact path="/scripts/:scriptId/edit" component={EditScript} />

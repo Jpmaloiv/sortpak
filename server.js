@@ -22,7 +22,6 @@ const faxRoutes = require("./routes/fax-routes.js");
 const fileUpload = require('express-fileupload');
 
 
-
 const aws = require('aws-sdk');
 
 //middleware
