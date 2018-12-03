@@ -6,7 +6,7 @@ module.exports = function(sequelize, DataTypes) {
             allowNull: true
         },
         patient: {
-            type: DataTypes.DATEONLY,
+            type: DataTypes.STRING,
             allowNull: true
         },
         pouch: {
