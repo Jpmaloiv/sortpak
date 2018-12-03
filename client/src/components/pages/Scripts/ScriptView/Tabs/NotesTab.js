@@ -28,6 +28,10 @@ class NotesTab extends Component {
     this.props.setState({ noteModal: {} })
   }
 
+  componentWillReceiveProps() {
+    this.componentUpdate();
+  }
+
   componentDidMount() {
     const loginToken = window.localStorage.getItem("token");
     axios.get('/api/scripts/notes/search/?ScriptId=' + this.props.state.id, { headers: { "Authorization": "Bearer " + loginToken } })
@@ -37,6 +41,19 @@ class NotesTab extends Component {
           notes: resp.data.response,
         })
         console.log(this.state)
+      }).catch((error) => {
+        console.error(error);
+      })
+  }
+
+  componentUpdate() {
+    const loginToken = window.localStorage.getItem("token");
+    axios.get('/api/scripts/notes/search/?ScriptId=' + this.props.state.id, { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        console.log(resp);
+        this.setState({
+          notes: resp.data.response,
+        }, () => console.log(this.state.notes))
       }).catch((error) => {
         console.error(error);
       })
@@ -58,11 +75,8 @@ class NotesTab extends Component {
   }
 
   renderTableRow(note) {
-    console.log(this.state.note);
     return (<div>
-
     </div>
-
     )
   }
 
@@ -79,10 +93,13 @@ class NotesTab extends Component {
   render() {
 
     if (this.state.notes) {
+      var noteList = this.state.notes.sort(function(a,b) { 
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime() 
+    });
       var noteList =
-        this.state.notes.reverse().map((item, i) =>
+        this.state.notes.map((item, i) =>
           <div key={i}>
-            <Table className="nt" key={item.id}>
+            <Table className="nt">
               <thead><th>
                 <div className="userImage" style={{ 'background-image': `url(/images/${item.UserId}/${item.userImage}` }}></div>
                 <div className='noteName'>{item.name}</div></th></thead>

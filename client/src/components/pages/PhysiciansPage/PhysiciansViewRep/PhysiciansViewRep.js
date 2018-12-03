@@ -53,7 +53,6 @@ class PhysiciansViewRep extends Component {
   }
 
   getRelativePhysicians() {
-    console.log(this.state.name);
     const loginToken = window.localStorage.getItem("token");
     axios.get('api/physicians/search?rep=' + this.state.name, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {

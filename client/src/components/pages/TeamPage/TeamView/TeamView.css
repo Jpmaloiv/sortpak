@@ -19,3 +19,9 @@
 .teamSearch button:focus, .teamSearch.btn-group > .btn.active {
   background-color: gray !important;
 }
+
+.teamSearchInput label {margin-top: -32px !important;}
+
+.teamSearchInput div:nth-child(2), .teamSearchInput div:nth-child(3) {
+  margin-left: 15px;
+}

@@ -7,16 +7,16 @@ const authCtrl = require("../controller/auth/auth-ctrl.js");
 const fs = require('fs');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
+const open = require("open");
 
 
 router.post("/upload", (req, res) => {
-    console.log(req.files.attachmentFile);
     const attachmentFile = req.files.attachmentFile;
     const title = req.files.attachmentFile.name;
-    console.log(req.payload);
     const attachmentLink = '/attachments/' + req.payload.id + '/' + title.trim() + ".pdf";
     const attachment = {
         title,
+        attachedBy: req.query.attachedBy,
         type: req.query.type,
         link: attachmentLink,
         ScriptId: req.query.scriptId,
@@ -37,17 +37,21 @@ router.post("/upload", (req, res) => {
                         .create(attachment)
                         .then((resp) => {
                             res.status(200).json({ message: "Upload successful!" });
+                            // open('/attachment/' + , function (err) {
+                            //     if (err) throw err;
+                            // });
                         })
                         .catch((err) => {
                             console.error(err);
                             res.status(500).json({ message: "Internal server error.", error: err });
                         })
-                
-                .catch((err) => {
-                    console.error(err);
-                    res.status(500).json({ message: "Internal server error.", error: err });
+
+                        .catch((err) => {
+                            console.error(err);
+                            res.status(500).json({ message: "Internal server error.", error: err });
+                        })
                 })
-        })}
+        }
     })
 });
 
@@ -55,12 +59,12 @@ router.get("/search", (req, res) => {
     let searchParams = {
         where: {},
         attributes: {
-            exclude: ["createdAt"]
+            exclude: ["updatedAt"]
         },
-        include: [{
-            model: db.User,
-            attributes: ["username"]
-        }]
+        // include: [{
+        //     model: db.User,
+        //     where: {},
+        // }],
     }
 
     if (req.query.attachmentId) {
@@ -75,7 +79,7 @@ router.get("/search", (req, res) => {
     if (req.query.ScriptId) {
         searchParams.where.ScriptId = req.query.ScriptId
     }
-  
+
     console.log(searchParams)
     db.scriptAttachments
         .findAll(searchParams)

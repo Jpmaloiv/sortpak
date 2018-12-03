@@ -140,6 +140,7 @@ class ScriptView extends Component {
             patientPay: script.patientPay,
             paymentOption: script.paymentOption,
             directions: script.directions,
+            cancelReason: script.cancelReason,
             patientId: script.PatientId,
             notesNum: script.scriptNotes.length,
             attachmentsNum: script.scriptAttachments.length,
@@ -161,11 +162,18 @@ class ScriptView extends Component {
     }
   }
 
+  cancelScript() {
+    if (window.confirm('Cancel Script?' + "\n" + '(You may specify a reason for cancelling after)')) {
+      this.setState({
+        status: 'Cancelled'
+      }, this.updateStatus)
+    }
+  }
+
   getUser() {
     const loginToken = window.localStorage.getItem("token");
     axios.get('/api/user/search?userId=' + this.state.userId, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
-        console.log(resp);
         this.setState({
           name: resp.data.response[0].name,
           link: resp.data.response[0].link
@@ -204,6 +212,7 @@ class ScriptView extends Component {
   closeModal() {
     this.setState({
       attachmentModal: null,
+      noteModal: null,
       chargeModal: null
     })
   }
@@ -219,10 +228,9 @@ class ScriptView extends Component {
     if (this.state.priorAuth) updateParams += '&priorAuth=' + this.state.priorAuth;
     if (this.state.copayApproval) updateParams += '&patientPay=' + this.state.patientPay + '&copayApproval=' + this.state.copayApproval + '&copayNetwork=' + this.state.copayNetwork + '&networkPay=' + this.state.networkPay;
     if (this.state.shipping) updateParams += '&shipOn=' + this.state.shipOn + '&deliveryMethod=' + this.state.deliveryMethod + '&trackNum=' + this.state.trackNum + '&ETA=' + this.state.ETA + '&paymentOption=' + this.state.paymentOption;
-    console.log(updateParams);
+    if (this.state.cancelReason) updateParams += '&cancelReason=' + this.state.cancelReason
     axios.put('/api/scripts/update' + updateParams, data, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((data) => {
-        console.log(data);
       }).catch((error) => {
         console.error(error);
       })
@@ -407,6 +415,28 @@ class ScriptView extends Component {
       'No Copay'
     ]
 
+    const cancelOptions = [
+      '--',
+      'Change in Therapy',
+      'Therapy Completion',
+      'Change in Doctor',
+      'Adverse Reaction',
+      'Patient Deceased',
+      'Duplicate Script',
+      'Unaffordable',
+      'Pharmacy Transfer',
+      'Doctor Decision',
+      'Transfer to Hub',
+      'Patient Decision',
+      'Patient Hospitalized',
+      'Dose Change',
+      'Manufacturer Free Drug Program',
+      'Payor Restriction',
+      'Unable to Reach Patient',
+      'Unable to Reach Physician',
+      'Other'
+    ]
+
     if (this.state.status === "Received") {
       return (
         <div className="actions">
@@ -498,7 +528,7 @@ class ScriptView extends Component {
                     <Button
                       title="CANCEL SCRIPT"
                       id="Cancelled"
-                      onClick={this.handleClick}
+                      onClick={this.cancelScript.bind(this)}
                       style={{ 'background-color': '#000', marginLeft: 10 }}
                     />
                   </td>
@@ -821,7 +851,15 @@ class ScriptView extends Component {
       )
     } else if (this.state.status === "Cancelled") {
       return (
-        <div className="actions">
+        <div className="actions" style={{ marginTop: 40 }}>
+          <Selector
+            style={{ 'min-width': '200px' }}
+            label="Reason for Cancelling"
+            options={cancelOptions}
+            selected={this.state.cancelReason}
+            value={this.state.cancelReason}
+            onSelect={cancelReason => this.setState({ cancelReason }, this.updateStatus)}
+          />
           {this.state.cancelPharmTrans ?
             <table>
               <tbody>
@@ -839,7 +877,9 @@ class ScriptView extends Component {
                   <td>{this.state.transDate}</td>
                 </tr>
               </tbody>
-            </table> : <div></div>}
+            </table> :
+            <div>
+            </div>}
         </div>
       )
     } else if (this.state.status === "Refill") {
@@ -1110,6 +1150,7 @@ class ScriptView extends Component {
                 <Button
                   id="white"
                   title="CANCEL"
+                  onClick={this.cancelScript.bind(this)}
                   style={{ marginLeft: 20 }}
                 />
               </td>

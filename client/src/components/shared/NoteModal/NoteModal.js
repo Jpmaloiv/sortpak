@@ -63,7 +63,6 @@ export default class VisitModal extends Component {
       .then((data) => {
         console.log(data);
         this.props.onClickAway()
-        window.location.reload();
       }).catch((error) => {
         console.error(error);
       })

@@ -19,9 +19,9 @@ router.get("/search", (req, res) => {
     let searchParams = {
         where: {},
         attributes: {
-            exclude: ['hash','salt', "updatedAt"]
+            exclude: ['hash', 'salt', "updatedAt"]
         },
-       
+
     }
     if (req.query.userId) {
         searchParams.where.id = req.query.userId
@@ -29,6 +29,36 @@ router.get("/search", (req, res) => {
 
     if (req.query.physicianId) {
         searchParams.where.PhysicianId = req.query.physicianId
+    }
+
+    if (req.query.name) {
+        searchParams = {
+            where: {
+                name: {
+                    like: '%' + req.query.name + '%'
+                }
+            },
+        }
+    }
+
+    if (req.query.username) {
+        searchParams = {
+            where: {
+                username: {
+                    like: '%' + req.query.username + '%'
+                }
+            },
+        }
+    }
+
+    if (req.query.email) {
+        searchParams = {
+            where: {
+                email: {
+                    like: '%' + req.query.email + '%'
+                }
+            },
+        }
     }
 
     if (req.query.role) {
@@ -69,6 +99,6 @@ router.get("/search", (req, res) => {
             console.error(err);
             res.status(500).json({ message: "Error (500): Internal Server Error", error: err })
         })
-    })
+})
 
 module.exports = router;

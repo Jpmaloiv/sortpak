@@ -262,7 +262,7 @@ class AddScript extends Component {
                 <div>
                     <Input
                         style={{ marginLeft: 35 }}
-                        placeholder="Type name of medication.."
+                        placeholder="Type name or NDC of medication.."
                         value={this.state.productName}
                         onChange={productName => this.setState({ productName }, this.searchProducts)}
                     />

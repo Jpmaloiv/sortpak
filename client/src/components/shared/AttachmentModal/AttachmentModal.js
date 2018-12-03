@@ -12,9 +12,7 @@ import {
 import styles from './AttachmentModal.css'
 
 export default class AttachmentModal extends Component {
-  /* constructor(props) {
-    super(props)
-  } */
+
   state = {
     attachmentFile: '',
     dateAttached: '',
@@ -23,7 +21,6 @@ export default class AttachmentModal extends Component {
   }
 
   componentDidMount() {
-    console.log(this.props);
     const token = localStorage.getItem('token')
     var decoded = jwt_decode(token);
     this.setState({
@@ -52,12 +49,10 @@ export default class AttachmentModal extends Component {
     const scriptId = this.props.props.state.id;
     let data = new FormData();
     data.append("attachmentFile", document.getElementById("pdf-file").files[0])
-    axios.post('/api/attachments/upload?scriptId=' + scriptId + 'attachedBy=' + this.state.username + '&type=' + this.state.type,
+    axios.post('/api/attachments/upload?scriptId=' + scriptId + '&attachedBy=' + this.state.username + '&type=' + this.state.type,
       data, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((data) => {
-        console.log(data);
         this.props.onClickAway()
-        window.location.reload();
       }).catch((error) => {
         console.error(error);
       })
@@ -71,7 +66,6 @@ export default class AttachmentModal extends Component {
     } = this.props
 
     const {
-      attachmentFile,
       type
     } = this.state
 

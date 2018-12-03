@@ -22,7 +22,7 @@ import { Body, Button, Header, Input, Span } from '../../../common'
 
 import PrescriptionsTab from './Tabs/PrescriptionsTab'
 import InsuranceTab from '../PatientView/Tabs/InsuranceTab'
-import FilesTab from '../PatientView/Tabs/FilesTab'
+import FilesTab from './Tabs/FilesTab'
 import NotesTab from '../PatientView/Tabs/NotesTab'
 
 // Actions

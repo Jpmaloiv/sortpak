@@ -114,6 +114,10 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.STRING,
             allowNull: true
         },
+        cancelReason: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
         transLocation: {
             type: DataTypes.STRING,
             allowNull: true
@@ -147,12 +151,6 @@ module.exports = function(sequelize, DataTypes) {
             allowNull: true
         }
     }); 
-
-    /* Scripts.associate = function(models) {
-        models.Scripts.hasMany(models.scriptNotes, {
-            onDelete: "cascade"
-        })
-    } */
 
     Scripts.associate = function(models) {
         models.Scripts.belongsTo(models.Patients, {

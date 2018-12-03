@@ -163,17 +163,12 @@ class ScriptView extends Component {
       })
   }
 
-
   closeModal() {
     this.setState({
+      noteModal: null,
       attachmentModal: null
     })
   }
-
-
-
-
-
 
   handleClick(event) {
     this.setState({
@@ -182,13 +177,6 @@ class ScriptView extends Component {
       this.updateStatus
     )
   }
-
-
-
-
-
-
-
 
   renderSwitchTable() {
 

@@ -9,11 +9,10 @@ import { ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 
 // Components
 import {
-  Header,
   ActionBox,
   Button,
-  SearchBar,
-  Table,
+  Input,
+  Table
 } from '../../../common'
 
 // Actions
@@ -28,14 +27,17 @@ import {
 
 import styles from './TeamView.css'
 
-const th = ['NAME', 'USERNAME', 'EMAIL ADDRESS', 'ROLE', 'DATE ADDED']
+// const th = ['NAME', 'USERNAME', 'EMAIL ADDRESS', 'ROLE', 'DATE ADDED']
 
 class TeamView extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      searchType: '',
       search: '',
+      searchType: '',
+      searchName: '',
+      searchUsername: '',
+      searchEmail: ''
     }
   }
 
@@ -51,6 +53,13 @@ class TeamView extends Component {
       }).catch((err) => {
         console.error(err)
       })
+  }
+
+  enterPressed(event) {
+    var code = event.keyCode || event.which;
+    if (code === 13) { //13 is the enter keycode
+      this.searchQuery();
+    }
   }
 
   filterUsers(search) {
@@ -130,44 +139,19 @@ class TeamView extends Component {
     )
   }
 
-  get placeholderText() {
-    switch (this.state.searchType) {
-      case 'name':
-        return 'Search By First or Last Name...'
-      case 'email':
-        return 'Search By Email...'
-      default:
-        return 'Search By Name or Email...'
-    }
-  }
-
-  get searchOptions() {
-    return [
-      {
-        value: '',
-        display: 'Any',
-      },
-      {
-        value: 'name',
-        display: 'Name',
-      },
-      {
-        value: 'email',
-        display: 'Email',
-      },
-    ]
-  }
-
-  submitSearch() {
-    let roles = ''
+  searchQuery() {
+    let roles = '';
+    let searchParams = '';
     if (this.state.searchAdmin) roles += ',Admin'
     if (this.state.searchReps) roles += ',Rep'
     if (this.state.searchPhysicians) roles += ',Physician'
     var roleFilter = roles.substring(1);
+    if (this.state.searchName) searchParams += '&name=' + this.state.searchName
+    if (this.state.searchUsername) searchParams += '&username=' + this.state.searchUsername
+    if (this.state.searchEmail) searchParams += '&email=' + this.state.searchEmail
     const loginToken = window.localStorage.getItem("token");
-    axios.get('api/user/search?userRole=' + roleFilter, { headers: { "Authorization": "Bearer " + loginToken } })
+    axios.get('api/user/search?userRole=' + roleFilter + searchParams, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
-        console.log(resp)
         this.setState({
           users: resp.data.response
         })
@@ -177,11 +161,10 @@ class TeamView extends Component {
   }
 
   userSearch(e) {
-    this.setState({ searchAdmin: e.includes(1) }, this.submitSearch)
-    this.setState({ searchReps: e.includes(2) }, this.submitSearch)
-    this.setState({ searchPhysicians: e.includes(3) }, this.submitSearch)
+    this.setState({ searchAdmin: e.includes(1) }, this.searchQuery)
+    this.setState({ searchReps: e.includes(2) }, this.searchQuery)
+    this.setState({ searchPhysicians: e.includes(3) }, this.searchQuery)
   }
-
 
 
   render() {
@@ -204,28 +187,11 @@ class TeamView extends Component {
     return (
       <div className={styles.app}>
 
-
         <div className="body" style={{ marginTop: 1 }}>
 
           <ActionBox>
 
             <div className="main">
-
-              {/* <Button
-                style={{ backgroundColor: 'gray', minWidth: 80, minHeight: 40, marginRight: 20 }}
-                title='Admin'
-
-              />
-
-              <Button
-                style={{ backgroundColor: 'lightGray', minWidth: 80, minHeight: 40, marginRight: 20 }}
-                title='Sales'
-              />
-
-              <Button
-                style={{ backgroundColor: 'lightGray', minWidth: 80, minHeight: 40, marginRight: 20 }}
-                title='Physicians'
-              /> */}
 
               <ToggleButtonGroup
                 name='teamSearch'
@@ -238,33 +204,43 @@ class TeamView extends Component {
                 <ToggleButton value={2}>Sales</ToggleButton>
                 <ToggleButton value={3}>Physicians</ToggleButton>
               </ToggleButtonGroup>
-
-              <SearchBar
+            
+            <div className="teamSearchInput" style={{'display': 'flex'}}>
+              <Input
                 label="Search By Name"
                 placeholder="First or Last Name..."
+                value={this.state.searchName}
+                onChange={searchName => this.setState({ searchName })}
+                onKeyPress={this.enterPressed.bind(this)}
               />
 
-              {/* COMMENTED TO MATCH DESIGN
-              <SearchBar
-                options={this.searchOptions}
-                selected={searchType}
-                onSelect={searchType => this.setState({ searchType })}
-                label="Search"
-                placeholder={this.placeholderText}
-                value={this.state.search}
-                onChange={this.filterUsers.bind(this)}
+              <Input
+                label="Search By Username"
+                placeholder="Username..."
+                value={this.state.searchUsername}
+                onChange={searchUsername => this.setState({ searchUsername })}
+                onKeyPress={this.enterPressed.bind(this)}
               />
 
+              <Input
+                label="Search By Email"
+                placeholder="Email..."
+                value={this.state.searchEmail}
+                onChange={searchEmail => this.setState({ searchEmail })}
+                onKeyPress={this.enterPressed.bind(this)}
+              />
+            </div>
 
               <Button
                 search
+                style={{marginLeft: 20, lineHeight: 1, height: 38}}
                 icon="search"
                 title="SEARCH"
+                onClick={this.searchQuery.bind(this)}
               />
 
-            */}
-
               <Button
+                style={{marginLeft: 20}}
                 link='/team/add'
                 icon="plus"
                 title="ADD A NEW USER"

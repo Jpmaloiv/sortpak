@@ -19,29 +19,35 @@ class AttachmentsTab extends Component {
     }
   }
 
-
   openNoteModal() {
     this.props.setState({ attachmentModal: {} })
+  }
+
+  componentWillReceiveProps() {
+    const loginToken = window.localStorage.getItem("token");
+    axios.get('/api/attachments/search?ScriptId=' + this.props.state.id, { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        this.setState({
+          attachments: resp.data.response,
+        })
+      }).catch((error) => {
+        console.error(error);
+      })
   }
 
   componentDidMount() {
     const loginToken = window.localStorage.getItem("token");
     axios.get('/api/attachments/search?ScriptId=' + this.props.state.id, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
-        console.log(resp); 
         this.setState({
           attachments: resp.data.response,
         })
-        console.log(this.state)
       }).catch((error) => {
         console.error(error);
       })
   }
 
-
-
   renderTableHead() {
-    console.log(this.state);
     return (
       <thead>
         <tr>
@@ -71,7 +77,6 @@ class AttachmentsTab extends Component {
   }
 
   renderTableRow(attachment) {
-    console.log(this.state.file);
     return (
       <tr key={attachment.id}>
         <td>
@@ -84,7 +89,7 @@ class AttachmentsTab extends Component {
         </td>
 
         <td>
-          {/* {attachment.User.username} */}
+          {attachment.attachedBy}
         </td>
 
         <td>
@@ -136,7 +141,6 @@ class AttachmentsTab extends Component {
     const {
       attachmentModal
     } = state
-    console.log(this.props, this.state);
 
 
     return (

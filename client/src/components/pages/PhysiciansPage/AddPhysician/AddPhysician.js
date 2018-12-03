@@ -185,6 +185,7 @@ class AddPhysician extends Component {
     ]
 
     const specOptions = [
+      '--',
       'Internal Medicine',
       'Home Health',
       'Hospice',

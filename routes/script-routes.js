@@ -7,6 +7,7 @@ const authCtrl = require("../controller/auth/auth-ctrl.js");
 const fs = require('fs');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
+const util = require('util')
 
 
 router.post("/add", (req, res) => {
@@ -98,7 +99,7 @@ router.get("/search", (req, res) => {
         },
         {
             model: db.Products,
-            attribues: ['id','name']
+            attribues: ['id', 'name']
 
         },
         {
@@ -113,16 +114,6 @@ router.get("/search", (req, res) => {
 
     }
 
-    if (req.query.textSearch) {
-        searchParams = {
-
-            include: [{
-                model: db.Products,
-                where: { name: req.query.textSearch },
-            }],
-        }
-    }
-
     if (req.query.rep) {
         searchParams = {
             include: [{
@@ -130,7 +121,8 @@ router.get("/search", (req, res) => {
                     'primInsBIN', 'primInsGroup', 'primInsID', 'primInsPCN', 'primInsType', 'secInsPlan', 'secInsBIN', 'secInsGroup',
                     'secInsID', 'secInsPCN', 'secInsType']
             }, {
-                model: db.Physicians, attributes: ["firstName", "lastName", 'specialization', "rep", "contact", "phone", "physicianWarning"], where: {
+                model: db.Physicians, attributes: ["firstName", "lastName", 'specialization', "rep", "contact", "phone", "physicianWarning"],
+                where: {
                     [Op.or]: [{ rep: req.query.rep }]
                 },
             }, { model: db.Products, }, { model: db.scriptNotes, attributes: ['note', 'createdAt'] }, { model: db.scriptAttachments, attributes: ['id'] }]
@@ -144,12 +136,35 @@ router.get("/search", (req, res) => {
                     'primInsBIN', 'primInsGroup', 'primInsID', 'primInsPCN', 'primInsType', 'secInsPlan', 'secInsBIN', 'secInsGroup',
                     'secInsID', 'secInsPCN', 'secInsType']
             }, {
-                model: db.Physicians, attributes: ["firstName", "lastName", 'specialization', "rep", "contact", "phone", "physicianWarning"], where: {
+                model: db.Physicians, attributes: ["firstName", "lastName", 'specialization', "rep", "contact", "phone", "physicianWarning"],
+                where: {
                     [Op.or]: [{ specialization: req.query.specialization }]
                 },
             }, { model: db.Products, }, { model: db.scriptNotes, attributes: ['note', 'createdAt'] }, { model: db.scriptAttachments, attributes: ['id'] }]
         }
     }
+
+    if (req.query.textSearch) {
+        searchParams = {
+            include: [{
+                model: db.Patients, attributes: ["firstName", "lastName", "dob", "phone", "email", "patientWarning", "conditions", "allergies", 'primInsPlan',
+                    'primInsBIN', 'primInsGroup', 'primInsID', 'primInsPCN', 'primInsType', 'secInsPlan', 'secInsBIN', 'secInsGroup',
+                    'secInsID', 'secInsPCN', 'secInsType']
+            }, {
+                model: db.Physicians, attributes: ["firstName", "lastName", 'specialization', "rep", "contact", "phone", "physicianWarning"],
+            }, {
+                model: db.Products,
+                where: {
+                    [Op.or]: [{
+                        name: { like: '%' + req.query.textSearch + '%' }
+                    }, {
+                        NDC: { like: '%' + req.query.textSearch + '%' }
+                    }]
+                }
+            }, { model: db.scriptNotes, attributes: ['note', 'createdAt'] }, { model: db.scriptAttachments, attributes: ['id'] }]
+        }
+    }
+
 
 
 
@@ -178,18 +193,6 @@ router.get("/search", (req, res) => {
         searchParams.where.ProductId = req.query.productId
     }
 
-
-
-
-    // if (req.query.location) {
-    //     searchParams.where.location != ""
-    // } else {
-    //     searchParams.where.location = ''
-    // }
-
-
-
-
     if (req.query.status) {
         if (req.query.status.match(/,.*,.*,.*,.*,.*,.*,.*,.*,.*,.*,.*,/)) { // Check if there are 2 commas
             str = str.replace(',', ''); // Remove the first one
@@ -211,7 +214,7 @@ router.get("/search", (req, res) => {
         }
     }
 
-
+    console.log(util.inspect(searchParams, { showHidden: false, depth: null }))
     db.Scripts
         .findAll(searchParams)
         .then((response) => {
@@ -229,7 +232,6 @@ router.get("/search", (req, res) => {
 
 
 router.put("/update", function (req, res) {
-    console.log("update")
     const script = {
         processedOn: req.query.processedOn,
         pouch: req.query.pouch,
@@ -263,6 +265,7 @@ router.put("/update", function (req, res) {
         transLocation: req.query.transLocation,
         transNPI: req.query.transNPI,
         transDate: req.query.transDate,
+        cancelReason: req.query.cancelReason,
         shipOn: req.query.shipOn,
         deliveryMethod: req.query.deliveryMethod,
         trackNum: req.query.trackNum,
@@ -272,7 +275,6 @@ router.put("/update", function (req, res) {
         PhysicianId: req.query.physicianId,
         ProductId: req.query.productId
     }
-    console.log(script);
     db.Scripts.update(script, { where: { id: req.query.id } })
         .then(function (resp) {
             res.json({ success: true });

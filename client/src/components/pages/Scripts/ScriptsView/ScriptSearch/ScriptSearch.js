@@ -79,7 +79,7 @@ class ScriptSearch extends React.Component {
     var code = event.keyCode || event.which;
     if (code === 13) { //13 is the enter keycode
       this.submitSearch();
-    } 
+    }
   }
 
   handleChange(e) {
@@ -116,18 +116,12 @@ class ScriptSearch extends React.Component {
     if (this.state.statusCancelled) status += ',Cancelled'
     if (this.state.statusRefill) status += ',Refill'
     var statusFilter = status.substring(1);
-    console.log(statusFilter);
     if (status) searchParams += '&status=' + statusFilter
     this.props.searchFunc(searchParams);
   }
 
 
   render() {
-
-    const {
-      filterValue,
-      searchValue
-    } = this.state
 
     const SpecializationOptions = [
       '',
@@ -168,104 +162,98 @@ class ScriptSearch extends React.Component {
           display: rep.name,
         })),
       ]
-    
 
-    return (
-      <div className="scriptSearch">
 
-        <ActionBox>
-          <div className='main'>
+      return (
+        <div className="scriptSearch">
 
-            <ButtonGroup
-              className="scriptSearch"
-              value={this.state.value}
-              onClick={this.handleChange}
-            >
-              <label>Type</label>
-              <Button className="first" value='RX'>RX</Button>
-              <Button className="last" value='HC'>HC</Button>
-            </ButtonGroup>
+          <ActionBox>
+            <div className='main'>
 
-            <ToggleButtonGroup className="scriptSearch" type="checkbox" onChange={this.handleClick}>
-              <label>Special</label>
-              <ToggleButton className='single' value={1}>Medicare</ToggleButton>
-            </ToggleButtonGroup>
+              <ButtonGroup
+                className="scriptSearch"
+                value={this.state.value}
+                onClick={this.handleChange}
+              >
+                <label>Type</label>
+                <Button className="first" value='RX'>RX</Button>
+                <Button className="last" value='HC'>HC</Button>
+              </ButtonGroup>
 
-            <ButtonGroup
-              className="scriptSearch"
-              value={this.state.value}
-              onClick={this.handleChange}
-            >
-              <label>Type</label>
-              <Button className="first" value='SP'>SP</Button>
-              <Button className="last" value='Third Party'>Third Party</Button>
-            </ButtonGroup>
+              <ToggleButtonGroup className="scriptSearch" type="checkbox" onChange={this.handleClick}>
+                <label>Special</label>
+                <ToggleButton className='single' value={1}>Medicare</ToggleButton>
+              </ToggleButtonGroup>
 
-            <Input
-              className="searchBar"
-              style={{ 'width': '325px', 'flex': 'initial' }}
-              value={this.state.textSearch}
-              onChange={textSearch => this.setState({ textSearch })}
-              label="Search"
-              placeholder="Search..."
-              onKeyPress={this.enterPressed.bind(this)}
-            />
-            <Search
+              <ButtonGroup
+                className="scriptSearch"
+                value={this.state.value}
+                onClick={this.handleChange}
+              >
+                <label>Type</label>
+                <Button className="first" value='SP'>SP</Button>
+                <Button className="last" value='Third Party'>Third Party</Button>
+              </ButtonGroup>
+
+              <Input
+                className="searchBar"
+                style={{ 'width': '325px', 'flex': 'initial' }}
+                value={this.state.textSearch}
+                onChange={textSearch => this.setState({ textSearch })}
+                label="Search"
+                placeholder="Enter medication name or NDC"
+                onKeyPress={this.enterPressed.bind(this)}
+              />
+              
+              <Search
                 className='search'
                 search
                 icon="search"
                 onClick={this.submitSearch}
               />
 
-          </div>
-        </ActionBox>
-        <ActionBox>
-          <div className="main">
-            <Selector
-              label="Rep"
-              options={repOptions}
-              value={this.state.rep}
-              onSelect={rep => this.setState({ rep }, this.submitSearch )}
-            />
-            <Selector
-              label="Specialization"
-              options={SpecializationOptions}
-              selected={this.state.specialization}
-              onSelect={specialization => this.setState({ specialization }, this.submitSearch)}
-            />
-          </div>
-        </ActionBox>
-        <ActionBox>
-          <div className="main" style={{ paddingTop: 0 }}>
-            <ToggleButtonGroup className="scriptSearch" type="checkbox" onChange={this.statusQuery}>
-              <label>Type</label>
-              <ToggleButton className='first' value={1}>Received</ToggleButton>
-              <ToggleButton value={2}>Review</ToggleButton>
-              <ToggleButton value={3}>Prior Auth</ToggleButton>
-              <ToggleButton value={4}>Process</ToggleButton>
-              <ToggleButton value={5}>Copay Assistance</ToggleButton>
-              <ToggleButton value={6}>Schedule</ToggleButton>
-              <ToggleButton value={7}>QA</ToggleButton>
-              <ToggleButton value={8}>Fill</ToggleButton>
-              <ToggleButton value={9}>Shipped</ToggleButton>
-              <ToggleButton value={10}>Done</ToggleButton>
-              <ToggleButton value={11}>Cancelled</ToggleButton>
-              <ToggleButton className='last' value={12}>Refill</ToggleButton>
+            </div>
+          </ActionBox>
+          <ActionBox>
+            <div className="main">
+              <Selector
+                label="Rep"
+                options={repOptions}
+                value={this.state.rep}
+                onSelect={rep => this.setState({ rep }, this.submitSearch)}
+              />
+              <Selector
+                label="Specialization"
+                options={SpecializationOptions}
+                selected={this.state.specialization}
+                onSelect={specialization => this.setState({ specialization }, this.submitSearch)}
+              />
+            </div>
+          </ActionBox>
+          <ActionBox>
+            <div className="main" style={{ paddingTop: 0 }}>
+              <ToggleButtonGroup className="scriptSearch" type="checkbox" onChange={this.statusQuery}>
+                <label>Type</label>
+                <ToggleButton className='first' value={1}>Received</ToggleButton>
+                <ToggleButton value={2}>Review</ToggleButton>
+                <ToggleButton value={3}>Prior Auth</ToggleButton>
+                <ToggleButton value={4}>Process</ToggleButton>
+                <ToggleButton value={5}>Copay Assistance</ToggleButton>
+                <ToggleButton value={6}>Schedule</ToggleButton>
+                <ToggleButton value={7}>QA</ToggleButton>
+                <ToggleButton value={8}>Fill</ToggleButton>
+                <ToggleButton value={9}>Shipped</ToggleButton>
+                <ToggleButton value={10}>Done</ToggleButton>
+                <ToggleButton value={11}>Cancelled</ToggleButton>
+                <ToggleButton className='last' value={12}>Refill</ToggleButton>
 
-            </ToggleButtonGroup>
+              </ToggleButtonGroup>
 
-            {/* <ToggleSwitch
-              label="Type"
-              options={StatusValues}
-              selected={filterValue}
-              onSelect={filterValue => this.setState({ searchValue })}
-              allowsMultipleSelection
-            /> */}
-          </div>
-        </ActionBox>
-      </div>
-    )
-  } else { return (<div></div>) }
+            </div>
+          </ActionBox>
+        </div>
+      )
+    } else { return (<div></div>) }
   }
 }
 

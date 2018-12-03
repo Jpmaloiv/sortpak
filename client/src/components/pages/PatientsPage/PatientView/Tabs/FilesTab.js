@@ -67,7 +67,6 @@ class FilesTab extends Component {
   }
 
   renderTableRow(attachment) {
-    console.log(this.state.file);
     return (
       <tr key={attachment.id}>
         <td>
