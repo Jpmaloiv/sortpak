@@ -102,14 +102,14 @@ router.get("/search", (req, res) => {
             attribues: ['id', 'name']
 
         },
-        // {
-        //     model: db.scriptNotes,
-        //     attributes: ['note', 'createdAt']
-        // },
-        // {
-        //     model: db.scriptAttachments,
-        //     attributes: ['id']
-        // }
+        {
+            model: db.scriptNotes,
+            attributes: ['note', 'createdAt']
+        },
+        {
+            model: db.scriptAttachments,
+            attributes: ['id']
+        }
         ]
 
     }
