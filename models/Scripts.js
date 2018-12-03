@@ -5,6 +5,10 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.DATEONLY,
             allowNull: true
         },
+        patient: {
+            type: DataTypes.DATEONLY,
+            allowNull: true
+        },
         pouch: {
             type: DataTypes.BOOLEAN,
             allowNull: true
