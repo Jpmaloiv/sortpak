@@ -7,7 +7,7 @@ const authCtrl = require("../controller/auth/auth-ctrl.js");
 const fs = require('fs');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
-const util = require('util')
+// const util = require('util')
 
 
 router.post("/add", (req, res) => {
@@ -214,7 +214,7 @@ router.get("/search", (req, res) => {
         }
     }
 
-    console.log(util.inspect(searchParams, { showHidden: false, depth: null }))
+
     db.Scripts
         .findAll(searchParams)
         .then((response) => {
