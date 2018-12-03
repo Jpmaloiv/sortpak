@@ -155,8 +155,8 @@ app.get('/*', function(req, res) {
     })
   })
 
+
 //   AWS TEST 
- 
 
 // const app = express();
 // app.set('views', './views');
