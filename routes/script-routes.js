@@ -84,35 +84,33 @@ router.get("/search", (req, res) => {
         attributes: {
             exclude: ["createdAt"]
         },
-    //     include: [{
-    //         model: db.Patients,
-    //         attributes: ["firstName", "lastName", "dob", "phone", "addressStreet", "addressCity", "addressState", "addressZipCode", "email", "patientWarning", "conditions", "allergies", 'primInsPlan',
-    //             'primInsBIN', 'primInsGroup', 'primInsID', 'primInsPCN', 'primInsType', 'secInsPlan', 'secInsBIN', 'secInsGroup',
-    //             'secInsID', 'secInsPCN', 'secInsType']
-    //     },
-    //     {
-    //         model: db.Physicians,
-    //         attributes: ["firstName", "lastName", 'specialization', "rep", "contact", "phone", "fax", "physicianWarning", "addressStreet", "addressCity", "addressState", "addressZipCode"],
-    //         // where: { 
-    //         //     [Op.or]: [{specialization: req.query.specialization}]
-    //         // },
-    //     },
-    //     {
-    //         model: db.Products,
-    //         attribues: ['id', 'name']
+        include: [{
+            model: db.Patients,
+            attributes: ["firstName", "lastName", "dob", "phone", "addressStreet", "addressCity", "addressState", "addressZipCode", "email", "patientWarning", "conditions", "allergies", 'primInsPlan',
+                'primInsBIN', 'primInsGroup', 'primInsID', 'primInsPCN', 'primInsType', 'secInsPlan', 'secInsBIN', 'secInsGroup',
+                'secInsID', 'secInsPCN', 'secInsType']
+        },
+        {
+            model: db.Physicians,
+            attributes: ["firstName", "lastName", 'specialization', "rep", "contact", "phone", "fax", "physicianWarning", "addressStreet", "addressCity", "addressState", "addressZipCode"],
+            // where: { 
+            //     [Op.or]: [{specialization: req.query.specialization}]
+            // },
+        },
+        {
+            model: db.Products,
+            attribues: ['id', 'name']
 
-    //     },
-    //     {
-    //         model: db.scriptNotes,
-    //         attributes: ['note', 'createdAt']
-    //     },
-    //     {
-    //         model: db.scriptAttachments,
-    //         attributes: ['id']
-    //     }
-    //     ]
-
-    // }
+        },
+        // {
+        //     model: db.scriptNotes,
+        //     attributes: ['note', 'createdAt']
+        // },
+        // {
+        //     model: db.scriptAttachments,
+        //     attributes: ['id']
+        // }
+        ]
     }
 
     // if (req.query.rep) {
