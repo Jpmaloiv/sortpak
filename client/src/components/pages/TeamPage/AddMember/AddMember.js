@@ -252,8 +252,6 @@ class AddMember extends Component {
               options={roleOptions}
               onSelect={role => this.setState({ role })}
             />
-            {/* <label htmlFor="picFile">Select Profile Image:</label>
-            <input name="picFile" onChange={this.onChangeHandler} accept=".png" id="pic-file" type="file" /> */}
 
             <div className='check'>
               <input

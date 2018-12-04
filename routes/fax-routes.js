@@ -50,8 +50,8 @@ router.post("/upload", (req, res) => {
                     console.log("file saved");
                     
                         phaxio.faxes.create({
-                            to: '+15555555555', // Replace this with a number that can receive faxes.
-                            // to: '+1' + faxNumber,
+                            // to: '+15555555555', // Replace this with a number that can receive faxes.
+                            to: '+1' + faxNumber,
                             file: `./faxes/${req.query.scriptId}_${currentDate}` + '/Fax' + ".pdf"
                         })
                         .then((fax) => {

@@ -34,6 +34,8 @@ import ProductsPage from './components/pages/ProductsPage/ProductsPage'
 import TeamPage from './components/pages/TeamPage/TeamPage'
 import AddMember from './components/pages/TeamPage/AddMember/AddMember'
 import EditMember from './components/pages/TeamPage/AddMember/EditMember'
+import Profile from './components/pages/TeamPage/Profile/Profile'
+
 // import MemberView from './components/pages/TeamPage/MemberView/MemberView'
 
 
@@ -154,6 +156,7 @@ class App extends Component {
                 <PrivateRoute exact path="/team" component={TeamPage} />
                 <PrivateRoute exact path="/team/add" component={AddMember} />
                 <PrivateRoute exact path="/team/:userId/edit" component={EditMember} />
+                <PrivateRoute exact path="/team/:userId/profile" component={Profile} />
 
                 <Route exact path="/attachment/:attachmentId" component={Attachment} />
                 <Route exact path="/patientAttachment/:attachmentId" component={PatientAttachment} />

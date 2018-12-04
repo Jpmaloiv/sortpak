@@ -5,6 +5,7 @@ const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 const ctrl = {};
 const fs = require('fs')
+const path = require('path');
 
 function getHash(password, salt) {
     return crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
@@ -77,31 +78,33 @@ ctrl.register = function (req, res) {
         .then(function (resp) {
             res.json({ success: true, token: generateJWT(resp) });
             if (req.files.picFile) {
-            const imageFile = req.files.picFile;
-            const title = req.files.picFile.name;
-            fs.mkdir("./client/public/images/" + resp.dataValues.id, (err) => {
-                if ((err) && (err.code !== 'EEXIST')) {
-                    console.error(err)
-                } else {
-                    const imagePath = './client/public/images/' + resp.dataValues.id + '/' + title.trim();
-                    console.log("dir created");
-                    imageFile
-                        .mv(imagePath)
-                        .then((response) => {
-                            console.log("file saved");
-                            // fs.copyFile("./client/public/assets/images/users/mstile=150x150.png", "./client/public/assets/images/users/" + resp.dataValues.id + "/user.png", (err) => {
-                            //     if (err) {
-                            //         console.error(err)
-                            //     } else {
-                            //         // res.json({success: true, token: generateJWT(resp)});
-                            //         return;
-                            //     }
-                            // })
-                        })
-                }
-            })
-            return;
-        }})
+                const imageFile = req.files.picFile;
+                const title = req.files.picFile.name;
+
+                fs.mkdir("./client/public/images/" + resp.dataValues.id, (err) => {
+                    if ((err) && (err.code !== 'EEXIST')) {
+                        console.error(err)
+                    } else {
+                        const imagePath = './client/public/images/' + resp.dataValues.id + '/' + title.trim();
+                        console.log("dir created");
+                        imageFile
+                            .mv(imagePath)
+                            .then((response) => {
+                                console.log("file saved");
+                                // fs.copyFile("./client/public/assets/images/users/mstile=150x150.png", "./client/public/assets/images/users/" + resp.dataValues.id + "/user.png", (err) => {
+                                //     if (err) {
+                                //         console.error(err)
+                                //     } else {
+                                //         // res.json({success: true, token: generateJWT(resp)});
+                                //         return;
+                                //     }
+                                // })
+                            })
+                    }
+                })
+                return;
+            }
+        })
         // .then(function(resp) {
         //     console.log(resp);
         //     fs.mkdir("./public/assets/images/users/" + resp.dataValues.id, (err) => {
@@ -130,7 +133,7 @@ ctrl.register = function (req, res) {
 };
 
 ctrl.update = function (req, res) {
-    console.log("update")
+
     let user = {}
     if (req.query.username) {
         user.username = req.query.username.trim();
@@ -141,7 +144,37 @@ ctrl.update = function (req, res) {
     if (req.query.email) {
         user.email = req.query.email.trim().toLowerCase()
     }
+
     if (req.query.password) {
+
+        models.User.findOne({
+            where: {
+                [Op.or]: [{
+                    email: req.query.username
+                }, {
+                    username: req.query.username
+                }]
+            }
+        })
+            .then(function (resp) {
+                if (resp) {
+                    //login
+                    var inputHash = getHash(req.query.oldPassword, resp.salt);
+                    console.log(inputHash.toString(), resp.hash);
+                    if (inputHash === resp.hash) {
+                        user.salt = getSalt();
+                        user.hash = getHash(req.query.password, user.salt);
+                    }
+                    else {
+                        return res.status(400).end('Wrong Password');
+                    }
+                }
+                else {
+                    //err
+                    return res.status(404).end('User not found');
+                }
+            })
+
         user.salt = getSalt();
         user.hash = getHash(req.query.password, user.salt);
     }
@@ -151,10 +184,67 @@ ctrl.update = function (req, res) {
     if (req.query.physicianId) {
         user.PhysicianId = req.query.physicianId
     }
-    console.log(user);
+    if (req.query.title) { user.title = req.query.title }
+    if (req.query.phone) { user.phone = req.query.phone }
+    if (req.query.fax) { user.fax = req.query.fax }
+
+    user.notifyReceived = req.query.notifyReceived
+    user.notifyProcess = req.query.notifyProcess
+
+    user.notifyPriorAuth = req.query.notifyPriorAuth
+
+    user.notifyCopayAssistance = req.query.notifyCopayAssistance
+
+    user.notifyShipped = req.query.notifyShipped
+
+    if (req.query.image === "true") {
+        const imageFile = req.files.picFile;
+        const title = req.files.picFile.name;
+        user.link = title;
+        console.log({ user })
+        fs.mkdir("./client/public/images/" + req.query.id, (err) => {
+            if ((err) && (err.code !== 'EEXIST')) {
+                console.error(err)
+            } else {
+                const directory = "./client/public/images/" + req.query.id;
+
+                fs.readdir(directory, (err, files) => {
+                    if (err) throw err;
+
+                    for (const file of files) {
+                        fs.unlink(path.join(directory, file), err => {
+                            if (err) throw err;
+                            console.log(`Deleted ${file}`);
+                        });
+                    }
+                });
+                const imagePath = './client/public/images/' + req.query.id + '/' + title.trim();
+                console.log("dir created");
+                imageFile
+                    .mv(imagePath)
+                    .then((response) => {
+                        console.log("file saved");
+                        // fs.copyFile("./client/public/assets/images/users/mstile=150x150.png", "./client/public/assets/images/users/" + resp.dataValues.id + "/user.png", (err) => {
+                        //     if (err) {
+                        //         console.error(err)
+                        //     } else {
+                        //         // res.json({success: true, token: generateJWT(resp)});
+                        //         return;
+                        //     }
+                        // })
+                    })
+            }
+        })
+    } else if (req.query.image === "false") {
+
+    }
+
     models.User.update(user, { where: { id: req.query.id } })
         .then(function (resp) {
+            console.log(user)
             res.json({ success: true });
+
+
             // if ((req.files) && (req.files.picFile)) {
             //     req.files.picFile.mv("./public/assets/images/users/" + req.payload.id + "/user.png")
             // }

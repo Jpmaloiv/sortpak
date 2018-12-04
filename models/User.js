@@ -21,6 +21,38 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.STRING,
             allowNull: true
         },
+        title: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        phone: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        fax: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        notifyReceived: {
+            type: DataTypes.BOOLEAN,
+            allowNull: true
+        },
+        notifyProcess: {
+            type: DataTypes.BOOLEAN,
+            allowNull: true
+        },
+        notifyPriorAuth: {
+            type: DataTypes.BOOLEAN,
+            allowNull: true
+        },
+        notifyCopayAssistance: {
+            type: DataTypes.BOOLEAN,
+            allowNull: true
+        },
+        notifyShipped: {
+            type: DataTypes.BOOLEAN,
+            allowNull: true
+        },
         active: {
             type: DataTypes.BOOLEAN,
             allowNull: true

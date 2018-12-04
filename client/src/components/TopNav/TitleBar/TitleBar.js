@@ -53,6 +53,10 @@ class TitleBar extends Component {
       })
   }
 
+  openProfile() {
+    window.location = `/team/${this.state.userId}/profile`;
+  }
+
   logout() {
     if (window.confirm('Log out?')) {
       localStorage.clear()
@@ -78,19 +82,15 @@ class TitleBar extends Component {
 
         {/* Dropdown */}
         <div className={cn("dropdown", { show: showDropdown })}>
-          <div className="option">
-            {/* <NavLink to="/profile">
+          <div className="option" onClick={this.openProfile.bind(this)}>
+            <span>
               <FontAwesome name="cog" />
               Settings
-            </NavLink> */}
+              </span>
           </div>
 
           {/* Logout  */}
-          <div
-            className="option"
-            // onClick={() => this.props.logout()}
-            onClick={this.logout}
-          >
+          <div className="option" onClick={this.logout}>
             <span>
               <FontAwesome name="sign-out" />
               Log Out
