@@ -79,10 +79,10 @@ app.use(["/api/scripts"], jwt({
     secret: process.env.JWT_SECRET,
     userProperty: 'payload'
 }));
-app.use(["/api/attachments"], jwt({
-    secret: process.env.JWT_SECRET,
-    userProperty: 'payload'
-}));
+// app.use(["/api/attachments"], jwt({
+//     secret: process.env.JWT_SECRET,
+//     userProperty: 'payload'
+// }));
 app.use("/api/attachments", scriptAttachmentRoutes);
 app.use("/api/scripts/notes", scriptNoteRoutes);
 app.use(["/api/scripts/notes"], jwt({
@@ -158,49 +158,50 @@ app.get('/*', function(req, res) {
 
 //   AWS TEST 
 
-// const app = express();
-// app.set('views', './views');
-// app.use(express.static('./public'));
-// app.engine('html', require('ejs').renderFile);
-// // app.listen(process.env.PORT || 3000);
+app.set('client', './client');
+app.use(express.static('./client/public'));
+app.engine('html', require('ejs').renderFile);
+// app.listen(process.env.PORT || 3000);
 
-// const S3_BUCKET = process.env.S3_BUCKET;
+const S3_BUCKET = process.env.S3_BUCKET;
 
-// aws.config.region = 'us-west-1';
+aws.config.region = 'us-west-1';
 
-// app.get('/account', (req, res) => res.render('account.html'));
+app.get('/account', (req, res) => res.render('account.html'));
 
-// app.get('/sign-s3', (req, res) => {
-//     const s3 = new aws.S3();
-//     const fileName = req.query['file-name'];
-//     const fileType = req.query['file-type'];
-//     const s3Params = {
-//       Bucket: S3_BUCKET,
-//       Key: fileName,
-//       Expires: 60,
-//       ContentType: fileType,
-//       ACL: 'public-read'
-//     };
+app.get('/sign-s3', (req, res) => {
+    console.log(req)
+    const s3 = new aws.S3();
+    const fileName = req.query['file-name'];
+    const fileType = req.query['file-type'];
+    const s3Params = {
+      Bucket: S3_BUCKET,
+      Key: "/attachments/scripts" + fileName,
+      Expires: 60,
+      ContentType: fileType,
+      ACL: 'public-read'
+    };
   
-//     s3.getSignedUrl('putObject', s3Params, (err, data) => {
-//       if(err){
-//         console.log(err);
-//         return res.end();
-//       }
-//       const returnData = {
-//         signedRequest: data,
-//         url: `https://${S3_BUCKET}.s3.amazonaws.com/${fileName}`
-//       };
-//       res.write(JSON.stringify(returnData));
-//       res.end();
-//     });
-//   });
+    s3.getSignedUrl('putObject', s3Params, (err, data) => {
+      if(err){
+        console.log(err);
+        return res.end();
+      }
+      const returnData = {
+        signedRequest: data,
+        url: `https://${S3_BUCKET}.s3.amazonaws.com/${fileName}`
+      };
+      console.log(returnData)
+      res.write(JSON.stringify(returnData));
+      res.end();
+    });
+  });
 
-//   app.post('/save-details', (req, res) => {
-//     // TODO: Read POSTed form data and do something useful
-//   });
+  app.post('/save-details', (req, res) => {
+    // TODO: Read POSTed form data and do something useful
+  });
 
-// 
+
 
 
 db.sequelize.sync({ force: false, logging: console.log }).then(function () {

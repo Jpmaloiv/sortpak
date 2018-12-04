@@ -8,26 +8,28 @@ const fs = require('fs');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 const open = require("open");
+const aws = require('aws-sdk');
+
 
 
 router.post("/upload", (req, res) => {
     const attachmentFile = req.files.attachmentFile;
     const title = req.files.attachmentFile.name;
-    const attachmentLink = '/attachments/' + req.payload.id + '/' + title.trim() + ".pdf";
+    // const attachmentLink = '/attachments/' + req.query.userId + '/' + title.trim() + ".pdf";
     const attachment = {
         title,
         attachedBy: req.query.attachedBy,
         type: req.query.type,
-        link: attachmentLink,
+        link: `https://s3-us-west-1.amazonaws.com/sortpak/scripts/attachments/${req.query.scriptId}/${title}`,
         ScriptId: req.query.scriptId,
-        UserId: req.payload.id
+        UserId: req.query.userId
     }
 
-    fs.mkdir("./attachments/attachments/" + req.payload.id.toString(), (err) => {
+    fs.mkdir("./attachments/attachments/" + req.query.userId.toString(), (err) => {
         if ((err) && (err.code !== 'EEXIST')) {
             console.error(err)
         } else {
-            const attachmentPath = './attachments/attachments/' + req.payload.id + '/' + title.trim() + ".pdf";
+            const attachmentPath = './attachments/attachments/' + req.query.userId + '/' + title.trim() + ".pdf";
             console.log("dir created");
             attachmentFile
                 .mv(attachmentPath)
@@ -94,6 +96,37 @@ router.get("/search", (req, res) => {
             res.status(500).json({ message: "Error (500): Internal Server Error", error: err })
         })
 })
+
+
+const S3_BUCKET = process.env.S3_BUCKET;
+aws.config.region = 'us-west-1';
+
+router.get("/sign-s3", (req, res) => {
+    const s3 = new aws.S3();
+    const fileName = req.query['file-name'];
+    const fileType = req.query['file-type'];
+    const s3Params = {
+      Bucket: S3_BUCKET,
+      Key: "scripts/attachments/" + req.query.scriptId + "/" + fileName,
+      Expires: 60,
+      ContentType: fileType,
+      ACL: 'public-read'
+    };
+  
+    s3.getSignedUrl('putObject', s3Params, (err, data) => {
+      if(err){
+        console.log(err);
+        return res.end();
+      }
+      const returnData = {
+        signedRequest: data,
+        url: `https://${S3_BUCKET}.s3.amazonaws.com//attachments/scripts/` + req.query.scriptId + '/' + fileName
+      };
+      console.log(returnData)
+      res.write(JSON.stringify(returnData));
+      res.end();
+    });
+  });
 
 router.put("/upload/:id", (req, res) => {
     var attachment = {
