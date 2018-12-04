@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios'
 import jwt_decode from 'jwt-decode'
+import moment from 'moment'
 
 // Components
 import {
@@ -53,7 +54,8 @@ export default class VisitModal extends Component {
 
   onSubmit(e) {
     e.preventDefault()
-    console.log(this.props);
+    const dateTime = moment().format();
+    console.log(dateTime) 
     const scriptId = this.props.props.state.id;
     console.log(this.props.props);
     const loginToken = window.localStorage.getItem("token");
@@ -62,6 +64,14 @@ export default class VisitModal extends Component {
       data, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((data) => {
         console.log(data);
+
+        axios.put('/api/scripts/updateNoteTime?id=' + scriptId + '&notesUpdated=' + dateTime,
+          data, { headers: { "Authorization": "Bearer " + loginToken } })
+          .then((data) => {
+          }).catch((error) => {
+            console.error(error);
+          })
+
         this.props.onClickAway()
       }).catch((error) => {
         console.error(error);

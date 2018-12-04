@@ -89,7 +89,6 @@ class ScriptView extends Component {
     reversal: '',
     transfer: '',
     shipping: '',
-    cancelPharmTrans: '',
     refresh: false
   }
 
@@ -141,6 +140,9 @@ class ScriptView extends Component {
             paymentOption: script.paymentOption,
             directions: script.directions,
             cancelReason: script.cancelReason,
+            transLocation: script.transLocation,
+            transNPI: script.transNPI,
+            transDate: script.transDate,
             patientId: script.PatientId,
             notesNum: script.scriptNotes.length,
             attachmentsNum: script.scriptAttachments.length,
@@ -151,9 +153,6 @@ class ScriptView extends Component {
           }, this.getRxHistoryNum)
 
 
-          this.setState({
-            cancelPharmTrans: true
-          })
 
         }).catch((err) => {
           console.error(err)
@@ -202,10 +201,22 @@ class ScriptView extends Component {
       .then((resp) => {
         this.setState({
           statusesNum: resp.data.response.length
-        })
+        }, this.checkScriptTransfer)
       }).catch((err) => {
         console.error(err)
       })
+  }
+
+  checkScriptTransfer() {
+    if (this.state.cancelReason === "Pharmacy Transfer") {
+      this.setState({
+        scriptTransfer: true
+      })
+    } else {
+      this.setState({
+        scriptTransfer: false
+      })
+    }
   }
 
 
@@ -293,7 +304,7 @@ class ScriptView extends Component {
       status: event.target.id
     }, this.updateStatus)
     this.setState({
-      cancelPharmTrans: true
+      scriptTransfer: true
     }, this.updateStatus)
   }
 
@@ -332,8 +343,7 @@ class ScriptView extends Component {
       "&copayApproval=" + this.state.copayApproval + "&copayNetwork=" + this.state.copayNetwork + "&homeCare=" + this.state.homeCare + '&hcHome=' + this.state.hcHome + '&hcPhone=' + this.state.hcPhone,
       data, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((data) => {
-        console.log(data);
-        window.location.reload();
+        window.location = '/refills';
       }).catch((error) => {
         console.error(error);
       })
@@ -341,7 +351,6 @@ class ScriptView extends Component {
   }
 
   refillLogic() {
-    console.log(this.state.newRefillsRemaining);
     if (this.state.newRefillsRemaining < 0) {
       this.setState({
         newRefills: '',
@@ -544,8 +553,8 @@ class ScriptView extends Component {
                   <td>
                     <Input
                       placeholder="Enter location here..."
-                      value={this.state.location}
-                      onChange={location => this.setState({ location })}
+                      value={this.state.transLocation}
+                      onChange={transLocation => this.setState({ transLocation })}
                     />
                   </td>
                 </tr>
@@ -860,10 +869,9 @@ class ScriptView extends Component {
             value={this.state.cancelReason}
             onSelect={cancelReason => this.setState({ cancelReason }, this.updateStatus)}
           />
-          {this.state.cancelPharmTrans ?
+          {this.state.scriptTransfer ?
             <table>
               <tbody>
-                <thead>Pharmacy Transfer</thead>
                 <tr>
                   <td>Location</td>
                   <td>{this.state.transLocation}</td>

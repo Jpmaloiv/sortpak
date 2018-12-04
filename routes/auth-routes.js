@@ -61,9 +61,29 @@ router.get("/search", (req, res) => {
         }
     }
 
+    if (req.query.physIdArray) {
+        const ids = req.query.physIdArray.split(',').map((elem) => {
+            return '%' + elem + '%'
+        });
+        if (ids.length > 1) {
+            const opLikes = ids.map((elem) => {
+                return { [Op.like]: elem }
+            })
+            searchParams.where.PhysicianId = {
+                [Op.or]: opLikes
+            }
+        } else {
+            searchParams.where.PhysicianId = {
+                [Op.like]: roles[0]
+            }
+        }
+    }
+
     if (req.query.role) {
         searchParams.where.role = req.query.role
     }
+
+    
 
     if (req.query.userRole) {
         if (req.query.userRole.match(/,.*,.*,.*,.*,.*,.*,.*,.*,.*,.*,.*,/)) { // Check if there are 2 commas
@@ -86,7 +106,7 @@ router.get("/search", (req, res) => {
         }
     }
 
-    console.log(searchParams);
+    console.log(req.query);
     db.User
         .findAll(searchParams)
         .then((response) => {

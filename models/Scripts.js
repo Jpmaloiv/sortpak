@@ -153,6 +153,10 @@ module.exports = function(sequelize, DataTypes) {
         paymentOption: {
             type: DataTypes.STRING,
             allowNull: true
+        },
+        notesUpdated: {
+            type: DataTypes.STRING,
+            allowNull: true
         }
     }); 
 

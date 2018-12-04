@@ -60,7 +60,7 @@ class App extends Component {
     }
   }
 
-  
+
 
   componentWillMount() {
 
@@ -93,7 +93,7 @@ class App extends Component {
 
     const ThePatientsPage = (props) => {
       return (
-        <PatientsPage 
+        <PatientsPage
           state={this.state}
           {...props}
         />
@@ -102,7 +102,16 @@ class App extends Component {
 
     const ThePhysiciansPage = (props) => {
       return (
-        <PhysiciansPage 
+        <PhysiciansPage
+          state={this.state}
+          {...props}
+        />
+      );
+    }
+
+    const TheTeamPage = (props) => {
+      return (
+        <TeamPage
           state={this.state}
           {...props}
         />
@@ -133,17 +142,17 @@ class App extends Component {
                 <Route exact path="/scripts" component={ScriptsPage} />
                 <Route exact path="/scripts/add" component={AddScript} />
                 {this.state.userRole === "Admin" ?
-                <Route exact path="/scripts/:scriptId" component={ScriptView} />
-          : <Route exact path="/scripts/:scriptId" component={ScriptViewPhysician} /> }
+                  <Route exact path="/scripts/:scriptId" component={ScriptView} />
+                  : <Route exact path="/scripts/:scriptId" component={ScriptViewPhysician} />}
                 <Route exact path="/scripts/:scriptId/edit" component={EditScript} />
-                
-                  <Route exact path="/patients" render={ThePatientsPage} />
-                  
+
+                <Route exact path="/patients" render={ThePatientsPage} />
+
                 <Route exact path="/patients/add" component={AddPatient} />
                 <Route exact path="/patients/:patientId/edit" component={EditPatient} />
                 {this.state.userRole === "Admin" || this.state.userRole === "Rep" ?
-                <Route exact path="/patients/:patientId" component={PatientView} />
-                : <Route exact path="/patients/:patientId" component={PatientViewPhysician} /> }
+                  <Route exact path="/patients/:patientId" component={PatientView} />
+                  : <Route exact path="/patients/:patientId" component={PatientViewPhysician} />}
                 <Route exact path="/dashboard" component={DashboardPage} />
                 <Route exact path="/physicians" component={ThePhysiciansPage} />
                 <Route exact path="/physicians/add" component={AddPhysician} />
@@ -153,7 +162,7 @@ class App extends Component {
                 <Route exact path="/agenda" component={AgendaPage} />
                 <Route exact path="/refills" component={RefillsPage} />
                 <Route exact path="/products" component={ProductsPage} />
-                <PrivateRoute exact path="/team" component={TeamPage} />
+                <PrivateRoute exact path="/team" component={TheTeamPage} />
                 <PrivateRoute exact path="/team/add" component={AddMember} />
                 <PrivateRoute exact path="/team/:userId/edit" component={EditMember} />
                 <PrivateRoute exact path="/team/:userId/profile" component={Profile} />
@@ -169,7 +178,7 @@ class App extends Component {
             </div>
           </div>
         </Router>
-       </Provider>
+      </Provider>
     )
   }
 }

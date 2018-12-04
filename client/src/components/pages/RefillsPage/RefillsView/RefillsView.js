@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import { ButtonGroup } from 'react-bootstrap';
 import { FaxModal } from '../../../shared'
+import Moment from 'react-moment'
 
 import axios from 'axios'
 
@@ -155,7 +156,7 @@ class RefillsView extends Component {
     if (this.state.refillOK) {
       return (
         <tr value={script.id} onClick={() => this.handleClick(script.id)}>
-          <td>{script.processedOn}</td>
+          <td><Moment format="MM/DD/YYYY">{script.processedOn}</Moment></td>
           <td>{script.Physician.firstName} {script.Physician.lastName}</td>
           <td>{script.Patient.firstName} {script.Patient.lastName}</td>
           <td>{script.Product.name}</td>
@@ -174,7 +175,7 @@ class RefillsView extends Component {
             onClick={this.openFaxModal.bind(this)}
             title="FAX"
           />
-          &nbsp;&nbsp;&nbsp;{script.processedOn}</td>
+          &nbsp;&nbsp;&nbsp;<Moment format="MM/DD/YYYY">{script.processedOn}</Moment></td>
           <td>{script.Physician.firstName} {script.Physician.lastName}</td>
           <td>{script.Patient.firstName} {script.Patient.lastName}</td>
           <td>{script.Product.name}</td>
@@ -241,7 +242,27 @@ class RefillsView extends Component {
     } = this.state
 
     if (this.state.refills) {
+      var refillList = this.state.refills.sort(function(a,b) { 
+        return new Date(a.processedOn).getTime() - new Date(b.processedOn).getTime() 
+    });
       var refillList = this.state.refills.map(function (item, i) {
+        return (
+          <div key={i}>
+          </div>
+        )
+      })
+    }
+    else {
+      return <div>
+        <p></p>
+      </div>
+    }
+
+    if (this.state.renewals) {
+      var renewList = this.state.renewals.sort(function(a,b) { 
+        return new Date(a.processedOn).getTime() - new Date(b.processedOn).getTime() 
+    });
+      var renewList = this.state.renewals.map(function (item, i) {
         return (
           <div key={i}>
           </div>
@@ -320,6 +341,7 @@ class RefillsView extends Component {
 
           {this.renderTable()}
           {refillList}
+          {renewList}
 
       <div className="faxModal">
         <FaxModal

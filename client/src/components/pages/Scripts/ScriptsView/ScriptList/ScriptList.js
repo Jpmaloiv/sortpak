@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios'
 import Moment from 'react-moment'
 import { Table } from '../../../../common'
 
@@ -41,9 +42,8 @@ class ScriptList extends React.Component {
     window.location = `/scripts/${value}`
   }
 
-  renderTableRow(script) {
 
- 
+  renderTableRow(script) {
 
     return (
 
@@ -62,8 +62,9 @@ class ScriptList extends React.Component {
           <Moment fromNow>{`${script.updatedAt}`}</Moment>
         </td>
 
-        <td>
-
+        <td>{script.notesUpdated ?
+          <Moment fromNow>{`${script.notesUpdated}`}</Moment>
+        : <p></p> }
         </td>
 
         <td>
@@ -100,9 +101,9 @@ class ScriptList extends React.Component {
 
     if (this.props.data) {
 
-      var scriptList = this.props.data.sort(function(a,b) { 
-        return new Date(b.processedOn).getTime() - new Date(a.processedOn).getTime() 
-    });
+      var scriptList = this.props.data.sort(function (a, b) {
+        return new Date(b.processedOn).getTime() - new Date(a.processedOn).getTime()
+      });
 
 
       var scriptList = this.props.data.map(function (item, i) {

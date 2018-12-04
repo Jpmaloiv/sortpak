@@ -218,6 +218,15 @@ class PhysiciansViewRep extends Component {
             Select A Physician
           </h2>
 
+          <div className="action">
+            <Button
+              link="physicians/add"
+              icon="plus"
+              title="ADD A NEW PHYSICIAN"
+              style={{ marginRight: 8 }}
+            />
+          </div>
+
         </Header>
 
         <div className="body">

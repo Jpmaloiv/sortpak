@@ -271,9 +271,27 @@ router.put("/update", function (req, res) {
         trackNum: req.query.trackNum,
         ETA: req.query.ETA,
         paymentOption: req.query.paymentOption,
+        notesUpdated: req.query.notesUpdated,
         PatientId: req.query.patientId,
         PhysicianId: req.query.physicianId,
         ProductId: req.query.productId
+    }
+    db.Scripts.update(script, { where: { id: req.query.id } })
+        .then(function (resp) {
+            res.json({ success: true });
+        })
+        .catch(function (err) {
+            console.error(err);
+            return res.status(500).end('Update FAILED' + err.toString());
+            throw err;
+        });
+})
+
+router.put("/updateNoteTime", function (req, res) {
+    const script = {
+        
+        notesUpdated: req.query.notesUpdated,
+        
     }
     db.Scripts.update(script, { where: { id: req.query.id } })
         .then(function (resp) {

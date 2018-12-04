@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import axios from 'axios'
 import Moment from 'react-moment'
+import moment from 'moment';
+
 
 // Components
 import {
   Header,
   Body,
   Link,
-  Selector,
+  Button,
   Span,
   TextArea
 } from '../../../../common'
@@ -22,6 +24,8 @@ class DetailsTab extends Component {
       refresh: false,
       networkPay: ''
     }
+    this.refillConfirm = this.refillConfirm.bind(this)
+    // this.generateRefillScript = this.generateRefillScript.bind(this);
   }
   state = {
     script: ''
@@ -59,6 +63,7 @@ class DetailsTab extends Component {
           physicianPhone: script.Physician.phone,
           physicianRep: script.Physician.rep,
           physicianWarning: script.Physician.physicianWarning,
+          productId: script.Product.id,
           productName: script.Product.name,
           productNDC: script.Product.NDC,
           cost: script.cost,
@@ -120,6 +125,61 @@ class DetailsTab extends Component {
       })
     }
   }
+
+  refillConfirm() {
+    if (window.confirm('Generate refill?')) {
+      this.generateRefillScript();
+    } else {
+      return;
+    }
+  }
+
+  generateRefillScript() {
+    let count = this.state.refills;
+    count++;
+    let num = this.state.refillsRemaining
+    let newStatus;
+    if (num == 0) {
+        newStatus = 'Renew'
+    } else if (num !== 0) {
+        newStatus = 'Refill'
+    }
+    this.setState({
+        newProcessedOn: moment(this.state.processedOn).add(this.state.daysSupply, 'days').subtract(10, 'days').format('MM-DD-YYYY'),
+        newRefills: count,
+        newRefillsRemaining: this.state.refillsRemaining - 1,
+        newStatus: newStatus
+    }, (this.refillLogic))
+}
+
+refillLogic() {
+  if (this.state.newRefillsRemaining < 0) {
+      this.setState({
+          newRefills: '',
+          newRefillsRemaining: ''
+      }, this.addScript)
+  } else {
+      this.addScript();
+  }
+}
+
+addScript() {
+  const loginToken = window.localStorage.getItem("token");
+  let data = new FormData();
+  axios.post('/api/scripts/add?patientId=' + this.state.patientId + '&physicianId=' + this.state.physicianId + '&productId=' + this.state.productId + '&processedOn=' + this.state.newProcessedOn + '&pouch=' + this.state.pouch + "&medication=" + this.state.medication + "&status=" + this.state.newStatus + "&pharmNPI=" + this.state.pharmNPI
+      + "&priorAuth=" + this.state.priorAuth + "&location=" + this.state.location + "&pharmDate=" + this.state.pharmDate + "&writtenDate=" + this.state.writtenDate + "&salesCode=" + this.state.salesCode +
+      "&billOnDate=" + this.state.billOnDate + "&cost=" + this.state.cost + "&rxNumber=" + this.state.rxNumber + "&primInsPay=" + this.state.primInsPay + "&diagnosis=" + this.state.diagnosis +
+      "&secInsPay=" + this.state.secInsPay + "&secDiagnosis=" + this.state.secDiagnosis + "&patientPay=" + this.state.patientPay + "&refills=" + this.state.newRefills +
+      "&refillsRemaining=" + this.state.newRefillsRemaining + "&quantity=" + this.state.quantity + "&daysSupply=" + this.state.daysSupply + "&directions=" + this.state.directions +
+      "&copayApproval=" + this.state.copayApproval + "&copayNetwork=" + this.state.copayNetwork + "&homeCare=" + this.state.homeCare + '&hcHome=' + this.state.hcHome + '&hcPhone=' + this.state.hcPhone,
+      data, { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((data) => {
+          window.location = '/refills';
+      }).catch((error) => {
+          console.error(error);
+      })
+
+}
 
   render() {
 
@@ -248,7 +308,25 @@ class DetailsTab extends Component {
                     <td className="field">Contact</td>
                     <td className="value">{this.state.physicianContact || ''}</td>
                     <td className="field">Refills Remaining</td>
-                    <td className="value">{this.state.refillsRemaining || ''}</td>
+                    <td className="value">{this.state.refillsRemaining || ''}
+                    &nbsp;&nbsp;&nbsp;
+                    {this.state.refillsRemaining == 0 ?
+                                            <Button
+                                                style={{ 'margin': '0 3%', 'min-width': '50px',
+                                                padding: '10px 20px',
+                                                'font-size': '.9em' }}
+                                                title="RENEW"
+                                                onClick={this.refillConfirm}
+                                            />
+                                            :
+                                            <Button
+                                                style={{ 'margin': '0 3%', 'min-width': '50px',
+                                                padding: '10px 20px',
+                                                'font-size': '.9em'}}
+                                                title="REFILL"
+                                                onClick={this.refillConfirm}
+                                            />
+                                        }</td>
                   </tr>
                   <tr>
                     <td className="field">Phone</td>

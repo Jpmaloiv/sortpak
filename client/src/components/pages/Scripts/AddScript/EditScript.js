@@ -11,6 +11,7 @@ class EditScript extends Component {
         super(props)
         this.state = {
             processedOn: '',
+            transNPI: '',
             physicians: '',
             physicianOptions: [],
             medicationVal: '',
@@ -20,7 +21,6 @@ class EditScript extends Component {
         }
 
         this.handleCheckbox = this.handleCheckbox.bind(this);
-        this.generateRefillScript = this.generateRefillScript.bind(this);
     }
 
 
@@ -122,6 +122,7 @@ class EditScript extends Component {
     renderCopayApproval() {
 
         const copayApprovalOptions = [
+            '--',
             'Approved',
             'Denied'
         ]
@@ -140,6 +141,7 @@ class EditScript extends Component {
             'Voucher',
             'Copay Card'
         ]
+
 
         if (this.state.copayApproval === "Approved") {
             return (
@@ -491,54 +493,6 @@ class EditScript extends Component {
             })
     }
 
-    addScript() {
-        const loginToken = window.localStorage.getItem("token");
-        let data = new FormData();
-        axios.post('/api/scripts/add?patientId=' + this.state.patientId + '&physicianId=' + this.state.physicianId + '&productId=' + this.state.productId + '&processedOn=' + this.state.newProcessedOn + '&pouch=' + this.state.pouch + "&medication=" + this.state.medication + "&status=" + this.state.newStatus + "&pharmNPI=" + this.state.pharmNPI
-            + "&priorAuth=" + this.state.priorAuth + "&location=" + this.state.location + "&pharmDate=" + this.state.pharmDate + "&writtenDate=" + this.state.writtenDate + "&salesCode=" + this.state.salesCode +
-            "&billOnDate=" + this.state.billOnDate + "&cost=" + this.state.cost + "&rxNumber=" + this.state.rxNumber + "&primInsPay=" + this.state.primInsPay + "&diagnosis=" + this.state.diagnosis +
-            "&secInsPay=" + this.state.secInsPay + "&secDiagnosis=" + this.state.secDiagnosis + "&patientPay=" + this.state.patientPay + "&refills=" + this.state.newRefills +
-            "&refillsRemaining=" + this.state.newRefillsRemaining + "&quantity=" + this.state.quantity + "&daysSupply=" + this.state.daysSupply + "&directions=" + this.state.directions +
-            "&copayApproval=" + this.state.copayApproval + "&copayNetwork=" + this.state.copayNetwork + "&homeCare=" + this.state.homeCare + '&hcHome=' + this.state.hcHome + '&hcPhone=' + this.state.hcPhone,
-            data, { headers: { "Authorization": "Bearer " + loginToken } })
-            .then((data) => {
-                // window.location = '/refills';
-            }).catch((error) => {
-                console.error(error);
-            })
-
-    }
-
-    refillLogic() {
-        if (this.state.newRefillsRemaining < 0) {
-            this.setState({
-                newRefills: '',
-                newRefillsRemaining: ''
-            }, this.addScript)
-        } else {
-            this.addScript();
-        }
-    }
-
-    generateRefillScript = (event) => {
-        event.preventDefault();
-        let count = this.state.refills;
-        count++;
-        let num = this.state.refillsRemaining
-        let newStatus;
-        if (num == 0) {
-            newStatus = 'Renew'
-        } else if (num !== 0) {
-            newStatus = 'Refill'
-        }
-        this.setState({
-            newProcessedOn: moment(this.state.processedOn).add(this.state.daysSupply, 'days').subtract(10, 'days').format('MM-DD-YYYY'),
-            newRefills: count,
-            newRefillsRemaining: this.state.refillsRemaining - 1,
-            newStatus: newStatus
-        }, (this.refillLogic))
-    }
-
 
     render() {
 
@@ -838,19 +792,7 @@ class EditScript extends Component {
                                             value={this.state.refillsRemaining}
                                             onChange={refillsRemaining => this.setState({ refillsRemaining })}
                                         />
-                                        {this.state.refillsRemaining == 0 ?
-                                            <Button
-                                                style={{ 'margin': '0 3%' }}
-                                                title="RENEW"
-                                                onClick={this.generateRefillScript}
-                                            />
-                                            :
-                                            <Button
-                                                style={{ 'margin': '0 3%' }}
-                                                title="REFILL"
-                                                onClick={this.generateRefillScript}
-                                            />
-                                        }</td></tr>
+                                        </td></tr>
 
                                 : <tr>
                                     <td className="refillsRemaining">
