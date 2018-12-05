@@ -20,10 +20,38 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.STRING,
             allowNull: true
         },
-        value: {
+        val: {
             type: DataTypes.STRING,
             allowNull: true
-        }
+        },
+        schedule: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        dosage: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        form: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        unitMeasure: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        type: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        refrigerated: {
+            type: DataTypes.BOOLEAN,
+            allowNull: true
+        },
+        active: {
+            type: DataTypes.BOOLEAN,
+            allowNull: true
+        },
     })
 
     Products.associate = function(models) {

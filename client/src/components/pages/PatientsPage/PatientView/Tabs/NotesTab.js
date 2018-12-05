@@ -84,14 +84,11 @@ class NotesTab extends Component {
     if (this.state.notes) {
 
       var noteList =
-
         //   .sort((a, b) => a.createdAt < b.createdAt)
         this.state.notes.reverse().map((item, i) =>
           <div key={i}>
             <Table className="nt" key={item.id}>
               <thead><th>{item.name}</th></thead>
-
-
               <tr>
                 <td>{item.note}</td>
               </tr>
@@ -129,42 +126,48 @@ class NotesTab extends Component {
     console.log(this.state, this.props);
 
     return (
-      <div className='infoNotesTab'>
-        <div id='infoTab' className={className}>
-          <h2>Additional Addresses:</h2>
-          {this.props.state.address2Street ?
-            <p>{this.props.state.address2Street},<br />
-              {this.props.state.address2City}, {this.props.state.address2State}, {this.props.state.address2ZipCode}</p>
-            : <p></p>}
-          {this.props.state.address3Street ?
-            <p>{this.props.state.address3Street},<br />
-              {this.props.state.address3City}, {this.props.state.address3State}, {this.props.state.address3ZipCode}</p>
-            : <p></p>}
+      <div>
+        <div className='infoNotesTab'>
+          <div id='infoTab' className={className}>
+            <h2>Additional Addresses:</h2>
+            {this.props.state.address2Street ?
+              <p>{this.props.state.address2Street},<br />
+                {this.props.state.address2City}, {this.props.state.address2State}, {this.props.state.address2ZipCode}</p>
+              : <p></p>}
+            {this.props.state.address3Street ?
+              <p>{this.props.state.address3Street},<br />
+                {this.props.state.address3City}, {this.props.state.address3State}, {this.props.state.address3ZipCode}</p>
+              : <p></p>}
 
 
-        </div>
-        <div id="notesTab" className={className}>
+          </div>
+          <div id="notesTab" className={className}>
 
-          <Button
-            icon="plus"
-            title="ADD NOTE"
-            onClick={() => this.openNoteModal()}
-          />
+            <Button
+              icon="plus"
+              title="ADD NOTE"
+              onClick={() => this.openNoteModal()}
+            />
 
-          <div className="notes">
-            {this.renderTable()}
-            {noteList}
+            <div className="notes">
+              {this.renderTable()}
+              {noteList}
+            </div>
+
+
           </div>
 
-          <NoteModalPatient
-            content={noteModal}
-            state={this.state}
-            props={this.props}
-            onClickAway={onCloseModal}
-            onSubmit={onCreateNote}
-          />
+
         </div>
+        <NoteModalPatient
+          content={noteModal}
+          state={this.state}
+          props={this.props}
+          onClickAway={onCloseModal}
+          onSubmit={onCreateNote}
+        />
       </div>
+
     )
   }
 }

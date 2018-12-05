@@ -31,6 +31,8 @@ import PhysicianAccess from './components/pages/PhysiciansPage/PhysicianAccess/P
 import PhysicianView from './components/pages/PhysiciansPage/PhysicianView/PhysicianView'
 import RefillsPage from './components/pages/RefillsPage/RefillsPage'
 import ProductsPage from './components/pages/ProductsPage/ProductsPage'
+import AddProduct from './components/pages/ProductsPage/AddProduct/AddProduct'
+import EditProduct from './components/pages/ProductsPage/AddProduct/EditProduct'
 import TeamPage from './components/pages/TeamPage/TeamPage'
 import AddMember from './components/pages/TeamPage/AddMember/AddMember'
 import EditMember from './components/pages/TeamPage/AddMember/EditMember'
@@ -162,6 +164,8 @@ class App extends Component {
                 <Route exact path="/agenda" component={AgendaPage} />
                 <Route exact path="/refills" component={RefillsPage} />
                 <Route exact path="/products" component={ProductsPage} />
+                <Route exact path="/products/add" component={AddProduct} />
+                <Route exact path="/products/:productId/edit" component={EditProduct} />
                 <PrivateRoute exact path="/team" component={TheTeamPage} />
                 <PrivateRoute exact path="/team/add" component={AddMember} />
                 <PrivateRoute exact path="/team/:userId/edit" component={EditMember} />

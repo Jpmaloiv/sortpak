@@ -98,6 +98,8 @@ export default class AttachmentModal extends Component {
           // document.getElementById('preview').src = url;
           // document.getElementById('avatar-url').value = url;
         this.props.onClickAway()
+        console.log(url)
+        window.open(url)
         }
         else {
           alert('Could not upload file.');

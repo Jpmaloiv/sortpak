@@ -366,6 +366,7 @@ class PatientView extends Component {
   }
 
   renderInsuranceTab() {
+    console.log(this.props)
     return (
       <InsuranceTab
         className={styles.insuranceTab}

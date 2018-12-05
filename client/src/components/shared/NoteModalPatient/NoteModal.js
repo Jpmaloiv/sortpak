@@ -66,7 +66,7 @@ export default class VisitModal extends Component {
         onClickAway={onClickAway}
         visible={!!content}
         onSubmit={this.onSubmit.bind(this)}
-        className={styles.modal}
+        className="NoteModalPatient"
       >
         {/* Rep */}
         <label>

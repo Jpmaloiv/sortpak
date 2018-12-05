@@ -106,27 +106,30 @@ router.get("/sign-s3", (req, res) => {
     const fileName = req.query['file-name'];
     const fileType = req.query['file-type'];
     const s3Params = {
-      Bucket: S3_BUCKET,
-      Key: "scripts/attachments/" + req.query.scriptId + "/" + fileName,
-      Expires: 60,
-      ContentType: fileType,
-      ACL: 'public-read'
+        Bucket: S3_BUCKET,
+        Key: "scripts/attachments/" + req.query.scriptId + "/" + fileName.trim(),
+        Expires: 60,
+        ContentType: fileType,
+        ACL: 'public-read'
     };
-  
+
     s3.getSignedUrl('putObject', s3Params, (err, data) => {
-      if(err){
-        console.log(err);
-        return res.end();
-      }
-      const returnData = {
-        signedRequest: data,
-        url: `https://${S3_BUCKET}.s3.amazonaws.com//attachments/scripts/` + req.query.scriptId + '/' + fileName
-      };
-      console.log(returnData)
-      res.write(JSON.stringify(returnData));
-      res.end();
+        if (err) {
+            console.log(err);
+            return res.end();
+        }
+        const returnData = {
+            signedRequest: data,
+            url: 'https://s3-us-west-1.amazonaws.com/sortpak/scripts/attachments/' + req.query.scriptId + '/' + fileName.trim()
+        };
+        console.log(returnData)
+        res.write(JSON.stringify(returnData));
+        res.end();
+        // open('https://s3-us-west-1.amazonaws.com/sortpak/scripts/attachments/' + req.query.scriptId + '/' + fileName.trim(), function (err) {
+        //     if (err) throw err;
+        // });
     });
-  });
+});
 
 router.put("/upload/:id", (req, res) => {
     var attachment = {

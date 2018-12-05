@@ -9,6 +9,7 @@ import {
   ActionBox,
   Button,
   Input,
+  Table,
   SearchBar
 } from '../../../common'
 
@@ -68,113 +69,81 @@ class ProductsView extends Component {
 
 
 
-  // renderTableHead() {
-  //   return (
-  //     <thead>
-  //       <tr>
-  //         <th>
-  //           NAME
-  //         </th>
-  //         <th>
-  //           NDC
-  //         </th>
-  //         <th>
-  //           SCHEDULE
-  //         </th>
-  //         <th>
-  //           PACKAGE SIZE
-  //         </th>
-  //         <th>
-  //           QUANTITY
-  //         </th>
-  //         <th>
-  //           COST
-  //         </th>
-  //         <th>
-  //           VALUE
-  //         </th>
-  //         <th/>
-  //       </tr>
-  //     </thead>
-  //   )
-  // }
+  renderTableHead() {
+    return (
+      <thead>
+        <tr>
+          <th>
+            NAME
+          </th>
+          <th>
+            NDC
+          </th>
+          <th>
+            SCHEDULE
+          </th>
+          <th>
+            PACKAGE SIZE
+          </th>
+          <th>
+            QUANTITY
+          </th>
+          <th>
+            COST
+          </th>
+          <th>
+            VALUE
+          </th>
+          <th>ACTIONS</th>
+        </tr>
+      </thead>
+    )
+  }
 
-  // renderTableBody() {
+  renderTableBody() {
 
-  //   return (
-  //     <tbody>
-  //       {this.state.products.map(this.renderTableRow.bind(this))}
-  //     </tbody>
-  //   )
-  // }
+    return (
+      <tbody>
+        {this.state.products.map(this.renderTableRow.bind(this))}
+      </tbody>
+    )
+  }
 
-  // renderTableRow(product) {
-  //   return (
-  //     <tr>
-  //       <td>
-  //         {product.name}
-  //       </td>
+  handleClick(value) {
+    window.location = `/products/${value}/edit`
+  }
 
-  //       <td>
-  //         {/*
-  //           TODO: RENDER PRODUCT NDC
-  //         */}
-  //       </td>
+  renderTableRow(product) {
+    return (
+      <tr value={product.id} onClick={() => this.handleClick(product.id)}>
+        <td>{product.name}</td>
+        <td>{product.NDC}</td>
+        <td>{product.schedule}</td>
+        <td>{product.packageSize}</td>
+        <td>{product.quantity}</td>
+        <td>{product.cost}</td>
+        <td></td>
+        <td>
+          {/* <Button
+            title="edit"
+            styes={{ backgroundColor:"orange" }}
+          /> */}
 
-  //       <td>
-  //         {/*
-  //           TODO: RENDER PRODUCT SCHEDULE
-  //         */}
-  //       </td>
+        </td>
+      
 
-  //       <td>
-  //         {/*
-  //           TODO: RENDER PRODUCT PACKAGE SIZE
-  //         */}
-  //       </td>
+      </tr>
+    )
+  }
 
-  //       <td>
-  //         {/*
-  //           TODO: RENDER PRODUCT QUANTITY
-  //         */}
-  //       </td>
-
-  //       <td>
-  //         {/*
-  //           TODO: RENDER PRODUCT COST
-  //         */}
-  //       </td>
-
-  //       <td>
-  //         {/*
-  //           TODO: RENDER PRODUCT VALUE
-  //         */}
-  //       </td>
-
-  //       {/*
-  //         TODO: Edit button for product
-  //       <td>
-
-  //         <Button
-  //           title="edit"
-  //           styes={{ backgroundColor:"orange" }}
-  //         />
-
-  //       </td>
-  //       */}
-
-  //     </tr>
-  //   )
-  // }
-
-  // renderTable() {
-  //   return (
-  //     <Table>
-  //       {this.renderTableHead()}
-  //       {this.renderTableBody()}
-  //     </Table>
-  //   )
-  // }
+  renderTable() {
+    return (
+      <Table>
+        {this.renderTableHead()}
+        {this.renderTableBody()}
+      </Table>
+    )
+  }
 
   render() {
 
@@ -210,6 +179,7 @@ class ProductsView extends Component {
               icon="plus"
               title="ADD A NEW PRODUCT"
               style={{ marginRight: 14 }}
+              link="products/add"
             />
 
         </div>
@@ -240,16 +210,16 @@ class ProductsView extends Component {
 
           </ActionBox>
 
-          <TablePagination
+          {/* <TablePagination
             headers={ th }
             data={this.state.products}
             columns="name.NDC.schedule.packageSize.quantity.cost.value"
             perPageItemCount={ 10 }
             totalCount={ this.state.products.length }
             // arrayOption={ [["size", 'all', ' ']] }
-        />
+        /> */}
 
-          {/* {this.renderTable()} */}
+          {this.renderTable()}
           {productList}
 
         </div>

@@ -109,6 +109,6 @@
       .infoNotesTab {
         display: flex;
       }
-      .infoNotesTab div {
+      .infoNotesTab div:not(.NoteModalPatient) {
         flex: 1 1;
       }

@@ -21,7 +21,7 @@ import { SwitchTable, AddressModal } from '../../../shared'
 import { Body, Button, Header, Input, Span } from '../../../common'
 
 import PrescriptionsTab from './Tabs/PrescriptionsTab'
-import InsuranceTab from '../PatientView/Tabs/InsuranceTab'
+import InsuranceTab from './Tabs/InsuranceTab'
 import FilesTab from './Tabs/FilesTab'
 import NotesTab from '../PatientView/Tabs/NotesTab'
 
@@ -381,6 +381,7 @@ class PatientViewPhysician extends Component {
     return (
       <InsuranceTab
         className={styles.insuranceTab}
+        props={this.props}
         state={this.state}
         patient={this.props.patient}
         setState={this.setState.bind(this)}

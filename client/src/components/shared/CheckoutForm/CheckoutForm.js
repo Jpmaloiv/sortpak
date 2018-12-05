@@ -3,7 +3,7 @@ import { CardElement, injectStripe } from 'react-stripe-elements';
 import axios from 'axios'
 
 import {
-  Button,
+  Input,
   Selector,
   FormModal,
 } from '../../common'
@@ -42,6 +42,11 @@ class CheckoutForm extends Component {
       onClickAway,
     } = this.props
 
+    const claimOptions = [
+      '-',
+      'Patient'
+    ]
+
     if (this.state.complete) return <h1>Purchase Complete</h1>;
     return (
       <FormModal
@@ -54,6 +59,12 @@ class CheckoutForm extends Component {
         <div className="checkout">
           <p>Would you like to complete the purchase?</p>
           <CardElement />
+          <Input
+            label="Billing Zip"
+          />
+          <Selector
+            options={claimOptions}
+          />
           <button onClick={this.submit}>Send</button>
         </div>
       </FormModal>
