@@ -185,6 +185,9 @@ module.exports = function(sequelize, DataTypes) {
         models.Scripts.hasMany(models.scriptStatuses, {
             onDelete: "cascade"
         })
+        models.Scripts.hasMany(models.scriptPayments, {
+            onDelete: "cascade"
+        })
         
     };
 

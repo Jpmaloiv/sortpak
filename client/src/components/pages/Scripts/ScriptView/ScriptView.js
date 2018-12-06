@@ -146,18 +146,17 @@ class ScriptView extends Component {
             patientId: script.PatientId,
             notesNum: script.scriptNotes.length,
             attachmentsNum: script.scriptAttachments.length,
+            patientName: script.Patient.firstName + " " + script.Patient.lastName,
+            productName: script.Product.name,
             PatientId: script.PatientId,
             physicianId: script.PhysicianId,
             productId: script.ProductId
 
           }, this.getRxHistoryNum)
 
-
-
         }).catch((err) => {
           console.error(err)
         })
-
     }
   }
 
@@ -201,6 +200,18 @@ class ScriptView extends Component {
       .then((resp) => {
         this.setState({
           statusesNum: resp.data.response.length
+        }, this.getPaymentsNum)
+      }).catch((err) => {
+        console.error(err)
+      })
+  }
+
+  getPaymentsNum() {
+    const loginToken = window.localStorage.getItem("token");
+    axios.get('/api/scripts/payments/search?scriptId=' + this.state.id, { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        this.setState({
+          paymentsNum: resp.data.response.length
         }, this.checkScriptTransfer)
       }).catch((err) => {
         console.error(err)
@@ -946,6 +957,10 @@ class ScriptView extends Component {
       ? <span className='numberCircle'>{this.state.statusesNum}</span>
       : <span></span>}</div>
 
+    const paymentsTab = <div>Payments {this.state.paymentsNum > 0
+      ? <span className='numberCircle'>{this.state.paymentsNum}</span>
+      : <span></span>}</div>
+
 
     this.tabOptions = [
       {
@@ -980,7 +995,7 @@ class ScriptView extends Component {
       },
       {
         value: 'payments',
-        display: 'Payments',
+        display: paymentsTab,
         renderComponent: () => this.renderPaymentsTab()
       }
     ]
@@ -990,7 +1005,6 @@ class ScriptView extends Component {
     return (
       <div>
         <div className='pouch'>
-
           <input type="checkbox" checked={this.state.pouch}>
           </input>
           <label style={{ verticalAlign: 'text-top' }}>POUCH</label>
@@ -1067,28 +1081,58 @@ class ScriptView extends Component {
     )
   }
 
+  //   {
+  //   "token":
+  //   {
+  //     "id": "tok_1De8rAEI5a8SGCc3eM6VExWI", "object": "token", "card":
+  //     { "id": "card_1De8rAEI5a8SGCc36BgcIwkA", "object": "card", "address_city": null, "address_country": null, "address_line1": null, "address_line1_check": null, "address_line2": null, "address_state": null, "address_zip": "42424", "address_zip_check": "unchecked", "brand": "Visa", "country": "US", "cvc_check": "unchecked", "dynamic_last4": null, "exp_month": 4, "exp_year": 2024, "funding": "credit", "last4": "4242", "metadata": { }, "name": "Name", "tokenization_method": null }, "client_ip": "184.179.107.206", "created": 1544048916, "livemode": false, "type": "card", "used": false
+  //   }
+  // }
   renderPaymentsTab() {
     return (
-      <PaymentsTab />
+      <PaymentsTab
+        className={styles.rxHistoryTab}
+        props={this.props}
+        state={this.state}
+        patient={this.props.patients}
+        setState={this.setState.bind(this)} />
     )
+  }
+
+  renderCheckoutForm() {
+    const {
+      onCloseModal,
+      onCreateNote,
+    } = this.props
+
+    const {
+      chargeModal
+    } = this.state
+
+    if (this.state.patientId) {
+      return (
+        <div className="checkoutForm">
+          <StripeProvider apiKey="pk_test_WdiSIq25nzdEU8SdUQOTSFHz">
+            <Elements>
+              <CheckoutForm
+                content={chargeModal}
+                onSubmit={onCreateNote}
+                state={this.state}
+                patientId={this.state.PatientId}
+                props={this.props}
+                onClickAway={() => this.closeModal()}
+              // onCloseModal={() => this.closeModal()}
+              />
+            </Elements>
+          </StripeProvider>
+        </div>
+      )
+    }
   }
 
 
 
   render() {
-
-    const {
-      state,
-      className,
-      onCloseModal,
-      onCreateNote,
-    } = this.props
-
-
-    const {
-      chargeModal
-    } = this.state
-    console.log(this.props, this.state);
 
     return (
       <div>
@@ -1172,20 +1216,7 @@ class ScriptView extends Component {
           {this.renderActions()}
           {this.renderSwitchTable()}
 
-          <StripeProvider apiKey="pk_test_WdiSIq25nzdEU8SdUQOTSFHz">
-
-            <Elements>
-              <CheckoutForm
-                content={chargeModal}
-                onClickAway={onCloseModal}
-                onSubmit={onCreateNote}
-                state={this.state}
-                props={this.props}
-                onCloseModal={() => this.closeModal()}
-              />
-            </Elements>
-
-          </StripeProvider>
+          {this.renderCheckoutForm()}
 
         </Body>
       </div>

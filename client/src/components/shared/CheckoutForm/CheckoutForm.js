@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import { CardElement, injectStripe } from 'react-stripe-elements';
 import axios from 'axios'
+import Moment from 'react-moment'
 
 import {
+  Button,
   Input,
   Selector,
+  Table,
   FormModal,
 } from '../../common'
 
@@ -13,30 +16,147 @@ import styles from './CheckoutForm.css'
 class CheckoutForm extends Component {
   constructor(props) {
     super(props);
-    this.state = { complete: false };
+    this.state = {
+      complete: false,
+      totalPay: 0
+    }
     this.submit = this.submit.bind(this);
   }
 
-  async submit(ev) {
-    ev.preventDefault();
+  componentDidMount() {
+    console.log(this.props)
     const loginToken = window.localStorage.getItem("token");
-    let token = await this.props.stripe.createToken({name: "Name"});
-    console.log(token);
-    let data = token;
-    axios.post('/charge',
-      data, { headers: { "Authorization": "Bearer " + loginToken, "Content-Type": "text/plain"}  })
-      .then((data) => {
-        console.log(data);
-      }).catch((error) => {
-        console.error(error);
+    axios.get('/api/scripts/search?patientId=' + this.props.patientId + '&status=Schedule', { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        this.setState({
+          scripts: resp.data.response,
+          patientName: resp.data.response[0].Patient.firstName + " " + resp.data.response[0].Patient.lastName
+        }, this.calcTotalPay)
+      }).catch((err) => {
+        console.error(err)
       })
   }
 
-  componentDidMount() {
-    console.log(this.props, this.state);
+  calcTotalPay() {
+    const totalPay = [];
+    for (var i = 0; i < this.state.scripts.length; i++) {
+      // if (this.state.scripts[i].patientPay = "") {
+      //   return;
+      // } else {
+      totalPay.push(this.state.scripts[i].patientPay)
+      // }
+    }
+    var sum = totalPay.reduce(add, 0);
+
+    function add(a, b) {
+      return a + +b;
+    }
+
+    this.setState({
+      totalPay: sum
+    })
   }
 
+
+
+  async submit(ev) {
+    ev.preventDefault();
+    if (window.confirm(`This will charge an amount of $${this.state.totalPay.toFixed(2)} to the card that has been entered. Proceed?\n\n
+    Testing Mode (Feel free to click CHARGE)`)) {
+
+      for (var i = 0; i < this.state.scripts.length; i++) {
+        const loginToken = window.localStorage.getItem("token");
+        let token = await this.props.stripe.createToken({ name: "Name" });
+        console.log(token);
+        let data = token;
+        axios.post('/api/scripts/payments/charge?amount=' + this.state.scripts[i].patientPay + '&scriptId=' + this.state.scripts[i].id, data, { headers: { "Authorization": "Bearer " + loginToken, "Content-Type": "application/json" }, })
+          .then((data) => {
+            // window.location.reload();
+          }).catch((error) => {
+            window.alert("Payment Failed")
+            console.error(error);
+          })
+      }
+      window.location.reload()
+    } else {
+      return;
+    }
+  }
+
+  renderTableHead() {
+    return (
+      <thead>
+        <tr>
+          <th>RX NUMBER</th>
+          <th>PROCESS ON</th>
+          <th>MEDICATION</th>
+          <th>AMOUNT</th>
+        </tr>
+      </thead>
+    )
+  }
+
+  renderTableBody() {
+    return (
+      <tbody>
+        {this.state.scripts.map(this.renderTableRow.bind(this))}
+        {this.renderTotalPayRow()}
+      </tbody>
+    )
+  }
+
+  renderTotalPayRow() {
+    return (
+      <tr style={{ textAlign: 'right' }}>
+        <td colspan="4">Total Pay: <b>{this.state.totalPay ? <span>${this.state.totalPay.toFixed(2)}</span> : <b>Input needed</b>}</b></td>
+      </tr>
+    )
+  }
+
+  renderTableRow(script) {
+    return (
+      <tr value={script.id} onClick={() => this.handleClick(script.id)}>
+
+        <td>{script.rxNumber}</td>
+        <td><Moment format="MM/DD/YYYY">{script.processedOn || 'None'}</Moment></td>
+        <td>{script.Product.name}</td>
+        <td>{script.patientPay || <b>Input needed</b>}
+        </td>
+      </tr>
+    )
+  }
+
+  renderTable() {
+    return (
+      <Table>
+        {this.renderTableHead()}
+        {this.renderTableBody()}
+      </Table>
+    )
+  }
+
+
   render() {
+    if (this.state.scripts) {
+
+      var scriptList = this.state.scripts.sort(function (a, b) {
+        return new Date(b.processedOn).getTime() - new Date(a.processedOn).getTime()
+      });
+
+
+      var scriptList = this.state.scripts.map(function (item, i) {
+
+        return (
+          <div key={i}>
+          </div>
+        )
+      })
+    }
+    else {
+      return <div>
+        <p></p>
+      </div>
+    }
     const {
       content,
       onClickAway,
@@ -53,19 +173,41 @@ class CheckoutForm extends Component {
         title="Charge Credit Card"
         onClickAway={onClickAway}
         visible={!!content}
-      // onSubmit={this.onSubmit.bind(this)}
-      // className={styles.modal}
-      >
+        // onSubmit={this.onSubmit.bind(this)}
+        className="checkoutForm"
+      ><br />
         <div className="checkout">
           <p>Would you like to complete the purchase?</p>
+          <p><i>Enter "4242 4242 4242 4242" for testing</i></p>
           <CardElement />
-          <Input
-            label="Billing Zip"
-          />
+          <label>Claim</label>
           <Selector
             options={claimOptions}
+            value={this.state.claim}
+            onSelect={claim => this.setState({ claim })}
           />
-          <button onClick={this.submit}>Send</button>
+
+          {this.renderTable()}
+          {scriptList}
+          <br />
+          <div className="buttons">
+            <Button
+              large
+              cancel
+              type="button"
+              title="Cancel"
+              onClick={onClickAway}
+            />
+            <Button
+              large
+              inactive={this.inactive}
+              type="submit"
+              onClick={this.submit}
+              title="Charge"
+            />
+          </div>
+          <br /><br />
+
         </div>
       </FormModal>
     );

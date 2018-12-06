@@ -80,6 +80,7 @@ class SideBar extends Component {
   }
 
   getPhysicianInfo() {
+    console.log(this.props, this.state)
     const loginToken = window.localStorage.getItem("token");
 
     const {

@@ -34,7 +34,7 @@ router.post("/upload", (req, res) => {
         link: faxLink,
     }
 
-    const faxNumber = req.query.faxNumber.trim().replace(/\D/g,'');
+    const faxNumber = req.query.faxNumber.trim().replace(/\D/g, '');
     console.log(faxNumber);
 
     fs.mkdir(`./faxes/${req.query.scriptId}_${currentDate}`, (err) => {
@@ -48,12 +48,12 @@ router.post("/upload", (req, res) => {
                 .mv(faxPath)
                 .then((response) => {
                     console.log("file saved");
-                    
-                        phaxio.faxes.create({
-                            // to: '+15555555555', // Replace this with a number that can receive faxes.
-                            to: '+1' + faxNumber,
-                            file: `./faxes/${req.query.scriptId}_${currentDate}` + '/Fax' + ".pdf"
-                        })
+
+                    phaxio.faxes.create({
+                        // to: '+15555555555', // Replace this with a number that can receive faxes.
+                        to: '+1' + faxNumber,
+                        file: `./faxes/${req.query.scriptId}_${currentDate}` + '/Fax' + ".pdf"
+                    })
                         .then((fax) => {
                             // The `create` method returns a fax object with methods attached to it for doing things
                             // like cancelling, resending, getting info, etc.
@@ -89,7 +89,7 @@ router.post("/upload", (req, res) => {
                             console.error(err);
                             res.status(500).json({ message: "Internal server error.", error: err });
                         })
-                    
+
                         .catch((err) => {
                             console.error(err);
                             res.status(500).json({ message: "Internal server error.", error: err });

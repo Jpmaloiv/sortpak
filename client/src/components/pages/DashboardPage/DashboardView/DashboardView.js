@@ -31,12 +31,12 @@ class DashboardView extends Component {
   }
 
   render() {
-    const buttonOptions = [
-      { option: 'Day',   value: 'day'   },
-      { option: 'Week',  value: 'week'  },
-      { option: 'Month', value: 'month' },
-      { option: 'Year',  value: 'year'  },
-    ]
+    // const buttonOptions = [
+    //   { option: 'Day',   value: 'day'   },
+    //   { option: 'Week',  value: 'week'  },
+    //   { option: 'Month', value: 'month' },
+    //   { option: 'Year',  value: 'year'  },
+    // ]
 
     // const { me, isAdmin } = this.props
 
@@ -53,11 +53,11 @@ class DashboardView extends Component {
             </h2>
           {/* )} */}
 
-          <ButtonGroup
+          {/* <ButtonGroup
             options={buttonOptions}
             onPress={view => this.graphView = view}
             selected={this.params.view}
-          />
+          /> */}
         </Header>
 
         {/* {!me ? (

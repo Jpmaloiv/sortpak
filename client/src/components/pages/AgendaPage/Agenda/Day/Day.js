@@ -17,19 +17,19 @@ const Day = ({day, reps, onClick, today}) => {
       <div className={className}/>
     )
   } else {
-
     return (
       <div className={className}>
         <Icon>
           {day}
         </Icon>
+
         {reps.map(rep => (
           <span
             key={rep.id}
             className="rep-name"
             onClick={() => onClick(rep)}
           >
-          {rep.Rep} - <Moment format="HH:mm">{rep.dateTime}</Moment>
+          {rep.Rep}
           </span>
         ))}
       </div>

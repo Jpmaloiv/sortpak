@@ -19,7 +19,8 @@ class AdminDashboard extends Component {
     super(props)
     this.state = {
       patientNum: '',
-      physicianNum: ''
+      physicianNum: '',
+      revenue: ''
     }
   }
   renderCard({title, content}) {
@@ -33,29 +34,53 @@ class AdminDashboard extends Component {
     )
   }
 
-  componentDidMount() {
+  componentWillMount() {
     const loginToken = window.localStorage.getItem("token");
     axios.get('api/patients/search/', { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
-        console.log(resp.data.response);
         this.setState({
           patientNum: resp.data.response.length
         })
-        console.log(this.state.patients)
       }).catch((error) => {
         console.error(error);
       })
 
       axios.get('api/physicians/search/', { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
-        console.log(resp.data.response);
         this.setState({
           physicianNum: resp.data.response.length
         })
+      }).catch((error) => {
+        console.error(error);
+      })
+
+      axios.get('api/scripts/payments/search/', { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        console.log(resp.data.response)
+        this.setState({
+          payments: resp.data.response,
+          sales: resp.data.response.length
+        }, this.calcRevenue)
         console.log(this.state.patients)
       }).catch((error) => {
         console.error(error);
       })
+  }
+
+  calcRevenue() {
+    const revenue = [];
+    for (var i=0; i < this.state.payments.length; i++) {
+      revenue.push(this.state.payments[i].amount)
+    }
+    var sum = revenue.reduce(add, 0);
+
+    function add(a, b) {
+      return a + +b;
+    }
+
+    this.setState({
+      revenue: sum.toFixed(2)
+    })
   }
 
   
@@ -64,14 +89,14 @@ class AdminDashboard extends Component {
     // const repeatPatients = this.props.patients.filter(el => el.scripts).length
     // const newPhysicians = this.props.physicians.filter(el => !el.repId).length
     const cardData1 = [
-      { title: 'Revenue', content: '$0' },
+      { title: 'Revenue', content: '$' + this.state.revenue },
       { title: 'Daily AVG Revenue', content: '$0' },
       { title: 'Cost', content: '$0' },
       { title: 'Profit', content: '$0' },
       { title: 'Daily AVG Profit', content: '$0' }
     ]
     const cardData2 = [
-      { title: 'Sales', content: '$0' },
+      { title: 'Sales', content: this.state.sales },
       { title: 'Revenue per Sale', content: '$0' },
       { title: 'Repeat Patients', content: '0' },
       { title: 'New Patients', content: this.state.patientNum || '-' },

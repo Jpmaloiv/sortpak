@@ -9,6 +9,7 @@ const scriptRoutes = require("./routes/script-routes.js");
 const scriptNoteRoutes = require("./routes/scriptNote-routes.js");
 const scriptAttachmentRoutes = require("./routes/scriptAttachment-routes.js");
 const scriptStatusRoutes = require('./routes/scriptStatus-routes.js');
+const scriptPaymentRoutes = require('./routes/scriptPayment-routes.js');
 const patientRoutes = require("./routes/patient-routes.js");
 const patientNoteRoutes = require("./routes/patientNote-routes.js");
 const profileRoutes = require("./routes/profile-routes.js");
@@ -45,20 +46,6 @@ app.use(bodyParser.json({ type: "application/vnd.api+json" }));
 
 app.use(express.static(path.join(__dirname, 'client/build')));
 
-// Stripe
-const stripe = require("stripe")("sk_test_OVr1Ou3Gc5Vx4uqaZ888w1bz");
-app.use(require("body-parser").text());
-
-app.post("/charge", async (req, res) => {
-    return stripe.charges
-    .create({
-      amount: 2000, // Unit: cents
-      currency: 'us',
-      source: req.body.tokenId,
-      description: 'Test payment',
-    })
-    .then(result => res.status(200).json(result));
-});
 
 // Routes
 app.use(express.static(path.join(__dirname + '/public')));
@@ -91,6 +78,11 @@ app.use(["/api/scripts/notes"], jwt({
 }));
 app.use("/api/scripts/statuses", scriptStatusRoutes);
 app.use(["/api/scripts/statuses"], jwt({
+    secret: process.env.JWT_SECRET,
+    userProperty: 'payload'
+}));
+app.use("/api/scripts/payments", scriptPaymentRoutes);
+app.use(["/api/scripts/payments"], jwt({
     secret: process.env.JWT_SECRET,
     userProperty: 'payload'
 }));

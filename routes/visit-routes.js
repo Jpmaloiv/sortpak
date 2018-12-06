@@ -55,6 +55,10 @@ router.get("/search", (req, res) => {
     if (req.query.physicianId) {
         searchParams.where.PhysicianId = req.query.physicianId
     }
+
+    // if (req.query.rep) {
+    //     searchParams.where.Rep = req.query.rep
+    // }
   
     console.log(searchParams);
     db.Visits
