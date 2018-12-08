@@ -51,13 +51,14 @@ export default class VisitModal extends Component {
 
   onSubmit(e) {
     e.preventDefault()
-    const visitId = this.props.props.rep.id;
+    const visitId = this.props.props.rep.rep.id;
+    console.log(this.props)
     const loginToken = window.localStorage.getItem("token");
     let data = new FormData();
-    axios.post('/api/visits/notes/add?visitId=' + visitId + '&physicianId=' + this.props.physicianId + '&userId=' + this.state.userId + '&name=' + this.state.userName + '&note=' + this.state.note + '&userImage=' + this.state.userImage,
+    axios.post('/api/visits/notes/add?visitId=' + this.props.visitId + '&physicianId=' + this.props.physicianId + '&userId=' + this.state.userId + '&name=' + this.state.userName + '&note=' + this.state.note + '&userImage=' + this.state.userImage,
       data, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((data) => {
-        console.log(data);
+        console.log(data)
         this.props.onClickAway()
         window.location.reload();
       }).catch((error) => {

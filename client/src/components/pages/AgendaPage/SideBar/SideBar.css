@@ -6,8 +6,9 @@
     flex-direction: column;
     z-index: 2;
     width: 360px;
+    overflow: scroll;
     height: calc(100% - 106.51px);
-    max-height: 778.68px;
+    max-height: 650px;
     background-color: #fff;
     position: absolute;
     height: initial !important;
@@ -41,24 +42,22 @@
         position: absolute;
         top: 10px;
         right: 10px; }
-    :local(.sideBar) > .body > .visits {
+    :local(.sideBar) > .body > div > .visits {
       flex: 1;
       overflow-y: scroll; }
-      :local(.sideBar) > .body > .visits > .visit > .physician {
+      :local(.sideBar) > .body > div > .visits > .visit > .physician {
         padding: 10px;
         padding-left: 20px;
         border-top: 1px solid #eee;
         border-bottom: 1px solid #eee; }
-        :local(.sideBar) > .body > .visits > .visit > .physician > .line {
+        :local(.sideBar) > .body > div > .visits > .visit > .physician > .line {
           margin: 10px 0; }
-          :local(.sideBar) > .body > .visits > .visit > .physician > .line > span {
+          :local(.sideBar) > .body > div > .visits > .visit > .physician > .line > span {
             display: block; }
-            :local(.sideBar) > .body > .visits > .visit > .physician > .line > span.name {
+            :local(.sideBar) > .body > div > .visits > .visit > .physician > .line > span.name {
               font-size: 20px;
               color: #000; }
-            :local(.sideBar) > .body > .visits > .visit > .physician > .line > span > .fa {
-              margin-right: 10px; }
-      :local(.sideBar) > .body > .visits > .visit > .notes > .title {
+            :local(.sideBar) > .body > div > .visits > .visit > .notes > .title {
         padding: 10px;
         padding-left: 20px;
         background-color: #f6f8fa; }
@@ -80,6 +79,7 @@
       margin-right: 0 !important;
     }
 
+    #visitNotesTab {padding-top: 10px;}
 #visitNotesTab table {border-spacing: 15px; margin: 0; box-shadow: none; width: 100%;}
 .vt {box-shadow: 0 1px 2px 0 #afafc5; border-radius: 8px; width: 90%; margin: 0 auto; margin-bottom: 2px;}
 #visitNotesTab thead {background-color: #f7f9fb;}

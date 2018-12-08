@@ -35,14 +35,11 @@ class AgendaPage extends Component {
   }
 
   componentDidMount() {
-    hasAuthTokenAsync()
-      .then(() => {
-        if (!this.params.month || !this.params.year) {
-          console.log('setting current date');
-          this.setToCurrentDate()
-        }
-      })
-      .catch(console.log)
+
+    if (!this.params.month || !this.params.year) {
+      console.log('setting current date');
+      this.setToCurrentDate()
+    }
 
     const loginToken = window.localStorage.getItem("token");
 
@@ -110,7 +107,7 @@ class AgendaPage extends Component {
   }
 
   closeSideBar() {
-    this.setState({ rep: null, day: null, visitNotes: []})
+    this.setState({ rep: null, day: null, visitNotes: [] })
   }
 
   render() {
@@ -122,7 +119,7 @@ class AgendaPage extends Component {
     } = this
 
     // filter visits by checking the current month
-   
+
     // const isThisMonth = visit => {
     //   const visitDate = new Date(visit.dateTime)
     //   const visitMonth = visitDate.getMonth()
@@ -138,54 +135,55 @@ class AgendaPage extends Component {
     //     return visit.rep.id === selectedRepId
     //   })
     // // }
-  
-if (this.state.visits) {
-    return (
-      <div className={styles.body}>
-        {/* Header */}
-        <Header
-          reps={reps}
-          month={month}
-          year={year}
-          onRepChange={this.setRep.bind(this)}
-          onMonthChange={this.setMonth.bind(this)}
-          onViewModal={() => this.setState({ visitModal: {} })}
-          selectedRepId={selectedRepId}
-        />
 
-        {/* Agenda */}
-        <Agenda
-          month={month}
-          year={year}
-          visits={this.state.visits}
-          onSelectRep={this.viewRep.bind(this)}
-        />
+    if (this.state.visits) {
+      return (
+        <div className={styles.body}>
+          {/* Header */}
+          <Header
+            reps={reps}
+            month={month}
+            year={year}
+            onRepChange={this.setRep.bind(this)}
+            onMonthChange={this.setMonth.bind(this)}
+            onViewModal={() => this.setState({ visitModal: {} })}
+            selectedRepId={selectedRepId}
+          />
 
-        {/* Modal */}
-        <VisitModal
-          month={month}
-          year={year}
-          content={this.state.visitModal}
-          onClickAway={() => this.setState({ visitModal: null })}
-          onSubmit={this.props.createVisit.bind(this)}
-        />
+          {/* Agenda */}
+          <Agenda
+            month={month}
+            year={year}
+            visits={this.state.visits}
+            onSelectRep={this.viewRep.bind(this)}
+          />
 
-        {/* SideBar */}
-        <SideBar
-          rep={this.state.rep}
-          day={this.state.day}
-          month={month}
-          year={year}
-          state={this.state}
-          flipped={this.state.sideBarFlipped}
-          visible={this.state.rep && this.state.day}
-          onClickAway={this.closeSideBar.bind(this)}
-          onViewModal={this.viewModal.bind(this)}
-        />
-      </div>
-    );
-  } else {return (<div></div>)}
-}}
+          {/* Modal */}
+          <VisitModal
+            month={month}
+            year={year}
+            content={this.state.visitModal}
+            onClickAway={() => this.setState({ visitModal: null })}
+            onSubmit={this.props.createVisit.bind(this)}
+          />
+
+          {/* SideBar */}
+          <SideBar
+            rep={this.state.rep}
+            day={this.state.day}
+            month={month}
+            year={year}
+            state={this.state}
+            flipped={this.state.sideBarFlipped}
+            visible={this.state.rep && this.state.day}
+            onClickAway={this.closeSideBar.bind(this)}
+            onViewModal={this.viewModal.bind(this)}
+          />
+        </div>
+      );
+    } else { return (<div></div>) }
+  }
+}
 
 const mapStateToProps = ({ main }) => {
   const {
