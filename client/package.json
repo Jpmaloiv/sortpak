@@ -39,7 +39,6 @@
     "react-stripe-elements": "^1.7.0",
     "redux": "^4.0.0",
     "redux-thunk": "^2.3.0",
-    "socket.io-client": "^2.1.1",
     "yarn": "^1.5.1"
   },
   "scripts": {

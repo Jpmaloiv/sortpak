@@ -21,6 +21,8 @@ class EditScript extends Component {
         }
 
         this.handleCheckbox = this.handleCheckbox.bind(this);
+        this.handleDoNotRefill = this.handleDoNotRefill.bind(this)
+
     }
 
 
@@ -35,6 +37,7 @@ class EditScript extends Component {
                         processedOn: script.processedOn,
                         pouch: script.pouch,
                         patient: script.patient,
+                        oldStatus: script.status,
                         status: script.status,
                         priorAuth: script.priorAuth,
                         location: script.location,
@@ -67,14 +70,17 @@ class EditScript extends Component {
                         homeCare: script.homeCare,
                         hcHome: script.hcHome,
                         hcPhone: script.hcPhone,
+                        doNotRefill: script.doNotRefill,
                         patientId: script.PatientId,
                         patientName: script.Patient.firstName + " " + script.Patient.lastName,
                         physicianName: script.Physician.firstName + " " + script.Physician.lastName,
                         productName: script.Product.name,
                         physicianId: script.PhysicianId,
                         productId: script.ProductId,
+                        productName: script.Product.name,
                         productCost: script.Product.cost,
-                        productPackageSize: script.Product.packageSize
+                        productPackageSize: script.Product.packageSize,
+                        productQuantity: script.Product.quantity
                     }, this.calcTabletCost)
                 }).catch((err) => {
                     console.error(err)
@@ -117,6 +123,20 @@ class EditScript extends Component {
         this.setState({
             [event.target.name]: event.target.value
         })
+    }
+
+    handleDoNotRefill(e) {
+        e.preventDefault();
+        if (e.target.value === "true") {
+            this.setState({
+                doNotRefill: true
+            })
+        }
+        else if (e.target.value === "false") {
+            this.setState({
+                doNotRefill: false
+            })
+        }
     }
 
     renderCopayApproval() {
@@ -450,17 +470,17 @@ class EditScript extends Component {
     calcTabletCost() {
         console.log(this.state.productCost, this.state.quantity)
         this.setState({
-            tabletCost: this.state.productCost.replace(",","") / this.state.productPackageSize.replace(",","")
+            tabletCost: this.state.productCost.replace(",", "") / this.state.productPackageSize.replace(",", "")
         }, this.updateCost)
     }
 
     updateCost() {
         console.log(this.state.tabletCost, this.state.quantity)
         this.setState({
-            cost: this.state.tabletCost * this.state.quantity.replace(",","")
+            cost: this.state.tabletCost * this.state.quantity.replace(",", "")
         }, this.roundtoNearestCent)
     }
-    
+
     roundtoNearestCent() {
         this.setState({
             cost: Math.floor(this.state.cost * 100) / 100
@@ -470,6 +490,25 @@ class EditScript extends Component {
     updateScript = (event) => {
         event.preventDefault();
         const loginToken = window.localStorage.getItem("token");
+        const newQuantity = +this.state.productQuantity + +this.state.quantity;
+        if (((this.state.oldStatus === "Shipped" || this.state.oldStatus === "Done")) &&
+            ((this.state.status === "Received") || (this.state.status === "Review") || (this.state.status === "Prior Auth") || (this.state.status === "Process") || (this.state.status === "Copay Assistance") || (this.state.status === "Schedule") || (this.state.status === "QA") || (this.state.status === "Fill"))) {
+
+            if (window.confirm(`Changing this script from ${this.state.oldStatus} to ${this.state.status} will add ${this.state.quantity} back to ${this.state.productName}. Continue?\n
+            ${this.state.productQuantity} + ${this.state.quantity} => ${newQuantity} (new on hand quantity)`)) {
+
+                axios.put('/api/products/update?id=' + this.state.productId + '&quantity=' + newQuantity + '&name=' + this.state.productName,
+                    data, { headers: { "Authorization": "Bearer " + loginToken } })
+                    .then((data) => {
+                        console.log(data)
+                    }).catch((error) => {
+                        console.error(error);
+                    })
+            } else {
+                return;
+            }
+        }
+
         let data = new FormData();
         let ifParams = '';
         if (this.state.shipOn) ifParams += '&shipOn=' + this.state.shipOn;
@@ -484,13 +523,34 @@ class EditScript extends Component {
             '&writtenDate=' + this.state.writtenDate + '&salesCode=' + this.state.salesCode + '&billOnDate=' + this.state.billOnDate + '&cost=' + this.state.cost + '&rxNumber=' +
             this.state.rxNumber + '&primInsPay=' + this.state.primInsPay + '&diagnosis=' + this.state.diagnosis + '&secInsPay=' + this.state.secInsPay + '&secDiagnosis=' + this.state.secDiagnosis + '&patientPay=' + this.state.patientPay + '&refills=' + this.state.refills + '&refillsRemaining=' +
             this.state.refillsRemaining + '&quantity=' + this.state.quantity + '&daysSupply=' + this.state.daysSupply + '&directions=' + this.state.directions + '&copayApproval=' + this.state.copayApproval + '&copayNetwork=' +
-            this.state.copayNetwork + '&homeCare=' + this.state.homeCare + '&hcHome=' + this.state.hcHome + '&hcPhone=' + this.state.hcPhone + ifParams,
+            this.state.copayNetwork + '&homeCare=' + this.state.homeCare + '&hcHome=' + this.state.hcHome + '&hcPhone=' + this.state.hcPhone + '&doNotRefill=' + this.state.doNotRefill + ifParams,
             data, { headers: { "Authorization": "Bearer " + loginToken } })
             .then((data) => {
                 this.props.history.push(`/scripts/${this.props.match.params.scriptId}`);
             }).catch((error) => {
                 console.error(error);
             })
+    }
+
+    renderRefillButton() {
+        if (this.state.doNotRefill) {
+            return (
+                <Button
+                    title="ALLOW REFILL"
+                    value="false"
+                    onClick={this.handleDoNotRefill}
+                />
+            )
+        } else {
+            return (
+                <Button
+                    title="DO NOT REFILL"
+                    style={{ backgroundColor: 'red' }}
+                    value="true"
+                    onClick={this.handleDoNotRefill}
+                />
+            )
+        }
     }
 
 
@@ -513,6 +573,7 @@ class EditScript extends Component {
         ]
 
         const priorAuthOptions = [
+            '',
             'Approved',
             'Denied',
             'Payor Restriction',
@@ -574,11 +635,6 @@ class EditScript extends Component {
                                         <label>POUCH</label>
                                     </div>
                                 </td>
-                                <td>
-                                    <Button
-                                        title="DO NOT REFILL"
-                                    />
-                                </td>
                             </tr>
                             <tr>
                                 <td>
@@ -609,6 +665,9 @@ class EditScript extends Component {
                                         </div>
                                         :
                                         <div></div>}
+                                </td>
+                                <td>
+                                    {this.renderRefillButton()}
                                 </td>
                             </tr>
                             <tr>
@@ -669,7 +728,7 @@ class EditScript extends Component {
                                 <td>
                                     <Input
                                         type="date"
-                                        label="Transfer Pharamcy Date"
+                                        label="Transfer Pharmacy Date"
                                         placeholder={this.state.transDate}
                                         value={this.state.transDate}
                                         onChange={transDate => this.setState({ transDate })}
@@ -792,7 +851,7 @@ class EditScript extends Component {
                                             value={this.state.refillsRemaining}
                                             onChange={refillsRemaining => this.setState({ refillsRemaining })}
                                         />
-                                        </td></tr>
+                                    </td></tr>
 
                                 : <tr>
                                     <td className="refillsRemaining">

@@ -14,6 +14,7 @@ import ScriptViewPhysician from './components/pages/Scripts/ScriptView_Physician
 import AddScript from './components/pages/Scripts/AddScript/AddScript'
 import EditScript from './components/pages/Scripts/AddScript/EditScript'
 import Attachment from './components/pages/Scripts/ScriptView/Attachment'
+import Receipt from './components/pages/Scripts/ScriptView/Receipt'
 import PatientAttachment from './components/pages/PatientsPage/PatientView/PatientAttachment'
 
 import PatientsPage from './components/pages/PatientsPage/PatientsPage'
@@ -37,6 +38,7 @@ import TeamPage from './components/pages/TeamPage/TeamPage'
 import AddMember from './components/pages/TeamPage/AddMember/AddMember'
 import EditMember from './components/pages/TeamPage/AddMember/EditMember'
 import Profile from './components/pages/TeamPage/Profile/Profile'
+// import ChatWidget from './components/shared/ChatWidget/ChatWidget'
 
 // import MemberView from './components/pages/TeamPage/MemberView/MemberView'
 
@@ -124,6 +126,7 @@ class App extends Component {
         <Router>
           <div>
             <TopNav />
+            {/* <ChatWidget /> */}
             <div className="container">
               <Switch>
                 <Route
@@ -172,9 +175,11 @@ class App extends Component {
                 <PrivateRoute exact path="/team/:userId/profile" component={Profile} />
 
                 <Route exact path="/attachment/:attachmentId" component={Attachment} />
+                <Route exact path="/receipt/:paymentId" component={Receipt} />
+
                 <Route exact path="/patientAttachment/:attachmentId" component={PatientAttachment} />
 
-                <Route exact path="/book/:bookId" component={Attachment} />
+                {/* <Route exact path="/book/:bookId" component={Attachment} /> */}
 
 
 

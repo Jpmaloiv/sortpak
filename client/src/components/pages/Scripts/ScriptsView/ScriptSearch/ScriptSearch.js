@@ -98,8 +98,8 @@ class ScriptSearch extends React.Component {
     if (this.state.RX) searchParams += '&homeCare=0'
     if (this.state.HC) searchParams += '&homeCare=1'
     if (this.state.special) searchParams += '&salesCode=M'
-    if (this.state.SP) searchParams += '&location=' + ""
-    if (this.state.thirdParty) searchParams += '&location!=' + ""
+    if (this.state.SP) searchParams += '&location=SP'
+    if (this.state.thirdParty) searchParams += '&location=thirdParty'
     if (this.state.textSearch) searchParams += '&textSearch=' + this.state.textSearch
     if (this.state.rep) searchParams += '&rep=' + this.state.rep
     if (this.state.specialization) searchParams += '&specialization=' + this.state.specialization

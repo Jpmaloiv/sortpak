@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import axios from 'axios'
+import moment from 'moment'
 
 
 import {
@@ -43,68 +44,70 @@ class EditPatient extends Component {
     const loginToken = window.localStorage.getItem("token");
     axios.get('/api/patients/search?patientId=' + this.props.match.params.patientId, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
-          console.log(resp);
+        console.log(resp);
         let patient = resp.data.response[0];
         this.setState({
-            id: patient.id,
-            firstName: patient.firstName,
-            lastName: patient.lastName,
-            dob: patient.dob,
-            sex: patient.sex,
-            phone: patient.phone,
-            email: patient.email,
-            patientWarning: patient.patientWarning,
-            conditions: patient.conditions,
-            allergies: patient.allergies,
-            addressStreet: patient.addressStreet,
-            addressCity: patient.addressCity,
-            addressState: patient.addressState,
-            addressZipCode: patient.addressZipCode,
-            primInsPlan: patient.primInsPlan,
-            primInsBIN: patient.primInsBIN,
-            primInsPCN: patient.primInsPCN,
-            primInsID: patient.primInsID,
-            primInsGroup: patient.primInsGroup,
-            primInsType: patient.primInsType,
-            secInsPlan: patient.secInsPlan,
-            secInsBIN: patient.secInsBIN,
-            secInsPCN: patient.secInsPCN,
-            secInsID: patient.secInsID,
-            secInsGroup: patient.secInsGroup,
-            secInsType: patient.secInsType
+          id: patient.id,
+          firstName: patient.firstName,
+          lastName: patient.lastName,
+          dob: patient.dob,
+          sex: patient.sex,
+          phone: patient.phone,
+          email: patient.email,
+          patientWarning: patient.patientWarning,
+          conditions: patient.conditions,
+          allergies: patient.allergies,
+          addressStreet: patient.addressStreet,
+          addressCity: patient.addressCity,
+          addressState: patient.addressState,
+          addressZipCode: patient.addressZipCode,
+          primInsPlan: patient.primInsPlan,
+          primInsBIN: patient.primInsBIN,
+          primInsPCN: patient.primInsPCN,
+          primInsID: patient.primInsID,
+          primInsGroup: patient.primInsGroup,
+          primInsType: patient.primInsType,
+          secInsPlan: patient.secInsPlan,
+          secInsBIN: patient.secInsBIN,
+          secInsPCN: patient.secInsPCN,
+          secInsID: patient.secInsID,
+          secInsGroup: patient.secInsGroup,
+          secInsType: patient.secInsType
         })
-        
+
       }).catch((error) => {
         console.error(error);
-    })
+      })
 
     axios.get('/api/physicians/search/', { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
         this.setState({
-            physicians: resp.data.response
+          physicians: resp.data.response
         })
         console.log(this.state.physicians);
       }).catch((error) => {
         console.error(error);
-    })
-} 
+      })
+  }
 
   updatePatient = (event) => {
     event.preventDefault()
-        const loginToken = window.localStorage.getItem("token");
-        let data = new FormData();
-        axios.put('/api/patients/update?id=' + this.state.id + '&firstName=' + this.state.firstName + "&lastName=" + this.state.lastName + "&dob=" + this.state.dob + "&sex=" + this.state.sex + '&phone=' + this.state.phone +
-        '&email=' + this.state.email + '&patientWarning=' + this.state.patientWarning + '&conditions=' + this.state.conditions + '&allergies=' + this.state.allergies + '&addressStreet=' + this.state.addressStreet + '&addressCity=' + this.state.addressCity +
-        '&addressState=' + this.state.addressState + '&addressZipCode=' + this.state.addressZipCode + '&primInsPlan=' + this.state.primInsPlan + '&primInsBIN=' + this.state.primInsBIN + '&primInsPCN=' + this.state.primInsPCN + '&primInsID=' + this.state.primInsID +
-        '&primInsGroup=' + this.state.primInsGroup + '&primInsType=' + this.state.primInsType + '&secInsPlan=' + this.state.secInsPlan + '&secInsBIN=' + this.state.secInsBIN + '&secInsPCN=' + this.state.secInsPCN + 
-        '&secInsID=' + this.state.secInsID + '&secInsGroup=' + this.state.secInsGroup + '&secInsType=' + this.state.secInsType, 
-        data, { headers: { "Authorization": "Bearer " + loginToken } })
-            .then((data) => {
-                console.log(data);
-                this.props.history.push(`/patients/${this.state.id}`);              
-            }).catch((error) => {
-                console.error(error);
-            })
+    let DOB = '';
+    if (this.state.dob) DOB = moment(this.state.dob).format('MM/DD/YYYY');
+    const loginToken = window.localStorage.getItem("token");
+    let data = new FormData();
+    axios.put('/api/patients/update?id=' + this.state.id + '&firstName=' + this.state.firstName + "&lastName=" + this.state.lastName + "&dob=" + DOB + "&sex=" + this.state.sex + '&phone=' + this.state.phone +
+      '&email=' + this.state.email + '&patientWarning=' + this.state.patientWarning + '&conditions=' + this.state.conditions + '&allergies=' + this.state.allergies + '&addressStreet=' + this.state.addressStreet + '&addressCity=' + this.state.addressCity +
+      '&addressState=' + this.state.addressState + '&addressZipCode=' + this.state.addressZipCode + '&primInsPlan=' + this.state.primInsPlan + '&primInsBIN=' + this.state.primInsBIN + '&primInsPCN=' + this.state.primInsPCN + '&primInsID=' + this.state.primInsID +
+      '&primInsGroup=' + this.state.primInsGroup + '&primInsType=' + this.state.primInsType + '&secInsPlan=' + this.state.secInsPlan + '&secInsBIN=' + this.state.secInsBIN + '&secInsPCN=' + this.state.secInsPCN +
+      '&secInsID=' + this.state.secInsID + '&secInsGroup=' + this.state.secInsGroup + '&secInsType=' + this.state.secInsType,
+      data, { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((data) => {
+        console.log(data);
+        this.props.history.push(`/patients/${this.state.id}`);
+      }).catch((error) => {
+        console.error(error);
+      })
   }
 
   render() {
@@ -198,27 +201,27 @@ class EditPatient extends Component {
         <Header>
           <h2>Edit Patient</h2>
           <div className="action">
-              <Button
-                cancel
-                type="button"
-                title="CANCEL"
-                link="/patients"
-                style={{ marginRight: 10 }}
-              />
-              <Button
-                onClick={this.updatePatient}
-                title="SAVE"
-                className="submit btn btn-default"
-                type="submit"
-                value="Submit"
-                style={{ marginRight: 8 }}
-              />
-            </div>
+            <Button
+              cancel
+              type="button"
+              title="CANCEL"
+              link="/patients"
+              style={{ marginRight: 10 }}
+            />
+            <Button
+              onClick={this.updatePatient}
+              title="SAVE"
+              className="submit btn btn-default"
+              type="submit"
+              value="Submit"
+              style={{ marginRight: 8 }}
+            />
+          </div>
         </Header>
         <Body className={styles.body}>
           <Form className="form">
             <div class="flex-grid">
-              <div class="col">         
+              <div class="col">
                 <Input
                   label="Patient Name"
                   placeholder="First Name"
@@ -230,7 +233,7 @@ class EditPatient extends Component {
                   value={lastName}
                   onChange={lastName => this.setState({ lastName })}
                 />
-      
+
                 <Input
                   label="Date of Birth"
                   type="date"
@@ -252,13 +255,13 @@ class EditPatient extends Component {
                   onChange={phone => this.setState({ phone })}
                 />
 
-                <Input 
+                <Input
                   label="Email"
                   value={email}
                   onChange={email => this.setState({ email })}
                 />
 
-                <Input 
+                <Input
                   label="Patient Warning"
                   className="textarea"
                   value={patientWarning}
@@ -268,7 +271,7 @@ class EditPatient extends Component {
               </div>
               <div class="col">
 
-                <Input 
+                <Input
                   label="Co-morbid Conditions"
                   className="textarea"
                   placeholder="Conditions"
@@ -284,7 +287,7 @@ class EditPatient extends Component {
                   onChange={allergies => this.setState({ allergies })}
                 />
 
-                <Input 
+                <Input
                   label="Patient Address"
                   placeholder="Click here"
                   value={addressStreet}
@@ -385,7 +388,7 @@ class EditPatient extends Component {
                 />
               </div>
             </div>
-            
+
           </Form>
         </Body>
       </div>
@@ -393,7 +396,7 @@ class EditPatient extends Component {
   }
 }
 
-const mapStateToProps = ({main}) => {
+const mapStateToProps = ({ main }) => {
   const {
     loading
   } = main

@@ -8,6 +8,10 @@ module.exports = function (sequelize, DataTypes) {
         claim: {
             type: DataTypes.STRING,
             allowNull: true
+        },
+        receiptLink: {
+            type: DataTypes.STRING,
+            allowNull: true
         }
     });
 

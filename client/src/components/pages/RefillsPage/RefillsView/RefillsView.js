@@ -231,10 +231,7 @@ class RefillsView extends Component {
 
 
     const {
-      state,
-      className,
-      onCloseModal,
-      onCreateNote,
+      onCreateNote
     } = this.props
 
     const {

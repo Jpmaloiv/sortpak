@@ -77,7 +77,6 @@ class ScriptView extends Component {
       const loginToken = window.localStorage.getItem("token");
       axios.get('/api/scripts/search?scriptId=' + this.props.match.params.scriptId, { headers: { "Authorization": "Bearer " + loginToken } })
         .then((resp) => {
-          console.log(resp);
           let script = resp.data.response[0];
           this.setState({
             id: script.id,

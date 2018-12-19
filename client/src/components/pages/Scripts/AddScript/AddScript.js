@@ -53,7 +53,7 @@ class AddScript extends Component {
             copayNetwork: '',
             diagnosis: '',
             secDiagnosis: '',
-            suggestions: [],
+            doNotRefill: false,
             setPhysician: 'inactive',
             setProduct: 'inactive',
             physSearch: false,
@@ -61,6 +61,7 @@ class AddScript extends Component {
         }
 
         this.handleCheckbox = this.handleCheckbox.bind(this);
+        this.handleDoNotRefill = this.handleDoNotRefill.bind(this)
     }
 
 
@@ -128,6 +129,20 @@ class AddScript extends Component {
         })
     }
 
+    handleDoNotRefill(e) {
+        e.preventDefault();
+        if (e.target.value === "true") {
+            this.setState({
+                doNotRefill: true
+            })
+        }
+        else if (e.target.value === "false") {
+            this.setState({
+                doNotRefill: false
+            })
+        }
+    }
+
     searchPhysicians() {
         this.setState({
             physSearch: true
@@ -167,10 +182,10 @@ class AddScript extends Component {
             "&billOnDate=" + this.props.billOnDate + "&cost=" + this.state.cost + "&rxNumber=" + this.props.rxNumber + "&primInsPay=" + this.props.primInsPay + "&diagnosis=" + this.state.diagnosis +
             "&secInsPay=" + this.props.secInsPay + "&secDiagnosis=" + this.state.secDiagnosis + "&patientPay=" + this.props.patientPay + "&refills=" + this.props.refills +
             "&refillsRemaining=" + this.props.refillsRemaining + "&quantity=" + this.state.quantity + "&daysSupply=" + this.props.daysSupply + "&directions=" + this.props.directions +
-            "&copayApproval=" + this.state.copayApproval + "&copayNetwork=" + this.state.copayNetwork + "&homeCare=" + this.state.homeCare + '&hcHome=' + this.state.hcHome + '&hcPhone=' + this.state.hcPhone,
+            "&copayApproval=" + this.state.copayApproval + "&copayNetwork=" + this.state.copayNetwork + "&homeCare=" + this.state.homeCare + '&hcHome=' + this.state.hcHome + '&hcPhone=' + this.state.hcPhone + '&doNotRefill=' + this.state.doNotRefill,
             data, { headers: { "Authorization": "Bearer " + loginToken } })
             .then((data) => {
-                this.props.history.push("/scripts");
+                window.location = `/patients/${this.state.patientId}`
             }).catch((error) => {
                 console.error(error);
             })
@@ -188,7 +203,7 @@ class AddScript extends Component {
                         <th>ADDRESS</th>
                     </thead>
                     <tr>
-                        <td style={{borderRight: 'none'}} className="add" onClick={() => this.setState({ setPhysician: 'search' })}>
+                        <td style={{ borderRight: 'none' }} className="add" onClick={() => this.setState({ setPhysician: 'search' })}>
                             + Click here to add a physician
                             </td>
                     </tr>
@@ -250,7 +265,7 @@ class AddScript extends Component {
                         <th>COST</th>
                     </thead>
                     <tr>
-                        <td style={{borderRight: 'none'}} className="add" onClick={() => this.setState({ setProduct: 'search' })}>
+                        <td style={{ borderRight: 'none' }} className="add" onClick={() => this.setState({ setProduct: 'search' })}>
                             + Click here to add a medication
                             </td>
                     </tr>
@@ -334,12 +349,12 @@ class AddScript extends Component {
     renderPhysicianRow(physician) {
         return (
             <tr style={{ 'cursor': 'pointer' }} value={physician.id} onClick={() => this.setPhysician(physician.id)}>
-            <td>{physician.firstName} {physician.lastName}</td>
-            <td>{physician.group}</td>
-            <td>{physician.specialization}</td>
-            <td>{physician.phone}</td>
-            <td>{physician.addressStreet}<br />
-                {physician.addressCity}, {physician.addressState}, {physician.addressZipCode}</td>
+                <td>{physician.firstName} {physician.lastName}</td>
+                <td>{physician.group}</td>
+                <td>{physician.specialization}</td>
+                <td>{physician.phone}</td>
+                <td>{physician.addressStreet}<br />
+                    {physician.addressCity}, {physician.addressState}, {physician.addressZipCode}</td>
             </tr>
         )
     }
@@ -356,535 +371,557 @@ class AddScript extends Component {
         )
     }
 
-    setPhysician(value) {
-        this.setState({
-            physSearch: false,
-            physicianId: value,
-            setPhysician: 'set'
-        }, this.getPhysician)
+    renderRefillButton() {
+        if (this.state.doNotRefill) {
+            return (
+                <Button
+                    title="ALLOW REFILL"
+                    value="false"
+                    onClick={this.handleDoNotRefill}
+                />
+            )
+        } else {
+            return (
+                <Button
+                    title="DO NOT REFILL"
+                    style={{ backgroundColor: 'red' }}
+                    value="true"
+                    onClick={this.handleDoNotRefill}
+                />
+            )
+        }
     }
 
-    setProduct(value) {
-        this.setState({
-            prodSearch: false,
-            productId: value,
-            setProduct: 'set'
-        }, this.getProduct)
-    }
+setPhysician(value) {
+    this.setState({
+        physSearch: false,
+        physicianId: value,
+        setPhysician: 'set'
+    }, this.getPhysician)
+}
 
-    getPhysician() {
-        const loginToken = window.localStorage.getItem("token");
-        axios.get('/api/physicians/search?physicianId=' + this.state.physicianId,
-            { headers: { "Authorization": "Bearer " + loginToken } })
-            .then((resp) => {
-                let physician = resp.data.response[0];
-                this.setState({
-                    physicianName: physician.firstName + " " + physician.lastName,
-                    physicianGroup: physician.group,
-                    physicianSpec: physician.specialization,
-                    physicianPhone: physician.phone,
-                    physicianAddressStreet: physician.addressStreet,
-                    physicianAddressCity: physician.addressCity,
-                    physicianAddressState: physician.addressStreet,
-                    physicianAddressZipCode: physician.addressZipCode
-                })
-            }).catch((error) => {
-                console.error(error);
+setProduct(value) {
+    this.setState({
+        prodSearch: false,
+        productId: value,
+        setProduct: 'set'
+    }, this.getProduct)
+}
+
+getPhysician() {
+    const loginToken = window.localStorage.getItem("token");
+    axios.get('/api/physicians/search?physicianId=' + this.state.physicianId,
+        { headers: { "Authorization": "Bearer " + loginToken } })
+        .then((resp) => {
+            let physician = resp.data.response[0];
+            this.setState({
+                physicianName: physician.firstName + " " + physician.lastName,
+                physicianGroup: physician.group,
+                physicianSpec: physician.specialization,
+                physicianPhone: physician.phone,
+                physicianAddressStreet: physician.addressStreet,
+                physicianAddressCity: physician.addressCity,
+                physicianAddressState: physician.addressStreet,
+                physicianAddressZipCode: physician.addressZipCode
             })
-    }
-
-    getProduct() {
-        const loginToken = window.localStorage.getItem("token");
-        axios.get('/api/products/search?productId=' + this.state.productId,
-            { headers: { "Authorization": "Bearer " + loginToken } })
-            .then((resp) => {
-                let product = resp.data.response[0];
-                this.setState({
-                    productName: product.name,
-                    productNDC: product.NDC,
-                    productPackageSize: product.packageSize,
-                    productQuantity: product.quantity,
-                    productCost: product.cost,
-                    productPackageSize: product.packageSize
-                }, this.calcTabletCost)
-            }).catch((error) => {
-                console.error(error);
-            })
-    }
-
-    calcTabletCost() {
-        this.setState({
-            tabletCost: this.state.productCost.replace(",","") / this.state.productPackageSize.replace(",",""),
-            quantity: this.state.productPackageSize
-        }, this.updateCost)
-    }
-
-    updateCost() {
-        this.setState({
-            cost: this.state.tabletCost * this.state.quantity.replace(",","")
-        }, this.roundtoNearestCent)
-    }
-    
-    roundtoNearestCent() {
-        this.setState({
-            cost: Math.floor(this.state.cost * 100) / 100
+        }).catch((error) => {
+            console.error(error);
         })
-    }
+}
 
-    handleCheckbox(event) {
-        const target = event.target
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const name = target.name;
+getProduct() {
+    const loginToken = window.localStorage.getItem("token");
+    axios.get('/api/products/search?productId=' + this.state.productId,
+        { headers: { "Authorization": "Bearer " + loginToken } })
+        .then((resp) => {
+            let product = resp.data.response[0];
+            this.setState({
+                productName: product.name,
+                productNDC: product.NDC,
+                productPackageSize: product.packageSize,
+                productQuantity: product.quantity,
+                productCost: product.cost,
+                productPackageSize: product.packageSize
+            }, this.calcTabletCost)
+        }).catch((error) => {
+            console.error(error);
+        })
+}
 
-        this.setState({
-            [name]: value
-        });
+calcTabletCost() {
+    this.setState({
+        tabletCost: this.state.productCost.replace(",", "") / this.state.productPackageSize.replace(",", ""),
+        quantity: this.state.productPackageSize
+    }, this.updateCost)
+}
 
-    }
+updateCost() {
+    this.setState({
+        cost: this.state.tabletCost * this.state.quantity.replace(",", "")
+    }, this.roundtoNearestCent)
+}
 
-    handleChangeValue = e => this.setState({ value: e.target.value });
+roundtoNearestCent() {
+    this.setState({
+        cost: Math.floor(this.state.cost * 100) / 100
+    })
+}
 
+handleCheckbox(event) {
+    const target = event.target
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const name = target.name;
 
-    render() {
+    this.setState({
+        [name]: value
+    });
 
-        const statusOptions = [
-            'Received',
-            'Review',
-            'Prior Auth',
-            'Process',
-            'Copay Assistance',
-            'Schedule',
-            'QA',
-            'Fill',
-            'Shipped',
-            'Done',
-            'Cancelled',
-            'Refill',
-            'Renew'
-        ]
+}
 
-
-        const {
-            pharmNPI,
-            pharmNPIChange,
-            location,
-            locationChange,
-            pharmDate,
-            pharmDateChange,
-            writtenDate,
-            writtenDateChange,
-            salesCode,
-            salesCodeChange,
-            billOnDate,
-            billOnDateChange,
-            cost,
-            costChange,
-            rxNumber,
-            rxNumberChange,
-            primInsPay,
-            primInsPayChange,
-            secInsPay,
-            secInsPayChange,
-            patientPay,
-            patientPayChange,
-            refills,
-            refillsChange,
-            refillsRemaining,
-            refillsRemainingChange,
-            quantity,
-            quantityChange,
-            daysSupply,
-            daysSupplyChange,
-            directions,
-            directionsChange
-        } = this.props
+handleChangeValue = e => this.setState({ value: e.target.value });
 
 
+render() {
 
-        const priorAuthOptions = [
-            'Approved',
-            'Denied',
-            'Payor Restriction',
-            'Limited Distribution'
-        ]
-
-        const copayApprovalOptions = [
-            '-',
-            'Approved',
-            'Denied'
-        ]
-
-        const copayNetworkOptions = [
-            '-',
-            'Cancer Care Foundation',
-            'Chronice Disease Fund',
-            'Health Well',
-            'LLS',
-            'Patient Access Network',
-            'Patient Advocate',
-            'Patient Service Inc',
-            'Safety Net Foundation',
-            'Good Days',
-            'Coupon',
-            'Voucher',
-            'Copay Card'
-        ]
+    const statusOptions = [
+        'Received',
+        'Review',
+        'Prior Auth',
+        'Process',
+        'Copay Assistance',
+        'Schedule',
+        'QA',
+        'Fill',
+        'Shipped',
+        'Done',
+        'Cancelled',
+        'Refill',
+        'Renew'
+    ]
 
 
-        return (
-            <div>
-                <Header>
-                    <h2>Add A New Script</h2>
-                    <div className="action">
-                        <Button
-                            cancel
-                            type="button"
-                            title="CANCEL"
-                            link="/patients"
-                            style={{ marginRight: 10 }}
-                        />
-                        <Button
-                            onClick={this.submitscript}
-                            title="CREATE SCRIPT"
-                            className="submit btn btn-default"
-                            type="submit"
-                            value="Submit"
-                            style={{ marginRight: 8 }}
-                        />
-                    </div>
-                </Header>
-                <Body className={styles.body} id="addScript">
+    const {
+        pharmNPI,
+        pharmNPIChange,
+        location,
+        locationChange,
+        pharmDate,
+        pharmDateChange,
+        writtenDate,
+        writtenDateChange,
+        salesCode,
+        salesCodeChange,
+        billOnDate,
+        billOnDateChange,
+        cost,
+        costChange,
+        rxNumber,
+        rxNumberChange,
+        primInsPay,
+        primInsPayChange,
+        secInsPay,
+        secInsPayChange,
+        patientPay,
+        patientPayChange,
+        refills,
+        refillsChange,
+        refillsRemaining,
+        refillsRemainingChange,
+        quantity,
+        quantityChange,
+        daysSupply,
+        daysSupplyChange,
+        directions,
+        directionsChange
+    } = this.props
 
-                    <Form className={styles.form}>
-                        <Table>
-                            <tr className="checkboxRow">
+
+
+    const priorAuthOptions = [
+        'Approved',
+        'Denied',
+        'Payor Restriction',
+        'Limited Distribution'
+    ]
+
+    const copayApprovalOptions = [
+        '-',
+        'Approved',
+        'Denied'
+    ]
+
+    const copayNetworkOptions = [
+        '-',
+        'Cancer Care Foundation',
+        'Chronice Disease Fund',
+        'Health Well',
+        'LLS',
+        'Patient Access Network',
+        'Patient Advocate',
+        'Patient Service Inc',
+        'Safety Net Foundation',
+        'Good Days',
+        'Coupon',
+        'Voucher',
+        'Copay Card'
+    ]
+
+
+    return (
+        <div>
+            <Header>
+                <h2>Add A New Script</h2>
+                <div className="action">
+                    <Button
+                        cancel
+                        type="button"
+                        title="CANCEL"
+                        link="/patients"
+                        style={{ marginRight: 10 }}
+                    />
+                    <Button
+                        onClick={this.submitscript}
+                        title="CREATE SCRIPT"
+                        className="submit btn btn-default"
+                        type="submit"
+                        value="Submit"
+                        style={{ marginRight: 8 }}
+                    />
+                </div>
+            </Header>
+            <Body className={styles.body} id="addScript">
+
+                <Form className={styles.form}>
+                    <Table>
+                        <tr className="checkboxRow">
+                            <td>
+                                <Input
+                                    type="date"
+                                    label="Process On"
+                                    placeholder="2018/11/12"
+                                    selected={this.state.processedOn}
+                                    value={this.state.processedOn}
+                                    onChange={processedOn => this.setState({ processedOn })}
+                                />
+                            </td>
+                            <td className="check">
+                                <div>
+                                    <input
+                                        type="checkbox"
+                                        name="pouch"
+                                        checked={this.state.pouch}
+                                        onChange={this.handleCheckbox}
+                                    />
+                                    <label>POUCH</label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style={{ padding: '10px 0' }}>
+                                <Selector
+                                    options={statusOptions}
+                                    value={this.state.status}
+                                    onSelect={status => this.setState({ status })}
+                                />
+                            </td>
+                            <td>
+                                {this.renderRefillButton()}
+                            </td>
+                        </tr>
+                    </Table>
+
+                    <h4 style={{ marginLeft: 30, marginBottom: 0 }}>Patient</h4>
+                    <Table className="addScriptTable">
+                        <thead>
+                            <th>NAME</th>
+                            <th>DATE OF BIRTH</th>
+                            <th>PHONE NUMBER</th>
+                            <th>ADDRESS</th>
+                        </thead>
+                        <tr>
+                            <td>{this.state.patientName}</td>
+                            <td>{this.state.patientDob}</td>
+                            <td>{this.state.patientPhone}</td>
+                            <td>{this.state.patientAddressStreet},<br />
+                                {this.state.patientAddressCity}, {this.state.patientAddressState}, {this.state.patientAddressZipCode}</td>
+                        </tr>
+                    </Table>
+
+                    <h4 style={{ marginbottom: 0, marginLeft: 35 }}>Medication</h4>
+                    {this.renderProduct()}
+
+                    <h4 style={{ marginbottom: 0, marginLeft: 35 }}>Physician</h4>
+                    {this.renderPhysician()}
+
+                    <Table>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <h4>Prior Authorization</h4>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <Selector
+                                        wide
+                                        label="Status"
+                                        options={priorAuthOptions}
+                                        onSelect={priorAuth => this.setState({ priorAuth })}
+                                    />
+                                </td>
+                                <td>
+                                    <Input
+                                        className={styles.input}
+                                        label="Transfer Pharmacy NPI"
+                                        value={pharmNPI}
+                                        onChange={pharmNPIChange}
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <Input
+                                        label="Location"
+                                        value={location}
+                                        onChange={locationChange}
+                                    />
+                                </td>
                                 <td>
                                     <Input
                                         type="date"
-                                        label="Process On"
-                                        placeholder="2018/11/12"
-                                        selected={this.state.processedOn}
-                                        value={this.state.processedOn}
-                                        onChange={processedOn => this.setState({ processedOn })}
+                                        label="Transfer Pharmacy Date"
+                                        placeholder="--/--/----"
+                                        value={pharmDate}
+                                        onChange={pharmDateChange}
                                     />
                                 </td>
-                                <td className="check">
-                                    <div>
-                                        <input
-                                            type="checkbox"
-                                            name="pouch"
-                                            checked={this.state.pouch}
-                                            onChange={this.handleCheckbox}
-                                        />
-                                        <label>POUCH</label>
-                                    </div>
+                            </tr>
+                        </tbody>
+                    </Table>
+
+                    <Table>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <Input
+                                        type="date"
+                                        label="Written Date"
+                                        placeholder="--/--/----"
+                                        value={writtenDate}
+                                        onChange={writtenDateChange}
+                                    />
+                                </td>
+                                <td>
+                                    <Input
+                                        label="Sales Code"
+                                        value={salesCode}
+                                        onChange={salesCodeChange}
+                                    />
                                 </td>
                             </tr>
                             <tr>
-                                <td style={{ padding: '10px 0' }}>
+                                <td>
+                                    <Input
+                                        type="date"
+                                        label="Bill on Date"
+                                        placeholder="--/--/----"
+                                        value={billOnDate}
+                                        onChange={billOnDateChange}
+                                    />
+                                </td>
+                                <td>
+                                    <Input
+                                        label="Cost"
+                                        placeholder={this.state.cost}
+                                        value={this.state.cost}
+                                        onChange={cost => this.setState({ cost })}
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <Input
+                                        label="RX Number"
+                                        value={rxNumber}
+                                        onChange={rxNumberChange}
+                                    />
+                                </td>
+                                <td>
+                                    <Input
+                                        label="Primary Insurance Pay"
+                                        value={primInsPay}
+                                        onChange={primInsPayChange}
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <Input
+                                        label="Diagnosis"
+                                        value={this.state.diagnosis}
+                                        onChange={diagnosis => this.setState({ diagnosis })}
+                                    />
+                                </td>
+                                <td>
+                                    <Input
+                                        label="Secondary Insurance Pay"
+                                        value={secInsPay}
+                                        onChange={secInsPayChange}
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <Input
+                                        label="Secondary Diagnosis"
+                                        value={this.state.secDiagnosis}
+                                        onChange={secDiagnosis => this.setState({ secDiagnosis })}
+                                    />
+                                </td>
+                                <td>
+                                    <Input
+                                        label="Patient Pay"
+                                        value={patientPay}
+                                        onChange={patientPayChange}
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <Input
+                                        label="# of Refills"
+                                        value={refills}
+                                        onChange={refillsChange}
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <Input
+                                        label="# of Refills Remaining"
+                                        value={refillsRemaining}
+                                        onChange={refillsRemainingChange}
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <Input
+                                        label="Quantity"
+                                        placeholder={this.state.quantity}
+                                        value={this.state.quantity}
+                                        onChange={quantity => this.setState({ quantity }, this.updateCost)}
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <Input
+                                        label="Days Supply"
+                                        value={daysSupply}
+                                        onChange={daysSupplyChange}
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <Input
+                                        label="Directions"
+                                        value={directions}
+                                        onChange={directionsChange}
+                                    />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </Table>
+
+                    <Table>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <h4>Copay Assistance</h4>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
                                     <Selector
-                                        options={statusOptions}
-                                        value={this.state.status}
-                                        onSelect={status => this.setState({ status })}
+                                        wide
+                                        options={copayApprovalOptions}
+                                        placeholder="No Status"
+                                        onSelect={copayApproval => this.setState({ copayApproval })}
                                     />
                                 </td>
-                                <td><Button
-                                    title="DO NOT REFILL"
-                                /></td></tr>
-                        </Table>
+                                {this.state.copayApproval === "Approved" ?
+                                    <td>
+                                        <Selector
+                                            wide
+                                            label="Copay Network"
+                                            placeholder="No Network"
+                                            options={copayNetworkOptions}
+                                            onSelect={copayNetwork => this.setState({ copayNetwork })}
+                                        />
 
-                        <h4 style={{ marginLeft: 30, marginBottom: 0 }}>Patient</h4>
-                        <Table className="addScriptTable">
-                            <thead>
-                                <th>NAME</th>
-                                <th>DATE OF BIRTH</th>
-                                <th>PHONE NUMBER</th>
-                                <th>ADDRESS</th>
-                            </thead>
-                            <tr>
-                                <td>{this.state.patientName}</td>
-                                <td>{this.state.patientDob}</td>
-                                <td>{this.state.patientPhone}</td>
-                                <td>{this.state.patientAddressStreet},<br />
-                                    {this.state.patientAddressCity}, {this.state.patientAddressState}, {this.state.patientAddressZipCode}</td>
+                                    </td>
+                                    : <td></td>}
                             </tr>
-                        </Table>
+                        </tbody>
+                    </Table>
 
-                        <h4 style={{ marginbottom: 0, marginLeft: 35 }}>Medication</h4>
-                        {this.renderProduct()}
+                    <Table>
+                        <tbody>
+                            <tr>
+                                <h4>Shipping</h4>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <Button
+                                        title="CREATE SHIPPING"
+                                        className=""
+                                        type=""
+                                        value=""
+                                    />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </Table>
 
-                        <h4 style={{ marginbottom: 0, marginLeft: 35 }}>Physician</h4>
-                        {this.renderPhysician()}
+                    <Table>
+                        <tbody>
+                            <tr>
+                                <td className="check">
+                                    <input
+                                        type="checkbox"
+                                        name="homeCare"
+                                        checked={this.state.homeCare}
+                                        onChange={this.handleCheckbox}
+                                    />
+                                    <label>Home Care</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <Input
+                                        label="Home"
+                                        value={this.state.hcHome}
+                                        onChange={hcHome => this.setState({ hcHome })}
+                                    />
+                                </td>
+                                <td>
+                                    <Input
+                                        label="Phone"
+                                        value={this.state.hcPhone}
+                                        onChange={hcPhone => this.setState({ hcPhone })}
+                                    />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </Table>
 
-                        <Table>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <h4>Prior Authorization</h4>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <Selector
-                                            wide
-                                            label="Status"
-                                            options={priorAuthOptions}
-                                            onSelect={priorAuth => this.setState({ priorAuth })}
-                                        />
-                                    </td>
-                                    <td>
-                                        <Input
-                                            className={styles.input}
-                                            label="Transfer Pharmacy NPI"
-                                            value={pharmNPI}
-                                            onChange={pharmNPIChange}
-                                        />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <Input
-                                            label="Location"
-                                            value={location}
-                                            onChange={locationChange}
-                                        />
-                                    </td>
-                                    <td>
-                                        <Input
-                                            type="date"
-                                            label="Transfer Pharmacy Date"
-                                            placeholder="--/--/----"
-                                            value={pharmDate}
-                                            onChange={pharmDateChange}
-                                        />
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </Table>
-
-                        <Table>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <Input
-                                            type="date"
-                                            label="Written Date"
-                                            placeholder="--/--/----"
-                                            value={writtenDate}
-                                            onChange={writtenDateChange}
-                                        />
-                                    </td>
-                                    <td>
-                                        <Input
-                                            label="Sales Code"
-                                            value={salesCode}
-                                            onChange={salesCodeChange}
-                                        />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <Input
-                                            type="date"
-                                            label="Bill on Date"
-                                            placeholder="--/--/----"
-                                            value={billOnDate}
-                                            onChange={billOnDateChange}
-                                        />
-                                    </td>
-                                    <td>
-                                        <Input
-                                            label="Cost"
-                                            placeholder={this.state.cost}
-                                            value={this.state.cost}
-                                            onChange={cost => this.setState({ cost })}
-                                        />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <Input
-                                            label="RX Number"
-                                            value={rxNumber}
-                                            onChange={rxNumberChange}
-                                        />
-                                    </td>
-                                    <td>
-                                        <Input
-                                            label="Primary Insurance Pay"
-                                            value={primInsPay}
-                                            onChange={primInsPayChange}
-                                        />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <Input
-                                            label="Diagnosis"
-                                            value={this.state.diagnosis}
-                                            onChange={diagnosis => this.setState({ diagnosis })}
-                                        />
-                                    </td>
-                                    <td>
-                                        <Input
-                                            label="Secondary Insurance Pay"
-                                            value={secInsPay}
-                                            onChange={secInsPayChange}
-                                        />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <Input
-                                            label="Secondary Diagnosis"
-                                            value={this.state.secDiagnosis}
-                                            onChange={secDiagnosis => this.setState({ secDiagnosis })}
-                                        />
-                                    </td>
-                                    <td>
-                                        <Input
-                                            label="Patient Pay"
-                                            value={patientPay}
-                                            onChange={patientPayChange}
-                                        />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <Input
-                                            label="# of Refills"
-                                            value={refills}
-                                            onChange={refillsChange}
-                                        />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <Input
-                                            label="# of Refills Remaining"
-                                            value={refillsRemaining}
-                                            onChange={refillsRemainingChange}
-                                        />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <Input
-                                            label="Quantity"
-                                            placeholder={this.state.quantity}
-                                            value={this.state.quantity}
-                                            onChange={quantity => this.setState({ quantity }, this.updateCost)}
-                                        />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <Input
-                                            label="Days Supply"
-                                            value={daysSupply}
-                                            onChange={daysSupplyChange}
-                                        />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <Input
-                                            label="Directions"
-                                            value={directions}
-                                            onChange={directionsChange}
-                                        />
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </Table>
-
-                        <Table>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <h4>Copay Assistance</h4>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <Selector
-                                            wide
-                                            options={copayApprovalOptions}
-                                            placeholder="No Status"
-                                            onSelect={copayApproval => this.setState({ copayApproval })}
-                                        />
-                                    </td>
-                                    {this.state.copayApproval === "Approved" ?
-                                        <td>
-                                            <Selector
-                                                wide
-                                                label="Copay Network"
-                                                placeholder="No Network"
-                                                options={copayNetworkOptions}
-                                                onSelect={copayNetwork => this.setState({ copayNetwork })}
-                                            />
-
-                                        </td>
-                                        : <td></td>}
-                                </tr>
-                            </tbody>
-                        </Table>
-
-                        <Table>
-                            <tbody>
-                                <tr>
-                                    <h4>Shipping</h4>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <Button
-                                            title="CREATE SHIPPING"
-                                            className=""
-                                            type=""
-                                            value=""
-                                        />
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </Table>
-
-                        <Table>
-                            <tbody>
-                                <tr>
-                                    <td className="check">
-                                        <input
-                                            type="checkbox"
-                                            name="homeCare"
-                                            checked={this.state.homeCare}
-                                            onChange={this.handleCheckbox}
-                                        />
-                                        <label>Home Care</label>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <Input
-                                            label="Home"
-                                            value={this.state.hcHome}
-                                            onChange={hcHome => this.setState({ hcHome })}
-                                        />
-                                    </td>
-                                    <td>
-                                        <Input
-                                            label="Phone"
-                                            value={this.state.hcPhone}
-                                            onChange={hcPhone => this.setState({ hcPhone })}
-                                        />
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </Table>
-
-                    </Form>
-                </Body>
-            </div >
-        );
-    }
+                </Form>
+            </Body>
+        </div >
+    );
+}
 }
 
 

@@ -157,6 +157,10 @@ module.exports = function(sequelize, DataTypes) {
         notesUpdated: {
             type: DataTypes.STRING,
             allowNull: true
+        },
+        doNotRefill: {
+            type: DataTypes.BOOLEAN,
+            allowNull: true
         }
     }); 
 

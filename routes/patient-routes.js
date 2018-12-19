@@ -51,26 +51,17 @@ router.post("/add", (req, res) => {
         UserId: req.payload.id
     }
 
-    fs.mkdir("./patients/", (err) => {
-        if ((err) && (err.code !== 'EEXIST')) {
-            console.error(err)
-        } else {
-            const patientPath = './patients/' + req.payload.id + '/' + req.query.firstName.trim() + ".pdf";
-            // console.log("dir created");
-            // console.log("file saved");
-            db.Patients
-                .create(patient)
-                .then((resp) => {
-                    res.status(200).json({ message: "Upload successful!" });
-                })
-                .catch((err) => {
-                    console.error(err);
-                    res.status(500).json({ message: "Internal server error.", error: err });
-                })
+    db.Patients
+        .create(patient)
+        .then((resp) => {
+            res.status(200).json({ message: "Upload successful!" });
+        })
+        .catch((err) => {
+            console.error(err);
+            res.status(500).json({ message: "Internal server error.", error: err });
+        })
 
-        }
-    })
-});
+})
 
 
 router.get("/search", (req, res) => {
@@ -80,48 +71,60 @@ router.get("/search", (req, res) => {
             exclude: ["updatedAt", "UserId"]
         }
     }
+    console.log(req.query)
     if (req.query.patientId) {
         searchParams.where.id = req.query.patientId
     }
 
-//     if (req.query.name) {
-//         searchParams.where.firstName = { 
-//             [Op.or]: [{
-//                 firstName: {
-//                     like: '%' + req.query.name + '%'
-//                 }
-//         }, {
-//             lastName: {
-//                 like: '%' + req.query.name + '%'
-//             }
-//         }]
-//     }
-// }
+    if (req.query.name) {
 
-if (req.query.name) {
-    searchParams = {
-        where: {
-            [Op.or]:  [{
-                firstName: {
-                    like: '%'+ req.query.name + '%'
+        if (req.query.name.trim().indexOf(' ') != -1) {
+            const names = req.query.name.split(' ');
+            const firstName = names[0];
+            const lastName = names[1];
+
+            searchParams = {
+                where: {
+                    [Op.and]: [{
+                        firstName: {
+                            like: '%' + firstName + '%'
+                        }
+                    }, {
+                        lastName: {
+                            like: '%' + lastName + '%'
+                        }
+                    }]
                 }
-            }, {
-                lastName: {
-                    like: '%' + req.query.name + '%'
+            }
+        } else {
+            searchParams = {
+                where: {
+                    [Op.and]: [{
+                        [Op.or]: [{
+                            firstName: {
+                                like: '%' + req.query.name + '%'
+                            }
+                        }, {
+                            lastName: {
+                                like: '%' + req.query.name + '%'
+                            }
+                        }]
+                    }]
                 }
-            }]
+            }
         }
+
     }
-}
 
-if (req.query.dob) {
-    searchParams.where.dob = req.query.dob
-}
+    if (req.query.dob) {
+        searchParams.where.dob = req.query.dob
+    }
 
-// if (req.query.address) {
-//        searchParams.where = {
-//         firstName: { like: '%' + req.query.name + '%' },
-// }
+
+    // if (req.query.address) {
+    //        searchParams.where = {
+    //         firstName: { like: '%' + req.query.name + '%' },
+    // }
 
     console.log(searchParams);
     db.Patients

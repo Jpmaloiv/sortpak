@@ -8,6 +8,8 @@ const authCtrl = require("../controller/auth/auth-ctrl");
 const fs = require('fs');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
+const aws = require('aws-sdk');
+
 
 const stripe = require("stripe")("sk_test_OVr1Ou3Gc5Vx4uqaZ888w1bz");
 // app.use(require("body-parser").text());
@@ -17,6 +19,7 @@ router.post("/charge", async (req, res) => {
     const scriptPayment = {
         name: req.query.name,
         amount: req.query.amount,
+        receiptLink: req.query.receiptLink,
         ScriptId: req.query.scriptId
     }
 
@@ -62,6 +65,10 @@ router.get("/search", (req, res) => {
 
     if (req.query.scriptId) {
         searchParams.where.ScriptId = req.query.scriptId
+    }
+
+    if (req.query.id) {
+        searchParams.where.id = req.query.id
     }
 
     console.log(searchParams);

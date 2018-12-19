@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import axios from 'axios'
 import Moment from 'react-moment'
+import moment from 'moment'
 
 
 import { Span, Table, Input, Header, Button, ActionBox, SearchBar } from '../../../common'
@@ -48,8 +49,10 @@ class PatientsView extends Component {
   }
 
   searchQuery() {
+    let searchDOB = ''
+    if (this.state.searchDOB) searchDOB = moment(this.state.searchDOB).format("MM/DD/YYYY"); 
     const loginToken = window.localStorage.getItem("token");
-    axios.get('api/patients/search?name=' + this.state.searchName + '&dob=' + this.state.searchDOB + '&address=' + this.state.searchAddress, { headers: { "Authorization": "Bearer " + loginToken } })
+    axios.get('api/patients/search?name=' + this.state.searchName + '&dob=' + searchDOB + '&address=' + this.state.searchAddress, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
         console.log(resp.data.response);
         this.setState({
@@ -140,7 +143,6 @@ class PatientsView extends Component {
 
     if (this.state.patients) {
       var patientList = this.state.patients.map(function (item, i) {
-        console.log(item);
         return (
           <div key={i}>
           </div>

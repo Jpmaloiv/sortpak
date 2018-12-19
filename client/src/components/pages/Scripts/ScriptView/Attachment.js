@@ -5,9 +5,9 @@ import axios from 'axios';
 
 
 class Book extends React.Component {
-    constructor(props) {
-        super(props)
-    }
+    // constructor(props) {
+    //     super(props)
+    // }
 
     state = {
         file: "",

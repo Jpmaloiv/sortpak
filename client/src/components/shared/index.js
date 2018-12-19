@@ -2,6 +2,7 @@ import AttachmentModal from './AttachmentModal/AttachmentModal'
 import PatientAttachmentModal from './PatientAttachmentModal/PatientAttachmentModal'
 import CheckoutForm from './CheckoutForm/CheckoutForm'
 import InsuranceModal from './InsuranceModal/InsuranceModal'
+import ReceiptModal from './ReceiptModal/ReceiptModal'
 import VisitModal from './VisitModal/VisitModal'
 import PhysicianNoteModal from './PhysicianNoteModal/PhysicianNoteModal'
 import VisitNoteModal from './VisitNoteModal/VisitNoteModal'
@@ -22,6 +23,7 @@ export {
   CheckoutForm,
   FaxModal,
   InsuranceModal,
+  ReceiptModal,
   VisitModal,
   PhysicianNoteModal,
   VisitNoteModal,

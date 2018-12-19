@@ -80,7 +80,6 @@ class EditProduct extends Component {
 
   handleSubmit(e) {
     e.preventDefault()
-    console.log(this.state)
     const loginToken = window.localStorage.getItem("token");
     let data = new FormData();
     axios.put('/api/products/update?id=' + this.props.match.params.productId + '&name=' + this.state.name + '&NDC=' + this.state.NDC + '&schedule=' + this.state.schedule + '&dosage=' + this.state.dosage +

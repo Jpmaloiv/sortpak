@@ -11,7 +11,7 @@ const Op = Sequelize.Op;
 router.post("/add", (req, res) => {
 
     const product = {
-        name: req.query.name,
+        name: name,
         NDC: req.query.NDC,
         quantity: req.query.quantity,
         packageSize: req.query.packageSize,
@@ -88,8 +88,10 @@ router.get("/search", (req, res) => {
 
 router.put("/update", function (req, res) {
 
+    const name = req.query.name.split("%20").join(" "); // Removes '%20' from strings that have a '%' in them naturally
+
     const product = {
-        name: req.query.name,
+        name: name,
         NDC: req.query.NDC,
         quantity: req.query.quantity,
         packageSize: req.query.packageSize,

@@ -50,10 +50,11 @@ export default class AttachmentModal extends Component {
     const scriptId = this.props.props.state.id;
     let data = new FormData();
     data.append("attachmentFile", document.getElementById("pdf-file").files[0])
+    console.log(data)
     axios.post('/api/attachments/upload?scriptId=' + scriptId + '&userId=' + this.state.userId + '&attachedBy=' + this.state.username + '&type=' + this.state.type,
       data, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((data) => {
-        this.submitS3();
+        this.submitS3(data);
         // this.props.onClickAway()
       }).catch((error) => {
         console.error(error);
@@ -62,6 +63,7 @@ export default class AttachmentModal extends Component {
 
   submitS3() {
       const files = document.getElementById('pdf-file').files;
+      console.log(files)
       const file = files[0];
       if (file == null) {
         return alert('No file selected.');

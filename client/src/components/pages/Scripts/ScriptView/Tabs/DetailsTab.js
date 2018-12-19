@@ -22,10 +22,13 @@ class DetailsTab extends Component {
     this.state = {
       refills: 0,
       refresh: false,
-      networkPay: ''
+      networkPay: '',
+      cost: 0,
+      secInsPay: 0,
+      networkPay: 0,
+      patientPay: 0
     }
     this.refillConfirm = this.refillConfirm.bind(this)
-    // this.generateRefillScript = this.generateRefillScript.bind(this);
   }
   state = {
     script: ''
@@ -93,10 +96,8 @@ class DetailsTab extends Component {
           trackNum: script.trackNum,
           ETA: script.ETA,
           paymentOption: script.paymentOption,
-
+          doNotRefill: script.doNotRefill
         }, this.calcTotalPay)
-
-
       }).catch((err) => {
         console.error(err)
       })
@@ -107,23 +108,24 @@ class DetailsTab extends Component {
   }
 
   calcTotalPay() {
-    console.log(this.state.cost, this.state.primInsPay, this.state.secInsPay, this.state.networkPay, this.state.patientPay)
-    if (this.state.cost && this.state.primInsPay && this.state.secInsPay && this.state.networkPay && this.state.patientPay) {
-      let totalPay = +this.state.primInsPay + +this.state.secInsPay + +this.state.networkPay + +this.state.patientPay;
-      let profit = (totalPay - this.state.cost).toFixed(2);
-      let margin = (profit / totalPay * 100).toFixed(1) + '%';
-      this.setState({
-        totalPay: totalPay,
-        profit: profit,
-        margin: margin
-      })
-    } else {
-      this.setState({
-        totalPay: 'Input needed',
-        profit: '',
-        margin: ''
-      })
-    }
+    let primInsPay = '';
+    let secInsPay = '';
+    let networkPay = '';
+    let patientPay = '';
+    if (this.state.primInsPay === '') primInsPay = 0; else primInsPay = this.state.primInsPay;
+    if (this.state.secInsPay === '') secInsPay = 0; else secInsPay = this.state.secInsPay;
+    if (this.state.networkPay === '') networkPay = 0; else networkPay = this.state.networkPay;
+    if (this.state.patientPay === '') patientPay = 0; else patientPay = this.state.patientPay;
+
+
+    let totalPay = +primInsPay + +secInsPay + +networkPay + +patientPay;
+    let profit = (totalPay - this.state.cost).toFixed(2);
+    let margin = (profit / totalPay * 100).toFixed(1);
+    this.setState({
+      totalPay: totalPay.toFixed(2),
+      profit: profit,
+      margin: margin
+    })
   }
 
   refillConfirm() {
@@ -140,33 +142,33 @@ class DetailsTab extends Component {
     let num = this.state.refillsRemaining
     let newStatus;
     if (num == 0) {
-        newStatus = 'Renew'
+      newStatus = 'Renew'
     } else if (num !== 0) {
-        newStatus = 'Refill'
+      newStatus = 'Refill'
     }
     this.setState({
-        newProcessedOn: moment(this.state.processedOn).add(this.state.daysSupply, 'days').subtract(10, 'days').format('MM-DD-YYYY'),
-        newRefills: count,
-        newRefillsRemaining: this.state.refillsRemaining - 1,
-        newStatus: newStatus
+      newProcessedOn: moment(this.state.processedOn).add(this.state.daysSupply, 'days').subtract(10, 'days').format('MM-DD-YYYY'),
+      newRefills: count,
+      newRefillsRemaining: this.state.refillsRemaining - 1,
+      newStatus: newStatus
     }, (this.refillLogic))
-}
-
-refillLogic() {
-  if (this.state.newRefillsRemaining < 0) {
-      this.setState({
-          newRefills: '',
-          newRefillsRemaining: ''
-      }, this.addScript)
-  } else {
-      this.addScript();
   }
-}
 
-addScript() {
-  const loginToken = window.localStorage.getItem("token");
-  let data = new FormData();
-  axios.post('/api/scripts/add?patientId=' + this.state.patientId + '&physicianId=' + this.state.physicianId + '&productId=' + this.state.productId + '&processedOn=' + this.state.newProcessedOn + '&pouch=' + this.state.pouch + "&medication=" + this.state.medication + "&status=" + this.state.newStatus + "&pharmNPI=" + this.state.pharmNPI
+  refillLogic() {
+    if (this.state.newRefillsRemaining < 0) {
+      this.setState({
+        newRefills: '',
+        newRefillsRemaining: ''
+      }, this.addScript)
+    } else {
+      this.addScript();
+    }
+  }
+
+  addScript() {
+    const loginToken = window.localStorage.getItem("token");
+    let data = new FormData();
+    axios.post('/api/scripts/add?patientId=' + this.state.patientId + '&physicianId=' + this.state.physicianId + '&productId=' + this.state.productId + '&processedOn=' + this.state.newProcessedOn + '&pouch=' + this.state.pouch + "&medication=" + this.state.medication + "&status=" + this.state.newStatus + "&pharmNPI=" + this.state.pharmNPI
       + "&priorAuth=" + this.state.priorAuth + "&location=" + this.state.location + "&pharmDate=" + this.state.pharmDate + "&writtenDate=" + this.state.writtenDate + "&salesCode=" + this.state.salesCode +
       "&billOnDate=" + this.state.billOnDate + "&cost=" + this.state.cost + "&rxNumber=" + this.state.rxNumber + "&primInsPay=" + this.state.primInsPay + "&diagnosis=" + this.state.diagnosis +
       "&secInsPay=" + this.state.secInsPay + "&secDiagnosis=" + this.state.secDiagnosis + "&patientPay=" + this.state.patientPay + "&refills=" + this.state.newRefills +
@@ -174,55 +176,14 @@ addScript() {
       "&copayApproval=" + this.state.copayApproval + "&copayNetwork=" + this.state.copayNetwork + "&homeCare=" + this.state.homeCare + '&hcHome=' + this.state.hcHome + '&hcPhone=' + this.state.hcPhone,
       data, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((data) => {
-          window.location = '/refills';
+        window.location = '/refills';
       }).catch((error) => {
-          console.error(error);
+        console.error(error);
       })
 
-}
+  }
 
   render() {
-
-    const statusOptions = [
-      'No Status',
-      'Received',
-      'Review',
-      'Prior Auth',
-      'Process',
-      'Copay Assistance',
-      'Schedule',
-      'QA',
-      'Fill',
-      'Shipped',
-      'Done',
-      'Cancelled',
-      'Refill'
-    ]
-
-    const copayApprovalOptions = [
-      'Approved',
-      'Denied'
-    ]
-
-    const copayNetworkOptions = [
-      'Cancer Care Foundation',
-      'Chronice Disease Fund',
-      'Health Well',
-      'LLS',
-      'Patient Access Network',
-      'Patient Advocate',
-      'Patient Service Inc',
-      'Safety Net Foundation',
-      'Good Days',
-      'Coupon',
-      'Voucher',
-      'Copay Card'
-    ]
-
-
-    const {
-      editing
-    } = this.state
 
     if (this.state.conditions) {
       var conditions = this.state.conditions.split(",").join("\n")
@@ -309,24 +270,35 @@ addScript() {
                     <td className="value">{this.state.physicianContact || ''}</td>
                     <td className="field">Refills Remaining</td>
                     <td className="value">{this.state.refillsRemaining || ''}
-                    &nbsp;&nbsp;&nbsp;
-                    {this.state.refillsRemaining == 0 ?
-                                            <Button
-                                                style={{ 'margin': '0 3%', 'min-width': '50px',
-                                                padding: '10px 20px',
-                                                'font-size': '.9em' }}
-                                                title="RENEW"
-                                                onClick={this.refillConfirm}
-                                            />
-                                            :
-                                            <Button
-                                                style={{ 'margin': '0 3%', 'min-width': '50px',
-                                                padding: '10px 20px',
-                                                'font-size': '.9em'}}
-                                                title="REFILL"
-                                                onClick={this.refillConfirm}
-                                            />
-                                        }</td>
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    {this.state.doNotRefill ?
+                        <span style={{color: 'red'}}>DO NOT REFILL</span>
+                        :
+                        <div>
+                          {this.state.refillsRemaining == 0 ?
+                            <Button
+                              style={{
+                                'margin': '0 3%', 'min-width': '50px',
+                                padding: '10px 20px',
+                                'font-size': '.9em'
+                              }}
+                              title="RENEW"
+                              onClick={this.refillConfirm}
+                            />
+                            :
+                            <Button
+                              style={{
+                                'margin': '0 3%', 'min-width': '50px',
+                                padding: '10px 20px',
+                                'font-size': '.9em'
+                              }}
+                              title="REFILL"
+                              onClick={this.refillConfirm}
+                            />
+                          }
+                        </div>
+                      }
+                    </td>
                   </tr>
                   <tr>
                     <td className="field">Phone</td>
@@ -355,19 +327,19 @@ addScript() {
                     <td className="field">NDC</td>
                     <td className='value'>{this.state.productNDC || ''}</td>
                     <td className="field">Cost</td>
-                    <td className='value'>{this.state.cost || ''}</td>
+                    <td className='value'>{this.state.cost ? '$' + this.state.cost : ''}</td>
                   </tr>
                   <tr>
                     <td className="field">On Hand</td>
                     <td className='value'>{this.state.productQuantity || ''}</td>
                     <td className="field">Primary Insurance Pay</td>
-                    <td className='value'>{this.state.primInsPay || ''}</td>
+                    <td className='value'>{this.state.primInsPay ? '$' + this.state.primInsPay : ''}</td>
                   </tr>
                   <tr>
                     <td className="field">Prior Authorization</td>
                     <td className='value'>{this.state.priorAuth || ''}</td>
                     <td className="field">Secondary Insurance Pay</td>
-                    <td className='value'>{this.state.secInsPay || ''}</td>
+                    <td className='value'>{this.state.secInsPay ? '$' + this.state.secInsPay : ''}</td>
                   </tr>
                   <tr>
                     <td className="field">Location</td>
@@ -389,26 +361,13 @@ addScript() {
                     <td className="field">Delivery Method</td>
                     <td className='value'>{this.state.deliveryMethod}</td>
                     <td className="field">Copay Assistance Amount</td>
-                    <td className='value'>{this.state.networkPay ?
-                      <span>{this.state.networkPay}</span>
-                      :
-                      <span></span>
-                    }</td>
+                    <td className='value'>{this.state.networkPay ? '$' + this.state.networkPay : ''}</td>
                   </tr>
                   <tr>
                     <td className="field">Tracking Number</td>
                     <td className='value'>{this.state.trackNum}</td>
                     <td className="field">Patient Pay</td>
-                    <td className='value'>
-                      <Span
-                        editing={editing}
-                        placeholder={this.state.patientPay}
-                        value={this.state.patientPay}
-                        onChange={patientPay => this.setState({ patientPay })}
-                      >
-                        {this.state.patientPay}
-                      </Span>
-                    </td>
+                    <td className='value'>{this.state.patientPay ? '$' + this.state.patientPay : ''}</td>
                   </tr>
                   <tr>
                     <td className="field">ETA</td>
@@ -424,19 +383,19 @@ addScript() {
                     <td className="field">Status</td>
                     <td className='value'>{this.state.status || ''}</td>
                     <td className="field">Total Pay</td>
-                    <td className="value">{this.state.totalPay}</td>
+                    <td className="value">{this.state.totalPay ? '$' + this.state.totalPay : ''}</td>
                   </tr>
                   <tr>
                     <td className="field">Instructions</td>
                     <td className='value'>{this.state.directions || ''}</td>
                     <td className="field">Profit</td>
-                    <td className='value'>{this.state.profit}</td>
+                    <td className='value'>{'$' + this.state.profit || ''}</td>
                   </tr>
                   <tr>
                     <td className="field"></td>
                     <td className='value'></td>
                     <td className="field">Margin</td>
-                    <td className='value'>{this.state.margin}</td>
+                    <td className='value'>{this.state.margin !== '-Infinity' ? this.state.margin + '%' : ''}</td>
                   </tr>
                 </tbody>
               </table>

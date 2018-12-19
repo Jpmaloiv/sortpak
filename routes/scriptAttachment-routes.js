@@ -20,7 +20,7 @@ router.post("/upload", (req, res) => {
         title,
         attachedBy: req.query.attachedBy,
         type: req.query.type,
-        link: `https://s3-us-west-1.amazonaws.com/sortpak/scripts/attachments/${req.query.scriptId}/${title}`,
+        link: `https://s3-us-west-1.amazonaws.com/sortpaktesting/scripts/attachments/${req.query.scriptId}/${title}`,
         ScriptId: req.query.scriptId,
         UserId: req.query.userId
     }
@@ -120,7 +120,7 @@ router.get("/sign-s3", (req, res) => {
         }
         const returnData = {
             signedRequest: data,
-            url: 'https://s3-us-west-1.amazonaws.com/sortpak/scripts/attachments/' + req.query.scriptId + '/' + fileName.trim()
+            url: 'https://s3-us-west-1.amazonaws.com/sortpaktesting/scripts/attachments/' + req.query.scriptId + '/' + fileName.trim()
         };
         console.log(returnData)
         res.write(JSON.stringify(returnData));

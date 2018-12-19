@@ -8,6 +8,7 @@ const currentPatientRoutes = require("./routes/currentPatient-routes.js");
 const scriptRoutes = require("./routes/script-routes.js");
 const scriptNoteRoutes = require("./routes/scriptNote-routes.js");
 const scriptAttachmentRoutes = require("./routes/scriptAttachment-routes.js");
+const receiptRoutes = require("./routes/receipt-routes.js");
 const scriptStatusRoutes = require('./routes/scriptStatus-routes.js');
 const scriptPaymentRoutes = require('./routes/scriptPayment-routes.js');
 const patientRoutes = require("./routes/patient-routes.js");
@@ -22,29 +23,56 @@ const visitNoteRoutes = require("./routes/visitNote-routes.js");
 const faxRoutes = require("./routes/fax-routes.js");
 const fileUpload = require('express-fileupload');
 
+const app = express();
 
 const aws = require('aws-sdk');
 
 //middleware
 const bodyParser = require('body-parser');
 
+
 //express setup
-const app = express();
+// const app = express();
 const PORT = process.env.PORT || 3001;
 const isDev = process.env.NODE_ENV === 'production';
+
+
 
 // file upload middleware
 app.use(fileUpload())
 // Requiring our models for syncing
 const db = require(path.join(__dirname + '/models'));
 // app.use(bodyParser.json());
-app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.json({ limit: '500mb' }));
 // app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.urlencoded({ limit: '50mb', extended: true, parameterLimit: 50000 }));
+app.use(bodyParser.urlencoded({ limit: '500mb', extended: true, parameterLimit: 50000 }));
 app.use(bodyParser.text());
 app.use(bodyParser.json({ type: "application/vnd.api+json" }));
 
 app.use(express.static(path.join(__dirname, 'client/build')));
+
+
+
+// //---Chat---//
+// const server = require('http').createServer(app);
+// const io = require('socket.io')(server);
+// io.on('connection', client => {
+//     console.log('Socket Connection Successful')
+//     client.on('SEND_MESSAGE', data => {
+//         console.log(data)
+//         //data = JSON.parse(data)
+//         console.log(data.message);
+//         client.broadcast.emit('RECEIVE_AUTHOR', data.author)
+//         client.emit('RECEIVE_AUTHOR', data.author)
+//         client.broadcast.emit('RECEIVE_MESSAGE', data.message)
+//         client.emit('RECEIVE_MESSAGE', data.message)
+//     });
+//     client.on('disconnect', () => {
+//         console.log('Socket Disconnected')
+//     });
+// });
+
+// //---END CHAT----//
 
 
 // Routes
@@ -52,6 +80,7 @@ app.use(express.static(path.join(__dirname + '/public')));
 app.use(express.static(path.join(__dirname + '/user')));
 app.use(express.static(path.join(__dirname + '/scripts')));
 app.use(express.static(path.join(__dirname + '/attachments')));
+app.use(express.static(path.join(__dirname + '/receipts')));
 app.use(express.static(path.join(__dirname + '/patients')));
 app.use(express.static(path.join(__dirname + '/patientNotes')));
 app.use(express.static(path.join(__dirname + '/patientAttachments')));
@@ -71,6 +100,8 @@ app.use(["/api/scripts"], jwt({
 //     userProperty: 'payload'
 // }));
 app.use("/api/attachments", scriptAttachmentRoutes);
+app.use("/api/receipts", receiptRoutes);
+
 app.use("/api/scripts/notes", scriptNoteRoutes);
 app.use(["/api/scripts/notes"], jwt({
     secret: process.env.JWT_SECRET,
@@ -82,10 +113,10 @@ app.use(["/api/scripts/statuses"], jwt({
     userProperty: 'payload'
 }));
 app.use("/api/scripts/payments", scriptPaymentRoutes);
-app.use(["/api/scripts/payments"], jwt({
-    secret: process.env.JWT_SECRET,
-    userProperty: 'payload'
-}));
+// app.use(["/api/scripts/payments"], jwt({
+//     secret: process.env.JWT_SECRET,
+//     userProperty: 'payload'
+// }));
 app.use("/api/scripts", scriptRoutes);
 app.use(["/api/patientAttachments"], jwt({
     secret: process.env.JWT_SECRET,
@@ -139,13 +170,13 @@ app.use("/api/faxes", faxRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/current", currentPatientRoutes);
 
-app.get('/*', function(req, res) {
-    res.sendFile(path.join(__dirname, './client/build/index.html'), function(err) {
-      if (err) {
-        res.status(500).send(err)
-      }
+app.get('/*', function (req, res) {
+    res.sendFile(path.join(__dirname, './client/build/index.html'), function (err) {
+        if (err) {
+            res.status(500).send(err)
+        }
     })
-  })
+})
 
 
 //   AWS TEST 
@@ -161,11 +192,9 @@ aws.config.region = 'us-west-1';
 
 app.get('/account', (req, res) => res.render('account.html'));
 
-
-
-  app.post('/save-details', (req, res) => {
+app.post('/save-details', (req, res) => {
     // TODO: Read POSTed form data and do something useful
-  });
+});
 
 
 

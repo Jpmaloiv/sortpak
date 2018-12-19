@@ -3,6 +3,8 @@ import axios from 'axios';
 import jwt_decode from 'jwt-decode'
 import { Elements, StripeProvider } from 'react-stripe-elements';
 import CheckoutForm from '../../../shared/CheckoutForm/CheckoutForm';
+import { ReceiptModal } from '../../../shared'
+
 import moment from 'moment';
 
 import { Header, Body, Button, Table, Input, Selector } from '../../../common'
@@ -29,7 +31,8 @@ class ScriptView extends Component {
     super(props)
     this.state = {
       notesNum: '',
-      chargeModal: ''
+      chargeModal: '',
+      receiptModal: ''
     }
     this.tabOptions = [
       {
@@ -82,6 +85,7 @@ class ScriptView extends Component {
     this.handlePriorAuth = this.handlePriorAuth.bind(this);
     this.handleShipping = this.handleShipping.bind(this);
     this.generateRefillScript = this.generateRefillScript.bind(this);
+    this.openReceiptModals = this.openReceiptModals.bind(this)
   }
 
   state = {
@@ -100,7 +104,6 @@ class ScriptView extends Component {
   componentWillMount() {
     const token = localStorage.getItem('token')
     var decoded = jwt_decode(token);
-    console.log(decoded);
     this.setState({
       userId: decoded.id
     }, this.getUser)
@@ -143,14 +146,23 @@ class ScriptView extends Component {
             transLocation: script.transLocation,
             transNPI: script.transNPI,
             transDate: script.transDate,
+            doNotRefill: script.doNotRefill,
             patientId: script.PatientId,
             notesNum: script.scriptNotes.length,
             attachmentsNum: script.scriptAttachments.length,
             patientName: script.Patient.firstName + " " + script.Patient.lastName,
+            patientDOB: script.Patient.dob,
+            patientPhone: script.Patient.phone,
+            patientAddressStreet: script.Patient.addressStreet,
+            patientAddressCity: script.Patient.addressCity,
+            patientAddressState: script.Patient.addressState,
+            patientAddressZipCode: script.Patient.addressZipCode,
             productName: script.Product.name,
+            productQuantity: script.Product.quantity,
             PatientId: script.PatientId,
             physicianId: script.PhysicianId,
-            productId: script.ProductId
+            productId: script.ProductId,
+            receiptUpload: false
 
           }, this.getRxHistoryNum)
 
@@ -185,7 +197,6 @@ class ScriptView extends Component {
     const loginToken = window.localStorage.getItem("token");
     axios.get('/api/scripts/search?patientId=' + this.state.PatientId, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
-        console.log(resp);
         this.setState({
           rxHistoryNum: resp.data.response.length
         }, this.getStatusesNum)
@@ -222,14 +233,25 @@ class ScriptView extends Component {
     if (this.state.cancelReason === "Pharmacy Transfer") {
       this.setState({
         scriptTransfer: true
-      })
+      }, this.checkReceipt)
     } else {
       this.setState({
         scriptTransfer: false
-      })
+      }, this.checkReceipt)
     }
   }
 
+  checkReceipt() {
+    const loginToken = window.localStorage.getItem("token");
+    axios.get('/api/scripts/payments/search?scriptId=' + this.state.id, { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        this.setState({
+          paymentId: resp.data.response[0].id
+        })
+      }).catch((err) => {
+        console.error(err)
+      })
+  }
 
   closeModal() {
     this.setState({
@@ -242,15 +264,37 @@ class ScriptView extends Component {
 
   updateStatus() {
     const loginToken = window.localStorage.getItem("token");
-    if (this.state.status === "Shipped") this.refillConfirm();
+    const status = this.state.status;
+    if ((this.state.status === "Shipped") && (this.state.doNotRefill === false)) {
+      const statusWillChange = this.refillConfirm();
+      if (statusWillChange === false) {
+        this.setState({
+          status: "Fill"
+        })
+        return;
+      }
+    }
+    if ((this.state.status === "Shipped") && (this.state.doNotRefill === true)) {
+      const statusWillChange = this.shipQuantity();
+      if (statusWillChange === false) {
+        this.setState({
+          status: "Fill"
+        })
+        return;
+      }
+    }
+
+    const doNotRefill = (this.state.refillsRemaining == 0)
+
     let data = new FormData();
-    let updateParams = '?id=' + this.props.match.params.scriptId + '&status=' + this.state.status + '&pouch=' + this.state.pouch + '&location=' + this.state.location + '&homeCare=' + this.state.homeCare;
+    let updateParams = '?id=' + this.props.match.params.scriptId + '&status=' + status + '&pouch=' + this.state.pouch + '&location=' + this.state.location + '&homeCare=' + this.state.homeCare;
     if (this.state.reversal) updateParams += '&processedOn=' + this.state.processedOn;
     if (this.state.transfer) updateParams += '&transLocation=' + this.state.transLocation + '&transNPI=' + this.state.transNPI + '&transDate=' + this.state.transDate;
     if (this.state.priorAuth) updateParams += '&priorAuth=' + this.state.priorAuth;
     if (this.state.copayApproval) updateParams += '&patientPay=' + this.state.patientPay + '&copayApproval=' + this.state.copayApproval + '&copayNetwork=' + this.state.copayNetwork + '&networkPay=' + this.state.networkPay;
     if (this.state.shipping) updateParams += '&shipOn=' + this.state.shipOn + '&deliveryMethod=' + this.state.deliveryMethod + '&trackNum=' + this.state.trackNum + '&ETA=' + this.state.ETA + '&paymentOption=' + this.state.paymentOption;
     if (this.state.cancelReason) updateParams += '&cancelReason=' + this.state.cancelReason
+    if (doNotRefill) updateParams += '&doNotRefill=' + doNotRefill;
     axios.put('/api/scripts/update' + updateParams, data, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((data) => {
       }).catch((error) => {
@@ -269,7 +313,6 @@ class ScriptView extends Component {
     axios.post('/api/scripts/statuses/add?scriptId=' + this.props.match.params.scriptId + '&userId=' + this.state.userId + '&userImage=' + this.state.link + '&name=' + this.state.name + '&fromStatus=' + this.state.fromStatus + '&toStatus=' + this.state.status,
       data, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((data) => {
-        console.log(data);
       }).catch((error) => {
         console.error(error);
       })
@@ -343,7 +386,6 @@ class ScriptView extends Component {
   }
 
   addScript() {
-    console.log(this.state);
     const loginToken = window.localStorage.getItem("token");
     let data = new FormData();
     axios.post('/api/scripts/add?patientId=' + this.state.patientId + '&physicianId=' + this.state.physicianId + '&productId=' + this.state.productId + '&processedOn=' + this.state.newProcessedOn + '&pouch=' + this.state.pouch + "&medication=" + this.state.medication + "&status=" + this.state.newStatus + "&pharmNPI=" + this.state.pharmNPI
@@ -354,7 +396,7 @@ class ScriptView extends Component {
       "&copayApproval=" + this.state.copayApproval + "&copayNetwork=" + this.state.copayNetwork + "&homeCare=" + this.state.homeCare + '&hcHome=' + this.state.hcHome + '&hcPhone=' + this.state.hcPhone,
       data, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((data) => {
-        window.location = '/refills';
+        window.alert("Refill generated")
       }).catch((error) => {
         console.error(error);
       })
@@ -387,15 +429,56 @@ class ScriptView extends Component {
       newRefills: count,
       newRefillsRemaining: this.state.refillsRemaining - 1,
       newStatus: newStatus
-    }, (this.refillLogic))
+    }, this.refillLogic)
   }
 
   refillConfirm() {
-    if (window.confirm('Generate refill?')) {
+    let newProductQuantity = this.state.productQuantity - this.state.quantity;
+    newProductQuantity = Math.round(newProductQuantity * 100) / 100;
+    if (window.confirm(`Generate refill?\nThis will deduct ${this.state.quantity} from the on hand quantity of ${this.state.productName}\n
+    ${this.state.productQuantity} - ${this.state.quantity} => ${newProductQuantity} (new on hand quantity)`)) {
+      this.updateProductQuantity();
       this.generateRefillScript();
     } else {
-      return;
+      return false;
     }
+  }
+
+  shipQuantity() {
+    let newProductQuantity = this.state.productQuantity - this.state.quantity;
+    newProductQuantity = Math.round(newProductQuantity * 100) / 100;
+    if (window.confirm(`This will deduct ${this.state.quantity} from the on hand quantity of ${this.state.productName}\n
+    ${this.state.productQuantity} - ${this.state.quantity} => ${newProductQuantity} (new on hand quantity)`)) {
+      this.updateProductQuantity();
+    } else {
+      return false;
+    }
+  }
+
+  updateProductQuantity() {
+    let newProductQuantity = this.state.productQuantity - this.state.quantity;
+    newProductQuantity = Math.round(newProductQuantity * 100) / 100;
+    const loginToken = window.localStorage.getItem("token");
+    let data = new FormData();
+    axios.put('/api/products/update?id=' + this.state.productId + '&name=' + this.state.productName + '&quantity=' + newProductQuantity, data, { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((data) => {
+      }).catch((error) => {
+        console.error(error);
+        this.setState({
+          status: "Fill"
+        })
+      })
+  }
+
+  openReceiptModals(payments, totalPay) {
+    console.log(payments, totalPay)
+    this.setState({
+      chargeModal: null,
+      payments: payments,
+      totalPay: totalPay,
+      receiptModal: {},
+      receiptUpload: true
+    })
   }
 
   renderActions() {
@@ -1105,6 +1188,7 @@ class ScriptView extends Component {
       onCreateNote,
     } = this.props
 
+
     const {
       chargeModal
     } = this.state
@@ -1116,7 +1200,7 @@ class ScriptView extends Component {
             <Elements>
               <CheckoutForm
                 content={chargeModal}
-                onSubmit={onCreateNote}
+                onSubmit={this.openReceiptModals}
                 state={this.state}
                 patientId={this.state.PatientId}
                 props={this.props}
@@ -1133,6 +1217,10 @@ class ScriptView extends Component {
 
 
   render() {
+
+    const {
+      receiptModal
+    } = this.state
 
     return (
       <div>
@@ -1197,7 +1285,9 @@ class ScriptView extends Component {
                 <Button
                   id="white"
                   title="RECEIPT"
-                  style={{ marginLeft: 20 }}
+                  style={{ marginLeft: 20, backgroundColor: '#fff', color: '#000','-webkit-box-shadow': '0px 3px 12px 0px #d6d3d3',
+                  'box-shadow': '0px 3px 12px 0px #d6d3d3'}}
+                  link={`../receipt/${this.state.paymentId}`}
                 />
                 <Button
                   id="white"
@@ -1217,6 +1307,17 @@ class ScriptView extends Component {
           {this.renderSwitchTable()}
 
           {this.renderCheckoutForm()}
+
+          <div className="faxModal">
+            <ReceiptModal
+              content={receiptModal}
+              onClickAway={() => this.closeModal()}
+              payments={this.state.payments}
+              // onSubmit={onCreateNote}
+              state={this.state}
+              props={this.props}
+            />
+          </div>
 
         </Body>
       </div>

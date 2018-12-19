@@ -102,10 +102,12 @@ class FaxModal extends Component {
         var fax = pdf.output('blob');
         var data = new FormData();
         data.append("faxFile", fax)
+        console.log(data)
         const loginToken = window.localStorage.getItem("token");
         axios.post('/api/faxes/upload?patientId=' + this.state.patientId + '&scriptId=' + this.state.scriptId + '&faxNumber=' + this.state.physicianFax,
           data, { headers: { "Authorization": "Bearer " + loginToken } })
           .then((res) => {
+            console.log(res)
             if (res.status === 'ok') console.log("Yeah!");
             else console.log(":(");
           })

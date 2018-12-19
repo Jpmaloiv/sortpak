@@ -11,8 +11,7 @@ const Op = Sequelize.Op;
 
 
 router.post("/add", (req, res) => {
-    // const scriptLink = '/scripts/' + req.payload.id + '/' + req.query.patient.trim() + ".pdf";
-    const scriptLink = '/scripts/' + req.payload.id;
+
     const script = {
         processedOn: req.query.processedOn,
         pouch: req.query.pouch,
@@ -51,31 +50,24 @@ router.post("/add", (req, res) => {
         trackNum: req.query.trackNum,
         ETA: req.query.ETA,
         paymentOption: req.query.paymentOption,
-        link: scriptLink,
+        doNotRefill: req.query.doNotRefill,
         PatientId: req.query.patientId,
         PhysicianId: req.query.physicianId,
         ProductId: req.query.productId
     }
 
-    fs.mkdir("./scripts/", (err) => {
-        if ((err) && (err.code !== 'EEXIST')) {
-            console.error(err)
-        } else {
-            const scriptPath = './scripts/' + req.payload.id;
+    db.Scripts
+        .create(script)
+        .then((resp) => {
+            res.status(200).json({ message: "Upload successful!" });
+        })
+        .catch((err) => {
+            console.error(err);
+            res.status(500).json({ message: "Internal server error.", error: err });
+        })
 
-            db.Scripts
-                .create(script)
-                .then((resp) => {
-                    res.status(200).json({ message: "Upload successful!" });
-                })
-                .catch((err) => {
-                    console.error(err);
-                    res.status(500).json({ message: "Internal server error.", error: err });
-                })
+})
 
-        }
-    })
-});
 
 
 router.get("/search", (req, res) => {
@@ -93,9 +85,7 @@ router.get("/search", (req, res) => {
         {
             model: db.Physicians,
             attributes: ["firstName", "lastName", 'specialization', "rep", "contact", "phone", "fax", "physicianWarning", "addressStreet", "addressCity", "addressState", "addressZipCode"],
-            // where: { 
-            //     [Op.or]: [{specialization: req.query.specialization}]
-            // },
+
         },
         {
             model: db.Products,
@@ -177,8 +167,12 @@ router.get("/search", (req, res) => {
     if (req.query.homeCare) {
         searchParams.where.homeCare = req.query.homeCare
     }
-    if (req.query.location) {
-        searchParams.where.location = req.query.location
+    if (req.query.location === 'SP') {
+        searchParams.where.location = ''
+    } else if (req.query.location === 'thirdParty') {
+        searchParams.where.location = {
+            [Op.ne]: ''
+        } 
     }
 
     if (req.query.patientId) {
@@ -193,12 +187,16 @@ router.get("/search", (req, res) => {
         searchParams.where.ProductId = req.query.productId
     }
 
+    if (req.query.exactStatus) {
+        searchParams.where.status = req.query.exactStatus
+    }
+
     if (req.query.status) {
         if (req.query.status.match(/,.*,.*,.*,.*,.*,.*,.*,.*,.*,.*,.*,/)) { // Check if there are 2 commas
             str = str.replace(',', ''); // Remove the first one
         }
         const statuses = req.query.status.split(',').map((elem) => {
-            return '%' + elem + '%'
+            return elem;
         });
         if (statuses.length > 1) {
             const opLikes = statuses.map((elem) => {
@@ -214,7 +212,7 @@ router.get("/search", (req, res) => {
         }
     }
 
-
+console.log(searchParams)
     db.Scripts
         .findAll(searchParams)
         .then((response) => {
@@ -232,6 +230,7 @@ router.get("/search", (req, res) => {
 
 
 router.put("/update", function (req, res) {
+
     const script = {
         processedOn: req.query.processedOn,
         pouch: req.query.pouch,
@@ -272,10 +271,12 @@ router.put("/update", function (req, res) {
         ETA: req.query.ETA,
         paymentOption: req.query.paymentOption,
         notesUpdated: req.query.notesUpdated,
+        doNotRefill: req.query.doNotRefill,
         PatientId: req.query.patientId,
         PhysicianId: req.query.physicianId,
         ProductId: req.query.productId
     }
+
     db.Scripts.update(script, { where: { id: req.query.id } })
         .then(function (resp) {
             res.json({ success: true });
@@ -289,10 +290,9 @@ router.put("/update", function (req, res) {
 
 router.put("/updateNoteTime", function (req, res) {
     const script = {
-        
         notesUpdated: req.query.notesUpdated,
-        
     }
+    
     db.Scripts.update(script, { where: { id: req.query.id } })
         .then(function (resp) {
             res.json({ success: true });
