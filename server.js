@@ -25,7 +25,7 @@ const visitNoteRoutes = require("./routes/visitNote-routes.js");
 const faxRoutes = require("./routes/fax-routes.js");
 const fileUpload = require('express-fileupload');
 
-// const app = express();
+const app = express();
 
 const aws = require('aws-sdk');
 
@@ -34,7 +34,7 @@ const bodyParser = require('body-parser');
 
 
 //express setup
-const app = express();
+// const app = express();
 const PORT = process.env.PORT || 3001;
 const isDev = process.env.NODE_ENV === 'production';
 
