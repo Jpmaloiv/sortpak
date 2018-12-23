@@ -18,12 +18,14 @@ const patientAttachmentRoutes = require("./routes/patientAttachment-routes.js");
 const pastInsuranceRoutes = require("./routes/pastInsurance-routes.js");
 const physicianRoutes = require("./routes/physician-routes.js");
 const productRoutes = require("./routes/product-routes.js");
+const productOrderRoutes = require("./routes/productOrder-routes.js");
+const productAdjustmentRoutes = require("./routes/productAdjustment-routes.js");
 const visitRoutes = require("./routes/visit-routes.js");
 const visitNoteRoutes = require("./routes/visitNote-routes.js");
 const faxRoutes = require("./routes/fax-routes.js");
 const fileUpload = require('express-fileupload');
 
-const app = express();
+// const app = express();
 
 const aws = require('aws-sdk');
 
@@ -32,7 +34,7 @@ const bodyParser = require('body-parser');
 
 
 //express setup
-// const app = express();
+const app = express();
 const PORT = process.env.PORT || 3001;
 const isDev = process.env.NODE_ENV === 'production';
 
@@ -52,13 +54,13 @@ app.use(bodyParser.json({ type: "application/vnd.api+json" }));
 app.use(express.static(path.join(__dirname, 'client/build')));
 
 
-
-// //---Chat---//
+//---Chat---//
 // const server = require('http').createServer(app);
 // const io = require('socket.io')(server);
+// console.log("HIIII")
 // io.on('connection', client => {
 //     console.log('Socket Connection Successful')
-//     client.on('SEND_MESSAGE', data => {
+//     client.on('SEND_MESSAGE', data => { 
 //         console.log(data)
 //         //data = JSON.parse(data)
 //         console.log(data.message);
@@ -72,7 +74,7 @@ app.use(express.static(path.join(__dirname, 'client/build')));
 //     });
 // });
 
-// //---END CHAT----//
+//---END CHAT----//
 
 
 // Routes
@@ -148,6 +150,16 @@ app.use(["/api/products"], jwt({
     userProperty: 'payload'
 }));
 app.use("/api/products", productRoutes);
+app.use(["/api/products/orders"], jwt({
+    secret: process.env.JWT_SECRET,
+    userProperty: 'payload'
+}));
+app.use("/api/products/orders", productOrderRoutes);
+app.use(["/api/products/adjustments"], jwt({
+    secret: process.env.JWT_SECRET,
+    userProperty: 'payload'
+}));
+app.use("/api/products/adjustments", productAdjustmentRoutes);
 app.use(["/api/visits"], jwt({
     secret: process.env.JWT_SECRET,
     userProperty: 'payload'
@@ -203,6 +215,9 @@ db.sequelize.sync({ force: false, logging: console.log }).then(function () {
     app.listen(PORT, function () {
         console.log("App listening on PORT " + PORT);
     })
+    // server.listen(PORT, function () {
+    //     console.log("App listening on PORT " + PORT);
+    // })
 });
 
 

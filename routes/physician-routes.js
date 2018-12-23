@@ -72,20 +72,44 @@ router.get("/search", (req, res) => {
     }
 
     if (req.query.name) {
-        searchParams = {
-            where: {
-                [Op.or]: [{
-                    firstName: {
-                        like: '%' + req.query.name + '%'
-                    }
-                }, {
-                    lastName: {
-                        like: '%' + req.query.name + '%'
-                    }
-                }]
+
+        if (req.query.name.trim().indexOf(' ') != -1) {
+            const names = req.query.name.split(' ');
+            const firstName = names[0];
+            const lastName = names[1];
+
+            searchParams = {
+                where: {
+                    [Op.and]: [{
+                        firstName: {
+                            like: '%' + firstName + '%'
+                        }
+                    }, {
+                        lastName: {
+                            like: '%' + lastName + '%'
+                        }
+                    }]
+                }
+            }
+        } else {
+            searchParams = {
+                where: {
+                    [Op.and]: [{
+                        [Op.or]: [{
+                            firstName: {
+                                like: '%' + req.query.name + '%'
+                            }
+                        }, {
+                            lastName: {
+                                like: '%' + req.query.name + '%'
+                            }
+                        }]
+                    }]
+                }
             }
         }
     }
+
 
   
 

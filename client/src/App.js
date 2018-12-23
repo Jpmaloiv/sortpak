@@ -34,6 +34,9 @@ import RefillsPage from './components/pages/RefillsPage/RefillsPage'
 import ProductsPage from './components/pages/ProductsPage/ProductsPage'
 import AddProduct from './components/pages/ProductsPage/AddProduct/AddProduct'
 import EditProduct from './components/pages/ProductsPage/AddProduct/EditProduct'
+import OrderProduct from './components/pages/ProductsPage/OrderProduct/OrderProduct'
+import AdjustProduct from './components/pages/ProductsPage/OrderProduct/AdjustProduct'
+import Inventory from './components/pages/ProductsPage/OrderProduct/Inventory'
 import TeamPage from './components/pages/TeamPage/TeamPage'
 import AddMember from './components/pages/TeamPage/AddMember/AddMember'
 import EditMember from './components/pages/TeamPage/AddMember/EditMember'
@@ -51,6 +54,10 @@ import { createStore, applyMiddleware } from 'redux'
 // History
 import createHistory from 'history/createBrowserHistory'
 // import restricted from './components/restricted'
+
+//--Chat--//
+import  ChatWidget from './components/shared/ChatWidget/ChatWidget';
+//------//
 
 
 import './App.css';
@@ -71,7 +78,7 @@ class App extends Component {
     const loginToken = window.localStorage.getItem("token");
     if (loginToken) {
       var decoded = jwt_decode(loginToken);
-      axios.get('../api/user/search?userId=' + decoded.id, { headers: { "Authorization": "Bearer " + loginToken } })
+      axios.get('/api/user/search?userId=' + decoded.id, { headers: { "Authorization": "Bearer " + loginToken } })
         .then((resp) => {
           this.setState({
             userRole: resp.data.response[0].role,
@@ -126,7 +133,7 @@ class App extends Component {
         <Router>
           <div>
             <TopNav />
-            {/* <ChatWidget /> */}
+            {/* {this.state.userRole === "" ? <div></div> :  <ChatWidget/>} */}
             <div className="container">
               <Switch>
                 <Route
@@ -169,6 +176,10 @@ class App extends Component {
                 <Route exact path="/products" component={ProductsPage} />
                 <Route exact path="/products/add" component={AddProduct} />
                 <Route exact path="/products/:productId/edit" component={EditProduct} />
+                <Route exact path="/products/order" component={OrderProduct} />
+                <Route exact path="/products/adjust" component={AdjustProduct} />
+                <Route exact path="/products/:productId/inventory" component={Inventory} />
+
                 <PrivateRoute exact path="/team" component={TheTeamPage} />
                 <PrivateRoute exact path="/team/add" component={AddMember} />
                 <PrivateRoute exact path="/team/:userId/edit" component={EditMember} />

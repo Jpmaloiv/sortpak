@@ -16,7 +16,7 @@ import {
 
 import styles from './ProductsView.css'
 
-const th = ['NAME','NDC','SCHEDULE','PACKAGE SIZE','QUANTITY','COST','VALUE']
+const th = ['NAME', 'NDC', 'SCHEDULE', 'PACKAGE SIZE', 'QUANTITY', 'COST', 'VALUE']
 
 class ProductsView extends Component {
 
@@ -27,7 +27,7 @@ class ProductsView extends Component {
     }
   }
 
-  
+
 
   componentDidMount() {
     const loginToken = window.localStorage.getItem("token");
@@ -63,7 +63,7 @@ class ProductsView extends Component {
     var code = event.keyCode || event.which;
     if (code === 13) { //13 is the enter keycode
       this.searchQuery();
-    } 
+    }
   }
 
 
@@ -113,6 +113,25 @@ class ProductsView extends Component {
     window.location = `/products/${value}/edit`
   }
 
+  handleInvClick(e) {
+    this.setState({
+      productValue: e.currentTarget.value
+    }, this.openInventory)
+    e.stopPropagation();
+  }
+
+  openInventory() {
+    window.location = `/products/${this.state.productValue}/inventory`
+  }
+
+  // openFaxModal(e) {
+  //   this.setState({
+  //     scriptValue: e.target.value,
+  //     fax: true,
+  //   }, this.openFax)
+  //   e.stopPropagation();
+  // }
+
   renderTableRow(product) {
     return (
       <tr value={product.id} onClick={() => this.handleClick(product.id)}>
@@ -124,13 +143,15 @@ class ProductsView extends Component {
         <td>{product.cost}</td>
         <td></td>
         <td>
-          {/* <Button
-            title="edit"
-            styes={{ backgroundColor:"orange" }}
-          /> */}
+        <Button
+          className="inventoryButton"
+          value={product.id}
+          icon="clock-o"
+          onClick={this.handleInvClick.bind(this)}
+        />
 
         </td>
-      
+
 
       </tr>
     )
@@ -181,36 +202,46 @@ class ProductsView extends Component {
               style={{ marginRight: 14 }}
               link="products/add"
             />
+            <Button
+              title="ORDER"
+              style={{ marginRight: 10, backgroundColor: '#ff7d38' }}
+              link="products/order"
+            />
+            <Button
+              title="ADJUST"
+              style={{ marginRight: 10 , backgroundColor: '#ff7d38'}}
+              link="products/adjust"
+            />
 
         </div>
-
+    
         </Header>
-        <div className="body">
+          <div className="body">
 
-          <ActionBox className='productSearch'>
-            <div className="main" style={{paddingTop: 0}}>
+            <ActionBox className='productSearch'>
+              <div className="main" style={{ paddingTop: 0 }}>
 
-              <Input
-                label="Search"
-                placeholder="Product name or NDC..."
-                value={this.state.search}
-                onChange={search => this.setState({ search })}
-                onKeyPress={this.enterPressed.bind(this)}
-                style={{'width': '100%'}}
-              />
-              <Button
-                search
-                icon="search"
-                title="SEARCH"
-                onClick={this.searchQuery.bind(this)}
-                style={{marginTop: 30, height: 38, lineHeight: '1px'}}
-              />
+                <Input
+                  label="Search"
+                  placeholder="Product name or NDC..."
+                  value={this.state.search}
+                  onChange={search => this.setState({ search })}
+                  onKeyPress={this.enterPressed.bind(this)}
+                  style={{ 'width': '100%' }}
+                />
+                <Button
+                  search
+                  icon="search"
+                  title="SEARCH"
+                  onClick={this.searchQuery.bind(this)}
+                  style={{ marginTop: 30, height: 38, lineHeight: '1px' }}
+                />
 
-            </div>
+              </div>
 
-          </ActionBox>
+            </ActionBox>
 
-          {/* <TablePagination
+            {/* <TablePagination
             headers={ th }
             data={this.state.products}
             columns="name.NDC.schedule.packageSize.quantity.cost.value"
@@ -219,14 +250,14 @@ class ProductsView extends Component {
             // arrayOption={ [["size", 'all', ' ']] }
         /> */}
 
-          {this.renderTable()}
-          {productList}
+            {this.renderTable()}
+            {productList}
 
-        </div>
+          </div>
 
       </div>
-    );
-  }
-}
-
-export default ProductsView;
+        );
+      }
+    }
+    
+    export default ProductsView;

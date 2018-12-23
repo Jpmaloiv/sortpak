@@ -1,0 +1,13 @@
+
+#addScript input.orderField {
+    width: initial !important;
+}
+
+.inventoryButton {
+    min-width: 35px;
+    padding: 0;
+}
+
+.inventoryButton span {
+    margin-right: 0 !important;
+}

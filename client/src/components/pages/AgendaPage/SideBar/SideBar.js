@@ -96,7 +96,6 @@ class SideBar extends Component {
     const addressZipCode = []
     const notes = []
     const bigArray = []
-
     const visits = this.props.rep.reps
 
     for (var i = 0; i < visits.length; i++) {

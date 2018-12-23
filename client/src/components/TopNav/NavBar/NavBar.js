@@ -29,7 +29,7 @@ class NavBar extends Component {
     const token = localStorage.getItem('token')
     if (token) {
       var decoded = jwt_decode(token);
-      axios.get('../api/user/search?userId=' + decoded.id, { headers: { "Authorization": "Bearer " + token } })
+      axios.get('/api/user/search?userId=' + decoded.id, { headers: { "Authorization": "Bearer " + token } })
         .then((resp) => {
           this.setState({
             userRole: resp.data.response[0].role,
