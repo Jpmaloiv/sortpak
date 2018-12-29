@@ -29,8 +29,8 @@ class ChatWidget extends Component {
         var decoded = jwt_decode(loginToken);
         
 
-        // this.socket = io('https://sortpak-dev.herokuapp.com/');
-        this.socket = io('http://localhost:3001/');
+        this.socket = io('https://sortpak-portal.herokuapp.com/');
+        // this.socket = io('http://localhost:3001/');
 
        
 

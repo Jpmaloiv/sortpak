@@ -32,13 +32,10 @@ const aws = require('aws-sdk');
 //middleware
 const bodyParser = require('body-parser');
 
-
 //express setup
 // const app = express();
 const PORT = process.env.PORT || 3001;
 const isDev = process.env.NODE_ENV === 'production';
-
-
 
 // file upload middleware
 app.use(fileUpload())
