@@ -28,14 +28,15 @@ class EditMember extends Component {
       email: '',
       role: '',
       username: '',
-      confirmpw: '',
       active: false,
+      passwordWillChange: false
     }
 
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleCheckbox = this.handleCheckbox.bind(this);
+    this.handlePasswordCheck = this.handlePasswordCheck.bind(this)
   }
 
   componentDidMount() {
@@ -81,26 +82,56 @@ class EditMember extends Component {
     })
   }
 
+  handlePasswordCheck(e) {
+    if (this.state.password) {
+      this.setState({
+        passwordWillChange: true
+      }, this.handleSubmit)
+    } else {
+      this.handleSubmit();
+    }
+  }
+
 
   handleSubmit(e) {
+    console.log(this.state.passwordWillChange)
+    if (this.state.passwordWillChange) {
+      if (this.state.password === this.state.confirmpw) {
         const loginToken = window.localStorage.getItem("token");
         let data = new FormData();
-        axios.put('/api/user/update?id=' + this.state.id + '&username=' + this.state.username + '&name=' + this.state.name + '&email=' + this.state.email
-         + '&role=' + this.state.role + '&active=' + this.state.active,
+        axios.put('/api/user/update?id=' + this.state.id + '&username=' + this.state.username + '&name=' + this.state.name + '&email=' + this.state.email +
+          '&password=' + this.state.password + '&role=' + this.state.role + '&active=' + this.state.active,
           data, { headers: { "Authorization": "Bearer " + loginToken } })
           .then((data) => {
-            console.log(data);
             this.props.history.push('/team');
           }).catch((error) => {
             console.error(error);
           })
+      } else {
+        alert("Passwords do not match");
+      }
+    } else {
+      const loginToken = window.localStorage.getItem("token");
+      let data = new FormData();
+      axios.put('/api/user/update?id=' + this.state.id + '&username=' + this.state.username + '&name=' + this.state.name + '&email=' + this.state.email
+        + '&role=' + this.state.role + '&active=' + this.state.active,
+        data, { headers: { "Authorization": "Bearer " + loginToken } })
+        .then((data) => {
+          console.log(data);
+          this.props.history.push('/team');
+        }).catch((error) => {
+          console.error(error);
+        })
+    }
   }
 
   render() {
     const {
       username,
       name,
-      email
+      email,
+      password,
+      confirmpw
     } = this.state
 
     // const invalid = (
@@ -137,10 +168,10 @@ class EditMember extends Component {
               cancel
               link="/team"
               title="CANCEL"
-              style={{ marginRight: 10, verticalAlign: 'middle', padding: '12px 24px'}}
+              style={{ marginRight: 10, verticalAlign: 'middle', padding: '12px 24px' }}
             />
             <Button
-              onClick={this.handleSubmit}
+              onClick={this.handlePasswordCheck}
               title="SAVE"
               className="submit btn btn-default"
               type="submit"
@@ -152,7 +183,7 @@ class EditMember extends Component {
         <Body className={styles.body}>
           <Form
             className="form"
-            onSubmit={this.handleSubmit}
+            onSubmit={this.handlePasswordCheck}
           >
             <Input
               label='User Name'
@@ -180,6 +211,26 @@ class EditMember extends Component {
               placeholder={this.state.email}
               value={email}
               onChange={email => this.setState({ email })}
+            />
+
+            <br />
+
+            <Input
+              label='New Password:'
+              placeholder="Enter new password"
+              name='password'
+              type='password'
+              value={password}
+              onChange={password => this.setState({ password })}
+            />
+
+            <Input
+              label='Confirm New Password:'
+              placeholder="Confirm new password"
+              name='confirmpw'
+              type='password'
+              value={confirmpw}
+              onChange={confirmpw => this.setState({ confirmpw })}
             />
 
             <br />

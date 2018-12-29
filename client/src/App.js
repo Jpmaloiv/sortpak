@@ -41,7 +41,6 @@ import TeamPage from './components/pages/TeamPage/TeamPage'
 import AddMember from './components/pages/TeamPage/AddMember/AddMember'
 import EditMember from './components/pages/TeamPage/AddMember/EditMember'
 import Profile from './components/pages/TeamPage/Profile/Profile'
-// import ChatWidget from './components/shared/ChatWidget/ChatWidget'
 
 // import MemberView from './components/pages/TeamPage/MemberView/MemberView'
 
@@ -133,7 +132,7 @@ class App extends Component {
         <Router>
           <div>
             <TopNav />
-            {/* {this.state.userRole === "" ? <div></div> :  <ChatWidget/>} */}
+            {this.state.userRole === "" ? <div></div> :  <ChatWidget/>}
             <div className="container">
               <Switch>
                 <Route

@@ -258,7 +258,7 @@ class Profile extends Component {
                             label='Confirm New Password:'
                             placeholder="Confirm new password"
                             name='confirmpw'
-                            type='confirmpw'
+                            type='password'
                             value={confirmpw}
                             onChange={confirmpw => this.setState({ confirmpw })}
                         />

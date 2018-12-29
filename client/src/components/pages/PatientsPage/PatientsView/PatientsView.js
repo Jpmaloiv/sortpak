@@ -13,6 +13,8 @@ import {
   filterPatientsByDob,
 } from '../../../../actions/main'
 
+import MergePatientModal from '../../../shared/MergePatientModal/MergePatientModal'
+
 import {
   setPatient,
 } from '../../../../actions/patients'
@@ -28,6 +30,7 @@ class PatientsView extends Component {
       address: '',
       phone: '',
       file: '',
+      mergeModal: '',
       searchName: '',
       searchDOB: '',
       searchAddress: '',
@@ -35,6 +38,7 @@ class PatientsView extends Component {
     }
     this.searchQuery = this.searchQuery.bind(this);
   }
+
   componentDidMount() {
     const loginToken = window.localStorage.getItem("token");
     axios.get('api/patients/search/', { headers: { "Authorization": "Bearer " + loginToken } })
@@ -48,9 +52,19 @@ class PatientsView extends Component {
       })
   }
 
+  // openNoteModal() {
+  //   this.setState({ mergeModal: {} })
+  // }
+
+  closeModal() {
+    this.setState({
+      mergeModal: null
+    })
+  }
+
   searchQuery() {
     let searchDOB = ''
-    if (this.state.searchDOB) searchDOB = moment(this.state.searchDOB).format("MM/DD/YYYY"); 
+    if (this.state.searchDOB) searchDOB = moment(this.state.searchDOB).format("MM/DD/YYYY");
     const loginToken = window.localStorage.getItem("token");
     axios.get('api/patients/search?name=' + this.state.searchName + '&dob=' + searchDOB + '&address=' + this.state.searchAddress, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
@@ -141,6 +155,10 @@ class PatientsView extends Component {
 
   render() {
 
+    const {
+      mergeModal
+    } = this.state;
+
     if (this.state.patients) {
       var patientList = this.state.patients.map(function (item, i) {
         return (
@@ -168,6 +186,7 @@ class PatientsView extends Component {
             <Button
               title="MERGE PATIENT"
               style={{ backgroundColor: "#ff7d38", marginRight: 10 }}
+              // onClick={this.openNoteModal.bind(this)}
             />
 
             <Button
@@ -231,6 +250,16 @@ class PatientsView extends Component {
 
           {this.renderTable()}
           {patientList}
+
+          <MergePatientModal
+            content={mergeModal}
+            // onSubmit={this.openReceiptModals}
+            state={this.state}
+            patientId={this.state.PatientId}
+            props={this.props}
+            onClickAway={() => this.closeModal()}
+          // onCloseModal={() => this.closeModal()}
+          />
 
         </div>
 

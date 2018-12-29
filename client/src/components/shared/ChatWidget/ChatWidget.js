@@ -19,9 +19,10 @@ class ChatWidget extends Component {
 
         this.state = {
             username: '',
-            message: '',
             messages: [],
-            open: false
+            isTyping: '',
+            open: false,
+            authors: []
         };
 
         const loginToken = window.localStorage.getItem("token");
@@ -31,25 +32,77 @@ class ChatWidget extends Component {
         // this.socket = io('https://sortpak-dev.herokuapp.com/');
         this.socket = io('http://localhost:3001/');
 
-        this.socket.on('RECEIVE_AUTHOR', function (data) {
-            console.log(data)
-        
-            addAuthor(data);
-        });
-        this.socket.on('RECEIVE_MESSAGE', function (data) {
-            console.log(data)
-        
-            addMessage(data);
-        });
+       
 
         const addAuthor = data => {
-            console.log(data)
-            this.setState({author: data})
+            this.setState({ authors: [...this.state.authors, data] })
+            console.log(this.state.authors)
         }
-        const addMessage = data => {
-            this.setState({ messages: [...this.state.messages, this.state.author, data] });
-            // this.setState({message: data})
+
+
+        let socketStatus;
+        this.connectChat = data => {
+            if(socketStatus === true) {
+                this.socket.emit('RECEIVE_USER_DISCONNECTED', {
+                    author: decoded.username,
+                })
+
+                //Cleanup code
+                this.socket.off('RECIEVE_USER_TYPING')
+                this.socket.off('RECIEVE_USER_STOP_TYPING')
+                this.socket.off('RECEIVE_MESSAGE')
+                //this.socket.off('RECEIVE_USER_DISCONNECTED')
+                this.socket.off('RECEIVE_USER_CONNECTED')
+                
+                socketStatus = false
+                return
+            }
+            this.socket.on('RECIEVE_USER_TYPING', function (message) {
+                addIsTyping(message);
+            });
+    
+            this.socket.on('RECIEVE_USER_STOP_TYPING', function (message) {
+                console.log(message)
+                removeIsTyping(message);
+            });
+            
+            this.socket.on('RECEIVE_MESSAGE', function (data) {
+                console.log(data)
+                addAuthor(data.author);
+                addMessage(data.message);
+            });
+
+            this.socket.on('RECEIVE_USER_DISCONNECTED', function (message) {
+                console.log('asdfasdfasdg gaf sf af',message)
+                addIsTyping(message);
+            });
+            
+            this.socket.on('RECEIVE_USER_CONNECTED', function (message) {
+                addIsTyping(message);
+            });
+
+            this.socket.emit('RECEIVE_USER_CONNECTED', {
+                author: decoded.username,
+            })
+
+            
+
+            socketStatus = true
         };
+        
+        const addMessage = data => {
+            this.setState({ messages: [...this.state.messages, data] });
+            // this.setState({message: data})
+            console.log('messages array', this.state.messages)
+        };
+
+        const addIsTyping = data => {
+            this.setState({ isTyping: data })
+        }
+        
+        const removeIsTyping = data => {
+            this.setState({ isTyping: '' })
+        }
 
         this.sendMessage = ev => {
             ev.preventDefault();
@@ -59,6 +112,29 @@ class ChatWidget extends Component {
             })
             this.setState({ message: '' });
 
+        }
+        let typing
+        let lastTypingTime
+        this.sendUserTpying = ev => {
+            ev.preventDefault();
+                if (!typing) {
+                  typing = true
+                  this.socket.emit('SEND_USER_TYPING', {
+                    author: decoded.username
+                  })
+                }
+                lastTypingTime = (new Date()).getTime();
+          
+                setTimeout(() => {
+                  var typingTimer = (new Date()).getTime();
+                  var timeDiff = typingTimer - lastTypingTime;
+                  if (timeDiff >= 3000 && typing) {
+                    this.socket.emit('SEND_USER_STOP_TYPING', {
+                        author: decoded.username
+                    });
+                    typing = false;
+                  }
+                }, 3000);
         }
     }
 
@@ -83,16 +159,18 @@ class ChatWidget extends Component {
                         <div className="messages">
                             {this.state.messages === null ? <div></div> :
                                 this.state.messages.map((message, i) => {
-                                    console.log(message)
                                     return (
-                                        <div key={i}>{this.state.author}:   {message}</div>
+                                        <div key={i}>{this.state.authors[i]}:   {message}</div>
                                     )
                                 })}
                         </div>
 
                         <hr />
-                        <input type="text" placeholder="Username" value={this.state.username} onChange={ev => this.setState({ username: ev.target.value })} className="form-control" />
-                        <textarea type='text' placeholder="Message" className="form-control" value={this.state.message} onChange={ev => this.setState({ message: ev.target.value })} />
+                        <div className="isTyping">
+                                {this.state.isTyping}
+                        </div>
+                        {/* <input type="text" placeholder="Username" value={this.state.username} onChange={ev => this.setState({ username: ev.target.value })} className="form-control" /> */}
+                        <textarea onKeyUp={this.sendUserTpying} type='text' placeholder="Message" className="form-control" value={this.state.message} onChange={ev => this.setState({ message: ev.target.value })} />
                         <button onClick={this.sendMessage} className="btn btn-default form-control">Send</button>
 
 
@@ -101,8 +179,8 @@ class ChatWidget extends Component {
                 </Panel.Collapse>
                 <Panel.Heading>
                     <Panel.Title>
-                        <Row>
-                            <Col md={2}><Panel.Toggle componentClass="a"><span className="glyphicon glyphicon-chevron-up"></span></Panel.Toggle></Col>
+                        <Row style={{'display': 'flex'}}>
+                            <Col md={2}><Panel.Toggle componentClass="a"><span onClick={this.connectChat} className="glyphicon glyphicon-chevron-up"></span></Panel.Toggle></Col>
                             <Col md={10}><h4 className='weather__value' style={titleStyle}>Chat</h4></Col>
                         </Row>
 

@@ -55,24 +55,48 @@ app.use(express.static(path.join(__dirname, 'client/build')));
 
 
 //---Chat---//
-// const server = require('http').createServer(app);
-// const io = require('socket.io')(server);
-// console.log("HIIII")
-// io.on('connection', client => {
-//     console.log('Socket Connection Successful')
-//     client.on('SEND_MESSAGE', data => { 
-//         console.log(data)
-//         //data = JSON.parse(data)
-//         console.log(data.message);
-//         client.broadcast.emit('RECEIVE_AUTHOR', data.author)
-//         client.emit('RECEIVE_AUTHOR', data.author)
-//         client.broadcast.emit('RECEIVE_MESSAGE', data.message)
-//         client.emit('RECEIVE_MESSAGE', data.message)
-//     });
-//     client.on('disconnect', () => {
-//         console.log('Socket Disconnected')
-//     });
-// });
+const server = require('http').createServer(app);
+const io = require('socket.io')(server);
+io.on('connection', client => {
+    console.log('Socket Connection Successful')
+
+    client.on('SEND_MESSAGE', data => { 
+        console.log(data)
+        //data = JSON.parse(data)
+        console.log(data.message);
+        client.emit('RECEIVE_MESSAGE', data)
+        client.broadcast.emit('RECEIVE_MESSAGE', data)
+    });
+
+    client.on('SEND_USER_TYPING', data => {
+        console.log('A user is typing')
+        data.message = data.author + " is typing"
+        client.broadcast.emit('RECIEVE_USER_TYPING', data.message)
+    });
+
+    client.on('SEND_USER_STOP_TYPING', data => {
+        console.log('A user stopped typing')
+        data.message = data.author + " is typing"
+        client.broadcast.emit('RECIEVE_USER_STOP_TYPING', data.message)
+    });
+
+    client.on('RECEIVE_USER_CONNECTED', data => {
+        console.log('A user is connected')
+        data.message = data.author + " is connected"
+        client.broadcast.emit('RECEIVE_USER_CONNECTED', data.message)
+    });
+
+    client.on('RECEIVE_USER_DISCONNECTED', data => {
+        console.log('A user is disconnected')
+        data.message = data.author + " is disconnected"
+        client.broadcast.emit('RECEIVE_USER_DISCONNECTED', data.message)
+    });
+    
+
+    client.on('disconnect', () => {
+        console.log('Socket Disconnected')
+    });
+});
 
 //---END CHAT----//
 
@@ -212,12 +236,12 @@ app.post('/save-details', (req, res) => {
 
 
 db.sequelize.sync({ force: false, logging: console.log }).then(function () {
-    app.listen(PORT, function () {
-        console.log("App listening on PORT " + PORT);
-    })
-    // server.listen(PORT, function () {
+    // app.listen(PORT, function () {
     //     console.log("App listening on PORT " + PORT);
     // })
+    server.listen(PORT, function () {
+        console.log("App listening on PORT " + PORT);
+    })
 });
 
 
