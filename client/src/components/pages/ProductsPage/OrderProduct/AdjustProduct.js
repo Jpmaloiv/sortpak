@@ -69,6 +69,11 @@ class AdjustProduct extends Component {
             }
             window.location = '/products'
         } else {
+            const field = {
+                setProduct: 'inactive',
+                id: '', name: '', NDC: '', packageSize: '', quantity: '', lot: '', expiration: '', cost: '', oldQuantity: '', oldCost: ''
+            }
+            this.state.productList.push(field)
             return;
         }
     }
@@ -204,7 +209,6 @@ class AdjustProduct extends Component {
                     <td>
                         <Input
                             className="orderField"
-                            placeholder={this.state.productList[i].cost}
                             value={this.state.productList[i].cost}
                             onChange={cost => this.updateCost(cost, i)}
                         />
@@ -268,7 +272,7 @@ class AdjustProduct extends Component {
                 currentProduct.NDC = product.NDC;
                 currentProduct.packageSize = product.packageSize
                 currentProduct.oldQuantity = product.quantity
-                currentProduct.cost = product.cost
+                // currentProduct.cost = product.cost
                 currentProduct.oldCost = product.cost
                 this.state.productList[i].setProduct = 'set';
                 this.state.productList.push(field);

@@ -69,6 +69,11 @@ class OrderProduct extends Component {
             }
             window.location = '/products'
         } else {
+            let field = {
+                setProduct: 'inactive',
+                id: '', name: '', NDC: '', packageSize: '', quantity: '', lot: '', expiration: '', cost: '', oldQuantity: '', oldCost: ''
+            }
+            this.state.productList.push(field);
             return;
         }
     }

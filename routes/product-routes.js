@@ -11,7 +11,7 @@ const Op = Sequelize.Op;
 router.post("/add", (req, res) => {
 
     const product = {
-        name: name,
+        name: req.query.name,
         NDC: req.query.NDC,
         quantity: req.query.quantity,
         packageSize: req.query.packageSize,

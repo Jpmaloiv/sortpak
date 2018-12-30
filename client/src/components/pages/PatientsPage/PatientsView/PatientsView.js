@@ -52,6 +52,18 @@ class PatientsView extends Component {
       })
   }
 
+  addAddressField = () => {
+    this.setState(prevState => {
+      return { addressNum: prevState.addressNum + 1 }
+    })
+  }
+
+  addPhoneField = () => {
+    this.setState(prevState => {
+      return { phoneNum: prevState.phoneNum + 1 }
+    })
+  }
+
   // openNoteModal() {
   //   this.setState({ mergeModal: {} })
   // }

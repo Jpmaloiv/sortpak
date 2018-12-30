@@ -142,7 +142,7 @@ router.get("/search", (req, res) => {
 })
 
 router.put("/update", function (req, res) {
-    console.log("update")
+    console.log(req.query.phone)
     const patient = {
         firstName: req.query.firstName,
         lastName: req.query.lastName,
@@ -172,14 +172,14 @@ router.put("/update", function (req, res) {
         addressCity: req.query.addressCity,
         addressState: req.query.addressState,
         addressZipCode: req.query.addressZipCode,
-        addressStreet2: req.query.addressStreet,
-        addressCity2: req.query.addressCity,
-        addressState2: req.query.addressState,
-        addressZipCode2: req.query.addressZipCode,
-        addressStreet3: req.query.addressStreet,
-        addressCity3: req.query.addressCity,
-        addressState3: req.query.addressState,
-        addressZipCode3: req.query.addressZipCode,
+        address2Street: req.query.address2Street,
+        address2City: req.query.address2City,
+        address2State: req.query.address2State,
+        address2ZipCode: req.query.address2ZipCode,
+        address3Street: req.query.address3Street,
+        address3City: req.query.address3City,
+        address3State: req.query.address3State,
+        address3ZipCode: req.query.address3ZipCode,
         phone: req.query.phone,
         phone2: req.query.phone2,
         phone3: req.query.phone3,
