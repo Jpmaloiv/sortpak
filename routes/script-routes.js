@@ -84,7 +84,7 @@ router.get("/search", (req, res) => {
         },
         {
             model: db.Physicians,
-            attributes: ["firstName", "lastName", 'specialization', "rep", "contact", "phone", "fax", "physicianWarning", "addressStreet", "addressCity", "addressState", "addressZipCode"],
+            attributes: ["firstName", "lastName", 'specialization', "group", "hub", "rep", "contact", "phone", "fax", "physicianWarning", "addressStreet", "addressCity", "addressState", "addressZipCode"],
 
         },
         {

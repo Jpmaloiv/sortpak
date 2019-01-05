@@ -85,6 +85,7 @@ class PhysicianView extends Component {
             name: physician.firstName + " " + physician.lastName,
             id: physician.id,
             group: physician.group,
+            hub: physician.hub,
             specialization: physician.specialization,
             phone: physician.phone,
             fax: physician.fax,
@@ -113,6 +114,7 @@ class PhysicianView extends Component {
       firstName,
       lastName,
       group,
+      hub,
       specialty,
       address,
       username,
@@ -132,6 +134,7 @@ class PhysicianView extends Component {
       firstName,
       lastName,
       group,
+      hub,
       specialty,
       // contact box
       phone: formatNumber(phone),
@@ -161,6 +164,7 @@ class PhysicianView extends Component {
       firstName,
       lastName,
       group,
+      hub,
       specialty,
       phone,
       fax,
@@ -203,7 +207,7 @@ class PhysicianView extends Component {
     } = this.state
 
     var data = {
-      labels: [ "June", "July", "August", "September", "October", "November"],
+      labels: ["June", "July", "August", "September", "October", "November"],
       datasets: [{
         label: "Physician Revenue",
         backgroundColor: '#ff8840',
@@ -242,6 +246,9 @@ class PhysicianView extends Component {
             </div>
             <div>
               Specialty: {this.state.specialization}
+            </div>
+            <div>
+              Hub: {this.state.hub}
             </div>
           </div>
           <div id="contactInfo" className={styles.contactInfo}>
@@ -471,7 +478,7 @@ class PhysicianView extends Component {
 
   renderGroupTab() {
 
-    return(
+    return (
       <GroupTab
         className={styles.scriptsTab}
         pID={this.props}
@@ -480,27 +487,27 @@ class PhysicianView extends Component {
         setState={this.setState.bind(this)}
       />
     )
-}
+  }
 
-renderUsersTab() {
+  renderUsersTab() {
 
-  return(
-    <UsersTab
-      className={styles.scriptsTab}
-      pID={this.props}
-      state={this.state}
-      patient={this.props.patient}
-      setState={this.setState.bind(this)}
-    />
-  )
-}
+    return (
+      <UsersTab
+        className={styles.scriptsTab}
+        pID={this.props}
+        state={this.state}
+        patient={this.props.patient}
+        setState={this.setState.bind(this)}
+      />
+    )
+  }
 
   render() {
 
     return (
       <div>
         <Header className={styles.header}>
-          <h2 style={{marginBottom: 25}}>
+          <h2 style={{ marginBottom: 25 }}>
             {this.state.name}
             <span onClick={this.renderGroupTab.bind(this)} className="group">
               {this.state.group || 'No Group Available'}

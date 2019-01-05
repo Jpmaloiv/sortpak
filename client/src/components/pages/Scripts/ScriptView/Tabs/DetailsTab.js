@@ -63,6 +63,8 @@ class DetailsTab extends Component {
           physicianId: script.PhysicianId,
           physicianName: script.Physician.firstName + " " + script.Physician.lastName,
           physicianContact: script.Physician.contact,
+          physicianGroup: script.Physician.group,
+          physicianHub: script.Physician.hub,
           physicianPhone: script.Physician.phone,
           physicianRep: script.Physician.rep,
           physicianWarning: script.Physician.physicianWarning,
@@ -266,15 +268,15 @@ class DetailsTab extends Component {
                     <td className="value">{this.state.refills || ''}</td>
                   </tr>
                   <tr>
-                    <td className="field">Contact</td>
-                    <td className="value">{this.state.physicianContact || ''}</td>
+                    <td className="field">Group</td>
+                    <td className="value">{this.state.physicianGroup || ''}</td>
                     <td className="field">Refills Remaining</td>
                     <td className="value">{this.state.refillsRemaining || ''}
                       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     {this.state.doNotRefill ?
-                        <span style={{color: 'red'}}>DO NOT REFILL</span>
+                        <span style={{ color: 'red' }}>DO NOT REFILL</span>
                         :
-                        <div>
+                        <span>
                           {this.state.refillsRemaining == 0 ?
                             <Button
                               style={{
@@ -296,21 +298,27 @@ class DetailsTab extends Component {
                               onClick={this.refillConfirm}
                             />
                           }
-                        </div>
+                        </span>
                       }
                     </td>
                   </tr>
                   <tr>
-                    <td className="field">Phone</td>
-                    <td className="value">{this.state.physicianPhone || ''}</td>
+                    <td className="field">Hub</td>
+                    <td className="value">{this.state.physicianHub || ''}</td>
                     <td className="field">Quantity</td>
                     <td className="value">{this.state.quantity || ''}</td>
                   </tr>
                   <tr>
-                    <td className="field">Rep</td>
-                    <td className="value">{this.state.physicianRep || ''}</td>
+                    <td className="field">Contact</td>
+                    <td className="value">{this.state.physicianContact || ''}</td>
                     <td className="field">Days Supply</td>
                     <td className='value'>{this.state.daysSupply || ''}</td>
+                  </tr>
+                  <tr>
+                    <td className="field">Phone</td>
+                    <td className="value">{this.state.physicianPhone || ''}</td>
+                    <td className="field">Rep</td>
+                    <td className="value">{this.state.physicianRep || ''}</td>
                   </tr>
                 </tbody>
               </table>

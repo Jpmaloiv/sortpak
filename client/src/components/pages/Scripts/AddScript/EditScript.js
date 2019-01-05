@@ -62,6 +62,7 @@ class EditScript extends Component {
                         copayApproval: script.copayApproval,
                         copayNetwork: script.copayNetwork,
                         networkPay: script.networkPay,
+                        cancelReason: script.cancelReason,
                         shipOn: script.shipOn,
                         deliveryMethod: script.deliveryMethod,
                         trackNum: script.trackNum,
@@ -519,7 +520,7 @@ class EditScript extends Component {
         if (this.state.paymentOption) ifParams += '&paymentOption=' + this.state.paymentOption
 
         axios.put('/api/scripts/update?id=' + this.state.id + '&patientId=' + this.state.patientId + '&physicianId=' + this.state.physicianId + '&productId=' + this.state.productId + '&processedOn=' + this.state.processedOn + '&pouch=' + this.state.pouch +
-            '&status=' + this.state.status + '&priorAuth=' + this.state.priorAuth + '&location=' + this.state.location + '&transNPI=' + this.state.transNPI + '&transDate=' + this.state.transDate +
+            '&status=' + this.state.status + '&cancelReason=' + this.state.cancelReason + '&priorAuth=' + this.state.priorAuth + '&location=' + this.state.location + '&transNPI=' + this.state.transNPI + '&transDate=' + this.state.transDate +
             '&writtenDate=' + this.state.writtenDate + '&salesCode=' + this.state.salesCode + '&billOnDate=' + this.state.billOnDate + '&cost=' + this.state.cost + '&rxNumber=' +
             this.state.rxNumber + '&primInsPay=' + this.state.primInsPay + '&diagnosis=' + this.state.diagnosis + '&secInsPay=' + this.state.secInsPay + '&secDiagnosis=' + this.state.secDiagnosis + '&patientPay=' + this.state.patientPay + '&refills=' + this.state.refills + '&refillsRemaining=' +
             this.state.refillsRemaining + '&quantity=' + this.state.quantity + '&daysSupply=' + this.state.daysSupply + '&directions=' + this.state.directions + '&copayApproval=' + this.state.copayApproval + '&copayNetwork=' +
@@ -594,6 +595,28 @@ class EditScript extends Component {
             'Mail in Check',
             'Credit Card',
             'No Copay'
+        ]
+
+        const cancelOptions = [
+            '--',
+            'Change in Therapy',
+            'Therapy Completion',
+            'Change in Doctor',
+            'Adverse Reaction',
+            'Patient Deceased',
+            'Duplicate Script',
+            'Unaffordable',
+            'Pharmacy Transfer',
+            'Doctor Decision',
+            'Transfer to Hub',
+            'Patient Decision',
+            'Patient Hospitalized',
+            'Dose Change',
+            'Manufacturer Free Drug Program',
+            'Payor Restriction',
+            'Unable to Reach Patient',
+            'Unable to Reach Physician',
+            'Other'
         ]
 
         return (
@@ -690,6 +713,20 @@ class EditScript extends Component {
                                         selected={this.state.status}
                                         onSelect={status => this.setState({ status })}
                                     />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    {this.state.status === "Cancelled" ?
+                                        <Selector
+                                            options={cancelOptions}
+                                            selected={this.state.cancelReason}
+                                            onSelect={cancelReason => this.setState({ cancelReason })}
+                                        />
+                                        :
+                                        <span></span>
+                                    }
                                 </td>
                             </tr>
                         </Table>

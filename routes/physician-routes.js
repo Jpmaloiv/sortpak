@@ -17,6 +17,7 @@ router.post("/add", (req, res) => {
         specialization: req.query.specialization,
         group: req.query.group,
         rep: req.query.rep,
+        hub: req.query.hub,
         DEA: req.query.DEA,
         NPI: req.query.NPI,
         phone: req.query.phone,
@@ -65,7 +66,6 @@ router.get("/search", (req, res) => {
         }
     }
 
-    // searchParams.where.id === 2;
 
     if (req.query.physicianId) {
         searchParams.where.id = req.query.physicianId
@@ -208,6 +208,7 @@ router.put("/update", function (req, res) {
         lastName: req.query.lastName,
         specialization: req.query.specialization,
         group: req.query.group,
+        hub: req.query.hub,
         rep: req.query.rep,
         DEA: req.query.DEA,
         NPI: req.query.NPI,

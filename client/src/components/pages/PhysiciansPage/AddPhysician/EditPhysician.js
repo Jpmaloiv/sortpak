@@ -48,6 +48,7 @@ class AddPhysician extends Component {
           firstName: physician.firstName,
           lastName: physician.lastName,
           group: physician.group,
+          hub: physician.hub,
           rep: physician.rep,
           specialization: physician.specialization,
           DEA: physician.DEA,
@@ -79,7 +80,7 @@ class AddPhysician extends Component {
       }).catch((error) => {
         console.error(error);
       })
-  
+
   }
 
   updatePhysician = (event) => {
@@ -87,7 +88,7 @@ class AddPhysician extends Component {
     const loginToken = window.localStorage.getItem("token");
     let data = new FormData();
     axios.put('/api/physicians/update?id=' + this.state.id + 'firstName=' + this.state.firstName + '&lastName=' + this.state.lastName +
-      '&group=' + this.state.group + '&rep=' + this.state.rep + '&specialization=' + this.state.specialization +
+      '&group=' + this.state.group + '&hub=' + this.state.hub + '&rep=' + this.state.rep + '&specialization=' + this.state.specialization +
       '&DEA=' + this.state.DEA + '&NPI=' + this.state.NPI + '&phone=' + this.state.phone + '&fax=' + this.state.fax +
       '&email=' + this.state.email + '&contact=' + this.state.contact + '&addressStreet=' + this.state.addressStreet + '&addressCity=' +
       this.state.addressCity + '&addressState=' + this.state.addressState + '&addressZipCode=' + this.state.addressZipCode + '&physicianWarning=' + this.state.physicianWarning,
@@ -103,7 +104,7 @@ class AddPhysician extends Component {
   render() {
 
     const {
-      firstName, lastName, specialization, group, rep, DEA, NPI, phone, fax, email, contact, addressStreet, addressCity, addressState, addressZipCode, physicianWarning
+      firstName, lastName, specialization, group, hub, rep, DEA, NPI, phone, fax, email, contact, addressStreet, addressCity, addressState, addressZipCode, physicianWarning
     } = this.state
 
     const stateOptions = [
@@ -201,7 +202,7 @@ class AddPhysician extends Component {
           value: '',
           display: 'Unassigned',
         },
-        
+
         ...this.state.reps.map(rep => ({
           key: rep.name,
           value: rep.name,
@@ -211,157 +212,164 @@ class AddPhysician extends Component {
 
       console.log(this.state.rep);
 
-    return (
-      <div className={styles.app} id="addPhysician">
-        <Header>
-          <h2>Edit Physician</h2>
-          <div className="action">
-            <Button
-              cancel
-              type="button"
-              title="CANCEL"
-              link="/physicians"
-              style={{ marginRight: 10 }}
-            />
-            <Button
-              onClick={this.updatePhysician}
-              title="SAVE"
-              className="submit btn btn-default"
-              type="submit"
-              value="Submit"
-              style={{ marginRight: 8 }}
-            />
-          </div>
-        </Header>
-        <Body className={styles.body}>
-          <Form className="form">
-            <div class="flex-grid">
-              <div class="col">
-                <Input
-                  label="Physician Name"
-                  placeholder="First Name"
-                  value={firstName}
-                  onChange={firstName => this.setState({ firstName })}
-                />
-                <Input
-                  placeholder="Last Name"
-                  value={lastName}
-                  onChange={lastName => this.setState({ lastName })}
-                />
-
-                <Input
-                  label="Group"
-                  placeholder="Group Name"
-                  value={group}
-                  onChange={group => this.setState({ group })}
-                />
-
-                <Selector
-                  label="Rep"
-                  options={repOptions}
-                  selected={this.state.rep}
-                  value={rep}
-                  onSelect={rep => this.setState({ rep })}
-                />
-
-                <Selector
-                  wide
-                  label="Specialization"
-                  selected={this.state.specialization}
-                  options={specOptions}
-                  value={specialization}
-                  onSelect={specialization => this.setState({ specialization })}
-                />
-
-                <Input
-                  label="DEA"
-                  value={DEA}
-                  onChange={DEA => this.setState({ DEA })}
-                />
-
-                <Input
-                  label="NPI"
-                  value={NPI}
-                  onChange={NPI => this.setState({ NPI })}
-                />
-
-                <Input
-                  label="Phone"
-                  placeholder="(---) --- ----"
-                  value={phone}
-                  onChange={phone => this.setState({ phone })}
-                />
-
-                <Input
-                  label="Fax"
-                  placeholder="(---) --- ----"
-                  value={fax}
-                  onChange={fax => this.setState({ fax })}
-                />
-
-                <Input
-                  label="Email"
-                  placeholder="name@email.com"
-                  value={email}
-                  onChange={email => this.setState({ email })}
-                />
-
-                <Input
-                  label="Contact"
-                  placeholder="Enter additional contact here"
-                  value={contact}
-                  onChange={contact => this.setState({ contact })}
-                />
-
-                <Input
-                  label="Physician Address"
-                  placeholder="Street"
-                  value={addressStreet}
-                  onChange={addressStreet => this.setState({ addressStreet })}
-                />
-
-                <Input
-                  placeholder="City"
-                  value={addressCity}
-                  onChange={addressCity => this.setState({ addressCity })}
-                />
-
-                <Selector
-                  placeholder="State"
-                  options={stateOptions}
-                  selected={addressState}
-                  value={addressState}
-                  onSelect={addressState => this.setState({ addressState })}
-                />
-
-                <Input
-                  placeholder="Zip Code"
-                  value={addressZipCode}
-                  onChange={addressZipCode => this.setState({ addressZipCode })}
-                />
-
-
-              </div>
-              <div class="col">
-
-                <Input
-                  label="Physician Warning"
-                  placeholder="Enter physician warning here"
-                  value={physicianWarning}
-                  onChange={physicianWarning => this.setState({ physicianWarning })}
-                />
-
-              </div>
+      return (
+        <div className={styles.app} id="addPhysician">
+          <Header>
+            <h2>Edit Physician</h2>
+            <div className="action">
+              <Button
+                cancel
+                type="button"
+                title="CANCEL"
+                link="/physicians"
+                style={{ marginRight: 10 }}
+              />
+              <Button
+                onClick={this.updatePhysician}
+                title="SAVE"
+                className="submit btn btn-default"
+                type="submit"
+                value="Submit"
+                style={{ marginRight: 8 }}
+              />
             </div>
+          </Header>
+          <Body className={styles.body}>
+            <Form className="form">
+              <div class="flex-grid">
+                <div class="col">
+                  <Input
+                    label="Physician Name"
+                    placeholder="First Name"
+                    value={firstName}
+                    onChange={firstName => this.setState({ firstName })}
+                  />
+                  <Input
+                    placeholder="Last Name"
+                    value={lastName}
+                    onChange={lastName => this.setState({ lastName })}
+                  />
 
-          </Form>
-        </Body>
-      </div>
-    );
-  } else { return (<div></div>)}
-    
+                  <Input
+                    label="Group"
+                    placeholder="Group Name"
+                    value={group}
+                    onChange={group => this.setState({ group })}
+                  />
+
+                  <Input
+                    label="Hub"
+                    placeholder="Hub Name"
+                    value={hub}
+                    onChange={hub => this.setState({ hub })}
+                  />
+
+                  <Selector
+                    label="Rep"
+                    options={repOptions}
+                    selected={this.state.rep}
+                    value={rep}
+                    onSelect={rep => this.setState({ rep })}
+                  />
+
+                  <Selector
+                    wide
+                    label="Specialization"
+                    selected={this.state.specialization}
+                    options={specOptions}
+                    value={specialization}
+                    onSelect={specialization => this.setState({ specialization })}
+                  />
+
+                  <Input
+                    label="DEA"
+                    value={DEA}
+                    onChange={DEA => this.setState({ DEA })}
+                  />
+
+                  <Input
+                    label="NPI"
+                    value={NPI}
+                    onChange={NPI => this.setState({ NPI })}
+                  />
+
+                  <Input
+                    label="Phone"
+                    placeholder="(---) --- ----"
+                    value={phone}
+                    onChange={phone => this.setState({ phone })}
+                  />
+
+                  <Input
+                    label="Fax"
+                    placeholder="(---) --- ----"
+                    value={fax}
+                    onChange={fax => this.setState({ fax })}
+                  />
+
+                  <Input
+                    label="Email"
+                    placeholder="name@email.com"
+                    value={email}
+                    onChange={email => this.setState({ email })}
+                  />
+
+                  <Input
+                    label="Contact"
+                    placeholder="Enter additional contact here"
+                    value={contact}
+                    onChange={contact => this.setState({ contact })}
+                  />
+
+                  <Input
+                    label="Physician Address"
+                    placeholder="Street"
+                    value={addressStreet}
+                    onChange={addressStreet => this.setState({ addressStreet })}
+                  />
+
+                  <Input
+                    placeholder="City"
+                    value={addressCity}
+                    onChange={addressCity => this.setState({ addressCity })}
+                  />
+
+                  <Selector
+                    placeholder="State"
+                    options={stateOptions}
+                    selected={addressState}
+                    value={addressState}
+                    onSelect={addressState => this.setState({ addressState })}
+                  />
+
+                  <Input
+                    placeholder="Zip Code"
+                    value={addressZipCode}
+                    onChange={addressZipCode => this.setState({ addressZipCode })}
+                  />
+
+
+                </div>
+                <div class="col">
+
+                  <Input
+                    label="Physician Warning"
+                    placeholder="Enter physician warning here"
+                    value={physicianWarning}
+                    onChange={physicianWarning => this.setState({ physicianWarning })}
+                  />
+
+                </div>
+              </div>
+
+            </Form>
+          </Body>
+        </div>
+      );
+    } else { return (<div></div>) }
+
   }
-  
+
 }
 
 const mapStateToProps = ({ main }) => {
