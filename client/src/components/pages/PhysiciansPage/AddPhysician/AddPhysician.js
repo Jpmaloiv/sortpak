@@ -28,7 +28,7 @@ class AddPhysician extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      firstName: '', lastName: '', username: '', specialty: '', group: '', hub: '', rep: '', specialization: '', DEA: '', NPI: '', phone: '', fax: '', email: '', contact: '', addressStreet: '', addressCity: '', addressState: '', addressZipCode: '', physicianWarning: '', reps: ''
+      firstName: '', lastName: '', username: '', specialty: '', group: '', rep: '', specialization: '', DEA: '', NPI: '', phone: '', fax: '', email: '', contact: '', addressStreet: '', addressCity: '', addressState: '', addressZipCode: '', physicianWarning: '', reps: ''
     }
   }
 
@@ -83,7 +83,7 @@ class AddPhysician extends Component {
     const loginToken = window.localStorage.getItem("token");
     let data = new FormData();
     axios.post('/api/physicians/add?firstName=' + this.state.firstName + '&lastName=' + this.state.lastName +
-      '&group=' + this.state.group + '&hub=' + this.state.hub + '&rep=' + this.state.rep + '&specialization=' + this.state.specialization +
+      '&group=' + this.state.group + '&rep=' + this.state.rep + '&specialization=' + this.state.specialization +
       '&DEA=' + this.state.DEA + '&NPI=' + this.state.NPI + '&phone=' + this.state.phone + '&fax=' + this.state.fax +
       '&email=' + this.state.email + '&contact=' + this.state.contact + '&addressStreet=' + this.state.addressStreet + '&addressCity=' +
       this.state.addressCity + '&addressState=' + this.state.addressState + '&addressZipCode=' + this.state.addressZipCode + '&physicianWarning=' + this.state.physicianWarning,
@@ -99,7 +99,7 @@ class AddPhysician extends Component {
   render() {
 
     const {
-      firstName, lastName, specialization, group, hub, rep, DEA, NPI, phone, fax, email, contact, addressStreet, addressCity, addressState, addressZipCode, physicianWarning
+      firstName, lastName, specialization, group, rep, DEA, NPI, phone, fax, email, contact, addressStreet, addressCity, addressState, addressZipCode, physicianWarning
     } = this.state
 
     if (this.state.reps) {
@@ -251,13 +251,6 @@ class AddPhysician extends Component {
                     placeholder="Group Name"
                     value={group}
                     onChange={group => this.setState({ group })}
-                  />
-
-                  <Input
-                    label="Hub"
-                    placeholder="Hub Name"
-                    value={hub}
-                    onChange={hub => this.setState({ hub })}
                   />
 
                   <Selector

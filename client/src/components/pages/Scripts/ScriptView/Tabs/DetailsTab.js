@@ -53,6 +53,7 @@ class DetailsTab extends Component {
           patientId: script.PatientId,
           patientName: script.Patient.firstName + " " + script.Patient.lastName,
           patientDob: script.Patient.dob,
+          patientHub: script.Patient.hub,
           patientPhone: script.Patient.phone,
           patientEmail: script.Patient.email,
           primInsPlan: script.Patient.primInsPlan, primInsBIN: script.Patient.primInsBIN, primInsGroup: script.Patient.primInsGroup, primInsID: script.Patient.primInsID, primInsPCN: script.Patient.primInsPCN, primInsType: script.Patient.primInsType,
@@ -64,7 +65,6 @@ class DetailsTab extends Component {
           physicianName: script.Physician.firstName + " " + script.Physician.lastName,
           physicianContact: script.Physician.contact,
           physicianGroup: script.Physician.group,
-          physicianHub: script.Physician.hub,
           physicianPhone: script.Physician.phone,
           physicianRep: script.Physician.rep,
           physicianWarning: script.Physician.physicianWarning,
@@ -253,6 +253,10 @@ class DetailsTab extends Component {
                     <td className="field">Secondary Diagnosis</td>
                     <td className="value">{this.state.secDiagnosis || ''}</td>
                   </tr>
+                  <tr>
+                    <td className="field">Hub</td>
+                    <td className="value">{this.state.patientHub || ''}</td>
+                  </tr>
                 </tbody>
               </table>
 
@@ -303,8 +307,8 @@ class DetailsTab extends Component {
                     </td>
                   </tr>
                   <tr>
-                    <td className="field">Hub</td>
-                    <td className="value">{this.state.physicianHub || ''}</td>
+                    <td className="field">Rep</td>
+                    <td className="value">{this.state.physicianRep || ''}</td>
                     <td className="field">Quantity</td>
                     <td className="value">{this.state.quantity || ''}</td>
                   </tr>
@@ -317,8 +321,6 @@ class DetailsTab extends Component {
                   <tr>
                     <td className="field">Phone</td>
                     <td className="value">{this.state.physicianPhone || ''}</td>
-                    <td className="field">Rep</td>
-                    <td className="value">{this.state.physicianRep || ''}</td>
                   </tr>
                 </tbody>
               </table>

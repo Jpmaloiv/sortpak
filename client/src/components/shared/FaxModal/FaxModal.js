@@ -3,15 +3,17 @@ import axios from 'axios'
 import html2canvas from 'html2canvas';
 import * as jsPDF from 'jspdf'
 import Moment from 'react-moment'
+import moment from 'moment'
 
 import styles from './FaxModal.css'
 
 // Components
 import {
   Button,
-  Selector,
   FormModal,
-  Table
+  Table,
+  Input,
+  TextArea
 } from '../../common'
 
 
@@ -19,8 +21,9 @@ class FaxModal extends Component {
   constructor(props) {
     super(props)
     this.state = {
-
+      render: false
     }
+    this.handleCheckbox = this.handleCheckbox.bind(this);
   }
 
 
@@ -55,7 +58,7 @@ class FaxModal extends Component {
               console.log(resp);
               this.setState({
                 scripts: resp.data.response
-              })
+              }, this.addCheckOption)
             }).catch((err) => {
               console.error(err)
             })
@@ -63,6 +66,29 @@ class FaxModal extends Component {
         }).catch((err) => {
           console.error(err)
         })
+    }
+  }
+
+  handleCheckbox(event, i) {
+
+    const target = event.target
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const scripts = this.state.scripts;
+    if (value) {
+      scripts[i].checked = true;
+    } else if (!value) {
+      scripts[i].checked = false;
+    }
+    this.setState({
+      render: !this.state.render
+    })
+  }
+
+  addCheckOption() {
+    const scripts = this.state.scripts;
+
+    for (var i = 0; i < scripts.length; i++) {
+      scripts[i].checked = false;
     }
   }
 
@@ -104,15 +130,76 @@ class FaxModal extends Component {
         data.append("faxFile", fax)
         console.log(data)
         const loginToken = window.localStorage.getItem("token");
-        axios.post('/api/faxes/upload?patientId=' + this.state.patientId + '&scriptId=' + this.state.scriptId + '&faxNumber=' + this.state.physicianFax,
-          data, { headers: { "Authorization": "Bearer " + loginToken } })
-          .then((res) => {
-            console.log(res)
-            if (res.status === 'ok') console.log("Yeah!");
-            else console.log(":(");
-          })
+        if (window.confirm(`This will send a fax of the below document to ${this.state.physicianFax}, Continue?\n
+        (TESTING MODE) Log into Phaxio to see that the fax has been received`)) {
+
+          var blob = pdf.output('blob');
+          var blobFile = new File([blob], "filename.pdf", { type: 'application/pdf' });
+          var dataAWS = blobFile;
+          this.submitS3(dataAWS);
+
+          axios.post('/api/faxes/upload?patientId=' + this.state.patientId + '&scriptId=' + this.state.scriptId + '&faxNumber=' + this.state.physicianFax,
+            data, { headers: { "Authorization": "Bearer " + loginToken } })
+            .then((res) => {
+              console.log(res)
+              if (res.status === 200) window.alert('Fax successfully sent!');
+              else window.alert('Fax failed to send. Please make sure the fax number provided is valid.');
+              window.location.reload();
+            })
+        } else {
+          return;
+        }
       })
-      ;
+  }
+
+  submitS3(dataAWS) {
+    const file = dataAWS;
+    // const file = files[0];
+    if (file == null) {
+      return alert('No file selected.');
+    }
+    this.getSignedRequest(file);
+  };
+
+  getSignedRequest(file) {
+    const date = moment().format('MM-DD-YYYY')
+    const loginToken = window.localStorage.getItem("token");
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', `/api/faxes/sign-s3?file-name=testFile.pdf&file-type=application/pdf`, 
+    { headers: { "Authorization": "Bearer " + loginToken }});
+    xhr.onreadystatechange = () => {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          console.log(xhr.responseText);
+          const response = JSON.parse(xhr.responseText);
+          this.uploadFile(file, response.signedRequest, response.url);
+        }
+        else {
+          alert('Could not get signed URL.');
+        }
+      }
+    };
+    xhr.send();
+  }
+
+  uploadFile(file, signedRequest, url) {
+    const xhr = new XMLHttpRequest();
+    xhr.open('PUT', signedRequest);
+    xhr.onreadystatechange = () => {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          // document.getElementById('preview').src = url;
+          // document.getElementById('avatar-url').value = url;
+        this.props.onClickAway()
+        console.log(url)
+        window.open(url)
+        }
+        else {
+          alert('Could not upload file.');
+        }
+      }
+    };
+    xhr.send(file);
   }
 
   renderTableHead() {
@@ -130,10 +217,35 @@ class FaxModal extends Component {
     )
   }
 
+  renderTablePreHead() {
+    return (
+      <thead>
+        <tr>
+          <th>REFILL ON</th>
+          <th>MEDICATION</th>
+          <th>PHYSICIAN</th>
+          <th>GROUP</th>
+        </tr>
+      </thead>
+    )
+  }
+
   renderTableBody() {
+    var filteredScripts = this.state.scripts.filter(function (event) {
+      return event.checked == true;
+    });
+    console.log(filteredScripts)
     return (
       <tbody>
-        {this.state.scripts.map(this.renderTableRow.bind(this))}
+        {filteredScripts.map(this.renderTableRow.bind(this))}
+      </tbody>
+    )
+  }
+
+  renderTablePreBody() {
+    return (
+      <tbody>
+        {this.state.scripts.map(this.renderTablePreRow.bind(this))}
       </tbody>
     )
   }
@@ -149,6 +261,22 @@ class FaxModal extends Component {
         <td>{script.directions}</td>
         <td><div className='check'><input type="checkbox"></input><label>AUTHORIZED</label></div><br />
           WITH __ ADDITIONAL REFILLS</td>
+      </tr>
+    )
+  }
+
+  renderTablePreRow(script) {
+    const i = this.state.scripts.indexOf(script);
+    return (
+      <tr value={script.id}>
+        <td>
+          <div style={{ 'display': 'flex' }}>
+            <input type="checkbox" value={script.id} onChange={(e) => this.handleCheckbox(e, i)}></input><Moment format="MM/DD/YYYY">{script.processedOn}</Moment>
+          </div>
+        </td>
+        <td>{script.Product.name}</td>
+        <td>{script.Physician.firstName + " " + script.Physician.lastName}</td>
+        <td>{script.Physician.group}</td>
       </tr>
     )
   }
@@ -170,8 +298,19 @@ class FaxModal extends Component {
     )
   }
 
+  renderTablePre() {
+    return (
+      <Table className='faxTable'>
+        {this.renderTablePreHead()}
+        {this.renderTablePreBody()}
+      </Table>
+    )
+  }
+
 
   render() {
+
+    console.log(this.state.physicianFax)
 
     const {
       content,
@@ -203,6 +342,35 @@ class FaxModal extends Component {
           <div className="mb5">
             {/* <button onClick={this.printDocument}>Print</button> */}
           </div>
+          <div style={{
+            backgroundColor: '#fff',
+            width: '210mm',
+            marginLeft: 'auto',
+            marginRight: 'auto',
+            marginBottom: 10
+          }}>
+            <div className="main">
+              <div style={{ width: '50%', margin: '0 auto' }}>
+
+                <Input
+                  label="FAX NUMBER"
+                  placeholder={this.state.physicianFax}
+                />
+                <br />
+                <label>Comments</label>
+                <TextArea
+                  value={this.state.comments}
+                  onChange={comments => this.setState({ comments })}
+                />
+              </div>
+              {this.renderTablePre()}
+              {scriptList}
+            </div>
+
+          </div>
+          <div>
+            <h1 style={{ textAlign: 'center' }}>FAX PREVIEW</h1>
+          </div>
           <div id="divToPrint" className="mt4" style={{
             backgroundColor: '#fff',
             width: '210mm',
@@ -211,7 +379,6 @@ class FaxModal extends Component {
             marginRight: 'auto'
           }}>
             <div className="main">
-              <h1 style={{ textAlign: 'center' }}>FAX PREVIEW</h1>
               <div className='flex'>
                 <div className='flex-col'>
                   <img style={{ width: '75px', height: 'auto' }} alt="SortPak" src="http://www.sortpak.com/site-uploadz/2018/05/sortpak-logo-lg.png" />
@@ -274,17 +441,15 @@ class FaxModal extends Component {
                   <tr>
                     <td><div className="check"><input type="checkbox"></input>
                       <label>ALL ABOVE SCRIPTS ARE AUTHORIZED FOR __ ADDITIONAL REFILLS</label></div></td>
-                    <td>____________________</td>
+                    <td rowspan={3} style={{ 'max-width': '300px' }}>{this.state.comments}</td>
                   </tr>
                   <tr>
                     <td><div className="check"><input type="checkbox"></input>
                       <label>SCRIPTS ARE INDIVIDUALLY AUTHORIZED IN THE ABOVE LIST</label></div></td>
-                    <td>____________________</td>
                   </tr>
                   <tr>
                     <td><div className="check"><input type="checkbox"></input>
                       <label>NOT AUTHORIZED. PATIENT NEEDS TO CALL DOCTORS OFFICE</label></div></td>
-                    <td>____________________</td>
                   </tr>
                 </tbody>
               </Table>

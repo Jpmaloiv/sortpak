@@ -85,7 +85,6 @@ class PhysicianView extends Component {
             name: physician.firstName + " " + physician.lastName,
             id: physician.id,
             group: physician.group,
-            hub: physician.hub,
             specialization: physician.specialization,
             phone: physician.phone,
             fax: physician.fax,
@@ -114,7 +113,6 @@ class PhysicianView extends Component {
       firstName,
       lastName,
       group,
-      hub,
       specialty,
       address,
       username,
@@ -134,7 +132,6 @@ class PhysicianView extends Component {
       firstName,
       lastName,
       group,
-      hub,
       specialty,
       // contact box
       phone: formatNumber(phone),
@@ -164,7 +161,6 @@ class PhysicianView extends Component {
       firstName,
       lastName,
       group,
-      hub,
       specialty,
       phone,
       fax,
@@ -247,9 +243,7 @@ class PhysicianView extends Component {
             <div>
               Specialty: {this.state.specialization}
             </div>
-            <div>
-              Hub: {this.state.hub}
-            </div>
+
           </div>
           <div id="contactInfo" className={styles.contactInfo}>
             <Line data={data} />

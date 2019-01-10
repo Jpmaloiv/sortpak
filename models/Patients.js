@@ -13,6 +13,10 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.STRING,
             allowNull: true
         },
+        hub: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
         sex: {
             type: DataTypes.STRING,
             allowNull: true

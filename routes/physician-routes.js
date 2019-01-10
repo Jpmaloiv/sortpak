@@ -17,7 +17,6 @@ router.post("/add", (req, res) => {
         specialization: req.query.specialization,
         group: req.query.group,
         rep: req.query.rep,
-        hub: req.query.hub,
         DEA: req.query.DEA,
         NPI: req.query.NPI,
         phone: req.query.phone,
@@ -156,37 +155,7 @@ router.get("/search", (req, res) => {
         }
     }
 
-    // if (req.query.address) {
-    //     searchParams.where.addressStreet = {
-    //         [Op.like]: '%' + req.query.address + '%'
-    //     }
-    // }
 
-    // if (req.query.address) {
-    //     searchParams = {
-    //         where: {
-    //             [Op.or]: [{
-    //                 addressStreet: {
-    //                     like: '%' + req.query.address + '%'
-    //                 }
-    //             }, {
-    //                 addressCity: {
-    //                     like: '%' + req.query.address + '%'
-    //                 }
-    //             }, {
-    //                 addressState: {
-    //                     like: '%' + req.query.address + '%'
-    //                 }
-    //             }, {
-    //                 addressZipCode: {
-    //                     like: '%' + req.query.address + '%'
-    //                 }
-    //             }]
-    //         }
-    //     }
-    // }
-
-    console.log(searchParams);
     db.Physicians
         .findAll(searchParams)
         .then((response) => {
@@ -208,7 +177,6 @@ router.put("/update", function (req, res) {
         lastName: req.query.lastName,
         specialization: req.query.specialization,
         group: req.query.group,
-        hub: req.query.hub,
         rep: req.query.rep,
         DEA: req.query.DEA,
         NPI: req.query.NPI,

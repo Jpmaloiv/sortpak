@@ -59,6 +59,7 @@ class EditPatient extends Component {
           firstName: patient.firstName,
           lastName: patient.lastName,
           dob: patient.dob,
+          hub: patient.hub,
           sex: patient.sex,
           phone: patient.phone,
           phone2: patient.phone2,
@@ -114,7 +115,7 @@ class EditPatient extends Component {
     if (this.state.dob) DOB = moment(this.state.dob).format('MM/DD/YYYY');
     const loginToken = window.localStorage.getItem("token");
     let data = new FormData();
-    axios.put('/api/patients/update?id=' + this.state.id + '&firstName=' + this.state.firstName + "&lastName=" + this.state.lastName + "&dob=" + DOB + "&sex=" + this.state.sex + '&phone=' + this.state.phone + '&phone2=' + this.state.phone2 + '&phone3=' + this.state.phone3 +
+    axios.put('/api/patients/update?id=' + this.state.id + '&firstName=' + this.state.firstName + "&lastName=" + this.state.lastName + "&dob=" + DOB + '&hub=' + this.state.hub + "&sex=" + this.state.sex + '&phone=' + this.state.phone + '&phone2=' + this.state.phone2 + '&phone3=' + this.state.phone3 +
       '&email=' + this.state.email + '&patientWarning=' + this.state.patientWarning + '&conditions=' + this.state.conditions + '&allergies=' + this.state.allergies +
       '&addressStreet=' + this.state.addressStreet + '&addressCity=' + this.state.addressCity + '&addressState=' + this.state.addressState + '&addressZipCode=' + this.state.addressZipCode +
       '&address2Street=' + this.state.address2Street + '&address2City=' + this.state.address2City + '&address2State=' + this.state.address2State + '&address2ZipCode=' + this.state.address2ZipCode +
@@ -146,7 +147,7 @@ class EditPatient extends Component {
   render() {
 
     const {
-      firstName, lastName, dob, sex, phone, phone2, phone3, email, patientWarning, conditions, allergies, addressStreet, addressCity, addressState, addressZipCode, address2Street, address2City, address2State, address2ZipCode, address3Street, address3City, address3State, address3ZipCode, primInsPlan, primInsBIN, primInsPCN, primInsID,
+      firstName, lastName, dob, hub, sex, phone, phone2, phone3, email, patientWarning, conditions, allergies, addressStreet, addressCity, addressState, addressZipCode, address2Street, address2City, address2State, address2ZipCode, address3Street, address3City, address3State, address3ZipCode, primInsPlan, primInsBIN, primInsPCN, primInsID,
       primInsGroup, primInsType, secInsPlan, secInsBIN, secInsPCN, secInsID, secInsGroup, secInsType
     } = this.state
 
@@ -272,6 +273,13 @@ class EditPatient extends Component {
                   type="date"
                   value={dob}
                   onChange={dob => this.setState({ dob })}
+                />
+
+                <Input
+                  label="Hub"
+                  placeholder="Hub Name"
+                  value={hub}
+                  onChange={hub => this.setState({ hub })}
                 />
 
                 <Selector

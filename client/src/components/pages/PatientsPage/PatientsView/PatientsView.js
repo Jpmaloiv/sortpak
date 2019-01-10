@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
+
 import axios from 'axios'
 import Moment from 'react-moment'
 import moment from 'moment'
-
+import ReactTable from "react-table";
+import 'react-table/react-table.css'
 
 import { Span, Table, Input, Header, Button, ActionBox, SearchBar } from '../../../common'
 
@@ -64,9 +66,9 @@ class PatientsView extends Component {
     })
   }
 
-  // openNoteModal() {
-  //   this.setState({ mergeModal: {} })
-  // }
+  openNoteModal() {
+    this.setState({ mergeModal: {} })
+  }
 
   closeModal() {
     this.setState({
@@ -167,6 +169,35 @@ class PatientsView extends Component {
 
   render() {
 
+    const columns = [{
+      Header: 'Name',
+      accessor: 'firstName',
+      Cell: props =>
+        <span>
+          {props.original.firstName} {props.original.lastName}
+        </span>
+    }, {
+      Header: 'Date of Birth',
+      accessor: 'dob',
+      Cell: props =>
+        <Span icon="calendar">
+          <Moment format="MM/DD/YYYY">{props.original.dob || 'None'}</Moment>
+        </Span>
+    }, {
+      Header: 'Phone Number',
+      accessor: 'phone',
+      Cell: props =>
+        <Span icon="phone">{props.original.phone || 'None'}</Span>
+    }, {
+      Header: 'Address',
+      accessor: 'address',
+      Cell: props =>
+        <span>
+          {props.original.addressStreet}<br />
+          {props.original.addressCity}, {props.original.addressState}, {props.original.addressZipCode}
+        </span>
+    }]
+
     const {
       mergeModal
     } = this.state;
@@ -198,7 +229,7 @@ class PatientsView extends Component {
             <Button
               title="MERGE PATIENT"
               style={{ backgroundColor: "#ff7d38", marginRight: 10 }}
-              // onClick={this.openNoteModal.bind(this)}
+              onClick={this.openNoteModal.bind(this)}
             />
 
             <Button
@@ -259,19 +290,28 @@ class PatientsView extends Component {
 
           </ActionBox>
 
-
-          {this.renderTable()}
-          {patientList}
-
-          <MergePatientModal
-            content={mergeModal}
-            // onSubmit={this.openReceiptModals}
-            state={this.state}
-            patientId={this.state.PatientId}
-            props={this.props}
-            onClickAway={() => this.closeModal()}
-          // onCloseModal={() => this.closeModal()}
+          <ReactTable
+            className="reactTable"
+            data={this.state.patients}
+            columns={columns}
+            getTrProps={(state, rowInfo, column, instance) => ({
+              onClick: e => window.location = `/patients/${rowInfo.original.id}`
+            })}
           />
+          {/* {this.renderTable()}
+          {patientList} */}
+
+          <div className="mergePatient">
+            <MergePatientModal
+              content={mergeModal}
+              // onSubmit={this.openReceiptModals}
+              state={this.state}
+              patientId={this.state.PatientId}
+              props={this.props}
+              onClickAway={() => this.closeModal()}
+            // onCloseModal={() => this.closeModal()}
+            />
+          </div>
 
         </div>
 

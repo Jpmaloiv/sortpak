@@ -15,6 +15,7 @@ router.post("/add", (req, res) => {
         firstName: req.query.firstName,
         lastName: req.query.lastName,
         dob: req.query.dob,
+        hub: req.query.hub,
         sex: req.query.sex,
         email: req.query.email,
         patientWarning: req.query.patientWarning,
@@ -142,12 +143,13 @@ router.get("/search", (req, res) => {
 })
 
 router.put("/update", function (req, res) {
-    console.log(req.query.phone)
+
     const patient = {
         firstName: req.query.firstName,
         lastName: req.query.lastName,
         dob: req.query.dob,
         sex: req.query.sex,
+        hub: req.query.hub,
         email: req.query.email,
         patientWarning: req.query.patientWarning,
         conditions: req.query.conditions,
@@ -195,6 +197,22 @@ router.put("/update", function (req, res) {
             throw err;
         });
 })
+
+router.delete("/delete", (req, res) => {
+
+    db.Patients.destroy({
+        where: {
+            id: req.query.patientId
+        }
+    })
+        .then(function (resp) {
+            res.json({ success: true });
+        })
+        .catch(err => {
+            console.error(err);
+            return res.status(500).end(err.toString());
+        });
+});
 
 
 module.exports = router;

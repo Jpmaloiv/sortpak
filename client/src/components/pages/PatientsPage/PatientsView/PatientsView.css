@@ -4,3 +4,40 @@
     background-color: #a0a9b0;
     min-width: inherit;
     padding: 12px; }
+
+    .reactTable {
+      -webkit-box-shadow: 0 1px 2px 0 #afafc5;
+    box-shadow: 0 1px 2px 0 #afafc5;
+    border-radius: 5px;
+    width: 95%;
+    margin: 20px auto;
+    background-color: #fff;
+    }
+
+    .reactTable .rt-tbody .rt-tr-group {
+      border-bottom: none;
+    }
+
+    .reactTable .rt-tbody .rt-tr {
+      height: 61px;
+      cursor: pointer;
+    }
+
+    .reactTable .rt-tr.-odd {
+      background-color: #f6f8fa;
+    }
+
+    .reactTable .rt-thead .rt-th {
+      padding: 10px;
+      text-align: left;
+      text-transform: uppercase;
+      color: #000 !important;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .reactTable .rt-tbody .rt-td {
+      border: 1px solid #dfe1e2;
+      padding: 10px;
+      vertical-align: top;
+    }

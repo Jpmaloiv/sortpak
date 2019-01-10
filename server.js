@@ -191,10 +191,6 @@ app.use(["/api/visits/notes"], jwt({
     secret: process.env.JWT_SECRET,
     userProperty: 'payload'
 }));
-app.use(["/api/faxes"], jwt({
-    secret: process.env.JWT_SECRET,
-    userProperty: 'payload'
-}));
 app.use(["/api/user"], jwt({
     secret: process.env.JWT_SECRET,
     userProperty: 'payload'

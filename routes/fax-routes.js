@@ -7,8 +7,13 @@ const authCtrl = require("../controller/auth/auth-ctrl");
 const fs = require('fs');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
+const aws = require('aws-sdk');
+
 
 var moment = require('moment');
+
+const S3_BUCKET = process.env.S3_BUCKET;
+aws.config.region = 'us-west-1';
 
 const { config } = require('dotenv');
 config();
@@ -102,6 +107,39 @@ router.post("/upload", (req, res) => {
 
 
 })
+
+router.get("/sign-s3", (req, res) => {
+
+
+    const s3 = new aws.S3();
+    const date = moment().format('MM-DD-YYYY');
+    const fileName = req.query['file-name'];
+    const fileType = req.query['file-type'];
+    const s3Params = {
+        Bucket: S3_BUCKET,
+        Key: `faxes/${date}/Fax.pdf`,
+        Expires: 60,
+        ContentType: fileType,
+        ACL: 'public-read'
+    };
+
+    s3.getSignedUrl('putObject', s3Params, (err, data) => {
+        if (err) {
+            console.log(err);
+            return res.end();
+        }
+        const returnData = {
+            signedRequest: data,
+            url: `https://s3-us-west-1.amazonaws.com/${S3_BUCKET}/faxes/${date}/Fax.pdf`
+        };
+        console.log(returnData)
+        res.write(JSON.stringify(returnData));
+        res.end();
+        // open('https://s3-us-west-1.amazonaws.com/sortpak/scripts/attachments/' + req.query.scriptId + '/' + fileName.trim(), function (err) {
+        //     if (err) throw err;
+        // });
+    });
+});
 
 
 

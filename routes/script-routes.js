@@ -78,13 +78,13 @@ router.get("/search", (req, res) => {
         },
         include: [{
             model: db.Patients,
-            attributes: ["firstName", "lastName", "dob", "phone", "addressStreet", "addressCity", "addressState", "addressZipCode", "email", "patientWarning", "conditions", "allergies", 'primInsPlan',
+            attributes: ["firstName", "lastName", "dob", "hub", "phone", "addressStreet", "addressCity", "addressState", "addressZipCode", "email", "patientWarning", "conditions", "allergies", 'primInsPlan',
                 'primInsBIN', 'primInsGroup', 'primInsID', 'primInsPCN', 'primInsType', 'secInsPlan', 'secInsBIN', 'secInsGroup',
                 'secInsID', 'secInsPCN', 'secInsType']
         },
         {
             model: db.Physicians,
-            attributes: ["firstName", "lastName", 'specialization', "group", "hub", "rep", "contact", "phone", "fax", "physicianWarning", "addressStreet", "addressCity", "addressState", "addressZipCode"],
+            attributes: ["firstName", "lastName", 'specialization', "group", "rep", "contact", "phone", "fax", "physicianWarning", "addressStreet", "addressCity", "addressState", "addressZipCode"],
 
         },
         {
@@ -172,7 +172,7 @@ router.get("/search", (req, res) => {
     } else if (req.query.location === 'thirdParty') {
         searchParams.where.location = {
             [Op.ne]: ''
-        } 
+        }
     }
 
     if (req.query.patientId) {
@@ -212,7 +212,7 @@ router.get("/search", (req, res) => {
         }
     }
 
-console.log(searchParams)
+    console.log(searchParams)
     db.Scripts
         .findAll(searchParams)
         .then((response) => {
@@ -288,11 +288,28 @@ router.put("/update", function (req, res) {
         });
 })
 
+router.put("/merge", function (req, res) {
+    const script = {
+        PatientId: req.query.patientId
+    }
+
+    db.Scripts.update(script, { where: { PatientId: req.query.oldPatientId } })
+        .then(function (resp) {
+            res.json({ success: true });
+        })
+        .catch(function (err) {
+            console.error(err);
+            return res.status(500).end('Update FAILED' + err.toString());
+            throw err;
+        });
+})
+
+
 router.put("/updateNoteTime", function (req, res) {
     const script = {
         notesUpdated: req.query.notesUpdated,
     }
-    
+
     db.Scripts.update(script, { where: { id: req.query.id } })
         .then(function (resp) {
             res.json({ success: true });
