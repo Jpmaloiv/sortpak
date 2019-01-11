@@ -16,6 +16,7 @@ import AddressModal from './AddressModal/AddressModal'
 import AddressLine from './AddressLine/AddressLine'
 import ExpensesTable from './ExpensesTable/ExpensesTable'
 import FaxModal from './FaxModal/FaxModal'
+import PrintModal from './PrintModal/PrintModal'
 import PhysicianModal from './PhysicianModal/PhysicianModal'
 import SummaryRow from './SummaryRow/SummaryRow'
 
@@ -35,6 +36,7 @@ export {
   NoteModalPatient,
   SwitchTable,
   ContactBox,
+  PrintModal,
   AddressModal,
   AddressLine,
   ExpensesTable,

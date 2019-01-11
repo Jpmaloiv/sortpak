@@ -78,9 +78,9 @@ router.get("/search", (req, res) => {
         },
         include: [{
             model: db.Patients,
-            attributes: ["firstName", "lastName", "dob", "hub", "phone", "addressStreet", "addressCity", "addressState", "addressZipCode", "email", "patientWarning", "conditions", "allergies", 'primInsPlan',
+            attributes: ["id", "firstName", "lastName", "dob", "hub", "phone", 'sex', "addressStreet", "addressCity", "addressState", "addressZipCode", "email", "patientWarning", "conditions", "allergies", 'primInsPlan',
                 'primInsBIN', 'primInsGroup', 'primInsID', 'primInsPCN', 'primInsType', 'secInsPlan', 'secInsBIN', 'secInsGroup',
-                'secInsID', 'secInsPCN', 'secInsType']
+                'secInsID', 'secInsPCN', 'secInsType', 'createdAt']
         },
         {
             model: db.Physicians,
@@ -136,10 +136,11 @@ router.get("/search", (req, res) => {
 
     if (req.query.textSearch) {
         searchParams = {
+            [Op.or]: [{
             include: [{
                 model: db.Patients, attributes: ["firstName", "lastName", "dob", "phone", "email", "patientWarning", "conditions", "allergies", 'primInsPlan',
                     'primInsBIN', 'primInsGroup', 'primInsID', 'primInsPCN', 'primInsType', 'secInsPlan', 'secInsBIN', 'secInsGroup',
-                    'secInsID', 'secInsPCN', 'secInsType']
+                    'secInsID', 'secInsPCN', 'secInsType'],
             }, {
                 model: db.Physicians, attributes: ["firstName", "lastName", 'specialization', "rep", "contact", "phone", "physicianWarning"],
             }, {
@@ -152,6 +153,7 @@ router.get("/search", (req, res) => {
                     }]
                 }
             }, { model: db.scriptNotes, attributes: ['note', 'createdAt'] }, { model: db.scriptAttachments, attributes: ['id'] }]
+        }]
         }
     }
 

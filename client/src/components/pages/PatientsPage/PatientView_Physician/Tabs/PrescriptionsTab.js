@@ -140,7 +140,7 @@ class PrescriptionsTab extends Component {
           {scriptList}
         </div>
 
-        <div className='col'>
+        <div id="react-no-print" className='col'>
           <table>
             <tbody>
               <tr>

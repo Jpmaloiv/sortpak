@@ -9,6 +9,10 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.STRING,
             allowNull: true
         },
+        private: {
+            type: DataTypes.BOOLEAN,
+            allowNull: true
+        },
         userImage: {
             type: DataTypes.STRING,
             allowNull: true

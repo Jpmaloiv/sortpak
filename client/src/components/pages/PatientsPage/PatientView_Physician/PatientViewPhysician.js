@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import Moment from 'react-moment'
 
+
 import GoogleMaps from '../../../shared/GoogleMaps/GoogleMaps.js'
 
 import {
@@ -18,12 +19,12 @@ import {
 // Components
 import { SwitchTable, AddressModal } from '../../../shared'
 
-import { Body, Button, Header, Input, Span } from '../../../common'
+import { Body, Button, Header, Input, Span, Icon } from '../../../common'
 
 import PrescriptionsTab from './Tabs/PrescriptionsTab'
 import InsuranceTab from './Tabs/InsuranceTab'
 import FilesTab from './Tabs/FilesTab'
-import NotesTab from '../PatientView/Tabs/NotesTab'
+import NotesTab from './Tabs/NotesTab'
 
 // Actions
 import {
@@ -33,6 +34,9 @@ import {
 } from '../../../../actions/patients'
 
 import styles from '../PatientView/PatientView.css'
+
+
+var PrintTemplate = require('react-print');
 
 class PatientViewPhysician extends Component {
   constructor(props) {
@@ -65,6 +69,7 @@ class PatientViewPhysician extends Component {
       ...this.initialState,
     }
   }
+
 
   componentDidMount() {
     if (this.props.match.params.patientId) {
@@ -323,10 +328,12 @@ class PatientViewPhysician extends Component {
             </div>
           </div>
           <div id="contactInfo" className={styles.contactInfo}>
+
             {this.state.address ?
+            <div id="react-no-print" style={{'marginTop': '-210px'}}>
               <GoogleMaps
                 address={this.state.address}
-              />
+              /></div>
               : <div></div>}
 
           </div>
@@ -357,11 +364,20 @@ class PatientViewPhysician extends Component {
   renderSwitchTable() {
     const { tab } = this.state
     return (
-      <SwitchTable
-        tabs={this.tabOptions}
-        selected={tab}
-        onClick={tab => this.setState({ tab })}
-      />
+      <div>
+
+        <div className='print'>
+          <Icon
+            name="print"
+            onClick={() => window.print()}
+          />
+        </div>
+        <SwitchTable
+          tabs={this.tabOptions}
+          selected={tab}
+          onClick={tab => this.setState({ tab })}
+        />
+      </div>
     )
   }
 
@@ -427,32 +443,32 @@ class PatientViewPhysician extends Component {
 
     return (
       <div>
-        <Header className={styles.header}>
-          <h2>{this.state.name}
-            <div className="action" style={{ 'display': 'inherit' }}>
-             
+          <Header className={styles.header}>
+            <h2>{this.state.name}
+              <div className="action" style={{ 'display': 'inherit' }}>
+              </div>
+            </h2>
 
-              
+          </Header>
 
-            </div>
-          </h2>
+          <Body id="patientView" className={styles.body}>
+            {this.renderContactInfo()}
 
-        </Header>
+            <div className="switch-buffer" />
 
-        <Body id="patientView" className={styles.body}>
-          {this.renderContactInfo()}
+            {this.renderSwitchTable()}
+          </Body>
 
-          <div className="switch-buffer" />
+          {/* Address Modal */}
+          <AddressModal
+            content={addressModal}
+            onSubmit={address => this.setState({ address })}
+            onClickAway={() => this.closeModal()}
+          />
 
-          {this.renderSwitchTable()}
-        </Body>
+          <div id="print-mount">
+</div>
 
-        {/* Address Modal */}
-        <AddressModal
-          content={addressModal}
-          onSubmit={address => this.setState({ address })}
-          onClickAway={() => this.closeModal()}
-        />
       </div>
     );
   }

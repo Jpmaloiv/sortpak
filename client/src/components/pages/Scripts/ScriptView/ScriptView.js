@@ -5,9 +5,10 @@ import { Elements, StripeProvider } from 'react-stripe-elements';
 import CheckoutForm from '../../../shared/CheckoutForm/CheckoutForm';
 import { ReceiptModal } from '../../../shared'
 
+
 import moment from 'moment';
 
-import { Header, Body, Button, Table, Input, Selector } from '../../../common'
+import { Header, Body, Button, Table, Input, Selector, Icon } from '../../../common'
 import styles from './ScriptView.css'
 
 
@@ -99,6 +100,8 @@ class ScriptView extends Component {
   openNoteModal() {
     this.setState({ chargeModal: {} })
   }
+
+ 
 
 
   componentWillMount() {
@@ -1285,8 +1288,10 @@ class ScriptView extends Component {
                 <Button
                   id="white"
                   title="RECEIPT"
-                  style={{ marginLeft: 20, backgroundColor: '#fff', color: '#000','-webkit-box-shadow': '0px 3px 12px 0px #d6d3d3',
-                  'box-shadow': '0px 3px 12px 0px #d6d3d3'}}
+                  style={{
+                    marginLeft: 20, backgroundColor: '#fff', color: '#000', '-webkit-box-shadow': '0px 3px 12px 0px #d6d3d3',
+                    'box-shadow': '0px 3px 12px 0px #d6d3d3'
+                  }}
                   link={`../receipt/${this.state.paymentId}`}
                 />
                 <Button
@@ -1318,6 +1323,7 @@ class ScriptView extends Component {
               props={this.props}
             />
           </div>
+
 
         </Body>
       </div>

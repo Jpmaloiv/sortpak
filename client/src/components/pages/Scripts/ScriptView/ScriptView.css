@@ -328,3 +328,17 @@ td.setValue a, td.setValue a:visited {
     background-position: center center;
 }
 
+/* Print Modal */
+.printModal div:nth-child(1) div:nth-child(1) div:nth-child(1) {
+    width: 90% !important;
+    overflow: scroll;
+    background: #dddddd !important;
+}
+
+@media print {
+    #rxPrint {display: initial !important;}
+    .rxTable table {white-space: nowrap;}
+    .rxTable td {padding: 0; font-size: .7em;}
+    .rxTable thead tr th {font-size: .7em;}
+}
+

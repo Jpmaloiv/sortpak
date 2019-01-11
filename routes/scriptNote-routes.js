@@ -16,6 +16,7 @@ router.post("/add", (req, res) => {
         note: req.query.note,
         link: noteLink,
         userImage: req.query.userImage,
+        private: req.query.private,
         ScriptId: req.query.scriptId,
         UserId: req.query.userId
     }
@@ -53,6 +54,10 @@ router.get("/search", (req, res) => {
 
     if (req.query.ScriptId) {
         searchParams.where.ScriptId = req.query.ScriptId
+    }
+
+    if (req.query.private) {
+        searchParams.where.private = req.query.private
     }
 
     console.log(searchParams);

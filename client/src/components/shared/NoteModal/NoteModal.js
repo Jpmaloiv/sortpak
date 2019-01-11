@@ -17,6 +17,7 @@ export default class VisitModal extends Component {
     super(props)
     this.state = {
       note: '',
+      private: false
     }
   }
 
@@ -52,15 +53,30 @@ export default class VisitModal extends Component {
       })
   }
 
+  handleCheckbox(event) {
+    const target = event.target
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+
+    if (value) {
+      this.setState({
+        private: true
+      })
+    } else if (!value) {
+      this.setState({
+        private: false
+      })
+    }
+  }
+
   onSubmit(e) {
     e.preventDefault()
     const dateTime = moment().format();
-    console.log(dateTime) 
+    console.log(dateTime)
     const scriptId = this.props.props.state.id;
     console.log(this.props.props);
     const loginToken = window.localStorage.getItem("token");
     let data = new FormData();
-    axios.post('/api/scripts/notes/add?scriptId=' + scriptId + '&userId=' + this.state.userId + '&name=' + this.state.userName + '&note=' + this.state.note + '&userImage=' + this.state.userImage,
+    axios.post('/api/scripts/notes/add?scriptId=' + scriptId + '&userId=' + this.state.userId + '&name=' + this.state.userName + '&note=' + this.state.note + '&userImage=' + this.state.userImage + '&private=' + this.state.private,
       data, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((data) => {
         console.log(data);
@@ -102,6 +118,12 @@ export default class VisitModal extends Component {
           value={this.state.note}
           onChange={note => this.setState({ note })}
         />
+
+        <div>
+          <input type="checkbox" onChange={this.handleCheckbox.bind(this)} style={{width: '25px'}}></input>
+          <label style={{'display': 'inline'}}>Make Private</label>
+        </div>
+
 
         <br />
 

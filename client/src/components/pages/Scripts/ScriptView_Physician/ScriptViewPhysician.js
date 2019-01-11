@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import jwt_decode from 'jwt-decode'
 
-import { Header, Body, Button, Table, Input, Selector } from '../../../common'
+import { Header, Icon, Body, Button, Table } from '../../../common'
 import styles from '../ScriptView/ScriptView.css'
 
 
@@ -12,7 +12,7 @@ import {
 } from '../../../shared'
 
 import DetailsTab from './Tabs/DetailsTab'
-import NotesTab from '../ScriptView/Tabs/NotesTab'
+import NotesTab from './Tabs/NotesTab'
 import AttachmentsTab from '../ScriptView/Tabs/AttachmentsTab'
 import RXHistoryTab from '../ScriptView/Tabs/RXHistoryTab'
 
@@ -105,10 +105,9 @@ class ScriptView extends Component {
             patientPay: script.patientPay,
             directions: script.directions,
             patientId: script.PatientId,
-            notesNum: script.scriptNotes.length,
             attachmentsNum: script.scriptAttachments.length,
             PatientId: script.PatientId
-          }, this.getRxHistoryNum)
+          }, this.getNotesNum)
 
 
           this.setState({
@@ -131,6 +130,19 @@ class ScriptView extends Component {
           name: resp.data.response[0].name,
           link: resp.data.response[0].link
         })
+      }).catch((err) => {
+        console.error(err)
+      })
+  }
+
+  getNotesNum() {
+    const loginToken = window.localStorage.getItem("token");
+    axios.get('/api/scripts/notes/search?ScriptId=' + this.state.id + '&private=false', { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        console.log(resp);
+        this.setState({
+          notesNum: resp.data.response.length
+        }, this.getRxHistoryNum)
       }).catch((err) => {
         console.error(err)
       })
@@ -223,6 +235,14 @@ class ScriptView extends Component {
     const { tab } = this.state
     return (
       <div style={{ marginTop: 25 }}>
+        {this.state.tab.value === "rxHistory" ?
+          <div className='print' style={{ 'width': '45%', marginBottom: -30 }}>
+            <Icon
+              name="print"
+              onClick={this.printRxHistory.bind(this)}
+            />
+          </div>
+          : <span></span>}
         <div className='pouch'>
 
           <input type="checkbox" checked={this.state.pouch}>
@@ -238,6 +258,10 @@ class ScriptView extends Component {
       </div>
 
     )
+  }
+
+  printRxHistory() {
+    window.print();
   }
 
   renderDetailsTab() {
@@ -288,58 +312,61 @@ class ScriptView extends Component {
 
 
   render() {
+
     return (
       <div>
         <Header className={styles.header} id="scriptViewHead">
-          <Table>
-            <tbody>
-              <tr>
-                <td>
-                  <Button className={(this.state.status === "Received") ? 'currentStatus' : 'inactiveStatus'}>
-                    Received
+          <div id="react-no-print">
+            <Table>
+              <tbody>
+                <tr>
+                  <td>
+                    <Button className={(this.state.status === "Received") ? 'currentStatus' : 'inactiveStatus'}>
+                      Received
                 </Button>
-                  <Button className={(this.state.status === "Review") ? 'currentStatus' : 'inactiveStatus'}>
-                    Review
+                    <Button className={(this.state.status === "Review") ? 'currentStatus' : 'inactiveStatus'}>
+                      Review
                 </Button>
-                  <Button className={(this.state.status === "Prior Auth") ? 'currentStatus' : 'inactiveStatus'}>
-                    Prior Auth
+                    <Button className={(this.state.status === "Prior Auth") ? 'currentStatus' : 'inactiveStatus'}>
+                      Prior Auth
                 </Button>
-                  <Button className={(this.state.status === "Process") ? 'currentStatus' : 'inactiveStatus'}>
-                    Process
+                    <Button className={(this.state.status === "Process") ? 'currentStatus' : 'inactiveStatus'}>
+                      Process
                 </Button>
-                  <Button className={(this.state.status === "Copay Assistance") ? 'currentStatus' : 'inactiveStatus'}>
-                    Copay Assistance
+                    <Button className={(this.state.status === "Copay Assistance") ? 'currentStatus' : 'inactiveStatus'}>
+                      Copay Assistance
                 </Button>
-                  <Button className={(this.state.status === "Schedule") ? 'currentStatus' : 'inactiveStatus'}>
-                    Schedule
+                    <Button className={(this.state.status === "Schedule") ? 'currentStatus' : 'inactiveStatus'}>
+                      Schedule
                 </Button>
-                  <Button className={(this.state.status === "QA") ? 'currentStatus' : 'inactiveStatus'}>
-                    QA
+                    <Button className={(this.state.status === "QA") ? 'currentStatus' : 'inactiveStatus'}>
+                      QA
                 </Button>
-                  <Button className={(this.state.status === "Fill") ? 'currentStatus' : 'inactiveStatus'}>
-                    Fill
+                    <Button className={(this.state.status === "Fill") ? 'currentStatus' : 'inactiveStatus'}>
+                      Fill
                 </Button>
-                  <Button className={(this.state.status === "Shipped") ? 'currentStatus' : 'inactiveStatus'}>
-                    Shipped
+                    <Button className={(this.state.status === "Shipped") ? 'currentStatus' : 'inactiveStatus'}>
+                      Shipped
                 </Button>
-                  <Button className={(this.state.status === "Done") ? 'currentStatus' : 'inactiveStatus'}>
-                    Done
+                    <Button className={(this.state.status === "Done") ? 'currentStatus' : 'inactiveStatus'}>
+                      Done
                 </Button>
-                  <Button className={(this.state.status === "Cancelled") ? 'currentStatus' : 'inactiveStatus'}>
-                    Cancelled
+                    <Button className={(this.state.status === "Cancelled") ? 'currentStatus' : 'inactiveStatus'}>
+                      Cancelled
                 </Button>
-                  <Button className={(this.state.status === "Refill") ? 'currentStatus' : 'inactiveStatus'}>
-                    Refill
+                    <Button className={(this.state.status === "Refill") ? 'currentStatus' : 'inactiveStatus'}>
+                      Refill
                 </Button>
-                </td>
-              </tr>
-              <tr>
-                <td><h2>Status: {this.state.status}</h2>
+                  </td>
+                </tr>
+                <tr>
+                  <td><h2>Status: {this.state.status}</h2>
 
-                </td>
-              </tr>
-            </tbody>
-          </Table>
+                  </td>
+                </tr>
+              </tbody>
+            </Table>
+          </div>
 
         </Header>
 

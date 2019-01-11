@@ -8,6 +8,10 @@ module.exports = function (sequelize, DataTypes) {
         note: {
             type: DataTypes.STRING,
             allowNull: true
+        },
+        private: {
+            type: DataTypes.BOOLEAN,
+            allowNull: true
         }
     });
 

@@ -14,6 +14,7 @@ router.post("/add", (req, res) => {
     const note = {
         name: req.query.name,
         note: req.query.note,
+        private: req.query.private,
         link: noteLink,
         PatientId: req.query.patientId
     }
@@ -51,6 +52,10 @@ router.get("/search", (req, res) => {
 
     if (req.query.PatientId) {
         searchParams.where.PatientId = req.query.PatientId
+    }
+
+    if (req.query.private) {
+        searchParams.where.private = req.query.private
     }
   
     console.log(searchParams);

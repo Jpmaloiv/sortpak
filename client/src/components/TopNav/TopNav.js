@@ -8,7 +8,7 @@ import 'react-spinner/react-spinner.css'
 import styles from './TopNav.css'
 
 export default () => (
-  <div className={styles.topNav}>
+  <div id="navigation" className={styles.topNav}>
     <TitleBar />
     <NavBar />
   </div>

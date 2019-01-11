@@ -16,6 +16,7 @@ export default class VisitModal extends Component {
     super(props)
     this.state = {
       note: '',
+      private: false
     }
   }
 
@@ -35,23 +36,38 @@ export default class VisitModal extends Component {
     })
   }
 
+  handleCheckbox(event) {
+    const target = event.target
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+
+    if (value) {
+      this.setState({
+        private: true
+      })
+    } else if (!value) {
+      this.setState({
+        private: false
+      })
+    }
+  }
+
   onSubmit(e) {
     e.preventDefault()
     console.log(this.props);
-        const patientId = this.props.props.state.id;
-        console.log(this.props.props);
-        const loginToken = window.localStorage.getItem("token");
-        let data = new FormData();
-        axios.post('/api/patients/notes/add?patientId=' + patientId + '&name=' + this.state.username + '&note=' + this.state.note, 
-        data, { headers: { "Authorization": "Bearer " + loginToken } })
-            .then((data) => {
-                console.log(data);
-                this.props.onClickAway()
-                window.location.reload();             
-            }).catch((error) => {
-                console.error(error);
-            })
-          }
+    const patientId = this.props.props.state.id;
+    console.log(this.props.props);
+    const loginToken = window.localStorage.getItem("token");
+    let data = new FormData();
+    axios.post('/api/patients/notes/add?patientId=' + patientId + '&name=' + this.state.username + '&note=' + this.state.note + '&private=' + this.state.private,
+      data, { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((data) => {
+        console.log(data);
+        this.props.onClickAway()
+        window.location.reload();
+      }).catch((error) => {
+        console.error(error);
+      })
+  }
 
   render() {
 
@@ -77,6 +93,11 @@ export default class VisitModal extends Component {
           value={this.state.note}
           onChange={note => this.setState({ note })}
         />
+
+        <div>
+          <input type="checkbox" onChange={this.handleCheckbox.bind(this)} style={{ width: '25px' }}></input>
+          <label style={{ 'display': 'inline' }}>Make Private</label>
+        </div>
 
         <br />
 

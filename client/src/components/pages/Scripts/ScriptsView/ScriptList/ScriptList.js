@@ -1,11 +1,8 @@
 import React from 'react';
-import axios from 'axios'
+
 import Moment from 'react-moment'
+import moment from 'moment'
 import { Table } from '../../../../common'
-
-
-var moment = require('moment');
-moment().format();
 
 
 
@@ -42,6 +39,22 @@ class ScriptList extends React.Component {
     window.location = `/scripts/${value}`
   }
 
+  renderOtherSection(script) {
+
+    if (script.status === "Review") {
+      return(
+        <div>{script.location}</div>
+      )
+    } else if ((script.status === "QA") || (script.status === "Fill") || (script.status === "Shipped") || (script.status === "Done")) {
+      return(
+        <Moment format="MM/DD/YYYY">{script.shipOn || ''}</Moment>
+      )
+    } else {
+      return(
+        <div></div>
+      )
+    }
+  }
 
   renderTableRow(script) {
 
@@ -80,7 +93,7 @@ class ScriptList extends React.Component {
         </td>
 
         <td>
-          {script.location}
+          {this.renderOtherSection(script)}
         </td>
       </tr>
 
@@ -103,6 +116,14 @@ class ScriptList extends React.Component {
 
       var scriptList = this.props.data.sort(function (a, b) {
         return new Date(b.processedOn).getTime() - new Date(a.processedOn).getTime()
+      });
+
+      var scriptList = this.props.data.sort(function (a, b) {
+        return new Date(a.shipOn).getTime() - new Date(b.shipOn).getTime()
+      });
+
+      var scriptList = this.props.data.sort(function (a, b) {
+        return new Date(a.notesUpdated).getTime() - new Date(b.notesUpdated).getTime()
       });
 
 
