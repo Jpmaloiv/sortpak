@@ -41,8 +41,7 @@ class AdjustProduct extends Component {
         for (var i = 0; i < this.state.productList.length; i++) {
             let product = this.state.productList[i];
             confirmText.push(`${product.name}
-                Quantity: ${product.oldQuantity} -> ${+product.oldQuantity + +product.quantity}
-                Cost: $${product.oldCost} -> $${product.cost}\n`)
+                Quantity: ${product.oldQuantity} -> ${+product.oldQuantity + +product.quantity}`)
         }
 
         if (window.confirm(
@@ -51,7 +50,7 @@ class AdjustProduct extends Component {
             for (var i = 0; i < this.state.productList.length; i++) {
                 let product = this.state.productList[i]
                 let newQuantity = +product.oldQuantity + +product.quantity
-                axios.put('/api/products/update?id=' + product.id + '&quantity=' + newQuantity + '&cost=' + product.cost + '&name=' + product.name,
+                axios.put('/api/products/update?id=' + product.id + '&quantity=' + newQuantity + '&name=' + product.name,
                     data, { headers: { "Authorization": "Bearer " + loginToken } })
                     .then((data) => {
                     }).catch((error) => {

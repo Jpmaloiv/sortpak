@@ -54,7 +54,7 @@ class ReceiptModal extends Component {
         pdf.addImage(imgData, 'JPEG', 0, 0, 0, 297);
         pdf.addImage(logoData, 'PNG', 20, 20, 20, 20);
         var blob = pdf.output('blob');
-        var blobFile = new File([blob], "filename.pdf", {type: 'application/pdf'});
+        var blobFile = new File([blob], "filename.pdf", { type: 'application/pdf' });
         var data = blobFile;
         this.submitS3(data);
       });
@@ -73,8 +73,8 @@ class ReceiptModal extends Component {
     const date = moment().format('MM-DD-YYYY')
     const loginToken = window.localStorage.getItem("token");
     const xhr = new XMLHttpRequest();
-    xhr.open('GET', `/api/receipts/sign-s3?file-name=testFile.pdf&file-type=application/pdf&scriptId=` + this.props.state.id + '&name=' + this.props.state.patientName + '&date=' + date, 
-    { headers: { "Authorization": "Bearer " + loginToken }});
+    xhr.open('GET', `/api/receipts/sign-s3?file-name=testFile.pdf&file-type=application/pdf&scriptId=` + this.props.state.id + '&name=' + this.props.state.patientName + '&date=' + date,
+      { headers: { "Authorization": "Bearer " + loginToken } });
     xhr.onreadystatechange = () => {
       if (xhr.readyState === 4) {
         if (xhr.status === 200) {
@@ -98,9 +98,9 @@ class ReceiptModal extends Component {
         if (xhr.status === 200) {
           // document.getElementById('preview').src = url;
           // document.getElementById('avatar-url').value = url;
-        this.props.onClickAway()
-        console.log(url)
-        window.open(url)
+          this.props.onClickAway()
+          console.log(url)
+          window.open(url)
         }
         else {
           alert('Could not upload file.');
@@ -270,12 +270,37 @@ class ReceiptModal extends Component {
                   <td>PATIENT COPAY</td>
                   <td>{this.props.state.totalPay}</td>
                 </tr>
+                <tr>
+                  <td>RX NUMBER</td>
+                  <td>{this.props.state.rxNumber}</td>
+                </tr>
               </table>
+              <br />
 
-              {this.renderTable()}
-              {paymentList}
+              <b>PLEASE CHECK ONE:</b>
+              <br /><br />
 
-              <div className='signatures' style={{textAlign: 'right'}}>
+              <div style={{ 'display': 'flex' }}>
+                <input type="checkbox" style={{ width: '30px', marginTop: 6 }}></input>
+                <label>NO PATIENT COPAY REQUIRED</label>
+              </div>
+              <div style={{ 'display': 'flex' }}>
+                <input type="checkbox" style={{ width: '30px', marginTop: 6 }}></input>
+                <label>PLEASE PAY ON DELIVERY</label>
+              </div>
+              <div style={{ 'display': 'flex' }}>
+                <input type="checkbox" style={{ width: '30px', marginTop: 6 }}></input>
+                <label>PLEASE MAIL A CHECK UPON DELIVERY</label>
+              </div>
+              <div style={{ 'display': 'flex' }}>
+                <input type="checkbox" style={{ width: '30px', marginTop: 6 }}></input>
+                <label>ALREADY PAID WITH CREDIT CARD</label>
+              </div> 
+
+              {/* {this.renderTable()}
+              {paymentList} */}
+
+              <div className='signatures' style={{ textAlign: 'right' }}>
                 <div>
                   <p>SIGNATURE</p>
                   <p>__________________________</p>

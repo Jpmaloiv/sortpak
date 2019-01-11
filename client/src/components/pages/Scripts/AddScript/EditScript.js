@@ -784,6 +784,7 @@ class EditScript extends Component {
                                         placeholder={this.state.writtenDate}
                                         value={this.state.writtenDate}
                                         onChange={writtenDate => this.setState({ writtenDate })}
+                                        tabIndex="1"
                                     />
                                 </td>
                                 <td>
@@ -792,6 +793,7 @@ class EditScript extends Component {
                                         placeholder={this.state.salesCode}
                                         value={this.state.salesCode}
                                         onChange={salesCode => this.setState({ salesCode })}
+                                        tabIndex="11"
                                     />
                                 </td>
                             </tr>
@@ -803,6 +805,7 @@ class EditScript extends Component {
                                         placeholder={this.state.billOnDate}
                                         value={this.state.billOnDate}
                                         onChange={billOnDate => this.setState({ billOnDate })}
+                                        tabIndex="2"
                                     />
                                 </td>
                                 <td>
@@ -811,16 +814,18 @@ class EditScript extends Component {
                                         placeholder={this.state.cost}
                                         value={this.state.cost}
                                         onChange={cost => this.setState({ cost })}
+                                        tabIndex="12"
                                     />
                                 </td>
                             </tr>
                             <tr>
-                                <td>
+                                <td >
                                     <Input
                                         label="RX Number"
                                         placeholder={this.state.rxNumber}
                                         value={this.state.rxNumber}
                                         onChange={rxNumber => this.setState({ rxNumber })}
+                                        tabIndex="3"
                                     />
                                 </td>
                                 <td>
@@ -829,6 +834,7 @@ class EditScript extends Component {
                                         placeholder={this.state.primInsPay}
                                         value={this.state.primInsPay}
                                         onChange={primInsPay => this.setState({ primInsPay })}
+                                        tabIndex="13"
                                     />
                                 </td>
                             </tr>
@@ -839,6 +845,7 @@ class EditScript extends Component {
                                         placeholder={this.state.diagnosis}
                                         value={this.state.diagnosis}
                                         onChange={diagnosis => this.setState({ diagnosis })}
+                                        tabIndex="4"
                                     />
                                 </td>
                                 <td>
@@ -847,6 +854,7 @@ class EditScript extends Component {
                                         placeholder={this.state.secInsPay}
                                         value={this.state.secInsPay}
                                         onChange={secInsPay => this.setState({ secInsPay })}
+                                        tabIndex="14"
                                     />
                                 </td>
                             </tr>
@@ -857,6 +865,7 @@ class EditScript extends Component {
                                         placeholder={this.state.secDiagnosis}
                                         value={this.state.secDiagnosis}
                                         onChange={secDiagnosis => this.setState({ secDiagnosis })}
+                                        tabIndex="5"
                                     />
                                 </td>
                                 <td>
@@ -865,6 +874,7 @@ class EditScript extends Component {
                                         placeholder={this.state.patientPay}
                                         value={this.state.patientPay}
                                         onChange={patientPay => this.setState({ patientPay })}
+                                        tabIndex="15"
                                     />
                                 </td>
                             </tr>
@@ -875,6 +885,7 @@ class EditScript extends Component {
                                         placeholder={this.state.refills}
                                         value={this.state.refills}
                                         onChange={refills => this.setState({ refills })}
+                                        tabIndex="6"
                                     />
                                 </td>
                             </tr>
@@ -898,6 +909,7 @@ class EditScript extends Component {
                                             placeholder={this.state.refillsRemaining}
                                             value={this.state.refillsRemaining}
                                             onChange={refillsRemaining => this.setState({ refillsRemaining })}
+                                            tabIndex="7"
                                         />
                                     </td>
                                 </tr>
@@ -912,6 +924,7 @@ class EditScript extends Component {
                                         placeholder={this.state.quantity}
                                         value={this.state.quantity}
                                         onChange={quantity => this.setState({ quantity }, this.updateCost)}
+                                        tabIndex="8"
                                     />
                                 </td>
                             </tr>
@@ -922,6 +935,7 @@ class EditScript extends Component {
                                         placeholder={this.state.daysSupply}
                                         value={this.state.daysSupply}
                                         onChange={daysSupply => this.setState({ daysSupply })}
+                                        tabIndex="9"
                                     />
                                 </td>
                             </tr>
@@ -932,6 +946,7 @@ class EditScript extends Component {
                                         placeholder={this.state.directions}
                                         value={this.state.directions}
                                         onChange={directions => this.setState({ directions })}
+                                        tabIndex="10"
                                     />
                                 </td>
                             </tr>

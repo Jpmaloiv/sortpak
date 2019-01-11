@@ -20,7 +20,12 @@ class AdminDashboard extends Component {
     this.state = {
       patientNum: '',
       physicianNum: '',
-      revenue: ''
+      revenue: '',
+      dailyAvgRevenue: '',
+      cost: '',
+      profit: '',
+      dailyAvgProfit: '',
+      revenuePerSale: ''
     }
   }
   renderCard({title, content}) {
@@ -56,12 +61,21 @@ class AdminDashboard extends Component {
 
       axios.get('api/scripts/payments/search/', { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
-        console.log(resp.data.response)
         this.setState({
           payments: resp.data.response,
           sales: resp.data.response.length
         }, this.calcRevenue)
-        console.log(this.state.patients)
+      }).catch((error) => {
+        console.error(error);
+      })
+
+
+      axios.get('api/scripts/search?status=Shipped,Done', { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        this.setState({
+          scripts: resp.data.response,
+          repeatPatients: resp.data.response.length
+        }, this.calcCost)
       }).catch((error) => {
         console.error(error);
       })
@@ -80,6 +94,41 @@ class AdminDashboard extends Component {
 
     this.setState({
       revenue: sum.toFixed(2)
+    }, this.calcDailyRevenue)
+  }
+
+  calcDailyRevenue() {
+    this.setState({
+      dailyAvgRevenue: (this.state.revenue / 21.74).toFixed(2)
+    })
+  }
+
+  calcCost() {
+    const cost = [];
+    for (var i=0; i < this.state.scripts.length; i++) {
+      cost.push(this.state.scripts[i].cost)
+    }
+    var sum = cost.reduce(add, 0);
+
+    function add(a, b) {
+      return a + +b;
+    }
+
+    this.setState({
+      cost: sum.toFixed(2)
+    }, this.calcProfit)
+  }
+
+  calcProfit() {
+    this.setState({
+      profit: (this.state.revenue - this.state.cost).toFixed(2),
+      dailyAvgProfit: ((this.state.revenue - this.state.cost)/21.74).toFixed(2)
+    }, this.calcFinal)
+  }
+
+  calcFinal() {
+    this.setState({
+      revenuePerSale: (this.state.revenue / this.state.sales).toFixed(2)
     })
   }
 
@@ -90,15 +139,15 @@ class AdminDashboard extends Component {
     // const newPhysicians = this.props.physicians.filter(el => !el.repId).length
     const cardData1 = [
       { title: 'Revenue', content: '$' + this.state.revenue },
-      { title: 'Daily AVG Revenue', content: '$0' },
-      { title: 'Cost', content: '$0' },
-      { title: 'Profit', content: '$0' },
-      { title: 'Daily AVG Profit', content: '$0' }
+      { title: 'Daily AVG Revenue', content: '$' + this.state.dailyAvgRevenue },
+      { title: 'Cost', content: '$' + this.state.cost },
+      { title: 'Profit', content: '$' + this.state.profit },
+      { title: 'Daily AVG Profit', content: '$' + this.state.dailyAvgProfit }
     ]
     const cardData2 = [
       { title: 'Sales', content: this.state.sales },
-      { title: 'Revenue per Sale', content: '$0' },
-      { title: 'Repeat Patients', content: '0' },
+      { title: 'Revenue per Sale', content: '$' + this.state.revenuePerSale },
+      { title: 'Repeat Patients', content: this.state.repeatPatients },
       { title: 'New Patients', content: this.state.patientNum || '-' },
       { title: 'New Physicians', content: this.state.physicianNum || '-' }
     ]

@@ -82,11 +82,21 @@ class MergePatientModal extends Component {
 
 
   renderPatientColumn() {
+    console.log(this.state.oldPatient)
     return (
-      <div style={{ marginLeft: 35 }}>
-        <Table className="addScriptSearch">
-          {this.state.patients.map(this.renderPatientRow.bind(this))}
-        </Table>
+      <div>
+        {this.state.oldPatient ?
+          <div style={{ marginLeft: 35, width: '50%', textAlign: 'right', 'float': 'right' }}>
+            <Table style={{ 'display': 'none' }} className="addScriptSearch">
+              {this.state.patients.map(this.renderPatientRow.bind(this))}
+            </Table>
+          </div>
+          :
+          <div style={{ marginLeft: 35 }}>
+            <Table className="addScriptSearch">
+              {this.state.patients.map(this.renderPatientRow.bind(this))}
+            </Table>
+          </div>}
       </div>
     )
   }
