@@ -42,15 +42,20 @@ class ScriptList extends React.Component {
   renderOtherSection(script) {
 
     if (script.status === "Review") {
-      return(
+      return (
         <div>{script.location}</div>
       )
     } else if ((script.status === "QA") || (script.status === "Fill") || (script.status === "Shipped") || (script.status === "Done")) {
-      return(
-        <Moment format="MM/DD/YYYY">{script.shipOn || ''}</Moment>
+      return (
+        <div>
+          {script.shipOn ?
+            <Moment format="MM/DD/YYYY">{script.shipOn || ''}</Moment>
+            : <span></span>
+          }
+        </div>
       )
     } else {
-      return(
+      return (
         <div></div>
       )
     }
@@ -77,7 +82,7 @@ class ScriptList extends React.Component {
 
         <td>{script.notesUpdated ?
           <Moment fromNow>{`${script.notesUpdated}`}</Moment>
-        : <p></p> }
+          : <p></p>}
         </td>
 
         <td>
