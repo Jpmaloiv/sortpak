@@ -15,6 +15,8 @@ router.post("/login", authCtrl.login);
 //user update
 router.put("/update", authCtrl.update);
 
+router.put("/merge", authCtrl.merge);
+
 router.get("/search", (req, res) => {
     let searchParams = {
         where: {},

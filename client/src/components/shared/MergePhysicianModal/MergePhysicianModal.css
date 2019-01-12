@@ -1,0 +1,15 @@
+
+.mergePhysician>div:first-child > div:nth-child(1) > div:nth-child(1) {
+    width: 70% !important;
+    overflow: scroll; 
+    padding-top: 40px;
+}
+
+.mergeButton {
+    margin-bottom: 29px;
+    min-width: initial;
+}
+
+.mergeButton span {
+    margin-right: 0 !important;
+}

@@ -202,5 +202,21 @@ router.put("/update", function (req, res) {
         });
 })
 
+router.delete("/delete", (req, res) => {
+
+    db.Physicians.destroy({
+        where: {
+            id: req.query.physicianId
+        }
+    })
+        .then(function (resp) {
+            res.json({ success: true });
+        })
+        .catch(err => {
+            console.error(err);
+            return res.status(500).end(err.toString());
+        });
+});
+
 
 module.exports = router;

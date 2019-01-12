@@ -75,5 +75,20 @@ router.get("/search", (req, res) => {
         })
 })
 
+router.put("/merge", function (req, res) {
+    const note = {
+        PhysicianId: req.query.physicianId
+    }
+
+    db.visitNotes.update(note, { where: { PhysicianId: req.query.oldPhysicianId } })
+        .then(function (resp) {
+            res.json({ success: true });
+        })
+        .catch(function (err) {
+            console.error(err);
+            return res.status(500).end('Update FAILED' + err.toString());
+            throw err;
+        });
+})
 
 module.exports = router;

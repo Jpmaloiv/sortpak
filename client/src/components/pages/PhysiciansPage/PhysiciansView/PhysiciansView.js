@@ -13,6 +13,9 @@ import {
   setPhysician,
 } from '../../../../actions/physicians'
 
+import MergePhysicianModal from '../../../shared/MergePhysicianModal/MergePhysicianModal'
+
+
 import styles from './PhysiciansView.css'
 
 class PhysiciansView extends Component {
@@ -26,7 +29,8 @@ class PhysiciansView extends Component {
       searchName: '',
       searchAddress: '',
       searchGroup: '',
-      searchSpec: ''
+      searchSpec: '',
+      mergeModal: ''
     }
     this.searchQuery = this.searchQuery.bind(this);
   }
@@ -64,6 +68,16 @@ class PhysiciansView extends Component {
     if (code === 13) { //13 is the enter keycode
       this.searchQuery();
     }
+  }
+
+  openNoteModal() {
+    // this.setState({ mergeModal: {} })
+  }
+
+  closeModal() {
+    this.setState({
+      mergeModal: null
+    })
   }
 
   renderTableHead() {
@@ -148,6 +162,11 @@ class PhysiciansView extends Component {
   }
 
   render() {
+
+    const {
+      mergeModal
+    } = this.state;
+
     if (this.state.physicians) {
       var physicianList = this.state.physicians.map(function (item, i) {
         return (
@@ -201,6 +220,7 @@ class PhysiciansView extends Component {
             <Button
               title="MERGE PHYSICIAN"
               style={{ backgroundColor: "#ff7d38", marginRight: 10 }}
+              onClick={this.openNoteModal.bind(this)}
             />
 
             <Button
@@ -273,6 +293,17 @@ class PhysiciansView extends Component {
           {this.renderTable()}
           {physicianList}
 
+          <div className="mergePhysician">
+            <MergePhysicianModal
+              content={mergeModal}
+              // onSubmit={this.openReceiptModals}
+              state={this.state}
+              patientId={this.state.PhysicianId}
+              props={this.props}
+              onClickAway={() => this.closeModal()}
+            // onCloseModal={() => this.closeModal()}
+            />
+          </div>
         </div>
       </div>
     );

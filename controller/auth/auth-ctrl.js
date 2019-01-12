@@ -256,6 +256,29 @@ ctrl.update = function (req, res) {
         });
 };
 
+ctrl.merge = function (req, res) {
+
+    const user = {
+        PhysicianId: req.query.physicianId
+    }
+    
+    models.User.update(user, { where: { PhysicianId: req.query.oldPhytsicianId } })
+        .then(function (resp) {
+            console.log(user)
+            res.json({ success: true });
+
+
+            // if ((req.files) && (req.files.picFile)) {
+            //     req.files.picFile.mv("./public/assets/images/users/" + req.payload.id + "/user.png")
+            // }
+        })
+        .catch(function (err) {
+            console.error(err);
+            return res.status(500).end('Update FAILED' + err.toString());
+            throw err;
+        });
+};
+
 
 
 

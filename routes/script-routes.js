@@ -306,6 +306,22 @@ router.put("/merge", function (req, res) {
         });
 })
 
+router.put("/mergephys", function (req, res) {
+    const script = {
+        PhysicianId: req.query.physicianId
+    }
+
+    db.Scripts.update(script, { where: { PhysicianId: req.query.oldPhysicianId } })
+        .then(function (resp) {
+            res.json({ success: true });
+        })
+        .catch(function (err) {
+            console.error(err);
+            return res.status(500).end('Update FAILED' + err.toString());
+            throw err;
+        });
+})
+
 
 router.put("/updateNoteTime", function (req, res) {
     const script = {
