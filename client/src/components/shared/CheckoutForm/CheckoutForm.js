@@ -37,6 +37,11 @@ class CheckoutForm extends Component {
       }).catch((err) => {
         console.error(err)
       })
+
+        this.setState({
+          transactionId: Math.floor(Math.random() * 90000000) + 10000000
+        })
+
   }
 
   calcTotalPay() {
@@ -69,6 +74,7 @@ class CheckoutForm extends Component {
       const firstName = this.props.state.patientName.split(' ').slice(0, -1).join (' ');
       const lastName = this.props.state.patientName.split(' ').slice(-1).join(' ');
       const date = moment().format('MM-DD-YYYY')
+      const transactionId = this.state.transactionId
 
       for (var i = 0; i < this.state.scripts.length; i++) {
         const loginToken = window.localStorage.getItem("token");
@@ -76,14 +82,14 @@ class CheckoutForm extends Component {
         console.log(token);
         let data = token;
         axios.post('/api/scripts/payments/charge?amount=' + this.state.scripts[i].patientPay + '&scriptId=' + this.state.scripts[i].id
-        + '&receiptLink=' + `${lastName}_${firstName}/${date}/Receipt.pdf`, data, { headers: { "Authorization": "Bearer " + loginToken, "Content-Type": "application/json" }, })
+        + '&receiptLink=' + `${lastName}_${firstName}/${date}/Receipt.pdf` + '&transactionId=' + this.state.transactionId, data, { headers: { "Authorization": "Bearer " + loginToken, "Content-Type": "application/json" }, })
           .then((data) => {
           }).catch((error) => {
             window.alert("Payment Failed")
             console.error(error);
             return;
           })
-          this.props.onSubmit(payments, totalPay);
+          this.props.onSubmit(payments, totalPay, transactionId);
 
       }
     } else {

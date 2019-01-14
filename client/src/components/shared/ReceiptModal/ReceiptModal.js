@@ -21,6 +21,7 @@ class ReceiptModal extends Component {
     }
   }
 
+
   cancelDocument(e) {
     window.location.reload();
   }
@@ -182,6 +183,7 @@ class ReceiptModal extends Component {
 
 
   render() {
+    console.log(this.state, this.props)
 
     const {
       content,
@@ -257,22 +259,24 @@ class ReceiptModal extends Component {
                   <td>NAME</td>
                   <td>{this.props.state.patientName}</td>
                   <td>DATE OF BIRTH</td>
-                  <td>{this.props.state.patientDOB}</td>
+                  <td><Moment format='MM/DD/YYYY'>{this.props.state.patientDOB}</Moment></td>
                 </tr>
                 <tr>
+                  <td>RX NUMBER</td>
+                  <td>{this.props.state.rxNumber}</td>
                   <td>PHONE</td>
                   <td>{this.props.state.patientPhone}</td>
+                </tr>
+                <tr>
+                  <td>PATIENT COPAY</td>
+                  <td>{this.props.state.totalPay}</td>
                   <td>ADDRESS</td>
                   <td>{this.props.state.patientAddressStreet} <br />
                     {this.props.state.patientAddressCity}, {this.props.state.patientAddressState}, {this.props.state.patientAddressZipCode}</td>
                 </tr>
                 <tr>
-                  <td>PATIENT COPAY</td>
-                  <td>{this.props.state.totalPay}</td>
-                </tr>
-                <tr>
-                  <td>RX NUMBER</td>
-                  <td>{this.props.state.rxNumber}</td>
+                  <td>TRANSACTION ID</td>
+                  <td>{this.props.state.transactionId}</td>
                 </tr>
               </table>
               <br />
@@ -295,7 +299,7 @@ class ReceiptModal extends Component {
               <div style={{ 'display': 'flex' }}>
                 <input type="checkbox" style={{ width: '30px', marginTop: 6 }}></input>
                 <label>ALREADY PAID WITH CREDIT CARD</label>
-              </div> 
+              </div>
 
               {/* {this.renderTable()}
               {paymentList} */}

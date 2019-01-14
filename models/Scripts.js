@@ -161,6 +161,11 @@ module.exports = function(sequelize, DataTypes) {
         doNotRefill: {
             type: DataTypes.BOOLEAN,
             allowNull: true
+        },
+        faxNum: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            defaultValue: 0
         }
     }); 
 

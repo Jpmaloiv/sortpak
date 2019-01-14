@@ -128,8 +128,16 @@ class AdminDashboard extends Component {
 
   calcFinal() {
     this.setState({
-      revenuePerSale: (this.state.revenue / this.state.sales).toFixed(2)
-    })
+      revenuePerSale: (this.state.revenue.toFixed / this.state.sales).toFixed(2)
+    }, this.convertNaN)
+  }
+
+  convertNaN() {
+    if (this.state.revenuePerSale === 'NaN') {
+      this.setState({
+        revenuePerSale: 0
+      })
+    }
   }
 
   

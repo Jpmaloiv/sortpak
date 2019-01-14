@@ -20,6 +20,7 @@ router.post("/charge", async (req, res) => {
         name: req.query.name,
         amount: req.query.amount,
         receiptLink: req.query.receiptLink,
+        transactionId: req.query.transactionId,
         ScriptId: req.query.scriptId
     }
 

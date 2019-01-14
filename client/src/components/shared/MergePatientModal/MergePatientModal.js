@@ -111,6 +111,7 @@ class MergePatientModal extends Component {
 
   setPatient(value) {
     this.setState({
+      oldPatientSearch: false,
       patientSearch: false,
       patientId: value,
       setPatient: 'set'
@@ -178,13 +179,13 @@ class MergePatientModal extends Component {
   }
 
   searchPatients() {
-    this.setState({
-      patientSearch: true
-    })
     let patientName = "";
 
     if (this.state.searchNewPatient) patientName = this.state.patientName
     if (!this.state.searchNewPatient) patientName = this.state.oldPatientName
+
+    if (this.state.searchNewPatient) this.setState({ patientSearch: true })
+    if (!this.state.searchNewPatient) this.setState({ oldPatientSearch: true })
 
     const loginToken = window.localStorage.getItem("token");
     axios.get('/api/patients/search?name=' + patientName, { headers: { "Authorization": "Bearer " + loginToken } })
@@ -243,6 +244,12 @@ class MergePatientModal extends Component {
               value={this.state.oldPatientName}
               onChange={oldPatientName => this.setState({ oldPatientName, searchNewPatient: false }, this.searchPatients)}
             />
+            {this.state.oldPatientSearch ?
+              <div>
+                {this.renderPatientColumn()}
+              </div>
+              :
+              <div></div>}
             {this.state.oldPatient ?
               <div>
                 <br />
@@ -747,6 +754,12 @@ class MergePatientModal extends Component {
               value={this.state.patientName}
               onChange={patientName => this.setState({ patientName, searchNewPatient: true }, this.searchPatients)}
             />
+            {this.state.patientSearch ?
+              <div>
+                {this.renderPatientColumn()}
+              </div>
+              :
+              <div></div>}
             {this.state.patient ?
               <div>
                 <br />
@@ -999,12 +1012,6 @@ class MergePatientModal extends Component {
           </div>
         </div>
         <br /><br />
-        {this.state.patientSearch ?
-          <div>
-            {this.renderPatientColumn()}
-          </div>
-          :
-          <div></div>}
 
         <br />
 

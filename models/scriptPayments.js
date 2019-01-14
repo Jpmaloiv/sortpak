@@ -12,6 +12,10 @@ module.exports = function (sequelize, DataTypes) {
         receiptLink: {
             type: DataTypes.STRING,
             allowNull: true
+        },
+        transactionId: {
+            type: DataTypes.STRING,
+            allowNull: true
         }
     });
 

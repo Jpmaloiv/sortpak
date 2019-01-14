@@ -209,7 +209,7 @@ class AddMember extends Component {
             <Input
               label='Confirm Password:'
               name='confirmpw'
-              type='confirmpw'
+              type='password'
               value={confirmpw}
               onChange={confirmpw => this.setState({ confirmpw })}
             />

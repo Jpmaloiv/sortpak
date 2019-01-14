@@ -473,15 +473,16 @@ class ScriptView extends Component {
       })
   }
 
-  openReceiptModals(payments, totalPay) {
-    console.log(payments, totalPay)
+  openReceiptModals(payments, totalPay, transactionId) {
+    console.log(payments, totalPay, transactionId)
     this.setState({
       chargeModal: null,
       payments: payments,
       totalPay: totalPay,
+      transactionId: transactionId,
       receiptModal: {},
       receiptUpload: true
-    })
+    }, () => this.state.transactionId)
   }
 
   renderActions() {
