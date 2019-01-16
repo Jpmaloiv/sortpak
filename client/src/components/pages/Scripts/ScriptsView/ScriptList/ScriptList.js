@@ -7,6 +7,20 @@ import { Table } from '../../../../common'
 
 
 class ScriptList extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      scripts: [],
+      scriptSort: false,
+    }
+  }
+
+  componentWillReceiveProps() {
+    this.setState({
+      scriptSort: false,
+      scripts: []
+    })
+  }
 
   renderTableHead() {
     return (
@@ -29,7 +43,7 @@ class ScriptList extends React.Component {
   renderTableBody() {
     return (
       <tbody>
-        {this.props.data.map(this.renderTableRow.bind(this))}
+        {this.state.scripts.map(this.renderTableRow.bind(this))}
       </tbody>
     )
   }
@@ -114,25 +128,281 @@ class ScriptList extends React.Component {
     )
   }
 
+  sortScripts() {
+    this.setState({
+      scripts: this.props.data
+    }, this.filterScripts)
+  }
+
+  filterScripts() {
+    const scripts = [];
+
+    const scriptsReceived = this.props.data.filter(function (event) {
+      return event.status === 'Received';
+    });
+    let noNoteScriptsReceived = scriptsReceived.filter(function (event) {
+      return event.notesUpdated === null;
+    });
+    for (var i = 0; i < noNoteScriptsReceived.length; i++) {
+      scripts.push(noNoteScriptsReceived[i])
+    }
+    let noteScriptsReceived = scriptsReceived.filter(function (event) {
+      return event.notesUpdated != null;
+    })
+    let sortedNoteScriptsReceived = noteScriptsReceived.sort(function (a, b) {
+      return new Date(a.notesUpdated).getTime() - new Date(b.notesUpdated).getTime()
+    });
+    for (var i = 0; i < sortedNoteScriptsReceived.length; i++) {
+      scripts.push(sortedNoteScriptsReceived[i])
+    }
+
+    const scriptsReview = this.props.data.filter(function (event) {
+      return event.status === 'Review';
+    });
+    let noNoteScriptsReview = scriptsReview.filter(function (event) {
+      return event.notesUpdated === null;
+    });
+    for (var i = 0; i < noNoteScriptsReview.length; i++) {
+      scripts.push(noNoteScriptsReview[i])
+    }
+    let noteScriptsReview = scriptsReview.filter(function (event) {
+      return event.notesUpdated != null;
+    })
+    let sortedNoteScriptsReview = noteScriptsReview.sort(function (a, b) {
+      return new Date(a.notesUpdated).getTime() - new Date(b.notesUpdated).getTime()
+    });
+    for (var i = 0; i < sortedNoteScriptsReview.length; i++) {
+      scripts.push(sortedNoteScriptsReview[i])
+    }
+
+    const scriptsPriorAuth = this.props.data.filter(function (event) {
+      return event.status === 'PriorAuth';
+    });
+    let noNoteScriptsPriorAuth = scriptsPriorAuth.filter(function (event) {
+      return event.notesUpdated === null;
+    });
+    for (var i = 0; i < noNoteScriptsPriorAuth.length; i++) {
+      scripts.push(noNoteScriptsPriorAuth[i])
+    }
+    let noteScriptsPriorAuth = scriptsPriorAuth.filter(function (event) {
+      return event.notesUpdated != null;
+    })
+    let sortedNoteScriptsPriorAuth = noteScriptsPriorAuth.sort(function (a, b) {
+      return new Date(a.notesUpdated).getTime() - new Date(b.notesUpdated).getTime()
+    });
+    for (var i = 0; i < sortedNoteScriptsPriorAuth.length; i++) {
+      scripts.push(sortedNoteScriptsPriorAuth[i])
+    }
+
+    const scriptsProcess = this.props.data.filter(function (event) {
+      return event.status === 'Process';
+    });
+    let noNoteScriptsProcess = scriptsProcess.filter(function (event) {
+      return event.notesUpdated === null;
+    });
+    for (var i = 0; i < noNoteScriptsProcess.length; i++) {
+      scripts.push(noNoteScriptsProcess[i])
+    }
+    let noteScriptsProcess = scriptsProcess.filter(function (event) {
+      return event.notesUpdated != null;
+    })
+    let sortedNoteScriptsProcess = noteScriptsProcess.sort(function (a, b) {
+      return new Date(a.notesUpdated).getTime() - new Date(b.notesUpdated).getTime()
+    });
+    for (var i = 0; i < sortedNoteScriptsProcess.length; i++) {
+      scripts.push(sortedNoteScriptsProcess[i])
+    }
+
+    const scriptsCopay = this.props.data.filter(function (event) {
+      return event.status === 'Copay';
+    });
+    let noNoteScriptsCopay = scriptsCopay.filter(function (event) {
+      return event.notesUpdated === null;
+    });
+    for (var i = 0; i < noNoteScriptsCopay.length; i++) {
+      scripts.push(noNoteScriptsCopay[i])
+    }
+    let noteScriptsCopay = scriptsCopay.filter(function (event) {
+      return event.notesUpdated != null;
+    })
+    let sortedNoteScriptsCopay = noteScriptsCopay.sort(function (a, b) {
+      return new Date(a.notesUpdated).getTime() - new Date(b.notesUpdated).getTime()
+    });
+    for (var i = 0; i < sortedNoteScriptsCopay.length; i++) {
+      scripts.push(sortedNoteScriptsCopay[i])
+    }
+
+    const scriptsSchedule = this.props.data.filter(function (event) {
+      return event.status === 'Schedule';
+    });
+    let noNoteScriptsSchedule = scriptsSchedule.filter(function (event) {
+      return event.notesUpdated === null;
+    });
+    for (var i = 0; i < noNoteScriptsSchedule.length; i++) {
+      scripts.push(noNoteScriptsSchedule[i])
+    }
+    let noteScriptsSchedule = scriptsSchedule.filter(function (event) {
+      return event.notesUpdated != null;
+    })
+    let sortedNoteScriptsSchedule = noteScriptsSchedule.sort(function (a, b) {
+      return new Date(a.notesUpdated).getTime() - new Date(b.notesUpdated).getTime()
+    });
+    for (var i = 0; i < sortedNoteScriptsSchedule.length; i++) {
+      scripts.push(sortedNoteScriptsSchedule[i])
+    }
+
+    const scriptsQA = this.props.data.filter(function (event) {
+      return event.status === 'QA';
+    });
+    let noDateScriptsQA = scriptsQA.filter(function (event) {
+      return event.shipOn === null;
+    });
+    for (var i = 0; i < noDateScriptsQA.length; i++) {
+      scripts.push(noDateScriptsQA[i])
+    }
+    let dateScriptsQA = scriptsQA.filter(function (event) {
+      return event.shipOn != null;
+    });
+    let sortedDateScriptsQA = dateScriptsQA.sort(function (a, b) {
+      return new Date(a.shipOn).getTime() - new Date(b.shipOn).getTime()
+    });
+    for (var i = 0; i < sortedDateScriptsQA.length; i++) {
+      scripts.push(sortedDateScriptsQA[i])
+    }
+
+    const scriptsFill = this.props.data.filter(function (event) {
+      return event.status === 'Fill';
+    });
+    let noDateScriptsFill = scriptsFill.filter(function (event) {
+      return event.shipOn === null;
+    });
+    for (var i = 0; i < noDateScriptsFill.length; i++) {
+      scripts.push(noDateScriptsFill[i])
+    }
+    let dateScriptsFill = scriptsFill.filter(function (event) {
+      return event.shipOn != null;
+    });
+    let sortedDateScriptsFill = dateScriptsFill.sort(function (a, b) {
+      return new Date(a.shipOn).getTime() - new Date(b.shipOn).getTime()
+    });
+    for (var i = 0; i < sortedDateScriptsFill.length; i++) {
+      scripts.push(sortedDateScriptsFill[i])
+    }
+
+    const scriptsShipped = this.props.data.filter(function (event) {
+      return event.status === 'Shipped';
+    });
+    let noDateScriptsShipped = scriptsShipped.filter(function (event) {
+      return event.shipOn === null;
+    });
+    for (var i = 0; i < noDateScriptsShipped.length; i++) {
+      scripts.push(noDateScriptsShipped[i])
+    }
+    let dateScriptsShipped = scriptsShipped.filter(function (event) {
+      return event.shipOn != null;
+    });
+    let sortedDateScriptsShipped = dateScriptsShipped.sort(function (a, b) {
+      return new Date(b.shipOn).getTime() - new Date(a.shipOn).getTime()
+    });
+    for (var i = 0; i < sortedDateScriptsShipped.length; i++) {
+      scripts.push(sortedDateScriptsShipped[i])
+    }
+
+    const scriptsDone = this.props.data.filter(function (event) {
+      return event.status === 'Done';
+    });
+    let noDateScriptsDone = scriptsDone.filter(function (event) {
+      return event.shipOn === null;
+    });
+    for (var i = 0; i < noDateScriptsDone.length; i++) {
+      scripts.push(noDateScriptsDone[i])
+    }
+    let dateScriptsDone = scriptsDone.filter(function (event) {
+      return event.shipOn != null;
+    });
+    let sortedDateScriptsDone = dateScriptsDone.sort(function (a, b) {
+      return new Date(b.shipOn).getTime() - new Date(a.shipOn).getTime()
+    });
+    for (var i = 0; i < sortedDateScriptsDone.length; i++) {
+      scripts.push(sortedDateScriptsDone[i])
+    }
+
+    const scriptsCancelled = this.props.data.filter(function (event) {
+      return event.status === 'Cancelled';
+    });
+    let noDateScriptsCancelled = scriptsCancelled.filter(function (event) {
+      return event.processedOn === null;
+    });
+    for (var i = 0; i < noDateScriptsCancelled.length; i++) {
+      scripts.push(noDateScriptsCancelled[i])
+    }
+    let dateScriptsCancelled = scriptsCancelled.filter(function (event) {
+      return event.processedOn != null;
+    });
+    let sortedDateScriptsCancelled = dateScriptsCancelled.sort(function (a, b) {
+      return new Date(b.processedOn).getTime() - new Date(a.processedOn).getTime()
+    });
+    for (var i = 0; i < sortedDateScriptsCancelled.length; i++) {
+      scripts.push(sortedDateScriptsCancelled[i])
+    }
+
+    const scriptsRefill = this.props.data.filter(function (event) {
+      return event.status === 'Refill';
+    });
+    let noDateScriptsRefill = scriptsRefill.filter(function (event) {
+      return event.processedOn === null;
+    });
+    for (var i = 0; i < noDateScriptsRefill.length; i++) {
+      scripts.push(noDateScriptsRefill[i])
+    }
+    let dateScriptsRefill = scriptsRefill.filter(function (event) {
+      return event.processedOn != null;
+    });
+    let sortedDateScriptsRefill = dateScriptsRefill.sort(function (a, b) {
+      return new Date(a.processedOn).getTime() - new Date(b.processedOn).getTime()
+    });
+    for (var i = 0; i < sortedDateScriptsRefill.length; i++) {
+      scripts.push(sortedDateScriptsRefill[i])
+    }
+
+    const scriptsRenew = this.props.data.filter(function (event) {
+      return event.status === 'Renew';
+    });
+    let noDateScriptsRenew = scriptsRenew.filter(function (event) {
+      return event.processedOn === null;
+    });
+    for (var i = 0; i < noDateScriptsRenew.length; i++) {
+      scripts.push(noDateScriptsRenew[i])
+    }
+    let dateScriptsRenew = scriptsRenew.filter(function (event) {
+      return event.processedOn != null;
+    });
+    let sortedDateScriptsRenew = dateScriptsRenew.sort(function (a, b) {
+      return new Date(a.processedOn).getTime() - new Date(b.processedOn).getTime()
+    });
+    for (var i = 0; i < sortedDateScriptsRenew.length; i++) {
+      scripts.push(sortedDateScriptsRenew[i])
+    }
+  
+
+    this.setState({
+      scripts: scripts
+    })
+  }
+
 
   render() {
 
+    if ((this.props.data.length > 0) && (this.state.scriptSort === false)) {
+      this.sortScripts();
+      this.setState({
+        scriptSort: true
+      })
+    }
+
+
     if (this.props.data) {
-
-      var scriptList = this.props.data.sort(function (a, b) {
-        return new Date(b.processedOn).getTime() - new Date(a.processedOn).getTime()
-      });
-
-      var scriptList = this.props.data.sort(function (a, b) {
-        return new Date(a.shipOn).getTime() - new Date(b.shipOn).getTime()
-      });
-
-      var scriptList = this.props.data.sort(function (a, b) {
-        return new Date(a.notesUpdated).getTime() - new Date(b.notesUpdated).getTime()
-      });
-
-
-      var scriptList = this.props.data.map(function (item, i) {
+      var scriptList = this.state.scripts.map(function (item, i) {
 
         return (
           <div key={i}>
