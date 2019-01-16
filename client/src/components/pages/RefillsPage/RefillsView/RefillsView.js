@@ -168,6 +168,7 @@ class RefillsView extends Component {
       return (
         <tr value={script.id} onClick={() => this.handleClick(script.id)}>
           <td>
+            <div style={{'color': 'red', 'display': 'inline', marginRight: 7}}>{script.faxNum}</div>
           <Button
             value={script.id}
             icon="print"
@@ -180,7 +181,7 @@ class RefillsView extends Component {
           <td>{script.Patient.firstName} {script.Patient.lastName}</td>
           <td>{script.Product.name}</td>
           <td>{script.rxNumber}</td>
-          <td>{script.Patient.dob}</td>
+          <td><Moment format="MM/DD/YYYY">{script.Patient.dob}</Moment></td>
           <td></td>
         </tr>
       )

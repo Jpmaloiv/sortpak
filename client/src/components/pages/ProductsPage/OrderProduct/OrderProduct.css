@@ -11,3 +11,7 @@
 .inventoryButton span {
     margin-right: 0 !important;
 }
+
+.minus span {
+    line-height: initial !important;
+}

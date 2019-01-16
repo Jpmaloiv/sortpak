@@ -482,7 +482,7 @@ class ScriptView extends Component {
       transactionId: transactionId,
       receiptModal: {},
       receiptUpload: true
-    }, () => this.state.transactionId)
+    })
   }
 
   renderActions() {

@@ -285,8 +285,6 @@ router.put("/update", function (req, res) {
         })
         .catch(function (err) {
             console.error(err);
-            return res.status(500).end('Update FAILED' + err.toString());
-            throw err;
         });
 })
 
@@ -338,6 +336,23 @@ router.put("/updateNoteTime", function (req, res) {
             throw err;
         });
 })
+
+router.put("/fax", function (req, res) {
+    console.log(req.query)
+
+    const script = {
+        faxNum: req.query.faxNum,
+    }
+
+    db.Scripts.update(script, { where: { id: req.query.id } })
+        .then(function (resp) {
+            res.json({ success: true });
+        })
+        .catch(function (err) {
+            console.error(err);
+        });
+})
+
 
 
 module.exports = router;

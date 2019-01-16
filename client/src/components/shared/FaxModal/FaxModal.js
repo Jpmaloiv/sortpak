@@ -142,12 +142,33 @@ class FaxModal extends Component {
             data, { headers: { "Authorization": "Bearer " + loginToken } })
             .then((res) => {
               console.log(res)
-              if (res.status === 200) window.alert('Fax successfully sent!');
-              else window.alert('Fax failed to send. Please make sure the fax number provided is valid.');
-              window.location.reload();
+              if (res.status === 200) {
+                window.alert('Fax successfully sent!');
+              }
+              else {
+                window.alert('Fax failed to send. Please make sure the fax number provided is valid.');
+              }
             })
         } else {
           return;
+        }
+
+        const filteredScripts = this.state.scripts.filter(function (event) {
+          return event.checked == true;
+        });
+
+        for (var i = 0; i < filteredScripts.length; i++) {
+          console.log(i)
+
+          filteredScripts[i].faxNum++;
+          const loginToken = window.localStorage.getItem("token");
+          axios.put('/api/scripts/fax?id=' + filteredScripts[i].id + '&faxNum=' + filteredScripts[i].faxNum,
+            data, { headers: { "Authorization": "Bearer " + loginToken } })
+            .then((data) => {
+            }).catch((error) => {
+              console.error(error);
+            })
+
         }
       })
   }
@@ -165,8 +186,8 @@ class FaxModal extends Component {
     const date = moment().format('MM-DD-YYYY')
     const loginToken = window.localStorage.getItem("token");
     const xhr = new XMLHttpRequest();
-    xhr.open('GET', `/api/faxes/sign-s3?file-name=testFile.pdf&file-type=application/pdf`, 
-    { headers: { "Authorization": "Bearer " + loginToken }});
+    xhr.open('GET', `/api/faxes/sign-s3?file-name=testFile.pdf&file-type=application/pdf`,
+      { headers: { "Authorization": "Bearer " + loginToken } });
     xhr.onreadystatechange = () => {
       if (xhr.readyState === 4) {
         if (xhr.status === 200) {
@@ -190,9 +211,9 @@ class FaxModal extends Component {
         if (xhr.status === 200) {
           // document.getElementById('preview').src = url;
           // document.getElementById('avatar-url').value = url;
-        this.props.onClickAway()
-        console.log(url)
-        window.open(url)
+          this.props.onClickAway()
+          console.log(url)
+          window.open(url)
         }
         else {
           alert('Could not upload file.');
@@ -234,7 +255,6 @@ class FaxModal extends Component {
     var filteredScripts = this.state.scripts.filter(function (event) {
       return event.checked == true;
     });
-    console.log(filteredScripts)
     return (
       <tbody>
         {filteredScripts.map(this.renderTableRow.bind(this))}
@@ -355,6 +375,8 @@ class FaxModal extends Component {
                 <Input
                   label="FAX NUMBER"
                   placeholder={this.state.physicianFax}
+                  value={this.state.physicianFax}
+                  onChange={physicianFax => this.setState({ physicianFax })}
                 />
                 <br />
                 <label>Comments</label>

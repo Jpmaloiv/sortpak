@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Body, Button, Form, Header, Input, Table } from '../../../common';
+import { Body, Button, Form, Header, Icon, Input, Table } from '../../../common';
 
 import axios from 'axios'
 import moment from 'moment'
@@ -20,6 +20,7 @@ class OrderProduct extends Component {
             id: '', name: '', NDC: '', packageSize: '', quantity: '', lot: '', expiration: '', cost: '', oldQuantity: '', oldCost: ''
         }
         this.state.productList.push(field);
+        this.removeProductList = this.removeProductList.bind(this);
 
     }
 
@@ -147,6 +148,13 @@ class OrderProduct extends Component {
         })
     }
 
+    removeProductList(i) {
+        this.state.productList.splice(i,1);
+        this.setState({
+            render: !this.state.render
+        })
+    }
+
 
     renderProduct(product) {
         const i = this.state.productList.indexOf(product);
@@ -179,7 +187,7 @@ class OrderProduct extends Component {
         } else if (product.setProduct === 'set') {
             return (
                 <tr>
-                    <td>{product.name}</td>
+                    <td>{product.name} <Icon className="minus" name="minus" onClick={() => this.removeProductList(i)} /></td>
                     <td>{product.NDC}</td>
                     <td>{product.packageSize}</td>
                     <td>
