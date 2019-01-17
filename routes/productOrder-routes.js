@@ -47,6 +47,10 @@ router.get("/search", (req, res) => {
         searchParams.where.ProductId = req.query.productId
     }
 
+    if (req.query.orderId) {
+        searchParams.where.id = req.query.orderId
+    }
+
     console.log(searchParams);
     db.productOrders
         .findAll(searchParams)

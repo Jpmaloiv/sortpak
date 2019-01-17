@@ -104,7 +104,6 @@ class AdjustProduct extends Component {
                     <th>QUANTITY</th>
                     <th>LOT #</th>
                     <th>EXPIRATION</th>
-                    <th>COST</th>
                 </thead>
                 {this.state.productList.map(this.renderProduct.bind(this))}
             </Table>
@@ -210,13 +209,6 @@ class AdjustProduct extends Component {
                             className="orderField"
                             value={this.state.productList[i].expiration}
                             onChange={expiration => this.updateExpiration(expiration, i)}
-                        />
-                    </td>
-                    <td>
-                        <Input
-                            className="orderField"
-                            value={this.state.productList[i].cost}
-                            onChange={cost => this.updateCost(cost, i)}
                         />
                     </td>
                 </tr>

@@ -35,12 +35,16 @@ import ProductsPage from './components/pages/ProductsPage/ProductsPage'
 import AddProduct from './components/pages/ProductsPage/AddProduct/AddProduct'
 import EditProduct from './components/pages/ProductsPage/AddProduct/EditProduct'
 import OrderProduct from './components/pages/ProductsPage/OrderProduct/OrderProduct'
+import EditOrder from './components/pages/ProductsPage/OrderProduct/EditOrder'
 import AdjustProduct from './components/pages/ProductsPage/OrderProduct/AdjustProduct'
+import EditAdjustment from './components/pages/ProductsPage/OrderProduct/EditAdjustment'
 import Inventory from './components/pages/ProductsPage/OrderProduct/Inventory'
 import TeamPage from './components/pages/TeamPage/TeamPage'
 import AddMember from './components/pages/TeamPage/AddMember/AddMember'
 import EditMember from './components/pages/TeamPage/AddMember/EditMember'
 import Profile from './components/pages/TeamPage/Profile/Profile'
+
+import Layout from './components/Chat/Layout'
 
 // import MemberView from './components/pages/TeamPage/MemberView/MemberView'
 
@@ -132,7 +136,7 @@ class App extends Component {
         <Router>
           <div>
             <TopNav />
-            {/* {this.state.userRole === "" ? <div></div> :  <ChatWidget/>} */}
+            {this.state.userRole === "" ? <div></div> :  <Layout />}
             <div className="container">
               <Switch>
                 <Route
@@ -178,6 +182,8 @@ class App extends Component {
                 <Route exact path="/products/order" component={OrderProduct} />
                 <Route exact path="/products/adjust" component={AdjustProduct} />
                 <Route exact path="/products/:productId/inventory" component={Inventory} />
+                <Route exact path="/products/orders/:orderId" component={EditOrder} />
+                <Route exact path="/products/adjustments/:adjustmentId" component={EditAdjustment} />
 
                 <PrivateRoute exact path="/team" component={TheTeamPage} />
                 <PrivateRoute exact path="/team/add" component={AddMember} />

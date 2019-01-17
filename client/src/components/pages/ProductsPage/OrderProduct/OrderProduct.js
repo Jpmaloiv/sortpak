@@ -41,17 +41,26 @@ class OrderProduct extends Component {
 
         for (var i = 0; i < this.state.productList.length; i++) {
             let product = this.state.productList[i];
+
+            let num = product.quantity / product.packageSize;
+            let newCost = (product.cost / num).toFixed(2)
+
             confirmText.push(`${product.name}
-                Quantity: ${product.oldQuantity} -> ${+product.oldQuantity + +product.quantity}`)
+                Quantity: ${product.oldQuantity} -> ${+product.oldQuantity + +product.quantity}\n
+                Cost: $${product.oldCost} -> $${newCost} per ${product.packageSize}(package size)`)
         }
 
         if (window.confirm(
             `This will update the on hand quantity and/or cost of the following medications:\n${confirmText}`
         )) {
             for (var i = 0; i < this.state.productList.length; i++) {
+
                 let product = this.state.productList[i]
                 let newQuantity = +product.oldQuantity + +product.quantity
-                axios.put('/api/products/update?id=' + product.id + '&quantity=' + newQuantity + '&name=' + product.name,
+                let num = product.quantity / product.packageSize;
+                let newCost = (product.cost / num).toFixed(2)
+
+                axios.put('/api/products/update?id=' + product.id + '&quantity=' + newQuantity + '&name=' + product.name + '&cost=' + newCost,
                     data, { headers: { "Authorization": "Bearer " + loginToken } })
                     .then((data) => {
                     }).catch((error) => {
@@ -149,7 +158,7 @@ class OrderProduct extends Component {
     }
 
     removeProductList(i) {
-        this.state.productList.splice(i,1);
+        this.state.productList.splice(i, 1);
         this.setState({
             render: !this.state.render
         })

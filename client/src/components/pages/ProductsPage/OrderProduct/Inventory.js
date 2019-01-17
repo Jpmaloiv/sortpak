@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Body, Header, Table } from '../../../common';
+import { Header, Span, Table } from '../../../common';
 
 import axios from 'axios';
 import Moment from 'react-moment'
@@ -68,8 +68,6 @@ class Inventory extends Component {
                     <th>Date</th>
                     <th>Type</th>
                     <th>Qty Change</th>
-                    <th>Patient</th>
-                    <th>RX #</th>
                     <th>Memo</th>
                     <th>Lot #</th>
                     <th>Expires</th>
@@ -87,20 +85,36 @@ class Inventory extends Component {
         )
     }
 
+    handleClick(value, type) {
+        if (type === 'Script') {
+            window.location = `/scripts/${value}`
+        } else if (type === 'Order') {
+            window.location = `/products/orders/${value}`
+        } else if (type === 'Adjust') {
+            window.location = `/products/adjustments/${value}`
+        }
+    }
+
     renderTableRow(inv) {
-        // console.log(inv.Patient.lastName)
+        console.log(inv.expiration)
         return (
-            <tr value={inv.id}>
+            <tr value={inv.id} type={inv.type} onClick={(e) => this.handleClick(inv.id, inv.type)}>
                 <td><Moment format='MM/DD/YYYY'>{inv.processedOn || inv.orderDate}</Moment></td>
                 <td>{inv.type}</td>
                 <td>{inv.type === 'Script' ?
                     '-' + inv.quantity : inv.qtyChange
                 }</td>
-                {/* <td>{this.state.patient}</td> */}<td></td>
-                <td>{inv.rxNumber}</td>
                 <td>{inv.memo}</td>
                 <td>{inv.lot}</td>
-                <td><Moment format='MM/DD/YYYY'>{inv.expiration}</Moment></td>
+                <td>
+                    <Span icon="calendar">
+                        {inv.expiration ?
+                            <Moment format="MM/DD/YYYY">{inv.expiration}</Moment>
+                            :
+                            <span></span>
+                        }
+                    </Span>
+                </td>
                 <td>{inv.writtenBy}</td>
             </tr>
         )
