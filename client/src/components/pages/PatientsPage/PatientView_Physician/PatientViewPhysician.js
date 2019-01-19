@@ -82,6 +82,7 @@ class PatientViewPhysician extends Component {
             id: patient.id,
             dob: patient.dob,
             sex: patient.sex,
+            hub: patient.hub,
             patientSince: patient.createdAt,
             phone: patient.phone,
             // address1: patient.address1,
@@ -325,6 +326,9 @@ class PatientViewPhysician extends Component {
             </div>
             <div>
               Patient Since: &nbsp;<Moment format={"MM/DD/YYYY"}>{this.state.createdAt}</Moment>
+            </div>
+            <div>
+              Hub: {this.state.hub}
             </div>
           </div>
           <div id="contactInfo" className={styles.contactInfo}>
