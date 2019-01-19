@@ -56,7 +56,6 @@ const server = require('http').createServer(app);
 
 var io = module.exports.io = require('socket.io').listen(server)
 
-
 const SocketManager = require('./SocketManager');
 
 io.on('connection', SocketManager, client => {

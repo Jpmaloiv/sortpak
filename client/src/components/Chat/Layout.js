@@ -4,8 +4,8 @@ import { USER_CONNECTED, LOGOUT } from '../Events'
 import LoginForm from './LoginForm'
 import ChatContainer from './chats/ChatContainer'
 
-const socketUrl = "http://localhost:3000"
-// const socketUrl = "https://sortpak-portal.herokuapp.com/"
+// const socketUrl = "http://localhost:3000"
+const socketUrl = "https://sortpak-portal.herokuapp.com/"
 
 
 export default class Layout extends Component {
