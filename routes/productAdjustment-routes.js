@@ -14,6 +14,7 @@ router.post("/add", (req, res) => {
         orderDate: req.query.orderDate,
         memo: req.query.memo,
         qtyChange: req.query.qtyChange,
+        adjustId: req.query.adjustId,
         lot: req.query.lot,
         expiration: req.query.expiration,
         writtenBy: req.query.writtenBy,

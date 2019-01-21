@@ -136,6 +136,12 @@ class ScriptList extends React.Component {
 
   filterScripts() {
     const scripts = [];
+    const sortReceived = [];
+    const sortReview = [];
+    const sortPriorAuth = [];
+    const sortProcess = [];
+    const sortCopayAssistance = [];
+    const sortSchedule = [];
 
     const scriptsReceived = this.props.data.filter(function (event) {
       return event.status === 'Received';
@@ -144,7 +150,7 @@ class ScriptList extends React.Component {
       return event.notesUpdated === null;
     });
     for (var i = 0; i < noNoteScriptsReceived.length; i++) {
-      scripts.push(noNoteScriptsReceived[i])
+      sortReceived.push(noNoteScriptsReceived[i])
     }
     let noteScriptsReceived = scriptsReceived.filter(function (event) {
       return event.notesUpdated != null;
@@ -153,8 +159,20 @@ class ScriptList extends React.Component {
       return new Date(a.notesUpdated).getTime() - new Date(b.notesUpdated).getTime()
     });
     for (var i = 0; i < sortedNoteScriptsReceived.length; i++) {
-      scripts.push(sortedNoteScriptsReceived[i])
+      sortReceived.push(sortedNoteScriptsReceived[i])
     }
+
+    sortReceived.sort(function (script1, script2) {
+
+      if (script1.processedOn > script2.processedOn) return 1;
+      if (script1.processedOn < script2.processedOn) return -1;
+    
+    });
+
+    for (var i = 0; i < sortReceived.length; i++) {
+      scripts.push(sortReceived[i])
+    }
+
 
     const scriptsReview = this.props.data.filter(function (event) {
       return event.status === 'Review';
@@ -163,7 +181,7 @@ class ScriptList extends React.Component {
       return event.notesUpdated === null;
     });
     for (var i = 0; i < noNoteScriptsReview.length; i++) {
-      scripts.push(noNoteScriptsReview[i])
+      sortReview.push(noNoteScriptsReview[i])
     }
     let noteScriptsReview = scriptsReview.filter(function (event) {
       return event.notesUpdated != null;
@@ -172,17 +190,29 @@ class ScriptList extends React.Component {
       return new Date(a.notesUpdated).getTime() - new Date(b.notesUpdated).getTime()
     });
     for (var i = 0; i < sortedNoteScriptsReview.length; i++) {
-      scripts.push(sortedNoteScriptsReview[i])
+      sortReview.push(sortedNoteScriptsReview[i])
     }
 
+    sortReview.sort(function (script1, script2) {
+
+      if (script1.processedOn > script2.processedOn) return 1;
+      if (script1.processedOn < script2.processedOn) return -1;
+    
+    });
+
+    for (var i = 0; i < sortReview.length; i++) {
+      scripts.push(sortReview[i])
+    }
+
+
     const scriptsPriorAuth = this.props.data.filter(function (event) {
-      return event.status === 'PriorAuth';
+      return event.status === 'Prior Auth';
     });
     let noNoteScriptsPriorAuth = scriptsPriorAuth.filter(function (event) {
       return event.notesUpdated === null;
     });
     for (var i = 0; i < noNoteScriptsPriorAuth.length; i++) {
-      scripts.push(noNoteScriptsPriorAuth[i])
+      sortPriorAuth.push(noNoteScriptsPriorAuth[i])
     }
     let noteScriptsPriorAuth = scriptsPriorAuth.filter(function (event) {
       return event.notesUpdated != null;
@@ -191,8 +221,20 @@ class ScriptList extends React.Component {
       return new Date(a.notesUpdated).getTime() - new Date(b.notesUpdated).getTime()
     });
     for (var i = 0; i < sortedNoteScriptsPriorAuth.length; i++) {
-      scripts.push(sortedNoteScriptsPriorAuth[i])
+      sortPriorAuth.push(sortedNoteScriptsPriorAuth[i])
     }
+
+    sortPriorAuth.sort(function (script1, script2) {
+
+      if (script1.processedOn > script2.processedOn) return 1;
+      if (script1.processedOn < script2.processedOn) return -1;
+    
+    });
+
+    for (var i = 0; i < sortPriorAuth.length; i++) {
+      scripts.push(sortPriorAuth[i])
+    }
+
 
     const scriptsProcess = this.props.data.filter(function (event) {
       return event.status === 'Process';
@@ -201,7 +243,7 @@ class ScriptList extends React.Component {
       return event.notesUpdated === null;
     });
     for (var i = 0; i < noNoteScriptsProcess.length; i++) {
-      scripts.push(noNoteScriptsProcess[i])
+      sortProcess.push(noNoteScriptsProcess[i])
     }
     let noteScriptsProcess = scriptsProcess.filter(function (event) {
       return event.notesUpdated != null;
@@ -210,27 +252,51 @@ class ScriptList extends React.Component {
       return new Date(a.notesUpdated).getTime() - new Date(b.notesUpdated).getTime()
     });
     for (var i = 0; i < sortedNoteScriptsProcess.length; i++) {
-      scripts.push(sortedNoteScriptsProcess[i])
+      sortProcess.push(sortedNoteScriptsProcess[i])
     }
 
-    const scriptsCopay = this.props.data.filter(function (event) {
-      return event.status === 'Copay';
+    sortProcess.sort(function (script1, script2) {
+
+      if (script1.processedOn > script2.processedOn) return 1;
+      if (script1.processedOn < script2.processedOn) return -1;
+    
     });
-    let noNoteScriptsCopay = scriptsCopay.filter(function (event) {
+
+    for (var i = 0; i < sortProcess.length; i++) {
+      scripts.push(sortProcess[i])
+    }
+
+
+    const scriptsCopayAssistance = this.props.data.filter(function (event) {
+      return event.status === 'Copay Assistance';
+    });
+    let noNoteScriptsCopayAssistance = scriptsCopayAssistance.filter(function (event) {
       return event.notesUpdated === null;
     });
-    for (var i = 0; i < noNoteScriptsCopay.length; i++) {
-      scripts.push(noNoteScriptsCopay[i])
+    for (var i = 0; i < noNoteScriptsCopayAssistance.length; i++) {
+      sortCopayAssistance.push(noNoteScriptsCopayAssistance[i])
     }
-    let noteScriptsCopay = scriptsCopay.filter(function (event) {
+    let noteScriptsCopayAssistance = scriptsCopayAssistance.filter(function (event) {
       return event.notesUpdated != null;
     })
-    let sortedNoteScriptsCopay = noteScriptsCopay.sort(function (a, b) {
+    let sortedNoteScriptsCopayAssistance = noteScriptsCopayAssistance.sort(function (a, b) {
       return new Date(a.notesUpdated).getTime() - new Date(b.notesUpdated).getTime()
     });
-    for (var i = 0; i < sortedNoteScriptsCopay.length; i++) {
-      scripts.push(sortedNoteScriptsCopay[i])
+    for (var i = 0; i < sortedNoteScriptsCopayAssistance.length; i++) {
+      sortCopayAssistance.push(sortedNoteScriptsCopayAssistance[i])
     }
+
+    sortCopayAssistance.sort(function (script1, script2) {
+
+      if (script1.processedOn > script2.processedOn) return 1;
+      if (script1.processedOn < script2.processedOn) return -1;
+    
+    });
+
+    for (var i = 0; i < sortCopayAssistance.length; i++) {
+      scripts.push(sortCopayAssistance[i])
+    }
+
 
     const scriptsSchedule = this.props.data.filter(function (event) {
       return event.status === 'Schedule';
@@ -239,7 +305,7 @@ class ScriptList extends React.Component {
       return event.notesUpdated === null;
     });
     for (var i = 0; i < noNoteScriptsSchedule.length; i++) {
-      scripts.push(noNoteScriptsSchedule[i])
+      sortSchedule.push(noNoteScriptsSchedule[i])
     }
     let noteScriptsSchedule = scriptsSchedule.filter(function (event) {
       return event.notesUpdated != null;
@@ -248,8 +314,20 @@ class ScriptList extends React.Component {
       return new Date(a.notesUpdated).getTime() - new Date(b.notesUpdated).getTime()
     });
     for (var i = 0; i < sortedNoteScriptsSchedule.length; i++) {
-      scripts.push(sortedNoteScriptsSchedule[i])
+      sortSchedule.push(sortedNoteScriptsSchedule[i])
     }
+
+    sortSchedule.sort(function (script1, script2) {
+
+      if (script1.processedOn > script2.processedOn) return 1;
+      if (script1.processedOn < script2.processedOn) return -1;
+    
+    });
+
+    for (var i = 0; i < sortSchedule.length; i++) {
+      scripts.push(sortSchedule[i])
+    }
+
 
     const scriptsQA = this.props.data.filter(function (event) {
       return event.status === 'QA';

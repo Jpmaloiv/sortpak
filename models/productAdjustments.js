@@ -4,6 +4,10 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.STRING,
             allowNull: true
         },
+        adjustId: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
         memo: {
             type: DataTypes.STRING,
             allowNull: true

@@ -17,13 +17,14 @@ import {
 class DetailsTab extends Component {
   constructor(props) {
     super(props)
-    this.state = { 
-      refills: 0 }
+    this.state = {
+      refills: 0
+    }
   }
   state = {
     script: ''
   }
-  
+
 
   componentDidMount() {
     let scriptNum = this.props.sID.match.params.scriptId;
@@ -41,6 +42,8 @@ class DetailsTab extends Component {
           patientDob: script.Patient.dob,
           patientPhone: script.Patient.phone,
           patientEmail: script.Patient.email,
+          patientId: script.Patient.id,
+          patientHub: script.Patient.hub,
           primInsPlan: script.Patient.primInsPlan, primInsBIN: script.Patient.primInsBIN, primInsGroup: script.Patient.primInsGroup, primInsID: script.Patient.primInsID, primInsPCN: script.Patient.primInsPCN, primInsType: script.Patient.primInsType,
           secInsPlan: script.Patient.secInsPlan, secInsBIN: script.Patient.secInsBIN, secInsGroup: script.Patient.secInsGroup, secInsID: script.Patient.secInsID, secInsPCN: script.Patient.secInsPCN, secInsType: script.Patient.secInsType,
           conditions: script.Patient.conditions,
@@ -78,9 +81,9 @@ class DetailsTab extends Component {
           trackNum: script.trackNum,
           ETA: script.ETA,
           paymentOption: script.paymentOption,
-          
+
         })
-        
+
 
       }).catch((err) => {
         console.error(err)
@@ -183,7 +186,11 @@ class DetailsTab extends Component {
                     </td>
                     <td className="field">Written Date</td>
                     <td className="value">
-                      <Moment stye={{ lineHeight: '1.8em' }} format="MM/DD/YYYY">{this.state.writtenDate || ''}</Moment>
+                      {this.state.writtenDate ?
+                        <Moment style={{ lineHeight: '1.8em' }} format="MM/DD/YYYY">{this.state.writtenDate}</Moment>
+                        :
+                        <span></span>
+                      }
                     </td>
                   </tr>
                   <tr style={{ lineHeight: '1.8em' }}>
@@ -195,7 +202,7 @@ class DetailsTab extends Component {
                     </td>
                     <td className="field">Prior Authorization</td>
                     <td className='value'></td>
-                   
+
                   </tr>
                   <tr>
                     <td className="field">Date of Birth</td>
@@ -208,9 +215,16 @@ class DetailsTab extends Component {
                     <td className="value">{this.state.patientPhone || ''}</td>
                     <td className="field">Location</td>
                     <td className='value'>{this.state.location || ''}</td>
-                   
                   </tr>
-          
+                  <tr>
+                    <td className="field">Hub</td>
+                    <td className="value">{this.state.patientHub}</td>
+                  </tr>
+                  <tr>
+                    <td className="field">ID</td>
+                    <td className="value">{this.state.patientId}</td>
+                  </tr>
+
                 </tbody>
               </table>
 
@@ -220,7 +234,7 @@ class DetailsTab extends Component {
                     <td className="field">Physician</td>
                     <td className="setValue">
                       {/* <Link to={'../physicians/' + this.state.physicianId} activeClassName="active"> */}
-                        {this.state.physicianName || ''}
+                      {this.state.physicianName || ''}
                       {/* </Link></td> */}</td>
                     <td className="field">Refill #</td>
                     <td className="value">{this.state.refills || ''}</td>
@@ -253,23 +267,31 @@ class DetailsTab extends Component {
                     <td className='value'>{this.state.productName || ''}</td>
                     <td className="field">Patient Pay</td>
                     <td className='value'>{this.state.patientPay}</td>
-                 
+                  </tr>
+                  <tr>
+                    <td className="field">NDC</td>
+                    <td className='value'>{this.state.productNDC || ''}</td>
+                    <td className="field">ETA</td>
+                    <td className='value'>
+                      {this.state.ETA ?
+                        <Moment format="MM/DD/YYYY">{this.state.ETA}</Moment>
+                        :
+                        <span></span>
+                      }
+                    </td>
                   </tr>
                   <tr>
                     <td className="field">Ship On</td>
                     <td className='value'><Moment format="MM/DD/YYYY">{this.state.shipOn || ''}</Moment></td>
-                    <td className="field">ETA</td>
-                    <td className='value'><Moment format="MM/DD/YYYY">{this.state.ETA}</Moment></td>
                   </tr>
                   <tr>
                     <td className="field">Instructions</td>
                     <td className='value'>{this.state.directions || ''}</td>
-                
                   </tr>
-              
+
                 </tbody>
               </table>
-</div>
+            </div>
 
             <div className="scriptViewColumn2">
 
@@ -303,7 +325,7 @@ class DetailsTab extends Component {
             </div>
           </div>
         </Body>
-     </div>
+      </div>
     )
   }
 }

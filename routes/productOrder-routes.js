@@ -16,6 +16,7 @@ router.post("/add", (req, res) => {
         vendor: req.query.vendor,
         memo: req.query.memo,
         qtyChange: req.query.qtyChange,
+        orderId: req.query.orderId,
         lot: req.query.lot,
         expiration: req.query.expiration,
         writtenBy: req.query.writtenBy,
@@ -26,6 +27,7 @@ router.post("/add", (req, res) => {
         .create(productOrder)
         .then((resp) => {
             res.status(200).json({ message: "Upload successful!" });
+            res.send("YES!")
         })
         .catch((err) => {
             console.error(err);

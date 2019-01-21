@@ -381,11 +381,13 @@ class DetailsTab extends Component {
                   </tr>
                   <tr>
                     <td className="field">ETA</td>
-                    <td className='value'>{this.state.ETA ?
-                      <Moment format="MM/DD/YYYY">{this.state.ETA}</Moment>
-                      :
-                      <span></span>
-                    }</td>
+                    <td className='value'>
+                      {this.state.ETA ?
+                        <Moment format="MM/DD/YYYY">{this.state.ETA}</Moment>
+                        :
+                        <span></span>
+                      }
+                    </td>
                     <td className="field">Payment Option</td>
                     <td className='value'>{this.state.paymentOption}</td>
                   </tr>

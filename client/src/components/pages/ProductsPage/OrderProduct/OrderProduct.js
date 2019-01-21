@@ -12,12 +12,12 @@ class OrderProduct extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            orderDate: moment().format("YYYY-MM-DD"), invoiceNum: '', vendor: '', memo: '', setProduct: 'inactive', render: false, products: [], productList: [], productMed: []
+            orderDate: moment().format("YYYY-MM-DD"), invoiceNum: '', vendor: '', memo: '', setProduct: 'inactive', render: false, products: [], productList: [], productMed: [], orderId: Math.floor(Math.random() * 9000000) + 1000000
         }
 
         const field = {
             setProduct: 'inactive',
-            id: '', name: '', NDC: '', packageSize: '', quantity: '', lot: '', expiration: '', cost: '', oldQuantity: '', oldCost: ''
+            id: '', name: '', NDC: '', packageSize: '', quantity: '', lot: '', expiration: '', cost: '', oldQuantity: '', oldCost: '', orderId: this.state.orderId
         }
         this.state.productList.push(field);
         this.removeProductList = this.removeProductList.bind(this);
@@ -34,6 +34,7 @@ class OrderProduct extends Component {
 
 
     submitProductOrder() {
+        console.log(this.state.orderId)
         this.state.productList.splice(-1, 1);
         const loginToken = window.localStorage.getItem("token");
         let data = new FormData();
@@ -54,6 +55,7 @@ class OrderProduct extends Component {
             `This will update the on hand quantity and/or cost of the following medications:\n${confirmText}`
         )) {
             for (var i = 0; i < this.state.productList.length; i++) {
+                console.log(i)
 
                 let product = this.state.productList[i]
                 let newQuantity = +product.oldQuantity + +product.quantity
@@ -67,20 +69,25 @@ class OrderProduct extends Component {
                         console.error(error);
                     })
 
-                axios.post('/api/products/orders/add?productId=' + product.id + '&orderDate=' + this.state.orderDate + '&invoiceNum=' + this.state.invoiceNum +
+                axios.post('/api/products/orders/add?productId=' + product.id + '&orderDate=' + this.state.orderDate + '&orderId=' + this.state.orderId + '&invoiceNum=' + this.state.invoiceNum +
                     '&vendor=' + this.state.vendor + '&memo=' + this.state.memo + '&qtyChange=' + product.quantity + '&lot=' + product.lot + '&expiration=' + product.expiration + '&writtenBy=' + this.state.username,
                     data, { headers: { "Authorization": "Bearer " + loginToken } })
-                    .then((data) => {
+                    .then((resp) => {
+                        console.log(resp);
+                        console.log(i)
+                        console.log(this.state.productList.length)
+                        if (i === this.state.productList.length - 1) {
+                        }
                     }).catch((error) => {
                         console.error(error);
                     })
 
+               
             }
-            window.location = '/products'
         } else {
             let field = {
                 setProduct: 'inactive',
-                id: '', name: '', NDC: '', packageSize: '', quantity: '', lot: '', expiration: '', cost: '', oldQuantity: '', oldCost: ''
+                id: '', name: '', NDC: '', packageSize: '', quantity: '', lot: '', expiration: '', cost: '', oldQuantity: '', oldCost: '', orderId: this.state.orderId
             }
             this.state.productList.push(field);
             return;
@@ -274,7 +281,7 @@ class OrderProduct extends Component {
         const i = this.state.i;
         const field = {
             setProduct: 'inactive', id: '',
-            name: '', NDC: '', packageSize: '', quantity: '', cost: ''
+            name: '', NDC: '', packageSize: '', quantity: '', cost: '', orderId: this.state.orderId
         }
         const loginToken = window.localStorage.getItem("token");
         axios.get('/api/products/search?productId=' + value,
@@ -301,6 +308,7 @@ class OrderProduct extends Component {
 
 
     render() {
+
         return (
             <div className={styles.body} id="addScript">
                 <Header>

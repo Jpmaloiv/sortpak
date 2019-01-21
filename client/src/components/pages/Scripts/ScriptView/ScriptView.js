@@ -287,7 +287,7 @@ class ScriptView extends Component {
       }
     }
 
-    const doNotRefill = (this.state.refillsRemaining == 0)
+    // const doNotRefill = (this.state.refillsRemaining == 0)
 
     let data = new FormData();
     let updateParams = '?id=' + this.props.match.params.scriptId + '&status=' + status + '&pouch=' + this.state.pouch + '&location=' + this.state.location + '&homeCare=' + this.state.homeCare;
@@ -297,7 +297,7 @@ class ScriptView extends Component {
     if (this.state.copayApproval) updateParams += '&patientPay=' + this.state.patientPay + '&copayApproval=' + this.state.copayApproval + '&copayNetwork=' + this.state.copayNetwork + '&networkPay=' + this.state.networkPay;
     if (this.state.shipping) updateParams += '&shipOn=' + this.state.shipOn + '&deliveryMethod=' + this.state.deliveryMethod + '&trackNum=' + this.state.trackNum + '&ETA=' + this.state.ETA + '&paymentOption=' + this.state.paymentOption;
     if (this.state.cancelReason) updateParams += '&cancelReason=' + this.state.cancelReason
-    if (doNotRefill) updateParams += '&doNotRefill=' + doNotRefill;
+    // if (doNotRefill) updateParams += '&doNotRefill=' + doNotRefill;
     axios.put('/api/scripts/update' + updateParams, data, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((data) => {
       }).catch((error) => {
