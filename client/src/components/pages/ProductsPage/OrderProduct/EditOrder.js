@@ -33,23 +33,121 @@ class EditOrder extends Component {
 
         const loginToken = window.localStorage.getItem("token");
         axios.get('/api/products/orders/search?orderId=' + this.props.match.params.orderId, { headers: { "Authorization": "Bearer " + loginToken } })
-          .then((resp) => {
-              console.log(resp)
-            let order = resp.data.response[0]
-            this.setState({
-              orderDate: order.orderDate,
-              invoiceNum: order.invoiceNum,
-              vendor: order.vendor,
-              memo: order.memo
+            .then((resp) => {
+                let order = resp.data.response[0]
+                this.setState({
+                    orderId: order.orderId,
+                    orderDate: order.orderDate,
+                    invoiceNum: order.invoiceNum,
+                    vendor: order.vendor,
+                    memo: order.memo
+                }, this.getOrderBatch)
+            }).catch((err) => {
+                console.error(err)
             })
-    
-          }).catch((err) => {
-            console.error(err)
-          })
+    }
+
+    getOrderBatch() {
+        const loginToken = window.localStorage.getItem("token");
+        axios.get('/api/products/orders/search?batchId=' + this.state.orderId, { headers: { "Authorization": "Bearer " + loginToken } })
+            .then((resp) => {
+                this.setState({
+                    productList: resp.data.response
+                }, this.setBatch)
+            }).catch((err) => {
+                console.error(err)
+            })
+    }
+
+    setBatch() {
+        for (var i = 0; i < this.state.productList.length; i++) {
+            this.fetchBatchInfo(i);
+        }
+        const field = {
+            setProduct: 'inactive', id: '',
+            name: '', NDC: '', packageSize: '', quantity: '', cost: ''
+        }
+        this.state.productList.push(field);
+    }
+
+    fetchBatchInfo(i) {
+        const loginToken = window.localStorage.getItem("token");
+        axios.get('/api/products/search?productId=' + this.state.productList[i].ProductId, { headers: { "Authorization": "Bearer " + loginToken } })
+            .then((resp) => {
+                console.log(resp)
+                let product = this.state.productList[i]
+                product.name = resp.data.response[0].name
+                product.NDC = resp.data.response[0].NDC
+                product.packageSize = resp.data.response[0].packageSize
+                product.oldQuantity = product['qtyChange']
+                product.quantity = product['qtyChange']
+                delete product.qtyChange
+
+                this.setState({
+                    render: !this.state.render
+                })
+            }).catch((err) => {
+                console.error(err)
+            })
+
+        axios.get('/api/products/search?productId=' + this.state.productList[i].ProductId,
+            { headers: { "Authorization": "Bearer " + loginToken } })
+            .then((resp) => {
+                let product = this.state.productList[i]
+                product.oldTotalQuantity = resp.data.response[0].quantity
+                product.oldCost = resp.data.response[0].cost
+                product.cost = resp.data.response[0].cost
+
+                this.setState({
+                    render: !this.state.render
+                })
+            }).catch((error) => {
+                console.error(error);
+            })
+
+        this.state.productList[i].setProduct = 'set';
     }
 
 
-    submitProductOrder() {
+    setProduct(value) {
+        this.setState({
+            prodSearch: false,
+            productId: value,
+            setProduct: 'set'
+        }, this.getProduct(value))
+    }
+
+    getProduct(value) {
+        const i = this.state.i;
+        const field = {
+            setProduct: 'inactive', id: '',
+            name: '', NDC: '', packageSize: '', quantity: '', cost: ''
+        }
+        const loginToken = window.localStorage.getItem("token");
+        axios.get('/api/products/search?productId=' + value,
+            { headers: { "Authorization": "Bearer " + loginToken } })
+            .then((resp) => {
+                let product = resp.data.response[0];
+                let currentProduct = this.state.productList[i]
+                currentProduct.id = product.id;
+                currentProduct.name = product.name;
+                currentProduct.NDC = product.NDC;
+                currentProduct.packageSize = product.packageSize
+                currentProduct.oldQuantity = product.quantity
+                currentProduct.oldCost = product.cost
+                this.state.productList[i].setProduct = 'set';
+                this.state.productList.push(field);
+
+                this.setState({
+                    render: !this.state.render
+                })
+            }).catch((error) => {
+                console.error(error);
+            })
+    }
+
+
+    async submitProductOrder() {
         this.state.productList.splice(-1, 1);
         const loginToken = window.localStorage.getItem("token");
         let data = new FormData();
@@ -57,37 +155,55 @@ class EditOrder extends Component {
 
         for (var i = 0; i < this.state.productList.length; i++) {
             let product = this.state.productList[i];
-            confirmText.push(`${product.name}
-                Quantity: ${product.oldQuantity} -> ${+product.oldQuantity + +product.quantity}`)
+
+            let num = product.quantity / product.packageSize;
+            let newCost = (product.cost / num).toFixed(2)
+
+            let newQuantity = +product.oldTotalQuantity + +(product.quantity - product.oldQuantity)
+
+            console.log(newQuantity)
+
+            confirmText.push(`\n${product.name}
+                Quantity Change for Order: ${product.oldQuantity} -> ${product.quantity}
+                Cost: $${product.oldCost} -> $${newCost} per ${product.packageSize}(package size)\n`)
         }
+
+        
 
         if (window.confirm(
             `This will update the on hand quantity and/or cost of the following medications:\n${confirmText}`
         )) {
             for (var i = 0; i < this.state.productList.length; i++) {
+
                 let product = this.state.productList[i]
-                let newQuantity = +product.oldQuantity + +product.quantity
-                axios.put('/api/products/update?id=' + product.id + '&quantity=' + newQuantity + '&name=' + product.name,
+                let newQuantity = +product.oldTotalQuantity + +(product.quantity - product.oldQuantity)
+                let num = product.quantity / product.packageSize;
+                let newCost = (product.cost / num).toFixed(2)
+
+                axios.put('/api/products/update?id=' + product.ProductId + '&quantity=' + newQuantity + '&name=' + product.name + '&cost=' + newCost,
                     data, { headers: { "Authorization": "Bearer " + loginToken } })
                     .then((data) => {
+                        console.log(data)
                     }).catch((error) => {
                         console.error(error);
                     })
 
-                axios.post('/api/products/orders/add?productId=' + product.id + '&orderDate=' + this.state.orderDate + '&invoiceNum=' + this.state.invoiceNum +
-                    '&vendor=' + this.state.vendor + '&memo=' + this.state.memo + '&qtyChange=' + product.quantity + '&lot=' + product.lot + '&expiration=' + product.expiration + '&writtenBy=' + this.state.username,
-                    data, { headers: { "Authorization": "Bearer " + loginToken } })
-                    .then((data) => {
-                    }).catch((error) => {
-                        console.error(error);
-                    })
-
+                try {
+                    const response = await axios.put('/api/products/orders/update?id=' + product.id + '&orderDate=' + this.state.orderDate + '&orderId=' + this.state.orderId + '&invoiceNum=' + this.state.invoiceNum +
+                        '&vendor=' + this.state.vendor + '&memo=' + this.state.memo + '&qtyChange=' + product.quantity + '&lot=' + product.lot + '&expiration=' + product.expiration + '&writtenBy=' + this.state.username,
+                        data, { headers: { "Authorization": "Bearer " + loginToken } });
+                        console.log(response)
+                } catch (e) {
+                    console.log(e);
+                }
             }
+
             window.location = '/products'
+
         } else {
             let field = {
                 setProduct: 'inactive',
-                id: '', name: '', NDC: '', packageSize: '', quantity: '', lot: '', expiration: '', cost: '', oldQuantity: '', oldCost: ''
+                id: '', name: '', NDC: '', packageSize: '', quantity: '', lot: '', expiration: '', cost: '', oldQuantity: '', oldCost: '', orderId: this.state.orderId
             }
             this.state.productList.push(field);
             return;
@@ -165,7 +281,7 @@ class EditOrder extends Component {
     }
 
     removeProductList(i) {
-        this.state.productList.splice(i,1);
+        this.state.productList.splice(i, 1);
         this.setState({
             render: !this.state.render
         })
@@ -201,9 +317,12 @@ class EditOrder extends Component {
                 </div>
             )
         } else if (product.setProduct === 'set') {
+            console.log(this.state.productList)
             return (
                 <tr>
-                    <td>{product.name} <Icon className="minus" name="minus" onClick={() => this.removeProductList(i)} /></td>
+                    <td>{product.name}
+                        {/* <Icon className="minus" name="minus" onClick={() => this.removeProductList(i)} /> */}
+                    </td>
                     <td>{product.NDC}</td>
                     <td>{product.packageSize}</td>
                     <td>
@@ -269,49 +388,12 @@ class EditOrder extends Component {
         )
     }
 
-    setProduct(value) {
-        this.setState({
-            prodSearch: false,
-            productId: value,
-            setProduct: 'set'
-        }, this.getProduct(value))
-    }
-
-    getProduct(value) {
-        const i = this.state.i;
-        const field = {
-            setProduct: 'inactive', id: '',
-            name: '', NDC: '', packageSize: '', quantity: '', cost: ''
-        }
-        const loginToken = window.localStorage.getItem("token");
-        axios.get('/api/products/search?productId=' + value,
-            { headers: { "Authorization": "Bearer " + loginToken } })
-            .then((resp) => {
-                let product = resp.data.response[0];
-                let currentProduct = this.state.productList[i]
-                currentProduct.id = product.id;
-                currentProduct.name = product.name;
-                currentProduct.NDC = product.NDC;
-                currentProduct.packageSize = product.packageSize
-                currentProduct.oldQuantity = product.quantity
-                currentProduct.oldCost = product.cost
-                this.state.productList[i].setProduct = 'set';
-                this.state.productList.push(field);
-
-                this.setState({
-                    render: !this.state.render
-                })
-            }).catch((error) => {
-                console.error(error);
-            })
-    }
-
 
     render() {
         return (
             <div className={styles.body} id="addScript">
                 <Header>
-                    <h2>Order</h2>
+                    <h2>Edit Order</h2>
                     <div className='action'>
                         <Button
                             large

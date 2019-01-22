@@ -33,8 +33,8 @@ class OrderProduct extends Component {
     }
 
 
-    submitProductOrder() {
-        console.log(this.state.orderId)
+    async submitProductOrder() {
+
         this.state.productList.splice(-1, 1);
         const loginToken = window.localStorage.getItem("token");
         let data = new FormData();
@@ -55,7 +55,9 @@ class OrderProduct extends Component {
             `This will update the on hand quantity and/or cost of the following medications:\n${confirmText}`
         )) {
             for (var i = 0; i < this.state.productList.length; i++) {
+                console.log(this.state.productList.length)
                 console.log(i)
+
 
                 let product = this.state.productList[i]
                 let newQuantity = +product.oldQuantity + +product.quantity
@@ -69,21 +71,25 @@ class OrderProduct extends Component {
                         console.error(error);
                     })
 
-                axios.post('/api/products/orders/add?productId=' + product.id + '&orderDate=' + this.state.orderDate + '&orderId=' + this.state.orderId + '&invoiceNum=' + this.state.invoiceNum +
+                try {
+                    const response = await axios.post('/api/products/orders/add?productId=' + product.id + '&orderDate=' + this.state.orderDate + '&orderId=' + this.state.orderId + '&invoiceNum=' + this.state.invoiceNum +
                     '&vendor=' + this.state.vendor + '&memo=' + this.state.memo + '&qtyChange=' + product.quantity + '&lot=' + product.lot + '&expiration=' + product.expiration + '&writtenBy=' + this.state.username,
-                    data, { headers: { "Authorization": "Bearer " + loginToken } })
-                    .then((resp) => {
-                        console.log(resp);
-                        console.log(i)
-                        console.log(this.state.productList.length)
-                        if (i === this.state.productList.length - 1) {
-                        }
-                    }).catch((error) => {
-                        console.error(error);
-                    })
+                    data, { headers: { "Authorization": "Bearer " + loginToken } });
+                    console.log(response)
+                } catch (e) {
+                    console.log(e);
+                  }
+                }
+                    
 
-               
-            }
+
+
+                if (i === this.state.productList.length - 1) {
+                    window.alert(`${this.state.productList.length} product orders have been uploaded for Order Id #${this.state.orderId}`);
+                }
+
+
+            window.location.reload();
         } else {
             let field = {
                 setProduct: 'inactive',

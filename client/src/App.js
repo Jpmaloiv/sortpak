@@ -37,7 +37,7 @@ import EditProduct from './components/pages/ProductsPage/AddProduct/EditProduct'
 import OrderProduct from './components/pages/ProductsPage/OrderProduct/OrderProduct'
 import EditOrder from './components/pages/ProductsPage/OrderProduct/EditOrder'
 import AdjustProduct from './components/pages/ProductsPage/OrderProduct/AdjustProduct'
-import EditAdjustment from './components/pages/ProductsPage/OrderProduct/EditAdjustment'
+import EditAdjust from './components/pages/ProductsPage/OrderProduct/EditAdjust'
 import Inventory from './components/pages/ProductsPage/OrderProduct/Inventory'
 import TeamPage from './components/pages/TeamPage/TeamPage'
 import AddMember from './components/pages/TeamPage/AddMember/AddMember'
@@ -183,7 +183,7 @@ class App extends Component {
                 <Route exact path="/products/adjust" component={AdjustProduct} />
                 <Route exact path="/products/:productId/inventory" component={Inventory} />
                 <Route exact path="/products/orders/:orderId" component={EditOrder} />
-                <Route exact path="/products/adjustments/:adjustmentId" component={EditAdjustment} />
+                <Route exact path="/products/adjustments/:adjustmentId" component={EditAdjust} />
 
                 <PrivateRoute exact path="/team" component={TheTeamPage} />
                 <PrivateRoute exact path="/team/add" component={AddMember} />

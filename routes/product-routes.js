@@ -87,6 +87,7 @@ router.get("/search", (req, res) => {
 
 
 router.put("/update", function (req, res) {
+    console.log(req.query)
 
     const name = req.query.name.split("%20").join(" "); // Removes '%20' from strings that have a '%' in them naturally
 

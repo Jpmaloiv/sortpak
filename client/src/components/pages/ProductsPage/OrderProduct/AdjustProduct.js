@@ -12,12 +12,12 @@ class AdjustProduct extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            orderDate: moment().format("YYYY-MM-DD"), memo: '', setProduct: 'inactive', render: false, products: [], productList: [], productMed: []
+            orderDate: moment().format("YYYY-MM-DD"), memo: '', setProduct: 'inactive', render: false, products: [], productList: [], productMed: [], adjustId: Math.floor(Math.random() * 9000000) + 1000000
         }
 
         const field = {
             setProduct: 'inactive',
-            id: '', name: '', NDC: '', packageSize: '', quantity: '', lot: '', expiration: '', cost: '', oldQuantity: '', oldCost: ''
+            id: '', name: '', NDC: '', packageSize: '', quantity: '', lot: '', expiration: '', cost: '', oldQuantity: '', oldCost: '', adjustId: this.state.adjustId
         }
         this.state.productList.push(field);
 
@@ -32,7 +32,7 @@ class AdjustProduct extends Component {
     }
 
 
-    submitProductAdjustment() {
+    async submitProductAdjustment() {
         this.state.productList.splice(-1, 1);
         const loginToken = window.localStorage.getItem("token");
         let data = new FormData();
@@ -57,20 +57,29 @@ class AdjustProduct extends Component {
                         console.error(error);
                     })
 
-                axios.post('/api/products/adjustments/add?productId=' + product.id + '&orderDate=' + this.state.orderDate +
-                    '&memo=' + this.state.memo + '&qtyChange=' + product.quantity + '&lot=' + product.lot + '&expiration=' + product.expiration + '&writtenBy=' + this.state.username,
-                    data, { headers: { "Authorization": "Bearer " + loginToken } })
-                    .then((data) => {
-                    }).catch((error) => {
-                        console.error(error);
-                    })
-
+                try {
+                    const response = await axios.post('/api/products/adjustments/add?productId=' + product.id + '&orderDate=' + this.state.orderDate + '&adjustId=' + this.state.adjustId +
+                        '&memo=' + this.state.memo + '&qtyChange=' + product.quantity + '&lot=' + product.lot + '&expiration=' + product.expiration + '&writtenBy=' + this.state.username,
+                        data, { headers: { "Authorization": "Bearer " + loginToken } })
+                        .then((data) => {
+                        }).catch((error) => {
+                            console.error(error);
+                        })
+                    console.log(response);
+                } catch (e) {
+                    console.log(e);
+                }
             }
+
+            if (i === this.state.productList.length - 1) {
+                window.alert(`${this.state.productList.length} product orders have been uploaded for Order Id #${this.state.adjustId}`);
+            }
+
             window.location = '/products'
         } else {
             const field = {
                 setProduct: 'inactive',
-                id: '', name: '', NDC: '', packageSize: '', quantity: '', lot: '', expiration: '', cost: '', oldQuantity: '', oldCost: ''
+                id: '', name: '', NDC: '', packageSize: '', quantity: '', lot: '', expiration: '', cost: '', oldQuantity: '', oldCost: '', adjustId: this.state.adjustId
             }
             this.state.productList.push(field)
             return;
@@ -147,7 +156,7 @@ class AdjustProduct extends Component {
     }
 
     removeProductList(i) {
-        this.state.productList.splice(i,1);
+        this.state.productList.splice(i, 1);
         this.setState({
             render: !this.state.render
         })
@@ -257,7 +266,7 @@ class AdjustProduct extends Component {
         const i = this.state.i;
         const field = {
             setProduct: 'inactive', id: '',
-            name: '', NDC: '', packageSize: '', quantity: '', cost: ''
+            name: '', NDC: '', packageSize: '', quantity: '', cost: '', adjustId: this.state.adjustId
         }
         const loginToken = window.localStorage.getItem("token");
         axios.get('/api/products/search?productId=' + value,
