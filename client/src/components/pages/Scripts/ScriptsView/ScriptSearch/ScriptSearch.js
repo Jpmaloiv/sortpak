@@ -94,13 +94,14 @@ class ScriptSearch extends React.Component {
   submitSearch = (event) => {
     console.log(this.state.textSearch);
     let searchParams = "?patient=null";
+    let textSearch = "";
     let status = "";
     if (this.state.RX) searchParams += '&homeCare=0'
     if (this.state.HC) searchParams += '&homeCare=1'
     if (this.state.special) searchParams += '&salesCode=M'
     if (this.state.SP) searchParams += '&location=SP'
     if (this.state.thirdParty) searchParams += '&location=thirdParty'
-    if (this.state.textSearch) searchParams += '&textSearch=' + this.state.textSearch
+    if (this.state.textSearch) textSearch += this.state.textSearch
     if (this.state.rep) searchParams += '&rep=' + this.state.rep
     if (this.state.specialization) searchParams += '&specialization=' + this.state.specialization
     if (this.state.statusReceived) status += ',Received'
@@ -117,7 +118,12 @@ class ScriptSearch extends React.Component {
     if (this.state.statusRefill) status += ',Refill'
     var statusFilter = status.substring(1);
     if (status) searchParams += '&status=' + statusFilter
-    this.props.searchFunc(searchParams);
+    this.props.searchFunc(searchParams, textSearch);
+    // console.log(response)
+
+    // if (this.state.textSearch) {
+    //   this.props.textSearch(this.state.textSearch);
+    // }
   }
 
 
@@ -201,7 +207,7 @@ class ScriptSearch extends React.Component {
                 value={this.state.textSearch}
                 onChange={textSearch => this.setState({ textSearch })}
                 label="Search"
-                placeholder="Enter medication name or NDC"
+                placeholder="Search by text"
                 onKeyPress={this.enterPressed.bind(this)}
               />
               

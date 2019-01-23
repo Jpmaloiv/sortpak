@@ -134,28 +134,27 @@ router.get("/search", (req, res) => {
         }
     }
 
-    if (req.query.textSearch) {
-        searchParams = {
-            [Op.or]: [{
-            include: [{
-                model: db.Patients, attributes: ["firstName", "lastName", "dob", "phone", "email", "patientWarning", "conditions", "allergies", 'primInsPlan',
-                    'primInsBIN', 'primInsGroup', 'primInsID', 'primInsPCN', 'primInsType', 'secInsPlan', 'secInsBIN', 'secInsGroup',
-                    'secInsID', 'secInsPCN', 'secInsType'],
-            }, {
-                model: db.Physicians, attributes: ["firstName", "lastName", 'specialization', "rep", "contact", "phone", "physicianWarning"],
-            }, {
-                model: db.Products,
-                where: {
-                    [Op.or]: [{
-                        name: { like: '%' + req.query.textSearch + '%' }
-                    }, {
-                        NDC: { like: '%' + req.query.textSearch + '%' }
-                    }]
-                }
-            }, { model: db.scriptNotes, attributes: ['note', 'createdAt'] }, { model: db.scriptAttachments, attributes: ['id'] }]
-        }]
-        }
-    }
+    // if (req.query.textSearch) {
+    //     searchParams = {
+    //         include: [{
+    //             model: db.Patients, attributes: ["firstName", "lastName", "dob", "phone", "email", "patientWarning", "conditions", "allergies", 'primInsPlan',
+    //                 'primInsBIN', 'primInsGroup', 'primInsID', 'primInsPCN', 'primInsType', 'secInsPlan', 'secInsBIN', 'secInsGroup',
+    //                 'secInsID', 'secInsPCN', 'secInsType'],
+    //         }, {
+    //             model: db.Physicians, attributes: ["firstName", "lastName", 'specialization', "rep", "contact", "phone", "physicianWarning"],
+    //         }, {
+    //             model: db.Products,
+    //             where: {
+    //                 [Op.or]: [{
+    //                     name: { like: '%' + req.query.textSearch + '%' }
+    //                 }, {
+    //                     NDC: { like: '%' + req.query.textSearch + '%' }
+    //                 }]
+    //             }
+    //         }, { model: db.scriptNotes, attributes: ['note', 'createdAt'] }, { model: db.scriptAttachments, attributes: ['id'] }]
+        
+    //     }
+    // }
 
 
 

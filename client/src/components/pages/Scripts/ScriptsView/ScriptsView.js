@@ -8,6 +8,7 @@ import ScriptList from './ScriptList/ScriptList'
 import { Header } from '../../../common'
 
 import styles from './ScriptsView.css'
+import { ENETDOWN } from 'constants';
 
 class ScriptsView extends Component {
   constructor(props) {
@@ -29,13 +30,28 @@ class ScriptsView extends Component {
     }
   }
 
-  searchScriptDb = (searchParams) => {
+  searchScriptDb = (searchParams, textSearch) => {
+    console.log("RUNNING")
     const loginToken = window.localStorage.getItem("token");
     axios.get('api/scripts/search' + searchParams, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
         console.log(resp)
+        let filteredScripts = resp.data.response;
+        if (textSearch) {
+
+          filteredScripts = resp.data.response.filter(function (event) {
+            return event.rxNumber.includes(textSearch) 
+              || event.Physician.firstName.includes(textSearch) || event.Physician.firstName.toLowerCase().includes(textSearch)
+              || event.Physician.lastName.includes(textSearch) || event.Physician.firstName.toLowerCase().includes(textSearch)
+              || event.Patient.firstName.includes(textSearch) || event.Patient.firstName.toLowerCase().includes(textSearch)
+              || event.Patient.lastName.includes(textSearch) || event.Patient.firstName.toLowerCase().includes(textSearch)
+              || event.Product.name.includes(textSearch) || event.Product.name.toLowerCase().includes(textSearch)
+              || event.Product.NDC.includes(textSearch);
+          })
+        };
+
         this.setState({
-          results: resp.data.response,
+          results: filteredScripts,
           patient: resp.data.patient,
           medication: resp.data.medication,
           status: resp.data.status,
@@ -50,9 +66,18 @@ class ScriptsView extends Component {
 
   componentDidMount() {
     const urlParams = new URLSearchParams(this.props.location.scripts)
-      // const patient = urlParams.get("patient")
-      this.searchScriptDb("?patient=" + urlParams.get("patient"))   
+    // const patient = urlParams.get("patient")
+    this.searchScriptDb("?patient=" + urlParams.get("patient"))
     // this.searchScriptDb();
+  }
+
+  textSearch = (textSearch) => {
+    const filteredScripts = this.state.results.filter(function (event) {
+      return event.Physician.lastName.includes(textSearch);
+    });
+    this.setState({
+      results: filteredScripts
+    })
   }
 
 

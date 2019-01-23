@@ -63,7 +63,7 @@ class ScriptList extends React.Component {
       return (
         <div>
           {script.shipOn ?
-            <Moment format="MM/DD/YYYY">{script.shipOn || ''}</Moment>
+            <Moment format="MM/DD/YYYY">{script.shipOn}</Moment>
             : <span></span>
           }
         </div>
@@ -129,6 +129,7 @@ class ScriptList extends React.Component {
   }
 
   sortScripts() {
+    console.log(this.props, this.state)
     this.setState({
       scripts: this.props.data
     }, this.filterScripts)
@@ -142,6 +143,8 @@ class ScriptList extends React.Component {
     const sortProcess = [];
     const sortCopayAssistance = [];
     const sortSchedule = [];
+    console.log(this.props)
+    console.log(this.state.scripts)
 
     const scriptsReceived = this.props.data.filter(function (event) {
       return event.status === 'Received';
