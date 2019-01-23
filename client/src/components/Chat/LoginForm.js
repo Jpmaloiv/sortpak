@@ -22,6 +22,7 @@ export default class LoginForm extends Component {
 				.then((resp) => {
 					this.setState({
 						nickname: resp.data.response[0].name,
+						role: resp.data.response[0].role
 					});
 				}).catch((error) => {
 					console.error(error);
@@ -46,7 +47,9 @@ export default class LoginForm extends Component {
 		e.preventDefault()
 		const { socket } = this.props
 		const { nickname } = this.state
-		socket.emit(VERIFY_USER, nickname, this.setUser)
+		const { role } = this.state
+		console.log(role);
+		socket.emit(VERIFY_USER, nickname, role, this.setUser)
 	}
 
 	handleChange = (e) => {

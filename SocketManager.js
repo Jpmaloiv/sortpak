@@ -20,11 +20,11 @@ module.exports = function(socket){
 	let sendTypingFromUser;
 
 	//Verify Username
-	socket.on(VERIFY_USER, (nickname, callback)=>{
-		if(isUser(connectedUsers, nickname)){
+	socket.on(VERIFY_USER, (nickname, role, callback)=>{
+		if(isUser(connectedUsers, nickname, role)){
 			callback({ isUser:true, user:null })
 		}else{
-			callback({ isUser:false, user:createUser({name:nickname, socketId:socket.id})})
+			callback({ isUser:false, user:createUser({name:nickname, role: role, socketId:socket.id})})
 		}
 	})
 
@@ -33,8 +33,9 @@ module.exports = function(socket){
 		user.socketId = socket.id
 		connectedUsers = addUser(connectedUsers, user)
 		socket.user = user
+		console.log(user)
 
-		sendMessageToChatFromUser = sendMessageToChat(user.name)
+		sendMessageToChatFromUser = sendMessageToChat(user.name, user.role)
 		sendTypingFromUser = sendTypingToChat(user.name)
 
 		io.emit(USER_CONNECTED, connectedUsers)
@@ -115,9 +116,9 @@ function sendTypingToChat(user){
 * @param sender {string} username of sender
 * @return function(chatId, message)
 */
-function sendMessageToChat(sender){
+function sendMessageToChat(sender, role){
 	return (chatId, message)=>{
-		io.emit(`${MESSAGE_RECIEVED}-${chatId}`, createMessage({message, sender}))
+		io.emit(`${MESSAGE_RECIEVED}-${chatId}`, createMessage({message, sender, role}))
 	}
 }
 
