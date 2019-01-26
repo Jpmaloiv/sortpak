@@ -58,10 +58,6 @@ import { createStore, applyMiddleware } from 'redux'
 import createHistory from 'history/createBrowserHistory'
 // import restricted from './components/restricted'
 
-//--Chat--//
-import  ChatWidget from './components/shared/ChatWidget/ChatWidget';
-//------//
-
 
 import './App.css';
 
@@ -136,7 +132,7 @@ class App extends Component {
         <Router>
           <div>
             <TopNav />
-            {this.state.userRole === "" ? <div></div> :  <Layout />}
+            {/* {this.state.userRole === "" ? <div></div> :  <Layout />} */}
             <div className="container">
               <Switch>
                 <Route
