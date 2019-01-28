@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { Redirect } from 'react-router-dom'
 import axios from 'axios'
 import jwt_decode from 'jwt-decode'
 import TopNav from './components/TopNav/TopNav'
@@ -66,14 +67,14 @@ class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      userRole: ''
+      userRole: '',
+      render: true
     }
   }
 
 
 
   componentWillMount() {
-
     const loginToken = window.localStorage.getItem("token");
     if (loginToken) {
       var decoded = jwt_decode(loginToken);
@@ -81,6 +82,7 @@ class App extends Component {
         .then((resp) => {
           this.setState({
             userRole: resp.data.response[0].role,
+            render: true
           });
         }).catch((error) => {
           console.error(error);
@@ -101,6 +103,17 @@ class App extends Component {
       applyMiddleware(historyMiddleware, ReduxThunk),
     )
 
+    const Scripts = () => {
+      console.log(this.state.userRole)
+      if (this.state.userRole === 'Admin' || this.state.userRole === 'Rep') {
+        return <PrivateRoute exact path="/scripts" component={ScriptsPage} />
+      } else if (this.state.userRole === 'Physician') {
+        return <Redirect to='/patients' />
+      } else {
+        return <div></div>
+      }
+    }
+
     const ThePatientsPage = (props) => {
       return (
         <PatientsPage
@@ -120,13 +133,19 @@ class App extends Component {
     }
 
     const TheTeamPage = (props) => {
-      return (
-        <TeamPage
+      if (this.state.userRole === 'Admin' || this.state.userRole === 'Rep') {
+        return <TeamPage
           state={this.state}
           {...props}
         />
-      );
+      } else if (this.state.userRole === 'Physician') {
+        return <Redirect to='/patients' />
+      } else {
+        return <div></div>
+      }
     }
+
+    
     return (
       <Provider store={store}>
         <Router>
@@ -150,46 +169,47 @@ class App extends Component {
 
 
                 <Route exact path="/" component={Login} />
-                <Route exact path="/scripts" component={ScriptsPage} />
-                <Route exact path="/scripts/add" component={AddScript} />
+                <PrivateRoute exact path="/scripts" component={Scripts} />
+                <PrivateRoute exact path="/scripts/add" component={AddScript} />
                 {this.state.userRole === "Admin" ?
-                  <Route exact path="/scripts/:scriptId" component={ScriptView} />
-                  : <Route exact path="/scripts/:scriptId" component={ScriptViewPhysician} />}
-                <Route exact path="/scripts/:scriptId/edit" component={EditScript} />
+                  <PrivateRoute exact path="/scripts/:scriptId" component={ScriptView} />
+                  : <PrivateRoute exact path="/scripts/:scriptId" component={ScriptViewPhysician} />}
+                <PrivateRoute exact path="/scripts/:scriptId/edit" component={EditScript} />
 
-                <Route exact path="/patients" render={ThePatientsPage} />
+                <PrivateRoute exact path="/patients" component={ThePatientsPage} />
+                <PrivateRoute exact path="/physicians" component={ThePhysiciansPage} />
 
-                <Route exact path="/patients/add" component={AddPatient} />
-                <Route exact path="/patients/:patientId/edit" component={EditPatient} />
+
+                <PrivateRoute exact path="/patients/add" component={AddPatient} />
+                <PrivateRoute exact path="/patients/:patientId/edit" component={EditPatient} />
                 {this.state.userRole === "Admin" || this.state.userRole === "Rep" ?
-                  <Route exact path="/patients/:patientId" component={PatientView} />
-                  : <Route exact path="/patients/:patientId" component={PatientViewPhysician} />}
-                <Route exact path="/dashboard" component={DashboardPage} />
-                <Route exact path="/physicians" component={ThePhysiciansPage} />
-                <Route exact path="/physicians/add" component={AddPhysician} />
-                <Route exact path="/physicians/:physicianId/edit" component={EditPhysician} />
-                <Route exact path="/physicians/:physicianId" component={PhysicianView} />
-                <Route exact path="/physicians/:physicianId/access" component={PhysicianAccess} />
-                <Route exact path="/agenda" component={AgendaPage} />
-                <Route exact path="/refills" component={RefillsPage} />
-                <Route exact path="/products" component={ProductsPage} />
-                <Route exact path="/products/add" component={AddProduct} />
-                <Route exact path="/products/:productId/edit" component={EditProduct} />
-                <Route exact path="/products/order" component={OrderProduct} />
-                <Route exact path="/products/adjust" component={AdjustProduct} />
-                <Route exact path="/products/:productId/inventory" component={Inventory} />
-                <Route exact path="/products/orders/:orderId" component={EditOrder} />
-                <Route exact path="/products/adjustments/:adjustmentId" component={EditAdjust} />
+                  <PrivateRoute exact path="/patients/:patientId" component={PatientView} />
+                  : <PrivateRoute exact path="/patients/:patientId" component={PatientViewPhysician} />}
+                <PrivateRoute exact path="/dashboard" component={DashboardPage} />
+                <PrivateRoute exact path="/physicians/add" component={AddPhysician} />
+                <PrivateRoute exact path="/physicians/:physicianId/edit" component={EditPhysician} />
+                <PrivateRoute exact path="/physicians/:physicianId" component={PhysicianView} />
+                <PrivateRoute exact path="/physicians/:physicianId/access" component={PhysicianAccess} />
+                <PrivateRoute exact path="/agenda" component={AgendaPage} />
+                <PrivateRoute exact path="/refills" component={RefillsPage} />
+                <PrivateRoute exact path="/products" component={ProductsPage} />
+                <PrivateRoute exact path="/products/add" component={AddProduct} />
+                <PrivateRoute exact path="/products/:productId/edit" component={EditProduct} />
+                <PrivateRoute exact path="/products/order" component={OrderProduct} />
+                <PrivateRoute exact path="/products/adjust" component={AdjustProduct} />
+                <PrivateRoute exact path="/products/:productId/inventory" component={Inventory} />
+                <PrivateRoute exact path="/products/orders/:orderId" component={EditOrder} />
+                <PrivateRoute exact path="/products/adjustments/:adjustmentId" component={EditAdjust} />
 
                 <PrivateRoute exact path="/team" component={TheTeamPage} />
                 <PrivateRoute exact path="/team/add" component={AddMember} />
                 <PrivateRoute exact path="/team/:userId/edit" component={EditMember} />
                 <PrivateRoute exact path="/team/:userId/profile" component={Profile} />
 
-                <Route exact path="/attachment/:attachmentId" component={Attachment} />
-                <Route exact path="/receipt/:paymentId" component={Receipt} />
+                <PrivateRoute exact path="/attachment/:attachmentId" component={Attachment} />
+                <PrivateRoute exact path="/receipt/:paymentId" component={Receipt} />
 
-                <Route exact path="/patientAttachment/:attachmentId" component={PatientAttachment} />
+                <PrivateRoute exact path="/patientAttachment/:attachmentId" component={PatientAttachment} />
 
                 {/* <Route exact path="/book/:bookId" component={Attachment} /> */}
 

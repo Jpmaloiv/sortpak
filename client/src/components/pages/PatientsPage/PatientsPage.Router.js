@@ -18,8 +18,6 @@ class PatientsPageRouter extends React.Component {
 
   render() {
 
-    console.log(this.props.props.state.userRole);
-
     const PatientsViewPhysicianPage = (props) => {
       return (
         <PatientsViewPhysician

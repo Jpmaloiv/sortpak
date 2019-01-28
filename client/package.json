@@ -38,6 +38,7 @@
     "react-router-redux": "^4.0.8",
     "react-scripts": "1.1.1",
     "react-spinner": "^0.2.7",
+    "react-spinners": "^0.5.1",
     "react-stripe-checkout": "^2.6.3",
     "react-stripe-elements": "^1.7.0",
     "react-table": "^6.8.6",

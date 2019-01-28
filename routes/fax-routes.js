@@ -31,7 +31,6 @@ router.post("/upload", (req, res) => {
     const currentDate = moment().format('MM-DD-YYYY');
 
     const faxFile = req.files.faxFile;
-    console.log(req.payload);
     const faxLink = '/faxes/' + '/download' + ".pdf";
     const fax = {
         PatientId: req.query.patientId,
@@ -72,19 +71,19 @@ router.post("/upload", (req, res) => {
                         .catch((err) => { throw err; });
 
                     // Get a list of all the faxes you have sent in the past and re-send the most recent one.
-                    phaxio.faxes.listFaxes({ direction: 'sent' })
-                        .then((faxes) => {
-                            const mostRecent = faxes.data.reduce((acc, cv) => {
-                                const accCreated = new Date(acc.created_at);
-                                const cvCreated = new Date(cv.created_at);
-                                const output = accCreated > cvCreated ? acc : cv;
-                                return output;
-                            }, { created_at: '1970-01-01T00:00:00.000Z' });
+                    // phaxio.faxes.listFaxes({ direction: 'sent' })
+                    //     .then((faxes) => {
+                    //         const mostRecent = faxes.data.reduce((acc, cv) => {
+                    //             const accCreated = new Date(acc.created_at);
+                    //             const cvCreated = new Date(cv.created_at);
+                    //             const output = accCreated > cvCreated ? acc : cv;
+                    //             return output;
+                    //         }, { created_at: '1970-01-01T00:00:00.000Z' });
 
-                            return phaxio.faxes.resend({ id: mostRecent.id });
-                        })
-                        .then(response => console.log('Response from resending most recent fax:\n', JSON.stringify(response, null, 2))
-                            .catch((err) => { throw err; }))
+                    //         return phaxio.faxes.resend({ id: mostRecent.id });
+                    //     })
+                    //     .then(response => console.log('Response from resending most recent fax:\n', JSON.stringify(response, null, 2))
+                    //         .catch((err) => { throw err; }))
                     db.Faxes
                         .create(fax)
                         .then((resp) => {

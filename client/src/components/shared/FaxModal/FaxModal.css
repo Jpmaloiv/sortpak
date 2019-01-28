@@ -9,6 +9,10 @@
     text-align: center;
 }
 
+.faxTable > table > tbody > tr:nth-child(odd) {
+    background-color: #fff !important;
+}
+
 .infoTable {
     width: 100%;
 }
