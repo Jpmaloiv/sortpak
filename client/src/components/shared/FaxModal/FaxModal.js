@@ -5,6 +5,9 @@ import * as jsPDF from 'jspdf'
 import Moment from 'react-moment'
 import moment from 'moment'
 
+import { css } from '@emotion/core';
+import { CircleLoader } from 'react-spinners';
+
 import styles from './FaxModal.css'
 
 // Components
@@ -16,12 +19,20 @@ import {
   TextArea
 } from '../../common'
 
+const override = css`
+    display: block;
+    margin: 0 auto;
+    border-color: red;
+    position: fixed;
+`;
+
 
 class FaxModal extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      render: false
+      render: false,
+      loading: true
     }
     this.handleCheckbox = this.handleCheckbox.bind(this);
   }
@@ -118,6 +129,8 @@ class FaxModal extends Component {
   printDocument(e) {
     e.preventDefault();
 
+    this.props.loading();
+
     const input = document.getElementById('divToPrint');
     html2canvas(input, {
       scale: "3"
@@ -148,13 +161,15 @@ class FaxModal extends Component {
               console.log(res)
               if (res.status === 200) {
                 window.alert('Fax successfully sent!');
+                window.location.reload();
               }
               else {
                 window.alert('Fax failed to send. Please make sure the fax number provided is valid.');
               }
             })
         } else {
-          return;
+          this.props.cancelLoading();
+          // return;
         }
 
         const filteredScripts = this.state.scripts.filter(function (event) {
@@ -236,7 +251,7 @@ class FaxModal extends Component {
           <th>QTY</th>
           <th>LAST FILL</th>
           <th>DIRECTIONS</th>
-          <th></th>  
+          <th></th>
         </tr>
       </thead>
     )
@@ -296,7 +311,7 @@ class FaxModal extends Component {
       <tr value={script.id}>
         <td>
           <div style={{ 'display': 'flex' }}>
-            <input style={{marginTop: 4, width: 20}} type="checkbox" value={script.id} onChange={(e) => this.handleCheckbox(e, i)}></input><Moment format="MM/DD/YYYY">{script.processedOn}</Moment>
+            <input style={{ marginTop: 4, width: 20 }} type="checkbox" value={script.id} onChange={(e) => this.handleCheckbox(e, i)}></input><Moment format="MM/DD/YYYY">{script.processedOn}</Moment>
           </div>
         </td>
         <td>{script.Product.name}</td>
@@ -339,6 +354,8 @@ class FaxModal extends Component {
       content,
       onClickAway,
     } = this.props
+
+
 
     if (this.state.scripts) {
       var scriptList = this.state.scripts.map(function (item, i) {
@@ -406,7 +423,7 @@ class FaxModal extends Component {
             <div className="main">
               <div className='flex' style={{ marginTop: 20 }}>
                 <div className='flex-col' style={{ textAlign: 'left' }}>
-                  <img style={{ width: '75px', height: 'auto', marginLeft: 30}} alt="SortPak" src="http://www.sortpak.com/site-uploadz/2018/05/sortpak-logo-lg.png" />
+                  <img style={{ width: '75px', height: 'auto', marginLeft: 30 }} alt="SortPak" src="http://www.sortpak.com/site-uploadz/2018/05/sortpak-logo-lg.png" />
                 </div>
                 <div className='flex-col'>
                   <h2 style={{ marginTop: 0 }}>REFILL AUTHORIZATION REQUEST</h2>
@@ -465,8 +482,8 @@ class FaxModal extends Component {
                 </thead>
 
                 <tbody>
-                  <tr style={{'background-color': '#fff !important'}}>
-                    <td style={{background: '#f6f8fa'}}><div className="check"><input type="checkbox"></input>
+                  <tr style={{ 'background-color': '#fff !important' }}>
+                    <td style={{ background: '#f6f8fa' }}><div className="check"><input type="checkbox"></input>
                       <label>ALL ABOVE SCRIPTS ARE AUTHORIZED FOR ______ ADDITIONAL REFILLS</label></div></td>
                     <td rowspan={3} style={{ 'max-width': '300px', background: '#fff' }}>{this.state.comments}</td>
                   </tr>
@@ -475,13 +492,13 @@ class FaxModal extends Component {
                       <label>SCRIPTS ARE INDIVIDUALLY AUTHORIZED IN THE ABOVE LIST</label></div></td>
                   </tr>
                   <tr>
-                    <td style={{background: '#f6f8fa'}}><div className="check"><input type="checkbox"></input>
+                    <td style={{ background: '#f6f8fa' }}><div className="check"><input type="checkbox"></input>
                       <label>NOT AUTHORIZED. PATIENT NEEDS TO CALL DOCTORS OFFICE</label></div></td>
                   </tr>
                 </tbody>
               </Table>
 
-              <div style={{width: '90%', margin: '0 auto'}} className='signatures'>
+              <div style={{ width: '90%', margin: '0 auto' }} className='signatures'>
                 <div>
                   <p>AUTHORIZED BY</p>
                   <p>__________________________</p>
@@ -496,7 +513,7 @@ class FaxModal extends Component {
                 </div>
               </div>
 
-              <div style={{width: '90%', margin: '0 auto'}}>
+              <div style={{ width: '90%', margin: '0 auto' }}>
                 <h5>CONFIDENTIALITY NOTICE</h5>
                 <p>The information contained in this transmittal belongs to SortPak Pharmacy and may include information that is confidential, privileged, and protected
                   from disclosure under applicable law. It is intended only for the use of the above physicians. If you are not the intended recipient of this information,
@@ -527,6 +544,8 @@ class FaxModal extends Component {
         </div>
 
       </FormModal >
+
+
     )
   }
 }

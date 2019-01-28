@@ -4,6 +4,9 @@ import { ButtonGroup } from 'react-bootstrap';
 import { FaxModal } from '../../../shared'
 import Moment from 'react-moment'
 
+import { css } from '@emotion/core';
+import { CircleLoader } from 'react-spinners';
+
 import axios from 'axios'
 
 import {
@@ -17,6 +20,13 @@ import {
 
 import styles from './RefillsView.css'
 
+const override = css`
+    display: block;
+    margin: 0 auto;
+    border-color: red;
+    position: fixed;
+`;
+
 class RefillsView extends Component {
   constructor(props) {
     super(props)
@@ -24,7 +34,8 @@ class RefillsView extends Component {
       searchValue: 'Any',
       refillOK: true,
       specialization: '',
-      fax: false
+      fax: false,
+      loading: false
     }
 
     this.handleChange = this.handleChange.bind(this);
@@ -42,6 +53,18 @@ class RefillsView extends Component {
       fax: true,
     }, this.openFax)
     e.stopPropagation();
+  }
+
+  isLoading() {
+    this.setState({
+      loading: true
+    })
+  }
+
+  cancelLoading() {
+    this.setState({
+      loading: false
+    })
   }
 
   componentDidMount() {
@@ -341,6 +364,19 @@ class RefillsView extends Component {
           {refillList}
           {renewList}
 
+<div className="overlay" style={{'display': this.state.loading === true ? 'block' : 'none'}}>
+          <div className='sweet-loading'>
+            <CircleLoader
+              css={override}
+              color='#333'
+              sizeUnit={"px"}
+              size={150}
+              color={'#123abc'}
+              loading={this.state.loading}
+            />
+          </div>
+          </div> 
+
       <div className="faxModal">
         <FaxModal
           content={faxModal}
@@ -348,6 +384,8 @@ class RefillsView extends Component {
           onSubmit={onCreateNote}
           state={this.state}
           props={this.props}
+          loading={this.isLoading.bind(this)}
+          cancelLoading={this.cancelLoading.bind(this)}
         />
         </div>
 
