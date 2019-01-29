@@ -63,55 +63,6 @@ io.on('connection', SocketManager, client => {
 });
 
 
-//
-
-//Old Chat
-
-// const io = require('socket.io')(server);
-// io.on('connection', client => {
-//     console.log('Socket Connection Successful')
-
-//     client.on('SEND_MESSAGE', data => { 
-//         console.log(data)
-//         //data = JSON.parse(data)
-//         console.log(data.message);
-//         client.emit('RECEIVE_MESSAGE', data)
-//         client.broadcast.emit('RECEIVE_MESSAGE', data)
-//     });
-
-//     client.on('SEND_USER_TYPING', data => {
-//         console.log('A user is typing')
-//         data.message = data.author + " is typing"
-//         client.broadcast.emit('RECIEVE_USER_TYPING', data.message)
-//     });
-
-//     client.on('SEND_USER_STOP_TYPING', data => {
-//         console.log('A user stopped typing')
-//         data.message = data.author + " is typing"
-//         client.broadcast.emit('RECIEVE_USER_STOP_TYPING', data.message)
-//     });
-
-//     client.on('RECEIVE_USER_CONNECTED', data => {
-//         console.log('A user is connected')
-//         data.message = data.author + " is connected"
-//         client.broadcast.emit('RECEIVE_USER_CONNECTED', data.message)
-//     });
-
-//     client.on('RECEIVE_USER_DISCONNECTED', data => {
-//         console.log('A user is disconnected')
-//         data.message = data.author + " is disconnected"
-//         client.broadcast.emit('RECEIVE_USER_DISCONNECTED', data.message)
-//     });
-    
-
-//     client.on('disconnect', () => {
-//         console.log('Socket Disconnected')
-//     });
-// });
-
-//---END CHAT----//
-
-
 // Routes
 app.use(express.static(path.join(__dirname + '/public')));
 app.use(express.static(path.join(__dirname + '/user')));

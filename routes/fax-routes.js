@@ -23,7 +23,7 @@ if (process.env.PHAXIOKEY === undefined || process.env.PHAXIOSECRET === undefine
 }
 
 const Phaxio = require('phaxio-official');
-const phaxio = new Phaxio("x149vbyucj80jtaot4754bm7pr1hboox4hwm68y0", "oxtmq5sxrfipk6z8pwqc3xqa0iblmqgnketycld6");
+const phaxio = new Phaxio("7e28676q9687ch9xy7ohvo4vas4d24jz055twkp3", "zuttakm15fybwgk8y2m0h8hdk6xu3lkismt7e4ym");
 
 
 router.post("/upload", (req, res) => {
@@ -82,8 +82,9 @@ router.post("/upload", (req, res) => {
 
                     //         return phaxio.faxes.resend({ id: mostRecent.id });
                     //     })
-                    //     .then(response => console.log('Response from resending most recent fax:\n', JSON.stringify(response, null, 2))
-                    //         .catch((err) => { throw err; }))
+                    //     .then(response => console.log('Response from resending most recent fax:\n', JSON.stringify(response, null, 2)))
+                    //     .catch((err) => { throw err; });
+
                     db.Faxes
                         .create(fax)
                         .then((resp) => {
@@ -101,9 +102,6 @@ router.post("/upload", (req, res) => {
                 })
         }
     })
-
-
-
 
 })
 

@@ -32,7 +32,8 @@ class FaxModal extends Component {
     super(props)
     this.state = {
       render: false,
-      loading: true
+      loading: false,
+      updateFaxNum: false
     }
     this.handleCheckbox = this.handleCheckbox.bind(this);
   }
@@ -66,7 +67,6 @@ class FaxModal extends Component {
 
           axios.get('/api/scripts/search?patientId=' + this.state.patientId + '&physicianId=' + this.state.physicianId + '&status=Renew', { headers: { "Authorization": "Bearer " + loginToken } })
             .then((resp) => {
-              console.log(resp);
               this.setState({
                 scripts: resp.data.response
               }, this.addCheckOption)
@@ -128,9 +128,18 @@ class FaxModal extends Component {
 
   printDocument(e) {
     e.preventDefault();
+    const scripts = this.state.scripts
+    const filteredScripts = scripts.filter(function (item) {
+      return item.checked;
+    });
+
+    if (filteredScripts.length === 0) {
+      window.alert('Fax has 0 scripts attached, please check the document');
+      return;
+    }
 
     this.props.loading();
-
+    const physicianFax = this.state.physicianFax;
     const input = document.getElementById('divToPrint');
     html2canvas(input, {
       scale: "3"
@@ -145,23 +154,38 @@ class FaxModal extends Component {
         var fax = pdf.output('blob');
         var data = new FormData();
         data.append("faxFile", fax)
-        console.log(data)
         const loginToken = window.localStorage.getItem("token");
-        if (window.confirm(`This will send a fax of the below document to ${this.state.physicianFax}, Continue?\n
-        (TESTING MODE) Log into Phaxio to see that the fax has been received`)) {
+
+        if (window.confirm(`This will send a fax of the below document to ${physicianFax}, Continue?`)) {
 
           var blob = pdf.output('blob');
           var blobFile = new File([blob], "filename.pdf", { type: 'application/pdf' });
           var dataAWS = blobFile;
           this.submitS3(dataAWS);
 
-          axios.post('/api/faxes/upload?patientId=' + this.state.patientId + '&scriptId=' + this.state.scriptId + '&faxNumber=' + this.state.physicianFax,
+          axios.post('/api/faxes/upload?patientId=' + this.state.patientId + '&scriptId=' + this.state.scriptId + '&faxNumber=' + physicianFax,
             data, { headers: { "Authorization": "Bearer " + loginToken } })
             .then((res) => {
               console.log(res)
               if (res.status === 200) {
-                window.alert('Fax successfully sent!');
-                window.location.reload();
+
+                const date = moment().format('YYYY-MM-DD')
+                console.log(date);
+
+                for (var i = 0; i < filteredScripts.length; i++) {
+
+                  filteredScripts[i].faxNum++;
+                  var data = new FormData();
+                  const loginToken = window.localStorage.getItem("token");
+                  axios.put('/api/scripts/fax?id=' + filteredScripts[i].id + '&faxNum=' + filteredScripts[i].faxNum + '&lastFaxed=' + date,
+                    data, { headers: { "Authorization": "Bearer " + loginToken } })
+                    .then((data) => {
+                      window.alert('Fax successfully sent!');
+                      window.location.reload();
+                    }).catch((error) => {
+                      console.error(error);
+                    })
+                }
               }
               else {
                 window.alert('Fax failed to send. Please make sure the fax number provided is valid.');
@@ -169,25 +193,6 @@ class FaxModal extends Component {
             })
         } else {
           this.props.cancelLoading();
-          // return;
-        }
-
-        const filteredScripts = this.state.scripts.filter(function (event) {
-          return event.checked == true;
-        });
-
-        for (var i = 0; i < filteredScripts.length; i++) {
-          console.log(i)
-
-          filteredScripts[i].faxNum++;
-          const loginToken = window.localStorage.getItem("token");
-          axios.put('/api/scripts/fax?id=' + filteredScripts[i].id + '&faxNum=' + filteredScripts[i].faxNum,
-            data, { headers: { "Authorization": "Bearer " + loginToken } })
-            .then((data) => {
-            }).catch((error) => {
-              console.error(error);
-            })
-
         }
       })
   }
@@ -210,7 +215,6 @@ class FaxModal extends Component {
     xhr.onreadystatechange = () => {
       if (xhr.readyState === 4) {
         if (xhr.status === 200) {
-          console.log(xhr.responseText);
           const response = JSON.parse(xhr.responseText);
           this.uploadFile(file, response.signedRequest, response.url);
         }
@@ -231,7 +235,6 @@ class FaxModal extends Component {
           // document.getElementById('preview').src = url;
           // document.getElementById('avatar-url').value = url;
           this.props.onClickAway()
-          console.log(url)
           window.open(url)
         }
         else {
@@ -296,7 +299,10 @@ class FaxModal extends Component {
         <td>{script.rxNumber}</td>
         <td>{script.Product.name}</td>
         <td>{script.quantity}</td>
-        <td></td>
+        <td>{script.lastFill ?
+          <Moment format="MM/DD/YYYY">{script.lastFill}</Moment>
+          : <span></span>
+        }</td>
         <td>{script.directions}</td>
         <td><div className='check'><input type="checkbox"></input><label>AUTHORIZED</label></div>
           WITH ______<br />
@@ -354,6 +360,13 @@ class FaxModal extends Component {
       content,
       onClickAway,
     } = this.props
+
+    if (this.state.updateFaxNum === true) {
+      this.updateFaxNum();
+      this.setState({
+        updateFaxNum: false
+      })
+    }
 
 
 

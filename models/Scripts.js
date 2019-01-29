@@ -166,7 +166,16 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.STRING,
             allowNull: false,
             defaultValue: 0
-        }
+        },
+        lastFill: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        lastFaxed: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+
     }); 
 
     Scripts.associate = function(models) {

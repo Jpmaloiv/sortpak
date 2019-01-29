@@ -11,6 +11,7 @@ const Op = Sequelize.Op;
 
 
 router.post("/add", (req, res) => {
+    console.log(req.query)
 
     const script = {
         processedOn: req.query.processedOn,
@@ -51,6 +52,7 @@ router.post("/add", (req, res) => {
         ETA: req.query.ETA,
         paymentOption: req.query.paymentOption,
         doNotRefill: req.query.doNotRefill,
+        lastFill: req.query.lastFill,
         PatientId: req.query.patientId,
         PhysicianId: req.query.physicianId,
         ProductId: req.query.productId
@@ -341,6 +343,7 @@ router.put("/fax", function (req, res) {
 
     const script = {
         faxNum: req.query.faxNum,
+        lastFaxed: req.query.lastFaxed
     }
 
     db.Scripts.update(script, { where: { id: req.query.id } })

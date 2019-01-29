@@ -205,7 +205,12 @@ class RefillsView extends Component {
           <td>{script.Product.name}</td>
           <td>{script.rxNumber}</td>
           <td><Moment format="MM/DD/YYYY">{script.Patient.dob}</Moment></td>
-          <td></td>
+          <td>
+          {script.lastFaxed ?
+            <Moment format="MM/DD/YYYY">{script.lastFaxed}</Moment>
+            : <span></span>
+          }
+          </td>
         </tr>
       )
     }
@@ -368,10 +373,9 @@ class RefillsView extends Component {
           <div className='sweet-loading'>
             <CircleLoader
               css={override}
-              color='#333'
               sizeUnit={"px"}
-              size={150}
-              color={'#123abc'}
+              size={100}
+              color={'#ff7d38'}
               loading={this.state.loading}
             />
           </div>
