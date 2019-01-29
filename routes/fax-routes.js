@@ -23,7 +23,7 @@ if (process.env.PHAXIOKEY === undefined || process.env.PHAXIOSECRET === undefine
 }
 
 const Phaxio = require('phaxio-official');
-const phaxio = new Phaxio("7e28676q9687ch9xy7ohvo4vas4d24jz055twkp3", "zuttakm15fybwgk8y2m0h8hdk6xu3lkismt7e4ym");
+const phaxio = new Phaxio(process.env.PHAXIOKEY, process.env.PHAXIOSECRET);
 
 
 router.post("/upload", (req, res) => {
