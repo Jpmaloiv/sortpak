@@ -264,7 +264,7 @@ class ReceiptModal extends Component {
                       124 S. GLENDALE AVE<br />
                       GLENDALE, CA 91205<br />
                       TEL: (877) 570-7787<br />
-                      FAX: (877) 475-2383
+                      FAX: (877) 475-2382
                 </div>
                   </div>
                   <br /><br />

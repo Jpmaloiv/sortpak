@@ -13,6 +13,10 @@
     background-color: #fff !important;
 }
 
+.faxTable thead{
+    border: 1px solid #e1e2e1;
+}
+
 .infoTable {
     width: 100%;
 }

@@ -119,7 +119,7 @@ class FaxModal extends Component {
         const logoData = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAANIAAADQCAMAAABFj897AAAAM1BMVEX////96uT7y7r4rJH71sj5t5/0eU3xWiT2mHbyZDL+9fH1jmn1g1v3ooT84Nbzbz/6wa0AisSrAAAHYElEQVR4AezcYc+jKBDA8YEBBnBAv/+nvXY7CehY9zbP7YnG/6snNW34peqCuoVL9mQsXja35/GBLhxqUCTpLiSf6F6kPBHdi5QD3YykRcwFrxNr0kR9wVe4VqhInrrYgXRhkkkNNFuAG5BiE00Z7kAyTRQBbkHylxcpUiBpgpuQDElzvgvJkmThLiQUEcPtSO4+pCKzILgdycNvq+5Vvs6OV+EwGwN9SuzNNUhwlJ+J/uuprf3bJIbv1UCqkuFHGaYTSTXRTuEnpoxEf51U4Fs5iaEs7hVO6ef/jk30P5AQvhU/INeMqJf6fxifSZIpIGe9K6Z8UVLZGb2sR/xFSbx7pM0y4bgkqc3/9Nd0K1Ldf/l4xlSdG4ekjxrmCdFAlylBlpJxTS3MXAHsTK8mW5k50St+VU47lmb4XTlSF9fNJzgoJBXq4hNIsjnCcTbROr8hWZKSPZ1kZG9a4KCFPiXmIH/GFamRozub1Fa9KdoM+1UZrflMLj7DX3rS56T/9rpzTw/qYmwou6z5F7lu7oOYRnrHBgCMhxFIzSSsCut8E/WmuCIxSEOQ5PzbSsWoL8mC1G4cmJ5khiFJS6B10ayPpLAzM/Td+CcYiCQZz9SXltUHLDvnSe7Gj6ORJFsCtbBfz5m9M0Y3fjcgSco2ziQt3W2C3UmH6f8ckyS5SNStorbns/apTo9/QJKgkrzpPiRZqs9XJDlE5vL1Q/LlSLIxfZ3NOhBS2J1x1BFJ7uv1ciGp8alBj0YyelGrSFGpZXMakgSzWtT2t0PbrLXsbJ5GIx1vndoRZJRaNvsxSbmt5/QydtGTuP4QNGOSAPduvnjqvxm7Vdck66VDUj6LBDJTTWhAsry5Yc3rk4iTS+aapPfLU0g5kDRPiFiYJNzunfNiALKAya7Ae0OIiP4UkphUeHxXbYEDkiWSzprjIalmB30m6M2a1JpJMieRwJS0HrHPR3eoE2Y4JtWZPtkzSJLDiX+5woQV9rKfw4zjZpgLvoJN2fPbzmeSBu4hPaSH9JAe0kN6SA/pIT0k47ZV+LPkPeOQkHR/9hAyveKhSVI0tyNRsnciSfXKpOC6LE76PzxdjsT7V0PwRiS5GJnuRJLr/PZGJLm4iLciRXn9RiT9ui38uWfIWA9IGd/58Uk5JnVNXJHaTYNUBySV1etWQK2iSEo0Gin071pIZxVJicYimW7Y8pBkii4DQJVf/kmKpERjkbgfddwM1HdeISnRaKQc+zcZNYmNbauQlGgsUpXbYyl3X0pUDwlwT9Kik0mJW0GdAFDPjRRJiYZcL2F/gcLDMUmJBiSlBb5nFEmJhiPNmOFLdSmBtqQQ2tE33rHEEa3ZtViUWR5tSK1p3GmryrU53hGJ3FVIhmnVtENKRa5XjE5Sz9skRgugScGo/886MCmLiHFx8iUoUsjtEd/xSTLFW0SjSG1/Q/lzeFLW1ynrlsTdiqSMT7J6nPYLycmuNzoJ9TCjIvVr4XBBUk6a1G/B0Un6OXEmTZKsHHgjk+RckIz6vdRZk9oD5mOTYO4vc+UlkbRLMrLrjU1yMj8oiIWpTbyzIrULE2ZsklqAlNwWuooELC8MTYIlUYudzH3iPqnSO38eaflXvzRhcPP7FcivMrxTH+D51ZQv8CjHP+zasQAAAADAoGf+zBMJob8qOwUJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJ6XbuaDd6FIYC8AEIBxMDvP/TriCeTPcf/XfbTgftuWlEXMVfSSz1ItmPxCsp2Pt/8b8HxB8n2QcH0jQNbTuQMFNOKiybkFA6PR5psT0P3fOjj3iJlVrBXXevuDeSMJjtT+o7yb6Ah5DUAqApSQlAYcJMpf9aGujJftfdL47XN5Ic+0VylBoy6YCDkoNOQxNqqDLZJ9e+dQE8Jc/VAQTKWQOc8AyhM69915Ap7yOBvEiBfu2PRxFpmAYP5QBQEiPGunxkBnoqa1UKAk8AyNLWD0Ycq27wF5AOng0rnnXt3+EK03NFujUdOeye9QjXMbNteYVyepF+AakIKXn8a1hFBivSqWmXK/CRYLWRjyiob554iFS7vstCUtrfSJ752q7ApFfGTeq2Uv9Oqj9FqqzP68eQ2O2pAiIiK2YK9ZoMJxvWzWa5SRmPiE3GF5L+EMkJ3dXYUHsGHg025uv5gY2GysG0TihWwXBGgkhZ9KPdk/FNpDI6K2w8LEibiM6xxpxHZi5AXG40dh6r3dVJ67xJmWcBinLAM5XJfyHx20mWCiOVTlEl/XQxqTAvl2ii3WmJdFjuazXASLOOqqQunmin/klq303SK6FhZmizbxyeq5F2kj2sXkNfi1aWsbImiXr7zbsuBcyEzu7txDMHt/t/KW1HityOpNuRPC1+F1LptLhdSCctCZuQMh85NiFl3nFbkMrJOxk7kHznHXEbkKLySw58OqkdnV9z4oWk4XNSVflHUnklfXZMtBHpLNiLJAewFyk7bEVKh8NrYvjY+IINskX+zz9eQ+rfYOPV5wAAAABJRU5ErkJggg=='
         const pdf = new jsPDF();
         pdf.addImage(imgData, 'JPEG', 0, 0, 0, 297);
-        pdf.addImage(logoData, 'PNG', 12, 10, 20, 20);
+        pdf.addImage(logoData, 'PNG', 12, 18, 20, 20);
 
         pdf.save("Fax_Preview.pdf");
 
@@ -149,7 +149,7 @@ class FaxModal extends Component {
         const logoData = 'data:image/png;base64,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'
         const pdf = new jsPDF();
         pdf.addImage(imgData, 'JPEG', 0, 0, 0, 297);
-        pdf.addImage(logoData, 'PNG', 12, 10, 20, 20);
+        pdf.addImage(logoData, 'PNG', 12, 18, 20, 20);
 
         var fax = pdf.output('blob');
         var data = new FormData();
@@ -431,10 +431,11 @@ class FaxModal extends Component {
             width: '210mm',
             minHeight: '297mm',
             marginLeft: 'auto',
-            marginRight: 'auto'
+            marginRight: 'auto',
+            'font-weight': 'bold'
           }}>
             <div className="main">
-              <div className='flex' style={{ marginTop: 20 }}>
+              <div className='flex' style={{ marginTop: 50 }}>
                 <div className='flex-col' style={{ textAlign: 'left' }}>
                   <img style={{ width: '75px', height: 'auto', marginLeft: 30 }} alt="SortPak" src="http://www.sortpak.com/site-uploadz/2018/05/sortpak-logo-lg.png" />
                 </div>
@@ -443,11 +444,11 @@ class FaxModal extends Component {
                   <p>Sent on <Moment format="MM/DD/YYYY" /></p>
                 </div>
                 <div className='flex-col'>
-                  <div style={{ textAlign: 'right', fontSize: 12, width: '80%' }}>
+                  <div style={{ textAlign: 'right', fontSize: 12, width: '90%' }}>
                     124 S. GLENDALE AVE<br />
                     GLENDALE, CA 91205<br />
                     TEL: (877) 570-7787<br />
-                    FAX: (877) 475-2383
+                    FAX: (877) 475-2382
                   </div>
                 </div>
               </div>
