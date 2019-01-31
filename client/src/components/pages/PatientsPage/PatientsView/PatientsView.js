@@ -7,7 +7,7 @@ import moment from 'moment'
 import ReactTable from "react-table";
 import 'react-table/react-table.css'
 
-import { Span, Table, Input, Header, Button, ActionBox, SearchBar } from '../../../common'
+import { Span, Table, Input, Header, Button, ActionBox } from '../../../common'
 
 import {
   getPatients,
@@ -202,18 +202,8 @@ class PatientsView extends Component {
       mergeModal
     } = this.state;
 
-    if (this.state.patients) {
-      var patientList = this.state.patients.map(function (item, i) {
-        return (
-          <div key={i}>
-          </div>
-        )
-      })
-    }
-    else {
-      return <div>
-        <p></p>
-      </div>
+    if (!this.state.patients) {
+      return <div></div>
     }
 
     return (
@@ -298,8 +288,6 @@ class PatientsView extends Component {
               onClick: e => window.location = `/patients/${rowInfo.original.id}`
             })}
           />
-          {/* {this.renderTable()}
-          {patientList} */}
 
           <div className="mergePatient">
             <MergePatientModal

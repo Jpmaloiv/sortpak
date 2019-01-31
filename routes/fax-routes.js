@@ -54,9 +54,9 @@ router.post("/upload", (req, res) => {
                     console.log("file saved");
 
                     phaxio.faxes.create({
-                        // to: '+15555555555', // Replace this with a number that can receive faxes.
                         to: '+1' + faxNumber,
-                        file: `./faxes/${req.query.scriptId}_${currentDate}` + '/Fax' + ".pdf"
+                        file: `./faxes/${req.query.scriptId}_${currentDate}` + '/Fax' + ".pdf",
+                        caller_id: '+18774752382'
                     })
                         .then((fax) => {
                             // The `create` method returns a fax object with methods attached to it for doing things

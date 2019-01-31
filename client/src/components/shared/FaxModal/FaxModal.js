@@ -6,7 +6,6 @@ import Moment from 'react-moment'
 import moment from 'moment'
 
 import { css } from '@emotion/core';
-import { CircleLoader } from 'react-spinners';
 
 import styles from './FaxModal.css'
 
@@ -18,13 +17,6 @@ import {
   Input,
   TextArea
 } from '../../common'
-
-const override = css`
-    display: block;
-    margin: 0 auto;
-    border-color: red;
-    position: fixed;
-`;
 
 
 class FaxModal extends Component {

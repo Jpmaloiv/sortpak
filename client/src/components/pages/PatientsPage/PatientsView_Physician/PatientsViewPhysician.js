@@ -5,7 +5,7 @@ import Moment from 'react-moment'
 import jwt_decode from 'jwt-decode'
 
 
-import { Span, Table, Input, Header, Button, ActionBox, SearchBar } from '../../../common'
+import { Span, Table, Input, Header, Button, ActionBox} from '../../../common'
 
 import {
   getPatients,
