@@ -173,7 +173,6 @@ app.get('/*', function (req, res) {
 })
 
 
-
 //   AWS TEST 
 app.set('client', './client');
 app.use(express.static('./client/public'));
