@@ -151,7 +151,7 @@ class App extends Component {
         <Router>
           <div>
             <TopNav />
-            {this.state.userRole === "" ? <div></div> :  <Layout />}
+            {/* {this.state.userRole === "" ? <div></div> :  <Layout />} */}
             <div className="container">
               <Switch>
                 <Route
