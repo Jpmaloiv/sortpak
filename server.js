@@ -3,6 +3,8 @@ require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const jwt = require("express-jwt");
+var sslRedirect = require('heroku-ssl-redirect');
+
 const authRoutes = require("./routes/auth-routes.js");
 const currentPatientRoutes = require("./routes/currentPatient-routes.js");
 const scriptRoutes = require("./routes/script-routes.js");
@@ -31,6 +33,8 @@ const aws = require('aws-sdk');
 
 //middleware
 const bodyParser = require('body-parser');
+
+app.use(sslRedirect());
 
 //express setup
 // const app = express();
