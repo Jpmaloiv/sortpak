@@ -254,7 +254,7 @@ class ReceiptModal extends Component {
                 <div className="main">
                   <div className='flex'>
                     <div className='flex-col'>
-                      <img style={{ width: '75px', height: 'auto' }} alt="SortPak" src="http://www.sortpak.com/site-uploadz/2018/05/sortpak-logo-lg.png" />
+                      <img style={{ width: '75px', height: 'auto' }} alt="SortPak" src="https://www.sortpak.com/site-uploadz/2018/05/sortpak-logo-lg.png" />
                     </div>
                     <div className='flex-col'>
                       <h2>RECEIPT</h2>

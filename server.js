@@ -56,15 +56,15 @@ app.use(express.static(path.join(__dirname, 'client/build')));
 
 
 //---Chat---//
-const server = require('http').createServer(app);
+// const server = require('http').createServer(app);
 
-var io = module.exports.io = require('socket.io').listen(server)
+// var io = module.exports.io = require('socket.io').listen(server)
 
-const SocketManager = require('./SocketManager');
+// const SocketManager = require('./SocketManager');
 
-io.on('connection', SocketManager, client => {
-    console.log('Socket Connection Successful')
-});
+// io.on('connection', SocketManager, client => {
+//     console.log('Socket Connection Successful')
+// });
 
 
 // Routes
@@ -196,12 +196,12 @@ app.post('/save-details', (req, res) => {
 
 
 db.sequelize.sync({ force: false, logging: console.log }).then(function () {
-    // app.listen(PORT, function () {
-    //     console.log("App listening on PORT " + PORT);
-    // })
-    server.listen(PORT, function () {
+    app.listen(PORT, function () {
         console.log("App listening on PORT " + PORT);
     })
+    // server.listen(PORT, function () {
+    //     console.log("App listening on PORT " + PORT);
+    // })
 });
 
 

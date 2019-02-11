@@ -5,7 +5,7 @@ import LoginForm from './LoginForm'
 import ChatContainer from './chats/ChatContainer'
 
 // const socketUrl = "http://localhost:3000"
-const socketUrl = "https://sortpak-portal.herokuapp.com/"
+// const socketUrl = "https://sortpak-portal.herokuapp.com/"
 
 
 export default class Layout extends Component {
@@ -26,15 +26,15 @@ export default class Layout extends Component {
 	/*
 	*	Connect to and initializes the socket.
 	*/
-	initSocket = () => {
-		const socket = io(socketUrl)
+	// initSocket = () => {
+	// 	const socket = io(socketUrl)
 
-		socket.on('connect', () => {
-			console.log("Connected");
-		})
+	// 	socket.on('connect', () => {
+	// 		console.log("Connected");
+	// 	})
 
-		this.setState({ socket })
-	}
+	// 	this.setState({ socket })
+	// }
 
 	/*
 	* 	Sets the user property in state 

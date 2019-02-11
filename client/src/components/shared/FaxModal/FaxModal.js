@@ -429,7 +429,7 @@ class FaxModal extends Component {
             <div className="main">
               <div className='flex' style={{ marginTop: 50 }}>
                 <div className='flex-col' style={{ textAlign: 'left' }}>
-                  <img style={{ width: '75px', height: 'auto', marginLeft: 30 }} alt="SortPak" src="http://www.sortpak.com/site-uploadz/2018/05/sortpak-logo-lg.png" />
+                  <img style={{ width: '75px', height: 'auto', marginLeft: 30 }} alt="SortPak" src="https://www.sortpak.com/site-uploadz/2018/05/sortpak-logo-lg.png" />
                 </div>
                 <div className='flex-col'>
                   <h2 style={{ marginTop: 0 }}>REFILL AUTHORIZATION REQUEST</h2>
