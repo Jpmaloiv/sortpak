@@ -7,18 +7,11 @@
   "start:prod": "node build/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/dtstrange/sortpak.git"
+    "start": "set HTTPS=true&&node server.js"
   },
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/dtstrange/sortpak/issues"
-  },
-  "homepage": "https://github.com/dtstrange/sortpak#readme",
+
   "dependencies": {
     "@react-pdf/renderer": "^1.0.0-alpha.25",
     "aws-sdk": "^2.351.0",
