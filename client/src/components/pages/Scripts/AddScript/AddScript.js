@@ -709,6 +709,7 @@ render() {
                                         placeholder="--/--/----"
                                         value={writtenDate}
                                         onChange={writtenDateChange}
+                                        tabIndex="1"
                                     />
                                 </td>
                                 <td>
@@ -716,6 +717,7 @@ render() {
                                         label="Sales Code"
                                         value={salesCode}
                                         onChange={salesCodeChange}
+                                        tabIndex="11"
                                     />
                                 </td>
                             </tr>
@@ -727,6 +729,7 @@ render() {
                                         placeholder="--/--/----"
                                         value={billOnDate}
                                         onChange={billOnDateChange}
+                                        tabIndex="2"
                                     />
                                 </td>
                                 <td>
@@ -735,6 +738,7 @@ render() {
                                         placeholder={this.state.cost}
                                         value={this.state.cost}
                                         onChange={cost => this.setState({ cost })}
+                                        tabIndex="12"
                                     />
                                 </td>
                             </tr>
@@ -744,6 +748,7 @@ render() {
                                         label="RX Number"
                                         value={rxNumber}
                                         onChange={rxNumberChange}
+                                        tabIndex="3"
                                     />
                                 </td>
                                 <td>
@@ -751,6 +756,7 @@ render() {
                                         label="Primary Insurance Pay"
                                         value={primInsPay}
                                         onChange={primInsPayChange}
+                                        tabIndex="13"
                                     />
                                 </td>
                             </tr>
@@ -760,6 +766,7 @@ render() {
                                         label="Diagnosis"
                                         value={this.state.diagnosis}
                                         onChange={diagnosis => this.setState({ diagnosis })}
+                                        tabIndex="4"
                                     />
                                 </td>
                                 <td>
@@ -767,6 +774,7 @@ render() {
                                         label="Secondary Insurance Pay"
                                         value={secInsPay}
                                         onChange={secInsPayChange}
+                                        tabIndex="14"
                                     />
                                 </td>
                             </tr>
@@ -776,6 +784,7 @@ render() {
                                         label="Secondary Diagnosis"
                                         value={this.state.secDiagnosis}
                                         onChange={secDiagnosis => this.setState({ secDiagnosis })}
+                                        tabIndex="5"
                                     />
                                 </td>
                                 <td>
@@ -783,6 +792,7 @@ render() {
                                         label="Patient Pay"
                                         value={patientPay}
                                         onChange={patientPayChange}
+                                        tabIndex="15"
                                     />
                                 </td>
                             </tr>
@@ -792,6 +802,7 @@ render() {
                                         label="# of Refills"
                                         value={refills}
                                         onChange={refillsChange}
+                                        tabIndex="6"
                                     />
                                 </td>
                             </tr>
@@ -801,6 +812,7 @@ render() {
                                         label="# of Refills Remaining"
                                         value={refillsRemaining}
                                         onChange={refillsRemainingChange}
+                                        tabIndex="7"
                                     />
                                 </td>
                             </tr>
@@ -811,6 +823,7 @@ render() {
                                         placeholder={this.state.quantity}
                                         value={this.state.quantity}
                                         onChange={quantity => this.setState({ quantity }, this.updateCost)}
+                                        tabIndex="8"
                                     />
                                 </td>
                             </tr>
@@ -820,6 +833,7 @@ render() {
                                         label="Days Supply"
                                         value={daysSupply}
                                         onChange={daysSupplyChange}
+                                        tabIndex="9"
                                     />
                                 </td>
                             </tr>
@@ -829,6 +843,7 @@ render() {
                                         label="Directions"
                                         value={directions}
                                         onChange={directionsChange}
+                                        tabIndex="10"
                                     />
                                 </td>
                             </tr>

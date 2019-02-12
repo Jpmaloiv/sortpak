@@ -78,7 +78,9 @@ class TitleBar extends Component {
         <div className="userImage" style={{ backgroundImage: `url(/images/${this.state.userId}/${this.state.link}`, width: 30, height: 30 }}></div>
 
         <div>{this.state.name}</div>
+        {this.state.name ?
         <FontAwesome name="caret-down" />
+        : <div></div> }
 
         {/* Dropdown */}
         <div className={cn("dropdown", { show: showDropdown })}>
