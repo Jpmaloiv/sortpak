@@ -182,6 +182,7 @@ app.use(express.static('./client/public'));
 app.engine('html', require('ejs').renderFile);
 // app.listen(process.env.PORT || 3000);
 
+
 const S3_BUCKET = process.env.S3_BUCKET;
 
 aws.config.region = 'us-west-1';
