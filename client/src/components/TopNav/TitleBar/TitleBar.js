@@ -72,12 +72,13 @@ class TitleBar extends Component {
     return (
       <div
         className={cn("options", { show: showDropdown })}
-        onClick={() => this.setState({ showDropdown: !showDropdown })}
+        onClick={() => {this.state.name ? this.setState({ showDropdown: !showDropdown }) : this.setState({ render: ! this.state.render})}}
       >
         {/* Clickable Section */}
         <div className="userImage" style={{ backgroundImage: `url(/images/${this.state.userId}/${this.state.link}`, width: 30, height: 30 }}></div>
 
         <div>{this.state.name}</div>
+
         {this.state.name ?
         <FontAwesome name="caret-down" />
         : <div></div> }
@@ -121,10 +122,12 @@ class TitleBar extends Component {
         {this.renderDropdown()}
 
         {/* Dropdown Overlay */}
+        {this.state.name ?
         <Overlay
           active={showDropdown}
           onClick={() => this.setState({ showDropdown: false })}
         />
+        : <span></span> } 
       </div>
     )
   }
