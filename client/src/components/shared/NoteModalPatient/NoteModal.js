@@ -53,12 +53,14 @@ export default class VisitModal extends Component {
 
   onSubmit(e) {
     e.preventDefault()
-    console.log(this.props);
     const patientId = this.props.props.state.id;
-    console.log(this.props.props);
+
+    // Allows literal hashtags to be written in note
+    const note = this.state.note.replace(/#/g, "%23");
+
     const loginToken = window.localStorage.getItem("token");
     let data = new FormData();
-    axios.post('/api/patients/notes/add?patientId=' + patientId + '&name=' + this.state.username + '&note=' + this.state.note + '&private=' + this.state.private,
+    axios.post('/api/patients/notes/add?patientId=' + patientId + '&name=' + this.state.username + '&note=' + note + '&private=' + this.state.private,
       data, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((data) => {
         console.log(data);

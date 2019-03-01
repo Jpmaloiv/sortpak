@@ -198,10 +198,22 @@ class TeamViewRep extends Component {
       .then((resp) => {
         this.setState({
           users: resp.data.response
-        })
+        }, this.filterForRep)
       }).catch((error) => {
         console.error(error);
       })
+  }
+
+  filterForRep() {
+    console.log(this.state);
+    let array = this.state.physicianIdArray
+    const filteredUsers = this.state.users.filter(function (item) {
+      console.log(array)
+      return item.PhysicianId = array.includes(item.PhysicianId)
+    });
+    this.setState({
+      users: filteredUsers
+    })
   }
 
   userSearch(e) {

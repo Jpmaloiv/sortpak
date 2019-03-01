@@ -53,6 +53,7 @@ router.post("/upload", (req, res) => {
 });
 
 router.get("/search", (req, res) => {
+
     let searchParams = {
         where: {},
         attributes: {
@@ -73,8 +74,8 @@ router.get("/search", (req, res) => {
         }
     }
 
-    if (req.query.PatientId) {
-        searchParams.where.id = req.query.PatientId
+    if (req.query.patientId) {
+        searchParams.where.PatientId = req.query.patientId
     }
   
     console.log(searchParams)

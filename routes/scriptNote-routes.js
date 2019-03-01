@@ -10,6 +10,7 @@ const Op = Sequelize.Op;
 
 
 router.post("/add", (req, res) => {
+    console.log("QUERY: " + JSON.stringify(req.query))
     const noteLink = '/notes/';
     const note = {
         name: req.query.name,

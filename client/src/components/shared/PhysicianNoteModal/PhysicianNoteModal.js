@@ -70,10 +70,13 @@ export default class PhysicianNoteModal extends Component {
 
   onSubmit(e) {
     e.preventDefault()
-    console.log(this.state.visitId)
     const loginToken = window.localStorage.getItem("token");
+
+    // Allows literal hashtags to be written in note
+    const note = this.state.note.replace(/#/g, "%23");
+
     let data = new FormData();
-    axios.post('/api/visits/notes/add?visitId=' + this.state.visitId + '&physicianId=' + this.props.props.pID.match.params.physicianId + '&userId=' + this.state.userId + '&name=' + this.state.userName + '&note=' + this.state.note + '&userImage=' + this.state.userImage,
+    axios.post('/api/visits/notes/add?visitId=' + this.state.visitId + '&physicianId=' + this.props.props.pID.match.params.physicianId + '&userId=' + this.state.userId + '&name=' + this.state.userName + '&note=' + note + '&userImage=' + this.state.userImage,
       data, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((data) => {
         console.log(data);

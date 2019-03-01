@@ -142,6 +142,7 @@ router.get("/search", (req, res) => {
         })
 })
 
+
 router.put("/update", function (req, res) {
 
     const patient = {
