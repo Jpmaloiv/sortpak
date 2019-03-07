@@ -25,6 +25,7 @@ const productAdjustmentRoutes = require("./routes/productAdjustment-routes.js");
 const visitRoutes = require("./routes/visit-routes.js");
 const visitNoteRoutes = require("./routes/visitNote-routes.js");
 const faxRoutes = require("./routes/fax-routes.js");
+
 const fileUpload = require('express-fileupload');
 
 const app = express();

@@ -72,13 +72,12 @@ router.get("/search", (req, res) => {
             exclude: ["updatedAt", "UserId"]
         }
     }
-    console.log(req.query)
+    console.log(JSON.stringify(req.query))
     if (req.query.patientId) {
         searchParams.where.id = req.query.patientId
     }
 
     if (req.query.name) {
-
         if (req.query.name.trim().indexOf(' ') != -1) {
             const names = req.query.name.split(' ');
             const firstName = names[0];
@@ -121,13 +120,45 @@ router.get("/search", (req, res) => {
         searchParams.where.dob = req.query.dob
     }
 
+    // if (req.query.rep) {
+    //     searchParams = {
+    //         include: [{
+    //             model: db.Scripts,
+    //             include: [{
+    //                 model: db.Physicians, attributes: ["firstName", "lastName", 'specialization', "rep", "contact", "phone", "physicianWarning"],
+    //                 where: {
+    //                     rep: req.query.rep
+    //                 },
+    //             }]
+    //         }]
+    //     }
+    // }
+
+    if (req.query.rep) {
+        searchParams = {
+            include: [{
+                model: db.Scripts,
+                where: {
+                    status: 'Received'
+                },
+                as: 'Scripts',
+                // include: [{
+                //     model: db.Physicians,
+                //     where: {
+                //         rep: req.query.rep
+                //     },
+                // }]
+            }]
+        }
+    }
+
 
     // if (req.query.address) {
     //        searchParams.where = {
     //         firstName: { like: '%' + req.query.name + '%' },
     // }
 
-    console.log(searchParams);
+    console.log("SEARCH:" + JSON.stringify(searchParams));
     db.Patients
         .findAll(searchParams)
         .then((response) => {

@@ -587,7 +587,8 @@ class EditScript extends Component {
             'GSO',
             'Deliver-it',
             'US Postal',
-            'Delivery Driver'
+            'Delivery Driver',
+            'Pick Up'
         ]
 
         const paymentOptions = [

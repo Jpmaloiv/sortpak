@@ -11,7 +11,6 @@ const Op = Sequelize.Op;
 
 
 router.post("/add", (req, res) => {
-    console.log(req.query)
 
     const script = {
         processedOn: req.query.processedOn,
@@ -73,6 +72,7 @@ router.post("/add", (req, res) => {
 
 
 router.get("/search", (req, res) => {
+
     let searchParams = {
         where: {},
         attributes: {
@@ -103,10 +103,10 @@ router.get("/search", (req, res) => {
             attributes: ['id']
         }
         ]
-
     }
 
     if (req.query.rep) {
+        console.log("QUERY:" + JSON.stringify(req.query))
         searchParams = {
             include: [{
                 model: db.Patients, attributes: ["firstName", "lastName", "dob", "phone", "email", "patientWarning", "conditions", "allergies", 'primInsPlan',
@@ -190,6 +190,21 @@ router.get("/search", (req, res) => {
         searchParams.where.ProductId = req.query.productId
     }
 
+    if (req.query.repFilter) {
+        searchParams = {
+            where: {},
+            attributes: {
+                exclude: ["updatedAt"]
+            },
+            include: [{
+                model: db.Physicians,
+                where: {
+                    rep: req.query.repFilter
+                }
+            }]
+        }
+    }
+
     if (req.query.exactStatus) {
         searchParams.where.status = req.query.exactStatus
     }
@@ -215,7 +230,6 @@ router.get("/search", (req, res) => {
         }
     }
 
-    console.log(searchParams)
     db.Scripts
         .findAll(searchParams)
         .then((response) => {
@@ -339,7 +353,6 @@ router.put("/updateNoteTime", function (req, res) {
 })
 
 router.put("/fax", function (req, res) {
-    console.log(req.query)
 
     const script = {
         faxNum: req.query.faxNum,

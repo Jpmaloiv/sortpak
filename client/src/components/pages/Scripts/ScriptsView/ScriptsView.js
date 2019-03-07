@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios'
+import jwt_decode from 'jwt-decode'
 
 import ScriptSearch from './ScriptSearch/ScriptSearch'
 import ScriptList from './ScriptList/ScriptList'
@@ -31,16 +32,15 @@ class ScriptsView extends Component {
   }
 
   searchScriptDb = (searchParams, textSearch) => {
-    console.log("RUNNING")
     const loginToken = window.localStorage.getItem("token");
-    axios.get('api/scripts/search' + searchParams, { headers: { "Authorization": "Bearer " + loginToken } })
+    let roleFilter = '';
+    if (this.state.role === 'Rep') roleFilter = '&rep=' + this.state.name;
+    axios.get('api/scripts/search' + searchParams + roleFilter, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
-        console.log(resp)
         let filteredScripts = resp.data.response;
         if (textSearch) {
-
           filteredScripts = resp.data.response.filter(function (event) {
-            return event.rxNumber.includes(textSearch) 
+            return event.rxNumber.includes(textSearch)
               || event.Physician.firstName.includes(textSearch) || event.Physician.firstName.toLowerCase().includes(textSearch)
               || event.Physician.lastName.includes(textSearch) || event.Physician.firstName.toLowerCase().includes(textSearch)
               || event.Patient.firstName.includes(textSearch) || event.Patient.firstName.toLowerCase().includes(textSearch)
@@ -65,10 +65,31 @@ class ScriptsView extends Component {
   }
 
   componentDidMount() {
+
+    const loginToken = window.localStorage.getItem("token");
+    if (loginToken) {
+      var decoded = jwt_decode(loginToken);
+      axios.get('/api/user/search?userId=' + decoded.id, { headers: { "Authorization": "Bearer " + loginToken } })
+        .then((resp) => {
+          this.setState({
+            name: resp.data.response[0].name,
+            role: resp.data.response[0].role
+          }, this.initialSearch);
+        }).catch((error) => {
+          console.error(error);
+        })
+    } else {
+      return;
+    }
+    // const urlParams = new URLSearchParams(this.props.location.scripts)
+    // // const patient = urlParams.get("patient")
+    // this.searchScriptDb("?patient=" + urlParams.get("patient"))
+    // // this.searchScriptDb();
+  }
+
+  initialSearch() {
     const urlParams = new URLSearchParams(this.props.location.scripts)
-    // const patient = urlParams.get("patient")
     this.searchScriptDb("?patient=" + urlParams.get("patient"))
-    // this.searchScriptDb();
   }
 
   textSearch = (textSearch) => {

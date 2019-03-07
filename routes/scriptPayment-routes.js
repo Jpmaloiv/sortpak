@@ -72,6 +72,18 @@ router.get("/search", (req, res) => {
         searchParams.where.id = req.query.id
     }
 
+    if (req.query.rep) {
+        searchParams = {
+            where: {},
+            include: [{
+                model: db.Scripts, 
+                include: [{
+                    model: db.Physicians
+                }]
+            }]
+        }
+    }
+
     console.log(searchParams);
     db.scriptPayments
         .findAll(searchParams)
