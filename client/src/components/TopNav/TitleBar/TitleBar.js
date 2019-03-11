@@ -113,7 +113,8 @@ class TitleBar extends Component {
         <div className="title">
           <NavLink to="/">
             {/* <img alt="SortPak" src="https://www.sortpak.com/site-uploadz/2018/05/sortpak-logo-lg.png" style={imageStyle.logo} /> */}
-            SortPak
+            {/* SortPak */}
+            HealthGuard
           </NavLink>
           <Spinner className={cn({ loading })} />
         </div>

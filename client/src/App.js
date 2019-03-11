@@ -201,8 +201,8 @@ class App extends Component {
                 <PrivateRoute exact path="/products/orders/:orderId" component={EditOrder} />
                 <PrivateRoute exact path="/products/adjustments/:adjustmentId" component={EditAdjust} />
 
-                <PrivateRoute exact path="/team" component={TheTeamPage} />
-                <PrivateRoute exact path="/team/add" component={AddMember} />
+                <Route exact path="/team" component={TheTeamPage} />
+                <Route exact path="/team/add" component={AddMember} />
                 <PrivateRoute exact path="/team/:userId/edit" component={EditMember} />
                 <PrivateRoute exact path="/team/:userId/profile" component={Profile} />
 

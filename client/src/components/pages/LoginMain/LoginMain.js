@@ -96,8 +96,11 @@ class Login extends React.Component {
         return (
             <div className={styles.container}>
                 <FloatBox classname={styles.floatBox} >
-                    <img alt="SortPak" src="/sortpak-logo.png" className="logo" />
-                    <h2 style={{ margin: '0 auto', marginBottom: 30 }}>Welcome to SortPak</h2>
+                    {/* <img alt="SortPak" src="/sortpak-logo.png" className="logo" /> */}
+                    <img alt="HealthGuard" src="/healthguard.png" style={{width: '50%', margin: '15px auto'}} />
+                    {/* <h2 style={{ margin: '0 auto', marginBottom: 30 }}>Welcome to SortPak</h2> */}
+                    <h2 style={{ margin: '0 auto', marginBottom: 30 }}>Welcome to HealthGuard</h2>
+
                     <Form
                         className={styles.body}
                         onSubmit={this.handleSubmit}
