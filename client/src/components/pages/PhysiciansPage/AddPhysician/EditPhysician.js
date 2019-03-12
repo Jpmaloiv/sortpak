@@ -86,7 +86,7 @@ class AddPhysician extends Component {
     event.preventDefault()
     const loginToken = window.localStorage.getItem("token");
     let data = new FormData();
-    axios.put('/api/physicians/update?id=' + this.state.id + 'firstName=' + this.state.firstName + '&lastName=' + this.state.lastName +
+    axios.put('/api/physicians/update?id=' + this.state.id + '&firstName=' + this.state.firstName + '&lastName=' + this.state.lastName +
       '&group=' + this.state.group + '&rep=' + this.state.rep + '&specialization=' + this.state.specialization +
       '&DEA=' + this.state.DEA + '&NPI=' + this.state.NPI + '&phone=' + this.state.phone + '&fax=' + this.state.fax +
       '&email=' + this.state.email + '&contact=' + this.state.contact + '&addressStreet=' + this.state.addressStreet + '&addressCity=' +

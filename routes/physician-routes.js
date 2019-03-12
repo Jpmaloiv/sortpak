@@ -171,7 +171,7 @@ router.get("/search", (req, res) => {
 })
 
 router.put("/update", function (req, res) {
-    console.log("update")
+    console.log("UPDATE QUERY:", req.query)
     const physician = {
         firstName: req.query.firstName,
         lastName: req.query.lastName,
