@@ -21,7 +21,7 @@ class Book extends React.Component {
                 .then((resp) => {
                     console.log(resp);
                     this.setState({
-                        file: `https://s3-us-west-1.amazonaws.com/sortpaktesting/receipts/` + resp.data.response[0].receiptLink,
+                        file: `https://s3-us-west-1.amazonaws.com/sortpak/receipts/` + resp.data.response[0].receiptLink,
                         attachment: resp.data.response[0]
                     }, () => console.log(this.state.file));
 
