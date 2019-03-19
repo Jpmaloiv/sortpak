@@ -26,7 +26,6 @@ class GroupAccess extends Component {
                 console.error(error);
             })
 
-        console.log(this.props, this.state)
         axios.get('/api/physicians/search?group=' + this.props.match.params.group, { headers: { "Authorization": "Bearer " + loginToken } })
             .then((resp) => {
                 this.setState({
@@ -154,13 +153,14 @@ class GroupAccess extends Component {
         const userPhysicians = user.physicians;
         const { physicianIds } = this.state
         const userIds = [];
+        console.log(userPhysicians)
         for (var i = 0; i < userPhysicians.length; i++) {
             let userPhys = userPhysicians[i]
             userIds.push(userPhys.id)
         }
+        
+        const found = physicianIds.every(id => userIds.includes(id))
 
-        const found = userIds.some(r => physicianIds.indexOf(r) >= 0)
-        console.log(found)
         return (
             <tr key={user.id} value={user.id}>
 
