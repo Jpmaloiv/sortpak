@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux'
 import axios from 'axios'
 
-import { Table, Header, Input, ActionBox, Button, Selector } from '../../../common'
+import { Icon, Table, Header, Input, ActionBox, Button } from '../../../common'
 
 import styles from '../PhysicianView/PhysicianView.css'
 
@@ -10,12 +9,12 @@ class PhysicianAccess extends Component {
     constructor(props) {
         super(props)
         this.state = {
-
+            physicianUsers: [],
+            render: false
         }
-
         this.giveAccess = this.giveAccess.bind(this);
-
     }
+
 
     componentDidMount() {
         const loginToken = window.localStorage.getItem("token");
@@ -24,14 +23,12 @@ class PhysicianAccess extends Component {
                 this.setState({
                     users: resp.data.response
                 })
-
             }).catch((error) => {
                 console.error(error);
             })
 
         axios.get('/api/physicians/search?physicianId=' + this.props.match.params.physicianId, { headers: { "Authorization": "Bearer " + loginToken } })
             .then((resp) => {
-                console.log(resp);
                 let physician = resp.data.response[0]
                 this.setState({
                     name: physician.firstName + ' ' + physician.lastName,
@@ -41,7 +38,6 @@ class PhysicianAccess extends Component {
             }).catch((error) => {
                 console.error(error);
             })
-
     }
 
     searchQuery() {
@@ -51,13 +47,43 @@ class PhysicianAccess extends Component {
                 console.log(resp.data.response);
                 this.setState({
                     users: resp.data.response,
-                }, () => console.log(this.state.users))
+                })
             }).catch((error) => {
                 console.error(error);
             })
     }
 
+    removeAccess(value) {
+        const loginToken = window.localStorage.getItem("token");
+        let data = new FormData();
+        axios.delete('/api/user/userPhysicians/delete?userId=' + value + '&physicianId=' + this.props.match.params.physicianId,
+            data, { headers: { "Authorization": "Bearer " + loginToken } })
+            .then((resp) => {
+                this.reRender();
+            }).catch((error) => {
+                console.error(error);
+            })
+    }
 
+    removalConfirm(value) {
+        if (window.confirm('Remove access from this user?')) {
+            this.removeAccess(value);
+        } else {
+            return;
+        }
+    }
+
+    giveAccess(value) {
+        const loginToken = window.localStorage.getItem("token");
+        let data = new FormData();
+        axios.post('/api/user/userPhysicians?userId=' + value + '&physicianId=' + this.props.match.params.physicianId,
+            data, { headers: { "Authorization": "Bearer " + loginToken } })
+            .then((resp) => {
+                this.reRender();
+            }).catch((error) => {
+                console.error(error);
+            })
+    }
 
     accessConfirm(value) {
         if (window.confirm('Give access to this user?')) {
@@ -67,28 +93,14 @@ class PhysicianAccess extends Component {
         }
     }
 
-    giveAccess(value) {
-        const loginToken = window.localStorage.getItem("token");
-        let data = new FormData();
-        axios.put('/api/user/update?id=' + value + '&physicianId=' + this.props.match.params.physicianId + `&active=${true}`,
-            data, { headers: { "Authorization": "Bearer " + loginToken } })
-            .then((data) => {
-                console.log(data);
-                this.reRender();
-
-            }).catch((error) => {
-                console.error(error);
-            })
-    }
-
     reRender() {
         const loginToken = window.localStorage.getItem("token");
         axios.get('/api/user/search?role=Physician', { headers: { "Authorization": "Bearer " + loginToken } })
             .then((resp) => {
+                console.log(resp)
                 this.setState({
                     users: resp.data.response
                 })
-
             }).catch((error) => {
                 console.error(error);
             })
@@ -105,15 +117,9 @@ class PhysicianAccess extends Component {
         return (
             <thead>
                 <tr>
-                    <th>
-                        Username
-          </th>
-                    <th>
-
-                    </th>
-                    <th>
-                        Give Access
-          </th>
+                    <th>Username</th>
+                    <th></th>
+                    <th> Give Access</th>
                 </tr>
             </thead>
         )
@@ -130,9 +136,9 @@ class PhysicianAccess extends Component {
 
 
     renderTableRow(user) {
-        console.log(user.PhysicianId, this.props.match.params.physicianId)
+        console.log(user.physicians)
         return (
-            <tr value={user.id}>
+            <tr key={user.id} value={user.id}>
 
                 <td>
                     {user.username}
@@ -143,18 +149,22 @@ class PhysicianAccess extends Component {
                 </td>
 
                 <td>
-                    {user.PhysicianId == this.props.match.params.physicianId ?
-                    
-                    <div>Access Granted</div> :
-                    
-                    <Button
-                        className="access"
-                        search
-                        icon="lock"
-                        title="GIVE ACCESS"
-                        style={{ marginLeft: 8 }}
-                        onClick={() => this.accessConfirm(user.id)}
-                    />
+
+                    {user.physicians.some(el => el['id'] == this.props.match.params.physicianId) ?
+
+                        <div>
+                            Access Granted <Icon className="minus" name="minus" onClick={() => this.removalConfirm(user.id)} />
+                        </div>
+                        :
+
+                        <Button
+                            className="access"
+                            search
+                            icon="lock"
+                            title="GIVE ACCESS"
+                            style={{ marginLeft: 8 }}
+                            onClick={() => this.accessConfirm(user.id)}
+                        />
                     }
                 </td>
 
@@ -171,10 +181,15 @@ class PhysicianAccess extends Component {
         )
     }
 
+    groupAccess() {
+        window.location = `/physicians/groups/${this.state.group}/access`;
+      }
+
     render() {
+        console.log(this.state.users)
+
         if (this.state.users) {
             var userList = this.state.users.map(function (item, i) {
-                console.log(item);
                 return (
                     <div key={i}>
                     </div>
@@ -187,7 +202,6 @@ class PhysicianAccess extends Component {
             </div>
         }
 
-        console.log(this.props, this.state);
         return (
             <div className={styles.app}>
 
@@ -195,7 +209,7 @@ class PhysicianAccess extends Component {
 
                     <h2 style={{ marginBottom: 25 }}>
                         {this.state.name}
-                        <span className="group">
+                        <span onClick={this.groupAccess.bind(this)} className="group">
                             {this.state.group || 'No Group Available'}
                         </span>
                     </h2>

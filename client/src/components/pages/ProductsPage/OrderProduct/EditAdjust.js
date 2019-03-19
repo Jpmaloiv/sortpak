@@ -59,7 +59,6 @@ class EditAdjust extends Component {
     }
 
     setBatch() {
-      console.log("HI")
         for (var i = 0; i < this.state.productList.length; i++) {
             this.fetchBatchInfo(i);
         }

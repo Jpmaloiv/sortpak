@@ -154,7 +154,7 @@ router.get("/search", (req, res) => {
     //                 }]
     //             }
     //         }, { model: db.scriptNotes, attributes: ['note', 'createdAt'] }, { model: db.scriptAttachments, attributes: ['id'] }]
-        
+
     //     }
     // }
 
@@ -243,6 +243,37 @@ router.get("/search", (req, res) => {
             res.status(500).json({ message: "Error (500): Internal Server Error", error: err })
         })
 })
+
+router.get("/find", (req, res) => {
+
+
+    const physicianIds = req.query.physicianIds.split(',');
+
+    db.Scripts.findAll({
+        where: {
+            PatientId: req.query.patientId,
+            PhysicianId: {
+                [Op.in]: physicianIds
+            }
+        },
+        attributes: {
+            exclude: ["salt", "hash", "updatedAt", "createdAt"]
+        },
+        include: [{
+            model: db.Physicians
+        },
+        {
+            model: db.Products
+        }]
+    })
+        .then(resp => {
+            res.json(resp)
+        })
+        .catch(err => {
+            console.error(err);
+            return res.status(500).end("Can't find user" + err.toString());
+        });
+});
 
 
 

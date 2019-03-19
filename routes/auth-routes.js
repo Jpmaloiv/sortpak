@@ -17,12 +17,35 @@ router.put("/update", authCtrl.update);
 
 router.put("/merge", authCtrl.merge);
 
+router.post("/userPhysicians", (req, res) => {
+
+    db.User.findById(req.query.userId)
+        .then(user => {
+            user.addPhysicians(req.query.physicianId)
+            .then((resp) => {
+                res.status(200).json({ message: "Upload successful!" });
+            })
+            .catch((err) => {
+                console.error(err);
+                res.status(500).json({ message: "Internal server error.", error: err });
+            })
+        });
+
+})
+
 router.get("/search", (req, res) => {
     let searchParams = {
         where: {},
         attributes: {
             exclude: ['hash', 'salt', "updatedAt"]
         },
+        include: [{
+            model: db.Physicians,
+            as: 'physicians',
+            required: false,
+            attributes: ['id', 'firstName', 'lastName'],
+            through: { attributes: [] }
+        }],
 
     }
     if (req.query.userId) {
@@ -85,7 +108,7 @@ router.get("/search", (req, res) => {
         searchParams.where.role = req.query.role
     }
 
-    
+
 
     if (req.query.userRole) {
         if (req.query.userRole.match(/,.*,.*,.*,.*,.*,.*,.*,.*,.*,.*,.*,/)) { // Check if there are 2 commas
@@ -122,5 +145,20 @@ router.get("/search", (req, res) => {
             res.status(500).json({ message: "Error (500): Internal Server Error", error: err })
         })
 })
+
+router.delete("/userPhysicians/delete", (req, res) => {
+
+    db.User.findById(req.query.userId)
+        .then(user => {
+            user.removePhysicians(req.query.physicianId)
+            .then((resp) => {
+                res.status(200).json({ message: "Deletion successful!" });
+            })
+            .catch((err) => {
+                console.error(err);
+                res.status(500).json({ message: "Internal server error.", error: err });
+            })
+        });
+});
 
 module.exports = router;

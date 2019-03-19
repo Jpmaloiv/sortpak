@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios'
 import Moment from 'react-moment'
+import jwt_decode from 'jwt-decode'
 
 import { Span, Table, TextArea } from '../../../../common'
 
@@ -24,19 +25,52 @@ class PrescriptionsTab extends Component {
           allergies: resp.data.response[0].allergies
         })
 
+        const loginToken = window.localStorage.getItem("token");
+        var decoded = jwt_decode(loginToken);
+        this.setState({
+          userId: decoded.id
+        }, this.getUserInfo)
+
         console.log(this.state.patientId);
-        axios.get('/api/scripts/search?patientId=' + this.state.patientId, { headers: { "Authorization": "Bearer " + loginToken } })
-          .then((resp) => {
-            console.log(resp);
-            this.setState({
-              scripts: resp.data.response
-            })
-          })
+
       }).catch((error) => {
         console.error(error);
 
       }).catch((error) => {
         console.error(error);
+      })
+  }
+
+  getUserInfo() {
+    const loginToken = window.localStorage.getItem("token");
+    axios.get('/api/user/search?userId=' + this.state.userId, { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        this.setState({
+          physicians: resp.data.response[0].physicians
+        }, this.sortPhysicianIds)
+      }).catch((err) => {
+        console.error(err)
+      })
+  }
+
+  sortPhysicianIds() {
+    const physicianIds = []
+    for (var i = 0; i < this.state.physicians.length; i++) {
+      physicianIds.push(this.state.physicians[i].id)
+    }
+    this.setState({
+      physicianIds: physicianIds
+    }, this.getRelativeScripts)
+  }
+
+  getRelativeScripts() {
+    const loginToken = window.localStorage.getItem("token");
+    axios.get('/api/scripts/find?patientId=' + this.state.patientId + '&physicianIds=' + this.state.physicianIds, { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        console.log(resp.data);
+        this.setState({
+          scripts: resp.data
+        })
       })
   }
 
@@ -62,7 +96,6 @@ class PrescriptionsTab extends Component {
   }
 
   renderTableBody() {
-
     return (
       <tbody>
         {this.state.scripts.map(this.renderTableRow.bind(this))}
@@ -79,7 +112,7 @@ class PrescriptionsTab extends Component {
       <tr value={script.id} onClick={() => this.handleClick(script.id)}>
         <td>
           <Span icon="calendar">
-          <Moment format='MM/DD/YYYY'>{script.processedOn}</Moment>
+            <Moment format='MM/DD/YYYY'>{script.processedOn}</Moment>
           </Span>
         </td>
 
@@ -114,9 +147,9 @@ class PrescriptionsTab extends Component {
 
     if (this.state.scripts) {
 
-      var scriptList = this.state.scripts.sort(function(a,b) { 
-        return new Date(b.processedOn).getTime() - new Date(a.processedOn).getTime() 
-    });
+      var scriptList = this.state.scripts.sort(function (a, b) {
+        return new Date(b.processedOn).getTime() - new Date(a.processedOn).getTime()
+      });
 
       var scriptList = this.state.scripts.map(function (item, i) {
         console.log(item);

@@ -73,20 +73,20 @@ class OrderProduct extends Component {
 
                 try {
                     const response = await axios.post('/api/products/orders/add?productId=' + product.id + '&orderDate=' + this.state.orderDate + '&orderId=' + this.state.orderId + '&invoiceNum=' + this.state.invoiceNum +
-                    '&vendor=' + this.state.vendor + '&memo=' + this.state.memo + '&qtyChange=' + product.quantity + '&lot=' + product.lot + '&expiration=' + product.expiration + '&writtenBy=' + this.state.username,
-                    data, { headers: { "Authorization": "Bearer " + loginToken } });
+                        '&vendor=' + this.state.vendor + '&memo=' + this.state.memo + '&qtyChange=' + product.quantity + '&lot=' + product.lot + '&expiration=' + product.expiration + '&writtenBy=' + this.state.username,
+                        data, { headers: { "Authorization": "Bearer " + loginToken } });
                     console.log(response)
                 } catch (e) {
                     console.log(e);
-                  }
                 }
-                    
+            }
 
 
 
-                if (i === this.state.productList.length - 1) {
-                    window.alert(`${this.state.productList.length} product orders have been uploaded for Order Id #${this.state.orderId}`);
-                }
+
+            if (i === this.state.productList.length - 1) {
+                window.alert(`${this.state.productList.length} product orders have been uploaded for Order Id #${this.state.orderId}`);
+            }
 
 
             window.location.reload();

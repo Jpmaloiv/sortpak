@@ -7,11 +7,10 @@ const Op = Sequelize.Op;
 
 router.get("/find", (req, res) => {
 
-    // if (searchParams.username) whereStatement.username = { $like: '%' + searchParams.username + '%' };
 
+    const physicianIds = req.query.physicianIds.split(',');
 
     db.Patients.findAll({
-
         where: {
             firstName: { like: '%' + req.query.name + '%' },
             dob: { like: '%' + req.query.dob + '%' },
@@ -29,9 +28,12 @@ router.get("/find", (req, res) => {
         },
         include: [{
             model: db.Scripts,
-            where: { PhysicianId: req.query.physicianId },
+            where: {
+                PhysicianId: {
+                    [Op.in]: physicianIds
+                }
+            }
         }],
-
     })
         .then(resp => {
             res.json(resp)
@@ -41,26 +43,6 @@ router.get("/find", (req, res) => {
             return res.status(500).end("Can't find user" + err.toString());
         });
 });
-
-// router.get("/:patientId", (req, res) => {
-//     db.Patients.findOne({
-//         where: { id: req.params.patientId},
-//         attributes: {
-//             exclude: ["salt", "hash", "updatedAt", "createdAt"]
-//         },
-//         include: [{
-//             model: db.Scripts
-//         }]
-
-//     })
-//         .then(resp => {
-//             res.json(resp)
-//         })
-//         .catch(err => {
-//             console.error(err);
-//             return res.status(500).end("Can't find user" + err.toString());
-//         });
-// });
 
 router.put("/:id", authCtrl.update);
 

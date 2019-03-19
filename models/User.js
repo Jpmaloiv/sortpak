@@ -77,12 +77,17 @@ module.exports = function (sequelize, DataTypes) {
         models.User.hasMany(models.scriptStatuses, {
             onDelete: "cascade"
         })
-        models.User.belongsTo(models.Physicians, {
-            foreignKey: {
-                name: 'PhysicianId',
-                allowNull: true
-            }
-        })
+        // models.User.belongsTo(models.Physicians, {
+        //     foreignKey: {
+        //         name: 'PhysicianId',
+        //         allowNull: true
+        //     }
+        // })
+        models.User.belongsToMany(models.Physicians, {
+            through: 'userPhysicians',
+            as: 'physicians',
+            foreignKey: 'UserId'
+          });
     }
 
     return User;

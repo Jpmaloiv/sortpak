@@ -49,18 +49,29 @@ class PatientsViewPhysician extends Component {
     axios.get('/api/user/search?userId=' + this.state.userId, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
         this.setState({
-          physicianId: resp.data.response[0].PhysicianId
-        }, this.getRelativePatients)
+          physicians: resp.data.response[0].physicians
+        }, this.sortPhysicianIds)
       }).catch((err) => {
         console.error(err)
       })
   }
 
+  sortPhysicianIds() {
+    const physicianIds = []
+    for (var i=0; i < this.state.physicians.length; i++) {
+      physicianIds.push(this.state.physicians[i].id)
+    }
+    this.setState({
+      physicianIds: physicianIds
+    }, this.getRelativePatients)
+  }
+
   getRelativePatients() {
+    console.log(this.state)
     const loginToken = window.localStorage.getItem("token");
-    axios.get('api/profile/find?physicianId=' + this.state.physicianId + '&name=' + this.state.searchName + '&dob=' + this.state.searchDOB + '&address=' + this.state.searchAddress, { headers: { "Authorization": "Bearer " + loginToken } })
+    axios.get('api/profile/find?physicianIds=' + this.state.physicianIds + '&name=' + this.state.searchName + '&dob=' + this.state.searchDOB + '&address=' + this.state.searchAddress, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
-        console.log(resp.data);
+        console.log(resp);
         this.setState({
           patients: resp.data
         })

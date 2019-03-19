@@ -496,6 +496,10 @@ class PhysicianView extends Component {
     )
   }
 
+  groupAccess() {
+    window.location = `/physicians/groups/${this.state.group}/access`;
+  }
+
   render() {
 
     return (
@@ -503,7 +507,7 @@ class PhysicianView extends Component {
         <Header className={styles.header}>
           <h2 style={{ marginBottom: 25 }}>
             {this.state.name}
-            <span onClick={this.renderGroupTab.bind(this)} className="group">
+            <span onClick={this.groupAccess.bind(this)} className="group">
               {this.state.group || 'No Group Available'}
             </span>
             <div className="action">

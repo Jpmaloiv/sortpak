@@ -11,13 +11,38 @@ class UsersTab extends Component {
     }
 
     componentDidMount() {
+        console.log(this)
         const loginToken = window.localStorage.getItem("token");
-        axios.get('/api/user/search?physicianId=' + this.props.pID.match.params.physicianId, { headers: { "Authorization": "Bearer " + loginToken } })
+        axios.get('/api/user/search?role=Physician', { headers: { "Authorization": "Bearer " + loginToken } })
             .then((resp) => {
                 this.setState({
                     users: resp.data.response
-                })
+                }, this.filterUsers)
             })
+    }
+
+    filterUsers() {
+        const physicianId = this.props.pID.match.params.physicianId
+        const users = [];
+        for (var i = 0; i < this.state.users.length; i++) {
+            let userPhysicians = this.state.users[i].physicians
+            var result = userPhysicians.filter(obj => {
+                return obj.id == physicianId
+            })
+            if (result.length > 0) {
+                users.push(this.state.users[i])
+            }
+        }
+        console.log(users)
+        this.setState({
+            users: users
+        })
+
+        //   console.log(result, this.state.users)
+
+        //   this.setState({
+        //       user: users
+        //   })
     }
 
     renderTableHead() {
