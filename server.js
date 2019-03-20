@@ -67,7 +67,6 @@ app.use(express.static(path.join(__dirname, 'client/build')));
 //     console.log('Socket Connection Successful')
 // });
 
-
 // Routes
 app.use(express.static(path.join(__dirname + '/public')));
 app.use(express.static(path.join(__dirname + '/user')));
