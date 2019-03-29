@@ -10,34 +10,23 @@ const Op = Sequelize.Op;
 
 
 router.post("/add", (req, res) => {
-    const visitLink = '/visits/' + req.payload.id;
     const visit = {
         dateTime: req.query.dateTime,
         Rep: req.query.Rep,
         Physician: req.query.Physician,
-        link: visitLink,
+        group: req.query.group,
         PhysicianId: req.query.physicianId
     }
 
-    fs.mkdir("./visits/", (err) => {
-        if ((err) && (err.code !== 'EEXIST')) {
-            console.error(err)
-        } else {
-            const visitPath = './visits/' + req.payload.id;
-            // console.log("dir created");
-                    // console.log("file saved");
-                    db.Visits
-                        .create(visit)
-                        .then((resp) => {
-                            res.status(200).json({ message: "Upload successful!" });
-                        })
-                        .catch((err) => {
-                            console.error(err);
-                            res.status(500).json({ message: "Internal server error.", error: err });
-                        })
-                
-        }
-    })
+    db.Visits
+        .create(visit)
+        .then((resp) => {
+            res.status(200).json({ message: "Upload successful!" });
+        })
+        .catch((err) => {
+            console.error(err);
+            res.status(500).json({ message: "Internal server error.", error: err });
+        })
 });
 
 
@@ -56,10 +45,14 @@ router.get("/search", (req, res) => {
         searchParams.where.PhysicianId = req.query.physicianId
     }
 
+    if (req.query.group) {
+        searchParams.where.group = req.query.group
+    }
+
     // if (req.query.rep) {
     //     searchParams.where.Rep = req.query.rep
     // }
-  
+
     console.log(searchParams);
     db.Visits
         .findAll(searchParams)
@@ -73,7 +66,7 @@ router.get("/search", (req, res) => {
             console.error(err);
             res.status(500).json({ message: "Error (500): Internal Server Error", error: err })
         })
-    })
+})
 
 
 module.exports = router;

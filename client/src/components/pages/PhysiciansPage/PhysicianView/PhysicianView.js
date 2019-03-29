@@ -497,7 +497,7 @@ class PhysicianView extends Component {
   }
 
   groupAccess() {
-    window.location = `/physicians/groups/${this.state.group}/access`;
+    window.location = `/physicians/groups/${this.state.group}`;
   }
 
   render() {

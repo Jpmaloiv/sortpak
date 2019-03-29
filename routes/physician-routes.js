@@ -58,7 +58,7 @@ router.get("/search", (req, res) => {
         where: {
             id: {
                 [Op.not]: 1
-              }
+            }
         },
         attributes: {
             exclude: ["createdAt", "updatedAt"]
@@ -110,15 +110,26 @@ router.get("/search", (req, res) => {
     }
 
 
-  
+
 
     if ((req.query.dupFirstName) && (req.query.dupLastName)) {
         searchParams.where.firstName = req.query.dupFirstName,
-        searchParams.where.lastName = req.query.dupLastName
+            searchParams.where.lastName = req.query.dupLastName
     }
 
     if (req.query.group) {
         searchParams.where.group = req.query.group
+    }
+
+    if (req.query.physGroup) {
+        searchParams = {
+            where: {
+                group: req.query.physGroup
+            },
+            include: {
+                model: db.Scripts
+            }
+        }
     }
 
     if (req.query.rep) {
@@ -171,7 +182,7 @@ router.get("/search", (req, res) => {
 })
 
 router.put("/update", function (req, res) {
-    console.log("UPDATE QUERY:", req.query)
+
     const physician = {
         firstName: req.query.firstName,
         lastName: req.query.lastName,

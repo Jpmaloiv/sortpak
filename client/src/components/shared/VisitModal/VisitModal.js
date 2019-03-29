@@ -33,7 +33,10 @@ class VisitModal extends Component {
       date,
       time: '10:00',
       Physician: '',
-      searchActive: false
+      group: '',
+      physicianId: 1,
+      searchActive: false,
+      groups: []
     }
     return initialState
   }
@@ -75,7 +78,8 @@ class VisitModal extends Component {
 
   searchQuery() {
     this.setState({
-      searchActive: true
+      searchActive: true,
+      groupSearchActive: false
     })
     const loginToken = window.localStorage.getItem("token");
     axios.get('/api/physicians/search?name=' + this.state.name, { headers: { "Authorization": "Bearer " + loginToken } })
@@ -87,6 +91,37 @@ class VisitModal extends Component {
       }).catch((err) => {
         console.error(err)
       })
+  }
+
+  groupSearchQuery() {
+    this.setState({
+      groupSearchActive: true,
+      searchActive: false
+    })
+    const loginToken = window.localStorage.getItem("token");
+    axios.get('/api/physicians/search?searchGroup=' + this.state.groupName, { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        console.log(resp);
+        this.setState({
+          groups: resp.data.response
+        }, this.filterGroups)
+      }).catch((err) => {
+        console.error(err)
+      })
+  }
+
+  filterGroups() {
+    var flags = {};
+    var groups = this.state.groups.filter(function (entry) {
+      if (flags[entry.group]) {
+        return false;
+      }
+      flags[entry.group] = true;
+      return true;
+    });
+    this.setState({
+      groups: groups
+    })
   }
 
   getUser() {
@@ -136,23 +171,28 @@ class VisitModal extends Component {
         this.setState({
           Physician: resp.data.response[0].firstName + ' ' + resp.data.response[0].lastName
         })
-    
-
       }).catch((error) => {
         console.error(error);
       })
   }
 
+
+  setGroup(value) {
+    console.log(value);
+    this.setState({
+      groupSearchActive: false,
+      group: value
+    })
+  }
+
   submitVisit() {
     const loginToken = window.localStorage.getItem("token");
     let data = new FormData();
-    axios.post('/api/visits/add?dateTime=' + this.state.dateTime + '&Rep=' + this.state.Rep + '&physicianId=' + this.state.physicianId + '&Physician=' + this.state.Physician,
+    axios.post('/api/visits/add?dateTime=' + this.state.dateTime + '&Rep=' + this.state.Rep + '&physicianId=' + this.state.physicianId + '&Physician=' + this.state.Physician + 
+    '&group=' + this.state.group,
       data, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((data) => {
-        console.log(data);
         window.location.reload();
-        // this.props.onClickAway();
-
       }).catch((error) => {
         console.error(error);
       })
@@ -217,8 +257,16 @@ class VisitModal extends Component {
 
   renderPhysicianColumn() {
     return (
-      <div>
+      <div style={{ height: 100, overflow: 'scroll' }}>
         {this.state.physicians.map(this.renderPhysicianRow.bind(this))}
+      </div>
+    )
+  }
+
+  renderGroupColumn() {
+    return (
+      <div style={{ height: 100, overflow: 'scroll' }}>
+        {this.state.groups.map(this.renderGroupRow.bind(this))}
       </div>
     )
   }
@@ -228,6 +276,14 @@ class VisitModal extends Component {
     return (
       <p style={{ 'cursor': 'pointer' }} value={physician.id} onClick={() => this.setPhysician(physician.id)}>
         {physician.firstName} {physician.lastName}
+      </p>
+    )
+  }
+
+  renderGroupRow(physician) {
+    return (
+      <p style={{ 'cursor': 'pointer' }} value={physician.group} onClick={() => this.setGroup(physician.group)}>
+        {physician.group}
       </p>
     )
   }
@@ -272,22 +328,22 @@ class VisitModal extends Component {
           <label>
             Rep
         </label>
-        {this.state.currentRole === "Admin" ?
-          <Selector
-            wide
-            options={repOptions}
-            value={this.state.Rep}
-            onSelect={Rep => this.setState({ Rep })}
-          />
-          :
-          <Selector
-            wide
-            options={repOption}
-            selected={this.state.Rep}
-            value={this.state.Rep}
-            onSelect={Rep => this.setState({ Rep })}
-          />
-      }
+          {this.state.currentRole === "Admin" ?
+            <Selector
+              wide
+              options={repOptions}
+              value={this.state.Rep}
+              onSelect={Rep => this.setState({ Rep })}
+            />
+            :
+            <Selector
+              wide
+              options={repOption}
+              selected={this.state.Rep}
+              value={this.state.Rep}
+              onSelect={Rep => this.setState({ Rep })}
+            />
+          }
 
           <br />
 
@@ -336,6 +392,26 @@ class VisitModal extends Component {
               onChange={name => this.setState({ name }, this.searchQuery)}
             />}
 
+          <label>
+            Group
+        </label>
+          {this.state.groupSearchActive ?
+            <div style={{ 'background': 'red !important' }}>
+              <Input
+                placeholder="Type name of group.."
+                value={this.state.groupName}
+                onChange={groupName => this.setState({ groupName }, this.groupSearchQuery)}
+              />
+
+
+              {this.renderGroupColumn()}
+            </div>
+            :
+            <Input
+              placeholder="Type name of group.."
+              value={this.state.group}
+              onChange={groupName => this.setState({ groupName }, this.groupSearchQuery)}
+            />}
 
 
           <div className="buttons">

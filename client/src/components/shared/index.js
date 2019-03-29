@@ -5,6 +5,7 @@ import InsuranceModal from './InsuranceModal/InsuranceModal'
 import ReceiptModal from './ReceiptModal/ReceiptModal'
 import VisitModal from './VisitModal/VisitModal'
 import PhysicianNoteModal from './PhysicianNoteModal/PhysicianNoteModal'
+import GroupNoteModal from './GroupNoteModal/GroupNoteModal'
 import MergePatientModal from './MergePatientModal/MergePatientModal'
 import MergePhysicianModal from './MergePhysicianModal/MergePhysicianModal'
 import VisitNoteModal from './VisitNoteModal/VisitNoteModal'
@@ -31,6 +32,7 @@ export {
   ReceiptModal,
   VisitModal,
   PhysicianNoteModal,
+  GroupNoteModal,
   VisitNoteModal,
   NoteModal,
   NoteModalPatient,

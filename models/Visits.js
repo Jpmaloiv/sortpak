@@ -14,6 +14,10 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.STRING,
             allowNull: true
         },
+        group: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
         PhysicianId: {
             type: DataTypes.STRING,
             allowNull: true

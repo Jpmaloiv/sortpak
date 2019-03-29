@@ -7,6 +7,7 @@ var sslRedirect = require('heroku-ssl-redirect');
 
 const authRoutes = require("./routes/auth-routes.js");
 const currentPatientRoutes = require("./routes/currentPatient-routes.js");
+const groupNoteRoutes = require("./routes/groupNote-routes.js");
 const scriptRoutes = require("./routes/script-routes.js");
 const scriptNoteRoutes = require("./routes/scriptNote-routes.js");
 const scriptAttachmentRoutes = require("./routes/scriptAttachment-routes.js");
@@ -75,6 +76,7 @@ app.use(express.static(path.join(__dirname + '/attachments')));
 app.use(express.static(path.join(__dirname + '/receipts')));
 app.use(express.static(path.join(__dirname + '/patients')));
 app.use(express.static(path.join(__dirname + '/patientNotes')));
+app.use(express.static(path.join(__dirname + '/groupNotes')));
 app.use(express.static(path.join(__dirname + '/patientAttachments')));
 app.use(express.static(path.join(__dirname + '/pastInsurance')));
 app.use(express.static(path.join(__dirname + '/products')));
@@ -164,6 +166,12 @@ app.use(["/api/user"], jwt({
     secret: process.env.JWT_SECRET,
     userProperty: 'payload'
 }));
+app.use("/api/groupNotes", groupNoteRoutes);
+app.use(["/api/groupNotes"], jwt({
+    secret: process.env.JWT_SECRET,
+    userProperty: 'payload'
+}));
+
 app.use("/api/faxes", faxRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/current", currentPatientRoutes);

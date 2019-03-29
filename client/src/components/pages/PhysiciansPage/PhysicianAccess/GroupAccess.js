@@ -205,6 +205,10 @@ class GroupAccess extends Component {
         )
     }
 
+    groupAccess() {
+        window.location = `/physicians/groups/${this.props.match.params.group}`;
+      }
+
     render() {
         console.log(this.state.users)
 
@@ -229,7 +233,7 @@ class GroupAccess extends Component {
 
                     <h2 style={{ marginBottom: 25 }}>
                         Group Access
-                        <span className="group">
+                        <span onClick={this.groupAccess.bind(this)} className="group">
                             {this.props.match.params.group || 'No Group Available'}
                         </span>
                     </h2>
