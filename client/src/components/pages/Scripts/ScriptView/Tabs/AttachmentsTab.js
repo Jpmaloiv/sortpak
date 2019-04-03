@@ -24,6 +24,7 @@ class AttachmentsTab extends Component {
   }
 
   componentWillReceiveProps() {
+    console.log("HERE")
     const loginToken = window.localStorage.getItem("token");
     axios.get('/api/attachments/search?ScriptId=' + this.props.state.id, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
@@ -80,9 +81,9 @@ class AttachmentsTab extends Component {
     return (
       <tr key={attachment.id}>
         <td>
-          <Link to={'../attachment/' + attachment.id} activeClassName="active">
+          <a href={attachment.link} target='_blank' activeClassName="active">
             <h3>{attachment.title}</h3>
-          </Link>
+          </a>
         </td>
         <td>
           <Moment format={"MM/DD/YYYY"}>{attachment.createdAt}</Moment>
@@ -109,12 +110,12 @@ class AttachmentsTab extends Component {
   }
 
   render() {
-    
+
     if (this.state.attachments) {
 
-      var attachmentList = this.state.attachments.sort(function(a,b) { 
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime() 
-    });
+      var attachmentList = this.state.attachments.sort(function (a, b) {
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      });
       var attachmentList = this.state.attachments.map(function (item, i) {
         console.log(item);
         return (
@@ -175,4 +176,3 @@ class AttachmentsTab extends Component {
 
 export default AttachmentsTab;
 
-              

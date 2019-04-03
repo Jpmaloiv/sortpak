@@ -23,15 +23,11 @@ class Book extends React.Component {
                         file: resp.data.response[0].link,
                         attachment: resp.data.response[0]
                     }, () => console.log(this.state));
-
-
                 }).catch((err) => {
                     console.error(err)
                 })
         }
-
     }
-
 
 
     render() {

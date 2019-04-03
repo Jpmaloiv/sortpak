@@ -62,14 +62,14 @@ class GroupAccess extends Component {
     removeAccess(value) {
         const loginToken = window.localStorage.getItem("token");
         for (var i = 0; i < this.state.physicianIds.length; i++) {
-        let data = new FormData();
-        axios.delete('/api/user/userPhysicians/delete?userId=' + value + '&physicianId=' + this.state.physicianIds[i],
-            data, { headers: { "Authorization": "Bearer " + loginToken } })
-            .then((resp) => {
-                this.reRender();
-            }).catch((error) => {
-                console.error(error);
-            })
+            let data = new FormData();
+            axios.delete('/api/user/userPhysicians/delete?userId=' + value + '&physicianId=' + this.state.physicianIds[i],
+                data, { headers: { "Authorization": "Bearer " + loginToken } })
+                .then((resp) => {
+                    this.reRender();
+                }).catch((error) => {
+                    console.error(error);
+                })
         }
     }
 
@@ -158,7 +158,7 @@ class GroupAccess extends Component {
             let userPhys = userPhysicians[i]
             userIds.push(userPhys.id)
         }
-        
+
         const found = physicianIds.every(id => userIds.includes(id))
 
         return (
@@ -207,7 +207,7 @@ class GroupAccess extends Component {
 
     groupAccess() {
         window.location = `/physicians/groups/${this.props.match.params.group}`;
-      }
+    }
 
     render() {
         console.log(this.state.users)

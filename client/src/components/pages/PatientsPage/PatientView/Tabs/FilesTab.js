@@ -23,6 +23,18 @@ class FilesTab extends Component {
     this.props.setState({ fileModal: {} })
   }
 
+  componentWillReceiveProps() {
+    const loginToken = window.localStorage.getItem("token");
+    axios.get('/api/patientAttachments/search?patientId=' + this.props.state.id, { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        this.setState({
+          attachments: resp.data.response,
+        })
+      }).catch((error) => {
+        console.error(error);
+      })
+  }
+
   componentDidMount() {
     const loginToken = window.localStorage.getItem("token");
     axios.get('/api/patientAttachments/search?patientId=' + this.props.state.id, { headers: { "Authorization": "Bearer " + loginToken } })
@@ -70,9 +82,10 @@ class FilesTab extends Component {
     return (
       <tr key={attachment.id}>
         <td>
-          <Link to={'../patientAttachment/' + attachment.id} activeClassName="active">
+          {/* <Link to={'../patientAttachment/' + attachment.id} activeClassName="active"> */}
+          <a href={attachment.link} target='_blank' activeClassName="active">
             <h3>{attachment.title}</h3>
-          </Link>
+          </a>
 
         </td>
 
@@ -82,7 +95,7 @@ class FilesTab extends Component {
         </td>
 
         <td>
-          {/* {attachment.User.username} */}
+          {attachment.attachedBy}
         </td>
 
         <td>
@@ -151,10 +164,11 @@ class FilesTab extends Component {
         </div>
 
         <PatientAttachmentModal
-          props={this.props}
           content={fileModal}
           onClickAway={onCloseModal}
           onSubmit={onCreateNote}
+          props={this.props}
+          state={this.state}
         />
       </div>
     )

@@ -90,7 +90,7 @@ class RXHistoryTab extends Component {
               Patient Since: &nbsp;<Moment format={"MM/DD/YYYY"}>{this.state.createdAt}</Moment>
             </div>
           </div>
-        
+
           <div id="contactInfo">
             <div>
               <Span style={{ marginLeft: 0 }} icon="phone">
@@ -219,6 +219,10 @@ class RXHistoryTab extends Component {
 
     if (this.state.scripts) {
 
+      var scriptList = this.state.scripts.sort(function (a, b) {
+        return new Date(b.processedOn).getTime() - new Date(a.processedOn).getTime()
+      });
+
       var scriptList = this.state.scripts.map(function (item, i) {
         console.log(item);
         return (
@@ -238,9 +242,9 @@ class RXHistoryTab extends Component {
     return (
       <div className="rxHistoryTab">
 
-      <div id="rxPrint" style={{'display': 'none'}}>
-      <h1>RX History</h1>
-      {this.renderPatientInfo()}</div>
+        <div id="rxPrint" style={{ 'display': 'none' }}>
+          <h1>RX History</h1>
+          {this.renderPatientInfo()}</div>
         {this.renderTable()}
         {scriptList}
       </div>

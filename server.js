@@ -112,10 +112,10 @@ app.use("/api/scripts/payments", scriptPaymentRoutes);
 //     userProperty: 'payload'
 // }));
 app.use("/api/scripts", scriptRoutes);
-app.use(["/api/patientAttachments"], jwt({
-    secret: process.env.JWT_SECRET,
-    userProperty: 'payload'
-}));
+// app.use(["/api/patientAttachments"], jwt({
+//     secret: process.env.JWT_SECRET,
+//     userProperty: 'payload'
+// }));
 app.use("/api/patientAttachments", patientAttachmentRoutes);
 app.use("/api/patients/notes", patientNoteRoutes);
 app.use(["/api/patients/notes"], jwt({

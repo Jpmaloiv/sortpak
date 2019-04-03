@@ -11,63 +11,45 @@ const open = require("open");
 const aws = require('aws-sdk');
 
 
+const S3_BUCKET = process.env.S3_BUCKET;
+aws.config.region = 'us-west-1';
 
 router.post("/upload", (req, res) => {
-    const attachmentFile = req.files.attachmentFile;
+
     const title = req.files.attachmentFile.name;
-    // const attachmentLink = '/attachments/' + req.query.userId + '/' + title.trim() + ".pdf";
+
     const attachment = {
         title,
         attachedBy: req.query.attachedBy,
         type: req.query.type,
-        link: `https://s3-us-west-1.amazonaws.com/sortpak/scripts/attachments/${req.query.scriptId}/${title}`,
-        // link: `https://s3-us-west-1.amazonaws.com/healthguardtesting/scripts/attachments/${req.query.scriptId}/${title}`,
+        link: `https://s3-us-west-1.amazonaws.com/${S3_BUCKET}/attachments/scripts/${req.query.scriptId}/${title}`,
         ScriptId: req.query.scriptId,
         UserId: req.query.userId
     }
 
-    fs.mkdir("./attachments/attachments/" + req.query.userId.toString(), (err) => {
-        if ((err) && (err.code !== 'EEXIST')) {
-            console.error(err)
-        } else {
-            const attachmentPath = './attachments/attachments/' + req.query.userId + '/' + title.trim() + ".pdf";
-            console.log("dir created");
-            attachmentFile
-                .mv(attachmentPath)
-                .then((response) => {
-                    console.log("file saved");
-                    db.scriptAttachments
-                        .create(attachment)
-                        .then((resp) => {
-                            res.status(200).json({ message: "Upload successful!" });
-                            // open('/attachment/' + , function (err) {
-                            //     if (err) throw err;
-                            // });
-                        })
-                        .catch((err) => {
-                            console.error(err);
-                            res.status(500).json({ message: "Internal server error.", error: err });
-                        })
+    db.scriptAttachments
+        .create(attachment)
+        .then((resp) => {
+            res.status(200).json({ message: "Upload successful!" });
+        })
+        .catch((err) => {
+            console.error(err);
+            res.status(500).json({ message: "Internal server error.", error: err });
+        })
 
-                        .catch((err) => {
-                            console.error(err);
-                            res.status(500).json({ message: "Internal server error.", error: err });
-                        })
-                })
-        }
-    })
-});
+        .catch((err) => {
+            console.error(err);
+            res.status(500).json({ message: "Internal server error.", error: err });
+        })
+})
+
 
 router.get("/search", (req, res) => {
     let searchParams = {
         where: {},
         attributes: {
             exclude: ["updatedAt"]
-        },
-        // include: [{
-        //     model: db.User,
-        //     where: {},
-        // }],
+        }
     }
 
     if (req.query.attachmentId) {
@@ -99,16 +81,13 @@ router.get("/search", (req, res) => {
 })
 
 
-const S3_BUCKET = process.env.S3_BUCKET;
-aws.config.region = 'us-west-1';
-
 router.get("/sign-s3", (req, res) => {
     const s3 = new aws.S3();
     const fileName = req.query['file-name'];
     const fileType = req.query['file-type'];
     const s3Params = {
         Bucket: S3_BUCKET,
-        Key: "scripts/attachments/" + req.query.scriptId + "/" + fileName.trim(),
+        Key: "attachments/scripts/" + req.query.scriptId + "/" + fileName.trim(),
         Expires: 60,
         ContentType: fileType,
         ACL: 'public-read'
@@ -121,8 +100,7 @@ router.get("/sign-s3", (req, res) => {
         }
         const returnData = {
             signedRequest: data,
-            url: 'https://s3-us-west-1.amazonaws.com/sortpak/scripts/attachments/' + req.query.scriptId + '/' + fileName.trim()
-            // url: 'https://s3-us-west-1.amazonaws.com/healthguardtesting/scripts/attachments/' + req.query.scriptId + '/' + fileName.trim()
+            url: `https://s3-us-west-1.amazonaws.com/${S3_BUCKET}/attachments/scripts/` + req.query.scriptId + '/' + fileName.trim()
         };
         console.log(returnData)
         res.write(JSON.stringify(returnData));
@@ -132,6 +110,7 @@ router.get("/sign-s3", (req, res) => {
         // });
     });
 });
+
 
 router.put("/upload/:id", (req, res) => {
     var attachment = {

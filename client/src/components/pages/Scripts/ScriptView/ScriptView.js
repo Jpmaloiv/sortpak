@@ -257,8 +257,10 @@ class ScriptView extends Component {
   }
 
   closeModal() {
+    console.log("CLOSING")
     this.setState({
       attachmentModal: null,
+      fileModal: null,
       noteModal: null,
       chargeModal: null
     })

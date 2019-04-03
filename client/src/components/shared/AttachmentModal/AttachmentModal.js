@@ -46,36 +46,46 @@ export default class AttachmentModal extends Component {
 
   onSubmit(e) {
     e.preventDefault()
+    let data = new FormData();
+    data.append("attachmentFile", document.getElementById("pdf-file").files[0])
+    this.submitS3(data);
+  }
+
+  async submitScriptAttachment() {
     const loginToken = window.localStorage.getItem("token");
     const scriptId = this.props.props.state.id;
     let data = new FormData();
     data.append("attachmentFile", document.getElementById("pdf-file").files[0])
-    console.log(data)
-    axios.post('/api/attachments/upload?scriptId=' + scriptId + '&userId=' + this.state.userId + '&attachedBy=' + this.state.username + '&type=' + this.state.type,
-      data, { headers: { "Authorization": "Bearer " + loginToken } })
-      .then((data) => {
-        this.submitS3(data);
-        // this.props.onClickAway()
-      }).catch((error) => {
-        console.error(error);
-      })
+
+    try {
+      await axios.post('/api/attachments/upload?scriptId=' + scriptId + '&userId=' + this.state.userId + '&attachedBy=' + this.state.username + '&type=' + this.state.type,
+        data, { headers: { "Authorization": "Bearer " + loginToken } })
+        .then((data) => {
+          return data;
+        }).catch((error) => {
+          console.error(error);
+        })
+    } catch (e) {
+      console.log(e);
+    }
+
   }
 
   submitS3() {
-      const files = document.getElementById('pdf-file').files;
-      console.log(files)
-      const file = files[0];
-      if (file == null) {
-        return alert('No file selected.');
-      }
-      this.getSignedRequest(file);
-    };
-  
+    const files = document.getElementById('pdf-file').files;
+    console.log(files)
+    const file = files[0];
+    if (file == null) {
+      return alert('No file selected.');
+    }
+    this.getSignedRequest(file);
+  };
+
 
   getSignedRequest(file) {
     const loginToken = window.localStorage.getItem("token");
     const xhr = new XMLHttpRequest();
-    xhr.open('GET', `/api/attachments/sign-s3?file-name=${file.name}&file-type=${file.type}&scriptId=` + this.props.props.state.id, { headers: { "Authorization": "Bearer " + loginToken }});
+    xhr.open('GET', `/api/attachments/sign-s3?file-name=${file.name}&file-type=${file.type}&scriptId=` + this.props.props.state.id, { headers: { "Authorization": "Bearer " + loginToken } });
     xhr.onreadystatechange = () => {
       if (xhr.readyState === 4) {
         if (xhr.status === 200) {
@@ -91,7 +101,7 @@ export default class AttachmentModal extends Component {
     xhr.send();
   }
 
-  uploadFile(file, signedRequest, url) {
+  async uploadFile(file, signedRequest, url) {
     const xhr = new XMLHttpRequest();
     xhr.open('PUT', signedRequest);
     xhr.onreadystatechange = () => {
@@ -99,9 +109,11 @@ export default class AttachmentModal extends Component {
         if (xhr.status === 200) {
           // document.getElementById('preview').src = url;
           // document.getElementById('avatar-url').value = url;
-        this.props.onClickAway()
-        console.log(url)
-        window.open(url)
+          this.submitScriptAttachment()
+            .then(() =>
+              this.props.onClickAway(),
+              window.open(url)
+            )
         }
         else {
           alert('Could not upload file.');

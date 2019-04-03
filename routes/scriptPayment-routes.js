@@ -10,13 +10,12 @@ const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 const aws = require('aws-sdk');
 
-
-const stripe = require("stripe")("sk_test_OVr1Ou3Gc5Vx4uqaZ888w1bz");
-// app.use(require("body-parser").text());
+const paymentTransactions = require('../controllers/Authorize.Net/PaymentTransactions')
 
 
 router.post("/charge", async (req, res) => {
-    const scriptPayment = {
+
+    const payment = {
         name: req.query.name,
         amount: req.query.amount,
         receiptLink: req.query.receiptLink,
@@ -24,31 +23,43 @@ router.post("/charge", async (req, res) => {
         ScriptId: req.query.scriptId
     }
 
-    // Stripe
-    const convertedAmount = req.query.amount * 100;
-    return stripe.charges
-        .create({
-            amount: convertedAmount, // Unit: cents
-            currency: 'usd',
-            source: req.body.token.id,
-            description: 'Test payment',
-        })
-        .then(result => res.status(200).json(result),
+    const test = await paymentTransactions.chargeCreditCard(payment)
+    console.log("TEST", test)
 
-            db.scriptPayments
-                .create(scriptPayment)
-                .then((resp) => {
-                    res.status(200).json({ message: "Upload successful!" });
-                })
-                .catch((err) => {
-                    console.error(err);
-                    res.status(500).json({ message: "Internal server error.", error: err });
-                }))
+    // try {
+    //     console.log("IN TRY")
+    //     const hello = await paymentTransactions.chargeCreditCard(payment)
+    //     console.log("HELLO", hello)
+            
+    // } catch (err) {
+    //     req.errorHandler("ERROR", err, res)
+    // }
 
-        .catch((err) => {
-            console.error(err);
-            res.status(500).json({ message: "Error (500): Internal Server Error", error: err })
-        })
+    // // Stripe
+    // const convertedAmount = req.query.amount * 100;
+    // return stripe.charges
+    //     .create({
+    //         amount: convertedAmount, // Unit: cents
+    //         currency: 'usd',
+    //         source: req.body.token.id,
+    //         description: 'Test payment',
+    //     })
+    //     .then(result => res.status(200).json(result),
+
+    //         db.scriptPayments
+    //             .create(scriptPayment)
+    //             .then((resp) => {
+    //                 res.status(200).json({ message: "Upload successful!" });
+    //             })
+    //             .catch((err) => {
+    //                 console.error(err);
+    //                 res.status(500).json({ message: "Internal server error.", error: err });
+    //             }))
+
+    //     .catch((err) => {
+    //         console.error(err);
+    //         res.status(500).json({ message: "Error (500): Internal Server Error", error: err })
+    //     })
 });
 
 
@@ -76,7 +87,7 @@ router.get("/search", (req, res) => {
         searchParams = {
             where: {},
             include: [{
-                model: db.Scripts, 
+                model: db.Scripts,
                 include: [{
                     model: db.Physicians
                 }]

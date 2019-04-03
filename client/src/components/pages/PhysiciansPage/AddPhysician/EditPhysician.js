@@ -48,6 +48,7 @@ class AddPhysician extends Component {
           firstName: physician.firstName,
           lastName: physician.lastName,
           group: physician.group,
+          oldGroup: physician.group,
           rep: physician.rep,
           specialization: physician.specialization,
           DEA: physician.DEA,
@@ -79,11 +80,72 @@ class AddPhysician extends Component {
       }).catch((error) => {
         console.error(error);
       })
-
   }
 
-  updatePhysician = (event) => {
-    event.preventDefault()
+  fetchPhysicianUsers() {
+    const loginToken = window.localStorage.getItem("token");
+    axios.get('/api/user/search?role=Physician', { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        this.setState({
+          users: resp.data.response
+        }, this.fetchGroupPhysicians);
+      }).catch((error) => {
+        console.error(error);
+      })
+  }
+
+  fetchGroupPhysicians() {
+    const loginToken = window.localStorage.getItem("token");
+    axios.get('/api/physicians/search?group=' + this.state.oldGroup, { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        console.log(resp)
+        this.setState({
+          groupPhysicians: resp.data.response
+        }, this.sortUsersAndPhysicians);
+      }).catch((error) => {
+        console.error(error);
+      })
+  }
+
+  sortUsersAndPhysicians() {
+    const { users, groupPhysicians } = this.state
+    const groupIds = [];
+
+    for (var i = 0; i < groupPhysicians.length; i++) {
+      groupIds.push(groupPhysicians[i].id)
+    }
+
+    const filteredUsers = users.filter(function (user) {
+      let userIds = [];
+      for (var i = 0; i < user.physicians.length; i++) {
+        userIds.push(user.physicians[i].id)
+      }
+      console.log(groupIds, userIds)
+      return groupIds.every(id => userIds.includes(id))
+    });
+    console.log(filteredUsers)
+
+    if (groupIds.length > 1 && filteredUsers.length > 0) {
+
+      for (var i = 0; i < filteredUsers.length; i++) {
+        const loginToken = window.localStorage.getItem("token");
+        let data = new FormData();
+        console.log(filteredUsers[i])
+        axios.delete('/api/user/userPhysicians/delete?userId=' + filteredUsers[i].id + '&physicianId=' + this.state.id,
+          data, { headers: { "Authorization": "Bearer " + loginToken } })
+          .then((resp) => {
+            console.log(resp)
+          }).catch((error) => {
+            console.error(error);
+          })
+        if (i === filteredUsers.length - 1) this.finalUpdate();
+      }
+    } else {
+      this.finalUpdate();
+    }
+  }
+
+  finalUpdate() {
     const loginToken = window.localStorage.getItem("token");
     let data = new FormData();
     axios.put('/api/physicians/update?id=' + this.state.id + '&firstName=' + this.state.firstName + '&lastName=' + this.state.lastName +
@@ -94,10 +156,33 @@ class AddPhysician extends Component {
       data, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((data) => {
         console.log(data);
+        window.alert("Group updated. Physician users with access to the previous group will no longer be able to see details about this physician. If you would like them to be able to see this physician's details, please grant them access on the Physician Access page.")
         this.props.history.push(`/physicians/${this.state.id}`);
       }).catch((error) => {
         console.error(error);
       })
+
+  }
+
+  updatePhysician() {
+    const loginToken = window.localStorage.getItem("token");
+    let data = new FormData();
+    if (this.state.oldGroup !== this.state.group) {
+      this.fetchPhysicianUsers()
+    } else {
+      axios.put('/api/physicians/update?id=' + this.state.id + '&firstName=' + this.state.firstName + '&lastName=' + this.state.lastName +
+        '&group=' + this.state.group + '&rep=' + this.state.rep + '&specialization=' + this.state.specialization +
+        '&DEA=' + this.state.DEA + '&NPI=' + this.state.NPI + '&phone=' + this.state.phone + '&fax=' + this.state.fax +
+        '&email=' + this.state.email + '&contact=' + this.state.contact + '&addressStreet=' + this.state.addressStreet + '&addressCity=' +
+        this.state.addressCity + '&addressState=' + this.state.addressState + '&addressZipCode=' + this.state.addressZipCode + '&physicianWarning=' + this.state.physicianWarning,
+        data, { headers: { "Authorization": "Bearer " + loginToken } })
+        .then((data) => {
+          console.log(data);
+          this.props.history.push(`/physicians/${this.state.id}`);
+        }).catch((error) => {
+          console.error(error);
+        })
+    }
   }
 
   render() {
@@ -224,7 +309,7 @@ class AddPhysician extends Component {
                 style={{ marginRight: 10 }}
               />
               <Button
-                onClick={this.updatePhysician}
+                onClick={this.updatePhysician.bind(this)}
                 title="SAVE"
                 className="submit btn btn-default"
                 type="submit"
