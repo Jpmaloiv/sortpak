@@ -4,7 +4,7 @@ import axios from 'axios'
 import Moment from 'react-moment'
 
 // Components
-import { Button, Link, Table } from '../../../../common'
+import { Button, Span, Table } from '../../../../common'
 
 import {
   PatientAttachmentModal
@@ -35,6 +35,18 @@ class FilesTab extends Component {
       })
   }
 
+  reRender() {
+    const loginToken = window.localStorage.getItem("token");
+    axios.get('/api/patientAttachments/search?patientId=' + this.props.state.id, { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        this.setState({
+          attachments: resp.data.response,
+        })
+      }).catch((error) => {
+        console.error(error);
+      })
+  }
+
   componentDidMount() {
     const loginToken = window.localStorage.getItem("token");
     axios.get('/api/patientAttachments/search?patientId=' + this.props.state.id, { headers: { "Authorization": "Bearer " + loginToken } })
@@ -47,7 +59,21 @@ class FilesTab extends Component {
       })
   }
 
-
+  deleteAttachment(id, name) {
+    if (window.confirm('Delete this attachment?')) {
+      const loginToken = window.localStorage.getItem("token");
+      axios.delete('/api/patientAttachments/delete?attachmentId=' + id + '&patientId=' + this.props.state.id + '&name=' + name ,
+        { headers: { "Authorization": "Bearer " + loginToken } })
+        .then((resp) => {
+          console.log(resp);
+          if (resp.data.success == true) this.reRender();
+        }).catch((error) => {
+          console.error(error);
+        })
+    } else {
+      return;
+    }
+  }
 
   renderTableHead() {
     return (
@@ -81,15 +107,12 @@ class FilesTab extends Component {
   renderTableRow(attachment) {
     return (
       <tr key={attachment.id}>
-        <td>
-          {/* <Link to={'../patientAttachment/' + attachment.id} activeClassName="active"> */}
+        <td style={{ display: 'flex', alignItems: 'center' }}>
           <a href={attachment.link} target='_blank' activeClassName="active">
             <h3>{attachment.title}</h3>
           </a>
-
+          <Span icon="remove" style={{padding: 8}} onClick={this.deleteAttachment.bind(this, attachment.id, attachment.title)} />
         </td>
-
-
         <td>
           <Moment format={"MM/DD/YYYY"}>{`${attachment.createdAt}`}</Moment>
         </td>

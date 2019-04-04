@@ -133,16 +133,27 @@ router.put("/upload/:id", (req, res) => {
         });
 });
 
-router.delete("/delete/:id", (req, res) => {
-    var attachment = {
-        title: req.body.title.trim(),
-        genre: req.body.genre,
-        pageCount: req.body.pageCount.trim()
-    }
+router.delete("/delete", (req, res) => {
+
+    console.log("QUERY", req.query)
+
+    var bucketInstance = new aws.S3();
+    var params = {
+        Bucket: S3_BUCKET,
+        Key: 'attachments/scripts/' + req.query.scriptId + '/' + req.query.name,
+    };
+    bucketInstance.deleteObject(params, function (err, data) {
+        if (data) {
+            console.log("File deleted successfully", data);
+        }
+        else {
+            console.log("Check if you have sufficient permissions : " + err);
+        }
+    });
 
     db.scriptAttachments.destroy({
         where: {
-            id: req.param.id
+            id: req.query.attachmentId
         }
     })
         .then(function (resp) {
