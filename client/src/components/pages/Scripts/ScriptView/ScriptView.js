@@ -33,7 +33,8 @@ class ScriptView extends Component {
     this.state = {
       notesNum: '',
       chargeModal: '',
-      receiptModal: ''
+      receiptModal: '',
+      copyAttachments: false
     }
     this.tabOptions = [
       {
@@ -100,8 +101,6 @@ class ScriptView extends Component {
   openNoteModal() {
     this.setState({ chargeModal: {} })
   }
-
- 
 
 
   componentWillMount() {
@@ -174,6 +173,7 @@ class ScriptView extends Component {
         })
     }
   }
+
 
   cancelScript() {
     if (window.confirm('Cancel Script?' + "\n" + '(You may specify a reason for cancelling after)')) {
@@ -485,6 +485,19 @@ class ScriptView extends Component {
       receiptModal: {},
       receiptUpload: true
     })
+  }
+
+  copyAttachments() {
+    const rxHistoryTab = {
+      value: 'rxHistory',
+      display: rxHistoryTab,
+      renderComponent: () => this.renderRXHistoryTab()
+    }
+    this.setState({
+      tab: rxHistoryTab,
+    }, () => this.setState({
+      copyAttachments: true
+    }))
   }
 
   renderActions() {
@@ -1092,6 +1105,7 @@ class ScriptView extends Component {
 
 
     const { tab } = this.state
+
     return (
       <div>
         <div className='pouch'>
@@ -1138,6 +1152,7 @@ class ScriptView extends Component {
         className={styles.attachmentsTab}
         state={this.state}
         patient={this.props.patient}
+        copyAttachments={this.copyAttachments.bind(this)}
         setState={this.setState.bind(this)}
         onCloseModal={() => this.closeModal()}
       />

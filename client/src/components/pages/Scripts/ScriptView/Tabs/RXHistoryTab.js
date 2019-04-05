@@ -41,6 +41,14 @@ class RXHistoryTab extends Component {
       })
   }
 
+  copyAttachments() {
+    if (window.confirm('Select which script(s) you would like to copy the attachments to.')) {
+      return;
+    } else {
+      window.location.reload();
+    }
+  }
+
   renderPatientInfo() {
     const {
       editing,
@@ -215,7 +223,10 @@ class RXHistoryTab extends Component {
 
 
   render() {
-    console.log(this.state)
+    
+    if (this.props.state.copyAttachments === true) {
+      this.copyAttachments();
+    }
 
     if (this.state.scripts) {
 
