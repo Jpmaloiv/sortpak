@@ -4,9 +4,9 @@ import jwt_decode from 'jwt-decode'
 import { Elements, StripeProvider } from 'react-stripe-elements';
 import CheckoutForm from '../../../shared/CheckoutForm/CheckoutForm';
 import { ReceiptModal } from '../../../shared'
-
-
 import moment from 'moment';
+import { css } from '@emotion/core';
+import { CircleLoader } from 'react-spinners';
 
 import { Header, Body, Button, Table, Input, Selector, Icon } from '../../../common'
 import styles from './ScriptView.css'
@@ -25,6 +25,12 @@ import FaxesTab from './Tabs/FaxesTab'
 import StatusesTab from './Tabs/StatusesTab'
 import PaymentsTab from './Tabs/PaymentsTab'
 
+const override = css`
+    display: block;
+    margin: 0 auto;
+    border-color: red;
+    position: fixed;
+`;
 
 class ScriptView extends Component {
 
@@ -34,7 +40,8 @@ class ScriptView extends Component {
       notesNum: '',
       chargeModal: '',
       receiptModal: '',
-      copyAttachments: false
+      copyAttachments: false,
+      loading: false
     }
     this.tabOptions = [
       {
@@ -174,6 +181,17 @@ class ScriptView extends Component {
     }
   }
 
+  isLoading() {
+    this.setState({
+      loading: true
+    })
+  }
+
+  cancelLoading() {
+    this.setState({
+      loading: false
+    })
+  }
 
   cancelScript() {
     if (window.confirm('Cancel Script?' + "\n" + '(You may specify a reason for cancelling after)')) {
@@ -257,7 +275,6 @@ class ScriptView extends Component {
   }
 
   closeModal() {
-    console.log("CLOSING")
     this.setState({
       attachmentModal: null,
       fileModal: null,
@@ -496,7 +513,7 @@ class ScriptView extends Component {
     this.setState({
       tab: rxHistoryTab,
     }, () => this.setState({
-      copyAttachments: true
+      copyAttachments: !this.state.copyAttachments
     }))
   }
 
@@ -1166,6 +1183,8 @@ class ScriptView extends Component {
         state={this.state}
         patient={this.props.patients}
         setState={this.setState.bind(this)}
+        loading={this.isLoading.bind(this)}
+        cancelLoading={this.cancelLoading.bind(this)}
       />
     )
   }
@@ -1331,6 +1350,18 @@ class ScriptView extends Component {
           {this.renderSwitchTable()}
 
           {this.renderCheckoutForm()}
+
+          <div className="overlay" style={{'display': this.state.loading === true ? 'block' : 'none'}}>
+          <div className='sweet-loading'>
+            <CircleLoader
+              css={override}
+              sizeUnit={"px"}
+              size={100}
+              color={'#ff7d38'}
+              loading={this.state.loading}
+            />
+          </div>
+          </div> 
 
           <div className="faxModal">
             <ReceiptModal

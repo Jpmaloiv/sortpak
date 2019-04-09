@@ -184,17 +184,6 @@ export default class AttachmentModal extends Component {
             />
           </div>
         </FormModal>
-
-        {/* <input type="file" id="file-input" />
-        <p id="status">Please select a file</p>
-        <img id="preview" src="/images/default.png" />
-
-        <form method="POST" action="/save-details">
-          <input type="hidden" id="avatar-url" name="avatar-url" value="/images/default.png" />>
-        <input type="text" name="username" placeholder="Username" /><br />
-          <input type="text" name="full-name" placeholder="Full name" /><br /><br />
-          <input type="submit" onClick={this.submitS3.bind(this)} value="Update profile" />
-        </form> */}
       </div>
     )
   }

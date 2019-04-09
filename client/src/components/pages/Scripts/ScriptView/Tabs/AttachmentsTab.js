@@ -19,10 +19,23 @@ class AttachmentsTab extends Component {
     this.state = {
       dateAttached: '',
       type: '',
-      copyToAll: false
+      copyToAll: false,
+      attachmentIds: []
     }
   }
 
+  handleCheckbox = (e, attachment) => {
+    const target = e.target
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    
+    if (value === true) {
+      this.state.attachmentIds.push(attachment)
+    } else {
+      this.state.attachmentIds.splice(this.state.attachmentIds.indexOf(attachment), 1)
+    }
+
+    console.log(this.state.attachmentIds)
+  }
 
   openNoteModal() {
     this.props.setState({ attachmentModal: {} })
@@ -116,11 +129,11 @@ class AttachmentsTab extends Component {
           {this.state.copyToAll ?
             <input
               name="attachment"
+              id={attachment}
               className="checkbox"
               style={{ position: 'absolute', marginLeft: '-4%' }}
               type="checkbox"
-              checked={this.state.willCopy}
-              onChange={this.handleCheckbox}
+              onChange={((e) => this.handleCheckbox(e, attachment))}
             />
             :
             <span></span>
@@ -164,11 +177,20 @@ class AttachmentsTab extends Component {
     }
   }
 
+  setCopyAttachments() {
+    if (this.state.attachmentIds.length) {
+      this.props.setState({
+        attachmentIds: this.state.attachmentIds
+      }, () => this.props.copyAttachments())
+    } else {
+      window.alert('Please select at least one attachment.')
+    }
+  }
+
 
   render() {
 
     if (this.state.attachments) {
-
       var attachmentList = this.state.attachments.sort(function (a, b) {
         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       });
@@ -208,28 +230,33 @@ class AttachmentsTab extends Component {
           title="ATTACH FILE"
           onClick={() => this.openNoteModal()}
         />
-
-        <Button
-          icon="copy"
-          className="orange"
-          title="COPY TO ALL"
-          style={{ marginLeft: 10, display: 'none'}}
-          inactive={this.state.copyToAll}
-          onClick={() => this.setState({ copyToAll: true }, this.copyConfirm)}
-        />
-        {this.state.copyToAll ?
-          <div style={{ display: 'inline', marginLeft: 10 }}>
+        {this.state.attachments.length ?
+          <div style={{ display: 'inline' }}>
             <Button
-              title="CONFIRM"
-              style={{ minWidth: 125 }}
-              onClick={this.props.copyAttachments}
+              icon="copy"
+              className="orange"
+              title="COPY TO ALL"
+              style={{ marginLeft: 10 }}
+              inactive={this.state.copyToAll}
+              onClick={() => this.setState({ copyToAll: true }, this.copyConfirm)}
             />
+            {this.state.copyToAll ?
+              <div style={{ display: 'inline', marginLeft: 10 }}>
+                <Button
+                  title="CONFIRM"
+                  style={{ minWidth: 125 }}
+                  onClick={this.setCopyAttachments.bind(this)}
+                />
 
-            <Button
-              style={{ backgroundColor: '#D2000D', marginLeft: 10, minWidth: 125 }}
-              title="CANCEL"
-              onClick={() => this.setState({copyToAll: false})}
-            />
+                <Button
+                  style={{ backgroundColor: '#D2000D', marginLeft: 10, minWidth: 125 }}
+                  title="CANCEL"
+                  onClick={() => this.setState({ copyToAll: false })}
+                />
+              </div>
+              :
+              <span></span>
+            }
           </div>
           :
           <span></span>

@@ -81,13 +81,9 @@ class OrderProduct extends Component {
                 }
             }
 
-
-
-
             if (i === this.state.productList.length - 1) {
                 window.alert(`${this.state.productList.length} product orders have been uploaded for Order Id #${this.state.orderId}`);
             }
-
 
             window.location.reload();
         } else {

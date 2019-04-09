@@ -10,6 +10,8 @@ const Op = Sequelize.Op;
 const open = require("open");
 const aws = require('aws-sdk');
 
+var async = require("async");
+
 
 const S3_BUCKET = process.env.S3_BUCKET;
 aws.config.region = 'us-west-1';
@@ -17,6 +19,8 @@ aws.config.region = 'us-west-1';
 router.post("/upload", (req, res) => {
 
     const title = req.files.attachmentFile.name;
+
+    console.log("HERE", req.query.scriptId)
 
     const attachment = {
         title,
@@ -26,6 +30,52 @@ router.post("/upload", (req, res) => {
         ScriptId: req.query.scriptId,
         UserId: req.query.userId
     }
+
+    db.scriptAttachments
+        .create(attachment)
+        .then((resp) => {
+            res.status(200).json({ message: "Upload successful!" });
+        })
+        .catch((err) => {
+            console.error(err);
+            res.status(500).json({ message: "Internal server error.", error: err });
+        })
+
+        .catch((err) => {
+            console.error(err);
+            res.status(500).json({ message: "Internal server error.", error: err });
+        })
+})
+
+router.post("/copy", (req, res) => {
+
+    const attachment = {
+        title: req.query.title,
+        attachedBy: req.query.attachedBy,
+        type: req.query.type,
+        link: `https://s3-us-west-1.amazonaws.com/${S3_BUCKET}/attachments/scripts/${req.query.scriptId}/${req.query.title}`,
+        ScriptId: req.query.scriptId,
+        UserId: req.query.userId
+    }
+
+    console.log("ATTACHMENT", attachment)
+
+    const s3 = new aws.S3({ params: { Bucket: S3_BUCKET }, region: 'us-west-1' });
+
+    const params = {
+        Bucket: S3_BUCKET,
+        CopySource: `${S3_BUCKET}/attachments/scripts/${req.query.oldScriptId}/${req.query.title}`,
+        Key: `attachments/scripts/${req.query.scriptId}/${req.query.title}`,
+        ACL: 'public-read'
+    };
+
+    s3.copyObject(params, function (err, data) {
+        if (err)
+            console.log(err, err); // an error occurred
+        else {
+            console.log(data); // successful response
+        }
+    })
 
     db.scriptAttachments
         .create(attachment)

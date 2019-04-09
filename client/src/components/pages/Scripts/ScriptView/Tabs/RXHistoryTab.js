@@ -1,20 +1,23 @@
 import React, { Component } from 'react';
 import axios from 'axios'
 import Moment from 'react-moment'
+import jwt_decode from 'jwt-decode'
 
 // Components
-import {
-  Span, Table, Input
-} from '../../../../common'
+import { Button, Input, Span, Table } from '../../../../common'
 
 
 class RXHistoryTab extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      scripts: ''
+      scripts: '',
+      copyConfirm: false,
+      scriptIds: [],
+      loading: false,
     }
   }
+
 
   componentDidMount() {
     const loginToken = window.localStorage.getItem("token");
@@ -34,19 +37,93 @@ class RXHistoryTab extends Component {
           addressCity: script.Patient.addressCity,
           addressState: script.Patient.addressState,
           addressZipCode: script.Patient.addressZipCode,
-          email: script.Patient.email
-        })
+          email: script.Patient.email,
+          copyAttachments: true
+        }, this.copyAttachments)
       }).catch((err) => {
         console.error(err)
       })
+
+    const token = localStorage.getItem('token')
+    var decoded = jwt_decode(token);
+    this.setState({
+      userId: decoded.id,
+      username: decoded.username
+    })
   }
 
   copyAttachments() {
-    if (window.confirm('Select which script(s) you would like to copy the attachments to.')) {
-      return;
-    } else {
-      window.location.reload();
+    if (this.props.state.copyAttachments) {
+      if (window.confirm('Select which script(s) you would like to copy the attachments to.')) {
+        this.setState({
+          copyAttachments: true
+        })
+      } else {
+        window.location.reload();
+      }
     }
+  }
+
+  handleCheckbox(event) {
+    const target = event.target
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const id = target.id
+    if (value === true) {
+      this.state.scriptIds.push(id)
+    } else {
+      this.state.scriptIds.splice(this.state.scriptIds.indexOf(id), 1)
+    }
+  }
+
+  uploadCopyAttachments() {
+    const loginToken = window.localStorage.getItem("token");
+    const { attachmentIds } = this.props.state
+    const { scriptIds } = this.state
+
+    const attachments = [];
+
+    for (var i = 0; i < attachmentIds.length; i++) {
+      attachments.push({ id: attachmentIds[i].id, title: attachmentIds[i].title, attachedBy: attachmentIds[i].attachedBy, type: attachmentIds[i].type, oldScriptId: attachmentIds[i].ScriptId, UserId: attachmentIds[i].UserId })
+    }
+
+    if (scriptIds.length) {
+      if (window.confirm(`This will upload ${attachmentIds.length} attachments to ${scriptIds.length} different scripts. Continue?`)) {
+        this.props.loading();
+
+        for (var i = 0; i < scriptIds.length; i++) {
+          let iVal = i;
+          for (var j = 0; j < attachments.length; j++) {
+            let jVal = j;
+            console.log(attachments[j])
+            axios.post('/api/attachments/copy?id=' + attachments[j].id + '&title=' + attachments[j].title + '&attachedBy=' + attachments[j].attachedBy + '&type=' + attachments[j].type + '&userId=' + attachments[j].UserId +
+              '&scriptId=' + scriptIds[i] + '&oldScriptId=' + attachments[j].oldScriptId,
+              { headers: { "Authorization": "Bearer " + loginToken } })
+              .then((res) => {
+                console.log(res, i, scriptIds.length)
+                if (res.status === 200 && iVal === scriptIds.length - 1 && jVal === attachments.length - 1) {
+                  this.props.cancelLoading();
+                  window.location.reload();
+                }
+              }).catch((error) => {
+                console.error(error);
+              })
+          }
+        }
+      } else {
+        this.props.cancelLoading();
+      }
+    } else {
+      window.alert('Please select at least one script.')
+    }
+  }
+
+  cancelCopyAttachments() {
+    this.setState({
+      copyAttachments: false
+    })
+    this.props.setState({
+      copyAttachments: false
+    })
   }
 
   renderPatientInfo() {
@@ -126,21 +203,12 @@ class RXHistoryTab extends Component {
     return (
       <thead>
         <tr>
-          <th>
-            BILL ON
-                </th>
-          <th>
-            MEDICATION
-                </th>
+          <th>BILL ON</th>
+          <th>MEDICATION</th>
           <th>PHYSICIAN</th>
-          <th>
-            SHIP ON
-                </th>
-          <th>
-            STATUS
-                </th>
+          <th>SHIP ON</th>
+          <th>STATUS</th>
           <th>PROCESS ON</th>
-          {/* <th>THERAPY END</th> */}
           <th>REFILL #</th>
           <th>REMAINING</th>
           <th>PATIENT PAY</th>
@@ -153,7 +221,6 @@ class RXHistoryTab extends Component {
   }
 
   renderTableBody() {
-
     return (
       <tbody>
         {this.state.scripts.map(this.renderTableRow.bind(this))}
@@ -166,10 +233,21 @@ class RXHistoryTab extends Component {
   }
 
   renderTableRow(script) {
-
     return (
-      <tr value={script.id} onClick={() => this.handleClick(script.id)}>
+      <tr value={script.id} onClick={this.props.state.copyAttachments ? '' : () => this.handleClick(script.id)}>
         <td>
+          {this.props.state.copyAttachments && script.id !== this.props.state.id ?
+            <input
+              name="attachment"
+              className="checkbox"
+              id={script.id}
+              style={{ position: 'absolute', marginLeft: '-2.2%' }}
+              type="checkbox"
+              onChange={this.handleCheckbox.bind(this)}
+            />
+            :
+            <span></span>
+          }
           <Span icon="calendar">
             {script.billOnDate ?
               <Moment format="MM/DD/YYYY">{script.billOnDate}</Moment>
@@ -223,10 +301,6 @@ class RXHistoryTab extends Component {
 
 
   render() {
-    
-    if (this.props.state.copyAttachments === true) {
-      this.copyAttachments();
-    }
 
     if (this.state.scripts) {
 
@@ -240,7 +314,6 @@ class RXHistoryTab extends Component {
           <div key={i}>
           </div>
         )
-
       })
     }
     else {
@@ -252,6 +325,24 @@ class RXHistoryTab extends Component {
 
     return (
       <div className="rxHistoryTab">
+        {this.props.state.copyAttachments ?
+          <div style={{ display: 'inline', marginLeft: 10 }}>
+            <Button
+              title="CONFIRM"
+              style={{ minWidth: 125 }}
+              onClick={this.uploadCopyAttachments.bind(this)}
+            />
+
+            <Button
+              style={{ backgroundColor: '#D2000D', marginLeft: 10, minWidth: 125 }}
+              title="CANCEL"
+              onClick={this.cancelCopyAttachments.bind(this)}
+            />
+            <br />
+          </div>
+          :
+          <span></span>
+        }
 
         <div id="rxPrint" style={{ 'display': 'none' }}>
           <h1>RX History</h1>
@@ -260,6 +351,7 @@ class RXHistoryTab extends Component {
         {scriptList}
       </div>
     )
+
   }
 }
 
