@@ -5,6 +5,7 @@ import jwt_decode from 'jwt-decode'
 
 // Components
 import { Button, Input, Span, Table } from '../../../../common'
+import { runInNewContext } from 'vm';
 
 
 class RXHistoryTab extends Component {
@@ -38,8 +39,9 @@ class RXHistoryTab extends Component {
           addressState: script.Patient.addressState,
           addressZipCode: script.Patient.addressZipCode,
           email: script.Patient.email,
-          copyAttachments: true
-        }, this.copyAttachments, this.copyNotes)
+          copyAttachments: true,
+          copyNotes: true
+        }, this.copyAttachments)
       }).catch((err) => {
         console.error(err)
       })
@@ -62,6 +64,7 @@ class RXHistoryTab extends Component {
         window.location.reload();
       }
     }
+    this.copyNotes();
   }
 
   copyNotes() {
@@ -114,7 +117,7 @@ class RXHistoryTab extends Component {
                 console.log(res, i, scriptIds.length)
                 if (res.status === 200 && iVal === scriptIds.length - 1 && jVal === attachments.length - 1) {
                   this.props.cancelLoading();
-                  window.location.reload();
+                  // window.location.reload();
                 }
               }).catch((error) => {
                 console.error(error);
@@ -149,7 +152,7 @@ class RXHistoryTab extends Component {
           for (var j = 0; j < notes.length; j++) {
             let jVal = j;
             console.log(notes[j])
-            axios.post('/api/notes/copy?id=' + notes[j].id + '&name=' + notes[j].name + '&note=' + notes[j].note + '&private=' + notes[j].private + '&userImage=' + notes[j].userImage + '&userId=' + notes[j].UserId +
+            axios.post('/api/scriptNotes/copy?id=' + notes[j].id + '&name=' + notes[j].name + '&note=' + notes[j].note + '&private=' + notes[j].private + '&userImage=' + notes[j].userImage + '&userId=' + notes[j].UserId +
               '&scriptId=' + scriptIds[i] + '&oldScriptId=' + notes[j].oldScriptId,
               { headers: { "Authorization": "Bearer " + loginToken } })
               .then((res) => {
@@ -290,11 +293,23 @@ class RXHistoryTab extends Component {
 
   renderTableRow(script) {
     return (
-      <tr value={script.id} onClick={this.props.state.copyAttachments ? '' : () => this.handleClick(script.id)}>
+      <tr value={script.id} onClick={this.props.state.copyAttachments || this.props.state.copyNotes ? '' : () => this.handleClick(script.id)}>
         <td>
           {this.props.state.copyAttachments && script.id !== this.props.state.id ?
             <input
               name="attachment"
+              className="checkbox"
+              id={script.id}
+              style={{ position: 'absolute', marginLeft: '-2.2%' }}
+              type="checkbox"
+              onChange={this.handleCheckbox.bind(this)}
+            />
+            :
+            <span></span>
+          }
+          {this.props.state.copyNotes && script.id !== this.props.state.id ?
+            <input
+              name="note"
               className="checkbox"
               id={script.id}
               style={{ position: 'absolute', marginLeft: '-2.2%' }}
@@ -381,12 +396,12 @@ class RXHistoryTab extends Component {
 
     return (
       <div className="rxHistoryTab">
-        {this.props.state.copyAttachments ?
+        {this.props.state.copyAttachments || this.props.state.copyNotes ?
           <div style={{ display: 'inline', marginLeft: 10 }}>
             <Button
               title="CONFIRM"
               style={{ minWidth: 125 }}
-              onClick={this.uploadCopyAttachments.bind(this)}
+              onClick={this.props.state.copyAttachments ? this.uploadCopyAttachments.bind(this) : this.uploadCopyNotes.bind(this)}
             />
 
             <Button

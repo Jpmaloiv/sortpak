@@ -40,6 +40,36 @@ router.post("/add", (req, res) => {
     })
 });
 
+router.post("/copy", (req, res) => {
+
+    console.log("QUERY", req.query)
+
+    const note = {
+        name: req.query.name,
+        note: req.query.note,
+        userImage: req.query.userImage,
+        private: req.query.private,
+        ScriptId: req.query.scriptId,
+        UserId: req.query.userId
+    }
+
+
+    db.scriptNotes
+        .create(note)
+        .then((resp) => {
+            res.status(200).json({ message: "Upload successful!" });
+        })
+        .catch((err) => {
+            console.error(err);
+            res.status(500).json({ message: "Internal server error.", error: err });
+        })
+
+        .catch((err) => {
+            console.error(err);
+            res.status(500).json({ message: "Internal server error.", error: err });
+        })
+})
+
 
 router.get("/search", (req, res) => {
     let searchParams = {

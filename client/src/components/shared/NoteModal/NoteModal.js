@@ -79,7 +79,7 @@ export default class VisitModal extends Component {
     const loginToken = window.localStorage.getItem("token");
     let data = new FormData();
     console.log(this.state.note);
-    axios.post('/api/scripts/notes/add?scriptId=' + scriptId + '&userId=' + this.state.userId + '&name=' + this.state.userName + '&note=' + note + '&userImage=' + this.state.userImage + '&private=' + this.state.private,
+    axios.post('/api/scriptNotes/add?scriptId=' + scriptId + '&userId=' + this.state.userId + '&name=' + this.state.userName + '&note=' + note + '&userImage=' + this.state.userImage + '&private=' + this.state.private,
       data, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((data) => {
         console.log(data);

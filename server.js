@@ -96,11 +96,11 @@ app.use(["/api/scripts"], jwt({
 app.use("/api/attachments", scriptAttachmentRoutes);
 app.use("/api/receipts", receiptRoutes);
 
-app.use("/api/scripts/notes", scriptNoteRoutes);
-app.use(["/api/scripts/notes"], jwt({
-    secret: process.env.JWT_SECRET,
-    userProperty: 'payload'
-}));
+app.use("/api/scriptNotes", scriptNoteRoutes);
+// app.use(["/api/scriptNotes"], jwt({
+//     secret: process.env.JWT_SECRET,
+//     userProperty: 'payload'
+// }));
 app.use("/api/scripts/statuses", scriptStatusRoutes);
 app.use(["/api/scripts/statuses"], jwt({
     secret: process.env.JWT_SECRET,

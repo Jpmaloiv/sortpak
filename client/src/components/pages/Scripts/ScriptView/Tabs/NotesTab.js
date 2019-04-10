@@ -20,7 +20,8 @@ class NotesTab extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      test: ''
+      test: '',
+      noteIds: []
     }
   }
 
@@ -34,7 +35,7 @@ class NotesTab extends Component {
 
   componentDidMount() {
     const loginToken = window.localStorage.getItem("token");
-    axios.get('/api/scripts/notes/search/?ScriptId=' + this.props.state.id, { headers: { "Authorization": "Bearer " + loginToken } })
+    axios.get('/api/scriptNotes/search/?ScriptId=' + this.props.state.id, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
         console.log(resp);
         this.setState({
@@ -49,7 +50,7 @@ class NotesTab extends Component {
   handleCheckbox = (e, note) => {
     const target = e.target
     const value = target.type === 'checkbox' ? target.checked : target.value;
-    
+
     if (value === true) {
       this.state.noteIds.push(note)
     } else {
@@ -61,7 +62,7 @@ class NotesTab extends Component {
 
   componentUpdate() {
     const loginToken = window.localStorage.getItem("token");
-    axios.get('/api/scripts/notes/search/?ScriptId=' + this.props.state.id, { headers: { "Authorization": "Bearer " + loginToken } })
+    axios.get('/api/scriptNotes/search/?ScriptId=' + this.props.state.id, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
         console.log(resp);
         this.setState({
@@ -136,22 +137,22 @@ class NotesTab extends Component {
               <thead><th>
                 <div className="userImage" style={{ 'background-image': `url(/images/${note.UserId}/${note.userImage}` }}></div>
                 <div className='noteName'>{note.name}</div></th></thead>
+              {this.state.copyToAll ?
+                <input
+                  name="note"
+                  id={note}
+                  className="checkbox"
+                  style={{ position: 'absolute', marginLeft: '-2.5%' }}
+                  type="checkbox"
+                  onChange={((e) => this.handleCheckbox(e, note))}
+                />
+                :
+                <span></span>
+              }
               <tr>
                 <td>{note.note}</td>
               </tr>
             </Table>
-            {this.state.copyToAll ?
-              <input
-                name="note"
-                id={note}
-                className="checkbox"
-                style={{ position: 'absolute', marginLeft: '-4%' }}
-                type="checkbox"
-                onChange={((e) => this.handleCheckbox(e, note))}
-              />
-              :
-              <span></span>
-            }
 
             <Table className="noteDateTime" key={note.id}>
               <td>
@@ -184,7 +185,7 @@ class NotesTab extends Component {
     } = state
 
     return (
-      <div id="notesTab" className={className}>
+      <div id="notesTab" style={{margin: '10px 20px'}} className={className}>
 
         <Button
           icon="plus"
@@ -192,7 +193,7 @@ class NotesTab extends Component {
           onClick={() => this.openNoteModal()}
         />
 
-        {/* {this.state.notes.length ?
+        {this.state.notes.length ?
           <div style={{ display: 'inline' }}>
             <Button
               icon="copy"
@@ -222,7 +223,7 @@ class NotesTab extends Component {
           </div>
           :
           <span></span>
-        } */}
+        }
 
         <div className="notes">
           {this.renderTable()}

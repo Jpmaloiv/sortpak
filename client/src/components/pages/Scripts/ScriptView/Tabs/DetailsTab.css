@@ -1,4 +1,5 @@
 
+#notesTab .button.orange.inactive,
 #attachmentsTab .button.orange.inactive {
   display: inline-block;
   margin-left: 10px;

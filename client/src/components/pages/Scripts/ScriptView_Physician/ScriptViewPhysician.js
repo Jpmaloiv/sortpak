@@ -137,7 +137,7 @@ class ScriptView extends Component {
 
   getNotesNum() {
     const loginToken = window.localStorage.getItem("token");
-    axios.get('/api/scripts/notes/search?ScriptId=' + this.state.id + '&private=false', { headers: { "Authorization": "Bearer " + loginToken } })
+    axios.get('/api/scriptNotes/search?ScriptId=' + this.state.id + '&private=false', { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
         console.log(resp);
         this.setState({

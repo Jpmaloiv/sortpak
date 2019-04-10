@@ -34,7 +34,7 @@ class NotesTab extends Component {
 
   componentDidMount() {
     const loginToken = window.localStorage.getItem("token");
-    axios.get('/api/scripts/notes/search/?ScriptId=' + this.props.state.id + '&private=false', { headers: { "Authorization": "Bearer " + loginToken } })
+    axios.get('/api/scriptNotes/search/?ScriptId=' + this.props.state.id + '&private=false', { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
         console.log(resp);
         this.setState({
@@ -48,7 +48,7 @@ class NotesTab extends Component {
 
   componentUpdate() {
     const loginToken = window.localStorage.getItem("token");
-    axios.get('/api/scripts/notes/search/?ScriptId=' + this.props.state.id + '&private=false', { headers: { "Authorization": "Bearer " + loginToken } })
+    axios.get('/api/scriptNotes/search/?ScriptId=' + this.props.state.id + '&private=false', { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
         console.log(resp);
         this.setState({
