@@ -104,6 +104,7 @@ class AddMember extends Component {
   }
 
   render() {
+    console.log(this.state.userRole)
     const {
       username,
       name,
@@ -214,7 +215,7 @@ class AddMember extends Component {
               onChange={confirmpw => this.setState({ confirmpw })}
             />
 
-            {/* {this.state.userRole === "Admin" ? */}
+            {this.state.userRole === "Admin" ?
               <div>
                 <label>
                   Role:
@@ -226,7 +227,7 @@ class AddMember extends Component {
                   onSelect={role => this.setState({ role })}
                 />
               </div>
-              {/* // : */}
+              :
               <div>
                 <label>
                   Role:
@@ -238,7 +239,7 @@ class AddMember extends Component {
                   onSelect={role => this.setState({ role })}
                 />
               </div>
-            {/* } */}
+            }
 
             <div className='check'>
               <input

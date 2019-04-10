@@ -5,14 +5,14 @@ import jwt_decode from 'jwt-decode'
 
 import { Table, Header, Input, ActionBox, Button, Selector } from '../../../common'
 
-import {
-  getPhysicians,
-  filterPhysicians,
-} from '../../../../actions/main'
+// import {
+//   getPhysicians,
+//   filterPhysicians,
+// } from '../../../../actions/main'
 
-import {
-  setPhysician,
-} from '../../../../actions/physicians'
+// import {
+//   setPhysician,
+// } from '../../../../actions/physicians'
 
 import styles from '../PhysiciansView/PhysiciansView.css'
 
@@ -307,10 +307,11 @@ const mapStateToProps = ({ main }) => {
   }
 }
 
-const actions = {
-  setPhysician,
-  getPhysicians,
-  filterPhysicians,
-}
+// const actions = {
+//   setPhysician,
+//   getPhysicians,
+//   filterPhysicians,
+// }
 
-export default connect(mapStateToProps, actions)(PhysiciansViewRep);
+// export default connect(mapStateToProps, actions)(PhysiciansViewRep);
+export default PhysiciansViewRep;

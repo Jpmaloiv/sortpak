@@ -184,6 +184,9 @@ ctrl.update = function (req, res) {
     if (req.query.physicianId) {
         user.PhysicianId = req.query.physicianId
     }
+    if (req.query.role) {
+        user.role = req.query.role
+    }
     if (req.query.title) { user.title = req.query.title }
     if (req.query.phone) { user.phone = req.query.phone }
     if (req.query.fax) { user.fax = req.query.fax }

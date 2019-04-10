@@ -93,19 +93,19 @@ function onGetPhysiciansFailure({dispatch, err}) {
   })
 }
 
-export const filterPhysicians = (input, searchType = '') => (dispatch, getState) => {
-  const search = input.toLowerCase().trim()
-  const { physicians } = getState().main
-  const physiciansDisplay = !search ? physicians : physicians.filter(physician => {
-    const name = physician.nameDisplay.toLowerCase()
-    return name.includes(search)
-  })
+// export const filterPhysicians = (input, searchType = '') => (dispatch, getState) => {
+//   const search = input.toLowerCase().trim()
+//   const { physicians } = getState().main
+//   const physiciansDisplay = !search ? physicians : physicians.filter(physician => {
+//     const name = physician.nameDisplay.toLowerCase()
+//     return name.includes(search)
+//   })
 
-  dispatch({
-    type: FILTER_PHYSICIANS,
-    payload: physiciansDisplay,
-  })
-}
+//   dispatch({
+//     type: FILTER_PHYSICIANS,
+//     payload: physiciansDisplay,
+//   })
+// }
 
 export const getTeamMembers = () => dispatch => {
   dispatch({

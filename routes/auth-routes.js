@@ -22,13 +22,13 @@ router.post("/userPhysicians", (req, res) => {
     db.User.findById(req.query.userId)
         .then(user => {
             user.addPhysicians(req.query.physicianId)
-            .then((resp) => {
-                res.status(200).json({ message: "Upload successful!" });
-            })
-            .catch((err) => {
-                console.error(err);
-                res.status(500).json({ message: "Internal server error.", error: err });
-            })
+                .then((resp) => {
+                    res.status(200).json({ message: "Upload successful!" });
+                })
+                .catch((err) => {
+                    console.error(err);
+                    res.status(500).json({ message: "Internal server error.", error: err });
+                })
         });
 
 })
@@ -86,23 +86,22 @@ router.get("/search", (req, res) => {
         }
     }
 
-    if (req.query.physIdArray) {
-        const ids = req.query.physIdArray.split(',').map((elem) => {
-            return '%' + elem + '%'
-        });
-        if (ids.length > 1) {
-            const opLikes = ids.map((elem) => {
-                return { [Op.like]: elem }
-            })
-            searchParams.where.PhysicianId = {
-                [Op.or]: opLikes
-            }
-        } else {
-            searchParams.where.PhysicianId = {
-                [Op.like]: roles[0]
-            }
-        }
-    }
+    // if (req.query.repPhysicians) {
+    // const ids = req.query.physIdArray.split(',').map((elem) => {
+    //     return '%' + elem + '%'
+    // });
+    // if (ids.length > 1) {
+    //     const opLikes = ids.map((elem) => {
+    //         return { [Op.like]: elem }
+    //     })
+    //     searchParams.where.PhysicianId = {
+    //         [Op.or]: opLikes
+    //     }
+    // } else {
+    //     searchParams.where.PhysicianId = {
+    //         [Op.like]: roles[0]
+    //     }
+    // }
 
     if (req.query.role) {
         searchParams.where.role = req.query.role
@@ -131,7 +130,7 @@ router.get("/search", (req, res) => {
         }
     }
 
-    console.log(req.query);
+    console.log("SEARCH PARAMS", searchParams);
     db.User
         .findAll(searchParams)
         .then((response) => {
@@ -151,13 +150,13 @@ router.delete("/userPhysicians/delete", (req, res) => {
     db.User.findById(req.query.userId)
         .then(user => {
             user.removePhysicians(req.query.physicianId)
-            .then((resp) => {
-                res.status(200).json({ message: "Deletion successful!" });
-            })
-            .catch((err) => {
-                console.error(err);
-                res.status(500).json({ message: "Internal server error.", error: err });
-            })
+                .then((resp) => {
+                    res.status(200).json({ message: "Deletion successful!" });
+                })
+                .catch((err) => {
+                    console.error(err);
+                    res.status(500).json({ message: "Internal server error.", error: err });
+                })
         });
 });
 

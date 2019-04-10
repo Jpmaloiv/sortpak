@@ -39,7 +39,7 @@ class RXHistoryTab extends Component {
           addressZipCode: script.Patient.addressZipCode,
           email: script.Patient.email,
           copyAttachments: true
-        }, this.copyAttachments)
+        }, this.copyAttachments, this.copyNotes)
       }).catch((err) => {
         console.error(err)
       })
@@ -54,9 +54,21 @@ class RXHistoryTab extends Component {
 
   copyAttachments() {
     if (this.props.state.copyAttachments) {
-      if (window.confirm('Select which script(s) you would like to copy the attachments to.')) {
+      if (window.confirm('Select which script(s) you would like to copy the attachment(s) to.')) {
         this.setState({
           copyAttachments: true
+        })
+      } else {
+        window.location.reload();
+      }
+    }
+  }
+
+  copyNotes() {
+    if (this.props.state.copyNotes) {
+      if (window.confirm('Select which script(s) you would like to copy the note(s) to.')) {
+        this.setState({
+          copyNotes: true
         })
       } else {
         window.location.reload();
@@ -117,12 +129,56 @@ class RXHistoryTab extends Component {
     }
   }
 
-  cancelCopyAttachments() {
+  uploadCopyNotes() {
+    const loginToken = window.localStorage.getItem("token");
+    const { noteIds } = this.props.state
+    const { scriptIds } = this.state
+
+    const notes = [];
+
+    for (var i = 0; i < noteIds.length; i++) {
+      notes.push({ id: noteIds[i].id, name: noteIds[i].name, note: noteIds[i].note, private: noteIds[i].private, userImage: noteIds[i].userImage, oldScriptId: noteIds[i].ScriptId, UserId: noteIds[i].UserId })
+    }
+
+    if (scriptIds.length) {
+      if (window.confirm(`This will upload ${noteIds.length} notes to ${scriptIds.length} different scripts. Continue?`)) {
+        this.props.loading();
+
+        for (var i = 0; i < scriptIds.length; i++) {
+          let iVal = i;
+          for (var j = 0; j < notes.length; j++) {
+            let jVal = j;
+            console.log(notes[j])
+            axios.post('/api/notes/copy?id=' + notes[j].id + '&name=' + notes[j].name + '&note=' + notes[j].note + '&private=' + notes[j].private + '&userImage=' + notes[j].userImage + '&userId=' + notes[j].UserId +
+              '&scriptId=' + scriptIds[i] + '&oldScriptId=' + notes[j].oldScriptId,
+              { headers: { "Authorization": "Bearer " + loginToken } })
+              .then((res) => {
+                console.log(res, i, scriptIds.length)
+                if (res.status === 200 && iVal === scriptIds.length - 1 && jVal === notes.length - 1) {
+                  this.props.cancelLoading();
+                  window.location.reload();
+                }
+              }).catch((error) => {
+                console.error(error);
+              })
+          }
+        }
+      } else {
+        this.props.cancelLoading();
+      }
+    } else {
+      window.alert('Please select at least one script.')
+    }
+  }
+
+  cancelCopies() {
     this.setState({
-      copyAttachments: false
+      copyAttachments: false,
+      copyNotes: false
     })
     this.props.setState({
-      copyAttachments: false
+      copyAttachments: false,
+      copyNotes: false
     })
   }
 
@@ -336,7 +392,26 @@ class RXHistoryTab extends Component {
             <Button
               style={{ backgroundColor: '#D2000D', marginLeft: 10, minWidth: 125 }}
               title="CANCEL"
-              onClick={this.cancelCopyAttachments.bind(this)}
+              onClick={this.cancelCopies.bind(this)}
+            />
+            <br />
+          </div>
+          :
+          <span></span>
+        }
+
+        {this.props.state.notes ?
+          <div style={{ display: 'inline', marginLeft: 10 }}>
+            <Button
+              title="CONFIRM"
+              style={{ minWidth: 125 }}
+              onClick={this.uploadCopyNotes.bind(this)}
+            />
+
+            <Button
+              style={{ backgroundColor: '#D2000D', marginLeft: 10, minWidth: 125 }}
+              title="CANCEL"
+              onClick={this.cancelCopies.bind(this)}
             />
             <br />
           </div>

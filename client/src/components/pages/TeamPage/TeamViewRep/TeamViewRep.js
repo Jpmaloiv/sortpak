@@ -17,15 +17,15 @@ import {
   Table
 } from '../../../common'
 
-// Actions
-import {
-  getTeamMembers,
-  filterTeamMembers,
-} from '../../../../actions/main'
+// // Actions
+// import {
+//   getTeamMembers,
+//   filterTeamMembers,
+// } from '../../../../actions/main'
 
-import {
-  setMember,
-} from '../../../../actions/team'
+// import {
+//   setMember,
+// } from '../../../../actions/team'
 
 import styles from '../TeamView/TeamView.css'
 
@@ -88,15 +88,33 @@ class TeamViewRep extends Component {
 
   getPhysicianUsers() {
     const loginToken = window.localStorage.getItem("token");
-    axios.get('api/user/search?physIdArray=' + this.state.physicianIdArray, { headers: { "Authorization": "Bearer " + loginToken } })
+    axios.get('api/user/search?repPhysicians=' + this.state.physicianIdArray, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
         console.log(resp)
         this.setState({
           users: resp.data.response
-        });
+        }, this.filterUsers);
       }).catch((error) => {
         console.error(error);
       })
+  }
+
+  filterUsers() {
+    const {physicianIdArray} = this.state;
+    console.log(this.state.users)
+    const users = this.state.users.filter(function (user) {
+      let userIds = []
+      for (var i=0; i < user.physicians.length; i++) {
+        userIds.push(user.physicians[i].id)
+      }
+      console.log(user)
+      return userIds.some(r => physicianIdArray.indexOf(r) >= 0)
+
+    })
+    this.setState({
+      users: users
+    })
+
   }
 
   enterPressed(event) {
@@ -106,11 +124,11 @@ class TeamViewRep extends Component {
     }
   }
 
-  filterUsers(search) {
-    const { searchType } = this.state
-    this.props.filterTeamMembers(search, searchType)
-    this.setState({ search, searchType })
-  }
+  // filterUsers(search) {
+  //   const { searchType } = this.state
+  //   this.props.filterTeamMembers(search, searchType)
+  //   this.setState({ search, searchType })
+  // }
 
   viewMember(e, user) {
     e.stopPropagation()
@@ -335,10 +353,11 @@ const mapStateToProps = ({ main }) => {
   }
 }
 
-const actions = {
-  getTeamMembers,
-  filterTeamMembers,
-  setMember,
-}
+// const actions = {
+//   getTeamMembers,
+//   filterTeamMembers,
+//   setMember,
+// }
 
-export default connect(mapStateToProps, actions)(TeamViewRep);
+// export default connect(mapStateToProps, actions)(TeamViewRep);
+export default TeamViewRep;

@@ -4,8 +4,7 @@ import { connect } from 'react-redux'
 
 import axios from 'axios'
 
-import {
-  Button,
+import { Button, Selector,
   Header,
   Body,
   Input,
@@ -131,7 +130,8 @@ class EditMember extends Component {
       name,
       email,
       password,
-      confirmpw
+      confirmpw,
+      role
     } = this.state
 
     // const invalid = (
@@ -234,6 +234,13 @@ class EditMember extends Component {
             />
 
             <br />
+
+            <Selector
+              wide
+              selected={role}
+              options={roleOptions}
+              onSelect={role => this.setState({ role })}
+            />
 
             <div className='check'>
               <input

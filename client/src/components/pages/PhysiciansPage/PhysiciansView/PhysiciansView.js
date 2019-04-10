@@ -4,14 +4,14 @@ import axios from 'axios'
 
 import { Table, Header, Input, ActionBox, Button, Selector } from '../../../common'
 
-import {
-  getPhysicians,
-  filterPhysicians,
-} from '../../../../actions/main'
+// import {
+//   getPhysicians,
+//   filterPhysicians,
+// } from '../../../../actions/main'
 
-import {
-  setPhysician,
-} from '../../../../actions/physicians'
+// import {
+//   setPhysician,
+// } from '../../../../actions/physicians'
 
 import MergePhysicianModal from '../../../shared/MergePhysicianModal/MergePhysicianModal'
 
@@ -322,10 +322,11 @@ const mapStateToProps = ({ main }) => {
   }
 }
 
-const actions = {
-  setPhysician,
-  getPhysicians,
-  filterPhysicians,
-}
+// const actions = {
+//   setPhysician,
+//   getPhysicians,
+//   filterPhysicians,
+// }
 
-export default connect(mapStateToProps, actions)(PhysiciansView);
+// export default connect(mapStateToProps, actions)(PhysiciansView);
+export default PhysiciansView;

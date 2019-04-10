@@ -41,6 +41,7 @@ class ScriptView extends Component {
       chargeModal: '',
       receiptModal: '',
       copyAttachments: false,
+      copyNotes: false,
       loading: false
     }
     this.tabOptions = [
@@ -514,6 +515,19 @@ class ScriptView extends Component {
       tab: rxHistoryTab,
     }, () => this.setState({
       copyAttachments: !this.state.copyAttachments
+    }))
+  }
+
+  copyNotes() {
+    const rxHistoryTab = {
+      value: 'rxHistory',
+      display: rxHistoryTab,
+      renderComponent: () => this.renderRXHistoryTab()
+    }
+    this.setState({
+      tab: rxHistoryTab,
+    }, () => this.setState({
+      copyNotes: !this.state.copyNotes
     }))
   }
 
@@ -1157,6 +1171,7 @@ class ScriptView extends Component {
         className={styles.notesTab}
         state={this.state}
         patient={this.props.patient}
+        copyNotes={this.copyNotes.bind(this)}
         setState={this.setState.bind(this)}
         onCloseModal={() => this.closeModal()}
       />
