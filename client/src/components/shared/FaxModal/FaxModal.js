@@ -25,7 +25,8 @@ class FaxModal extends Component {
     this.state = {
       render: false,
       loading: false,
-      updateFaxNum: false
+      updateFaxNum: false,
+      faxId: Math.floor(Math.random() * 9000000) + 1000000
     }
     this.handleCheckbox = this.handleCheckbox.bind(this);
   }
@@ -153,9 +154,10 @@ class FaxModal extends Component {
           var blob = pdf.output('blob');
           var blobFile = new File([blob], "filename.pdf", { type: 'application/pdf' });
           var dataAWS = blobFile;
-          this.submitS3(dataAWS);
 
-          axios.post('/api/faxes/upload?patientId=' + this.state.patientId + '&scriptId=' + this.state.scriptId + '&faxNumber=' + physicianFax,
+          this.submitS3(dataAWS)
+          
+          axios.post('/api/faxes/upload?fileName=' + this.state.fileName + '&faxId=' + this.state.faxId + '&patientId=' + this.state.patientId + '&scriptId=' + this.state.scriptId + '&faxNumber=' + physicianFax,
             data, { headers: { "Authorization": "Bearer " + loginToken } })
             .then((res) => {
               console.log(res)
@@ -189,6 +191,7 @@ class FaxModal extends Component {
           this.props.cancelLoading();
         }
       })
+
   }
 
   submitS3(dataAWS) {
@@ -197,20 +200,24 @@ class FaxModal extends Component {
     if (file == null) {
       return alert('No file selected.');
     }
-    this.getSignedRequest(file);
+    const resp = this.getSignedRequest(file);
+    console.log(resp)
+    return resp;
   };
 
   getSignedRequest(file) {
     const date = moment().format('MM-DD-YYYY')
     const loginToken = window.localStorage.getItem("token");
     const xhr = new XMLHttpRequest();
-    xhr.open('GET', `/api/faxes/sign-s3?file-name=testFile.pdf&file-type=application/pdf`,
+    xhr.open('GET', '/api/faxes/sign-s3?faxId=' + this.state.faxId + '&file-name=testFile.pdf&file-type=application/pdf',
       { headers: { "Authorization": "Bearer " + loginToken } });
     xhr.onreadystatechange = () => {
       if (xhr.readyState === 4) {
         if (xhr.status === 200) {
           const response = JSON.parse(xhr.responseText);
-          this.uploadFile(file, response.signedRequest, response.url);
+
+          this.uploadFile(file, response.signedRequest, response.url)
+
         }
         else {
           alert('Could not get signed URL.');
@@ -229,7 +236,7 @@ class FaxModal extends Component {
           // document.getElementById('preview').src = url;
           // document.getElementById('avatar-url').value = url;
           this.props.onClickAway()
-          window.open(url)
+          // window.open(url)
         }
         else {
           alert('Could not upload file.');

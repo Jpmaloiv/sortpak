@@ -28,56 +28,87 @@ const phaxio = new Phaxio(process.env.PHAXIOKEY, process.env.PHAXIOSECRET);
 
 router.post("/upload", (req, res) => {
 
-    const currentDate = moment().format('MM-DD-YYYY');
-    const faxLink = '/faxes/' + '/download' + ".pdf";
+    const date = moment().format('MM-DD-YYYY');
 
+    const faxFile = req.files.faxFile;
+    const faxLink = '/faxes/' + '/download' + ".pdf";
     const fax = {
+        fileName: `https://s3-us-west-1.amazonaws.com/${S3_BUCKET}/faxes/${date}/Fax-${req.query.faxId}.pdf`,
         PatientId: req.query.patientId,
         ScriptId: req.query.scriptId,
+        faxId: req.query.faxId,
         link: faxLink,
     }
-
-    console.log("FAX", fax)
 
     const faxNumber = req.query.faxNumber.trim().replace(/\D/g, '');
     console.log(faxNumber);
 
-    phaxio.faxes.create({
-        to: '+1' + faxNumber,
-        // file: `./faxes/${req.query.scriptId}_${currentDate}/Fax.pdf`,
-        caller_id: '+18774752382'
+    fs.mkdir(`./faxes/${req.query.scriptId}_${date}`, (err) => {
+        if ((err) && (err.code !== 'EEXIST')) {
+            console.error(err)
+        } else {
+            const faxPath = `./faxes/${req.query.scriptId}_${date}` + `/Fax-${req.query.faxId}` + ".pdf";
+            console.log(faxPath);
+            console.log("dir created");
+            faxFile
+                .mv(faxPath)
+                .then((response) => {
+                    console.log("file saved");
+
+                    phaxio.faxes.create({
+                        to: '+1' + faxNumber,
+                        file: `./faxes/${req.query.scriptId}_${date}` + '/Fax' + ".pdf",
+                        caller_id: '+18774752382'
+                    })
+                        .then((fax) => {
+                            // The `create` method returns a fax object with methods attached to it for doing things
+                            // like cancelling, resending, getting info, etc.
+
+                            // Wait 5 seconds to let the fax send, then get the status of the fax by getting its info from the API.
+                            return setTimeout(() => {
+                                fax.getInfo()
+                            }, 5000)
+                        })
+                        .then(status => console.log('Fax status response:\n', JSON.stringify(status, null, 2)))
+                        .catch((err) => { throw err; });
+
+                    // Get a list of all the faxes you have sent in the past and re-send the most recent one.
+                    // phaxio.faxes.listFaxes({ direction: 'sent' })
+                    //     .then((faxes) => {
+                    //         const mostRecent = faxes.data.reduce((acc, cv) => {
+                    //             const accCreated = new Date(acc.created_at);
+                    //             const cvCreated = new Date(cv.created_at);
+                    //             const output = accCreated > cvCreated ? acc : cv;
+                    //             return output;
+                    //         }, { created_at: '1970-01-01T00:00:00.000Z' });
+
+                    //         return phaxio.faxes.resend({ id: mostRecent.id });
+                    //     })
+                    //     .then(response => console.log('Response from resending most recent fax:\n', JSON.stringify(response, null, 2)))
+                    //     .catch((err) => { throw err; });
+
+                    db.Faxes
+                        .create(fax)
+                        .then((resp) => {
+                            res.status(200).json({ message: "Upload successful!" });
+                        })
+                        .catch((err) => {
+                            console.error(err);
+                            res.status(500).json({ message: "Internal server error.", error: err });
+                        })
+
+                        .catch((err) => {
+                            console.error(err);
+                            res.status(500).json({ message: "Internal server error.", error: err });
+                        })
+                })
+        }
     })
-        .then((fax) => {
-            // The `create` method returns a fax object with methods attached to it for doing things
-            // like cancelling, resending, getting info, etc.
 
-            // Wait 5 seconds to let the fax send, then get the status of the fax by getting its info from the API.
-            return setTimeout(() => {
-                fax.getInfo()
-            }, 5000)
-        })
-        .then(status => console.log('Fax status response:\n', JSON.stringify(status, null, 2)))
-        .catch((err) => { throw err; });
-
-    db.Faxes
-        .create(fax)
-        .then((resp) => {
-            res.status(200).json({ message: "Upload successful!" });
-        })
-        .catch((err) => {
-            console.error(err);
-            res.status(500).json({ message: "Internal server error.", error: err });
-        })
-
-        .catch((err) => {
-            console.error(err);
-            res.status(500).json({ message: "Internal server error.", error: err });
-        })
 })
 
 router.get("/sign-s3", (req, res) => {
 
-    const faxId = Math.floor(Math.random()*90000) + 10000;
 
     const s3 = new aws.S3();
     const date = moment().format('MM-DD-YYYY');
@@ -85,7 +116,7 @@ router.get("/sign-s3", (req, res) => {
     const fileType = req.query['file-type'];
     const s3Params = {
         Bucket: S3_BUCKET,
-        Key: `faxes/${date}/Fax-${faxId}.pdf`,
+        Key: `faxes/${date}/Fax-${req.query.faxId}.pdf`,
         Expires: 60,
         ContentType: fileType,
         ACL: 'public-read'
@@ -98,7 +129,7 @@ router.get("/sign-s3", (req, res) => {
         }
         const returnData = {
             signedRequest: data,
-            url: `https://s3-us-west-1.amazonaws.com/${S3_BUCKET}/faxes/${date}/Fax-${faxId}.pdf`
+            url: `https://s3-us-west-1.amazonaws.com/${S3_BUCKET}/faxes/${date}/Fax-${req.query.faxId}.pdf`
         };
         console.log(returnData)
         res.write(JSON.stringify(returnData));
