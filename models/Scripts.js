@@ -108,7 +108,7 @@ module.exports = function(sequelize, DataTypes) {
         },
         homeCare: {
             type: DataTypes.BOOLEAN,
-            allowNull: false,
+            allowNull: true,
         },
         hcHome: {
             type: DataTypes.STRING,

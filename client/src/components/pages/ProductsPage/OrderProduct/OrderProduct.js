@@ -34,7 +34,6 @@ class OrderProduct extends Component {
 
 
     async submitProductOrder() {
-
         this.state.productList.splice(-1, 1);
         const loginToken = window.localStorage.getItem("token");
         let data = new FormData();
@@ -135,7 +134,6 @@ class OrderProduct extends Component {
         this.setState({
             render: !this.state.render
         })
-
     }
 
     updateQuantity(quantity, i) {
@@ -182,7 +180,7 @@ class OrderProduct extends Component {
                 <tr>
                     <td style={{ borderRight: 'none' }} className="add" onClick={() => this.setProductState(i)}>
                         + Click here to add a medication
-                            </td>
+                    </td>
                 </tr>
             )
         } else if (product.setProduct === 'search') {

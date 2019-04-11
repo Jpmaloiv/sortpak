@@ -42,6 +42,7 @@ class ScriptView extends Component {
       receiptModal: '',
       copyAttachments: false,
       copyNotes: false,
+      copySchedule: false,
       loading: false
     }
     this.tabOptions = [
@@ -110,7 +111,6 @@ class ScriptView extends Component {
     this.setState({ chargeModal: {} })
   }
 
-
   componentWillMount() {
     const token = localStorage.getItem('token')
     var decoded = jwt_decode(token);
@@ -173,12 +173,89 @@ class ScriptView extends Component {
             physicianId: script.PhysicianId,
             productId: script.ProductId,
             receiptUpload: false
+          }, this.getRxHistoryNum)
+        }).catch((err) => {
+          console.error(err)
+        })
+    }
+  }
+
+  reRender() {
+    const token = localStorage.getItem('token')
+    var decoded = jwt_decode(token);
+    this.setState({
+      userId: decoded.id
+    }, this.getUser)
+
+    if (this.props.match.params.scriptId) {
+      const loginToken = window.localStorage.getItem("token");
+      axios.get('/api/scripts/search?scriptId=' + this.props.match.params.scriptId, { headers: { "Authorization": "Bearer " + loginToken } })
+        .then((resp) => {
+          let script = resp.data.response[0];
+          const detailsTab = {
+            value: 'details',
+            display: 'Details',
+            renderComponent: () => this.renderDetailsTab(),
+          }
+          this.setState({
+            id: script.id,
+            processedOn: script.processedOn,
+            pouch: script.pouch,
+            status: script.status,
+            fromStatus: script.status,
+            writtenDate: script.writtenDate,
+            patient: script.patient,
+            billOnDate: script.billOnDate,
+            rxNumber: script.rxNumber,
+            diagnosis: script.diagnosis,
+            secDiagnosis: script.secDiagnosis,
+            priorAuth: script.priorAuth,
+            refills: script.refills,
+            refillsRemaining: script.refillsRemaining,
+            quantity: script.quantity,
+            daysSupply: script.daysSupply,
+            salesCode: script.salesCode,
+            cost: script.cost,
+            primInsPay: script.primInsPay,
+            secInsPay: script.secInsPay,
+            location: script.location,
+            homeCare: script.homeCare,
+            copayApproval: script.copayApproval,
+            copayNetwork: script.copayNetwork,
+            networkPay: script.networkPay,
+            patientPay: script.patientPay,
+            paymentOption: script.paymentOption,
+            directions: script.directions,
+            cancelReason: script.cancelReason,
+            transLocation: script.transLocation,
+            transNPI: script.transNPI,
+            transDate: script.transDate,
+            doNotRefill: script.doNotRefill,
+            patientId: script.PatientId,
+            notesNum: script.scriptNotes.length,
+            attachmentsNum: script.scriptAttachments.length,
+            patientName: script.Patient.firstName + " " + script.Patient.lastName,
+            patientDOB: script.Patient.dob,
+            patientPhone: script.Patient.phone,
+            patientAddressStreet: script.Patient.addressStreet,
+            patientAddressCity: script.Patient.addressCity,
+            patientAddressState: script.Patient.addressState,
+            patientAddressZipCode: script.Patient.addressZipCode,
+            productName: script.Product.name,
+            productQuantity: script.Product.quantity,
+            PatientId: script.PatientId,
+            physicianId: script.PhysicianId,
+            productId: script.ProductId,
+            receiptUpload: false,
+
+            tab: detailsTab,
+            copySchedule: false
 
           }, this.getRxHistoryNum)
 
         }).catch((err) => {
-          console.error(err)
-        })
+            console.error(err)
+          })
     }
   }
 
@@ -191,6 +268,12 @@ class ScriptView extends Component {
   cancelLoading() {
     this.setState({
       loading: false
+    })
+  }
+
+  setCopySchedule(scriptIds) {
+    this.setState({
+      scheduleIds: scriptIds
     })
   }
 
@@ -341,6 +424,24 @@ class ScriptView extends Component {
       })
   }
 
+  statusChangeCopy(scriptIds) {
+    const loginToken = window.localStorage.getItem("token");
+    for (var i = 0; i < scriptIds.length; i++) {
+      let iVal = i;
+      let data = new FormData();
+      axios.post('/api/scripts/statuses/add?scriptId=' + scriptIds[i] + '&userId=' + this.state.userId + '&userImage=' + this.state.link + '&name=' + this.state.name + '&fromStatus=Schedule&toStatus=QA',
+        data, { headers: { "Authorization": "Bearer " + loginToken } })
+        .then((res) => {
+          console.log(res)
+          if (res.status === 200 && iVal === scriptIds.length - 1) {
+            this.reRender();
+          }
+        }).catch((error) => {
+          console.error(error);
+        })
+    }
+  }
+
   handleClick(event) {
     this.setState({
       status: event.target.id
@@ -400,12 +501,42 @@ class ScriptView extends Component {
   }
 
   handleShipping(event) {
-    this.setState({
-      status: event.target.id
-    }, this.updateStatus)
-    this.setState({
-      shipping: true
-    }, this.updateStatus)
+    const { scheduleIds } = this.state
+
+    if (scheduleIds) {
+
+      scheduleIds.unshift(this.props.match.params.scriptId)
+      const scriptIds = scheduleIds.filter(function (elem, index, self) {
+        return index === self.indexOf(elem);
+      })
+
+      const loginToken = window.localStorage.getItem("token");
+      if (window.confirm(`This will schedule ${scriptIds.length} different script. Proceed?`)) {
+        for (var i = 0; i < scriptIds.length; i++) {
+          let iVal = i;
+          let data = new FormData();
+          axios.put('/api/scripts/update?id=' + scriptIds[i] + '&status=QA' + '&shipOn=' + this.state.shipOn + '&deliveryMethod=' + this.state.deliveryMethod + '&trackNum=' + this.state.trackNum + '&ETA=' + this.state.ETA + '&paymentOption=' + this.state.paymentOption,
+            data, { headers: { "Authorization": "Bearer " + loginToken } })
+            .then((res) => {
+              console.log(res)
+              if (res.status === 200 && iVal === scriptIds.length - 1) {
+                this.statusChangeCopy(scriptIds)
+              }
+            }).catch((error) => {
+              console.error(error);
+            })
+        }
+      } else {
+        return;
+      }
+    } else {
+      this.setState({
+        status: event.target.id
+      }, this.updateStatus)
+      this.setState({
+        shipping: true
+      }, this.updateStatus)
+    }
   }
 
   addScript() {
@@ -528,6 +659,19 @@ class ScriptView extends Component {
       tab: rxHistoryTab,
     }, () => this.setState({
       copyNotes: !this.state.copyNotes
+    }))
+  }
+
+  copySchedule() {
+    const rxHistoryTab = {
+      value: 'rxHistory',
+      display: rxHistoryTab,
+      renderComponent: () => this.renderRXHistoryTab()
+    }
+    this.setState({
+      tab: rxHistoryTab,
+    }, () => this.setState({
+      copySchedule: !this.state.copySchedule
     }))
   }
 
@@ -932,7 +1076,7 @@ class ScriptView extends Component {
               </tr>
               <tr>
                 <td></td>
-                <td>
+                <td className="copyToAll">
                   <Button
                     title="SCHEDULE"
                     id="QA"
@@ -945,6 +1089,26 @@ class ScriptView extends Component {
                     onClick={this.handleShipping}
                     style={{ 'background-color': '#d2000d', marginLeft: 10 }}
                   />
+                  <Button
+                    icon="copy"
+                    id="copyToAll"
+                    className="orange"
+                    title="COPY TO ALL"
+                    style={{ marginLeft: 10 }}
+                    inactive={this.state.copyToAll}
+                    onClick={() => this.setState({ copyToAll: true }, this.copySchedule)}
+                  />
+                  {this.state.copyToAll ?
+                    <div style={{ display: 'inline', marginLeft: 10 }}>
+                      <Button
+                        style={{ backgroundColor: '#D2000D', marginLeft: 10, minWidth: 125 }}
+                        title="CANCEL"
+                        onClick={() => this.setState({ copyToAll: false })}
+                      />
+                    </div>
+                    :
+                    <span></span>
+                  }
                 </td>
               </tr>
             </tbody>
@@ -1198,6 +1362,7 @@ class ScriptView extends Component {
         state={this.state}
         patient={this.props.patients}
         setState={this.setState.bind(this)}
+        copySchedule={this.setCopySchedule.bind(this)}
         loading={this.isLoading.bind(this)}
         cancelLoading={this.cancelLoading.bind(this)}
       />
@@ -1366,17 +1531,17 @@ class ScriptView extends Component {
 
           {this.renderCheckoutForm()}
 
-          <div className="overlay" style={{'display': this.state.loading === true ? 'block' : 'none'}}>
-          <div className='sweet-loading'>
-            <CircleLoader
-              css={override}
-              sizeUnit={"px"}
-              size={100}
-              color={'#ff7d38'}
-              loading={this.state.loading}
-            />
+          <div className="overlay" style={{ 'display': this.state.loading === true ? 'block' : 'none' }}>
+            <div className='sweet-loading'>
+              <CircleLoader
+                css={override}
+                sizeUnit={"px"}
+                size={100}
+                color={'#ff7d38'}
+                loading={this.state.loading}
+              />
+            </div>
           </div>
-          </div> 
 
           <div className="faxModal">
             <ReceiptModal

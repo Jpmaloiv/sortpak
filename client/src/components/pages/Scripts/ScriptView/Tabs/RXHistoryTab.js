@@ -16,6 +16,9 @@ class RXHistoryTab extends Component {
       copyConfirm: false,
       scriptIds: [],
       loading: false,
+      copyAttachments: false,
+      copyNotes: false,
+      copySchedule: false
     }
   }
 
@@ -38,9 +41,7 @@ class RXHistoryTab extends Component {
           addressCity: script.Patient.addressCity,
           addressState: script.Patient.addressState,
           addressZipCode: script.Patient.addressZipCode,
-          email: script.Patient.email,
-          copyAttachments: true,
-          copyNotes: true
+          email: script.Patient.email
         }, this.copyAttachments)
       }).catch((err) => {
         console.error(err)
@@ -77,9 +78,23 @@ class RXHistoryTab extends Component {
         window.location.reload();
       }
     }
+    this.copySchedule();
+  }
+
+  copySchedule() {
+    if (this.props.state.copySchedule) {
+      if (window.confirm("Select which script(s) you would like to copy the schedule information to, then press the 'Schedule' button.")) {
+        this.setState({
+          copySchedule: true
+        })
+      } else {
+        window.location.reload();
+      }
+    }
   }
 
   handleCheckbox(event) {
+    console.log(this.state)
     const target = event.target
     const value = target.type === 'checkbox' ? target.checked : target.value;
     const id = target.id
@@ -87,6 +102,9 @@ class RXHistoryTab extends Component {
       this.state.scriptIds.push(id)
     } else {
       this.state.scriptIds.splice(this.state.scriptIds.indexOf(id), 1)
+    }
+    if (this.state.copySchedule) {
+      this.props.copySchedule(this.state.scriptIds)
     }
   }
 
@@ -117,7 +135,7 @@ class RXHistoryTab extends Component {
                 console.log(res, i, scriptIds.length)
                 if (res.status === 200 && iVal === scriptIds.length - 1 && jVal === attachments.length - 1) {
                   this.props.cancelLoading();
-                  // window.location.reload();
+                  window.location.reload();
                 }
               }).catch((error) => {
                 console.error(error);
@@ -293,7 +311,7 @@ class RXHistoryTab extends Component {
 
   renderTableRow(script) {
     return (
-      <tr value={script.id} onClick={this.props.state.copyAttachments || this.props.state.copyNotes ? '' : () => this.handleClick(script.id)}>
+      <tr value={script.id} onClick={this.props.state.copyAttachments || this.props.state.copyNotes || this.props.state.copySchedule ? '' : () => this.handleClick(script.id)}>
         <td>
           {this.props.state.copyAttachments && script.id !== this.props.state.id ?
             <input
@@ -308,6 +326,18 @@ class RXHistoryTab extends Component {
             <span></span>
           }
           {this.props.state.copyNotes && script.id !== this.props.state.id ?
+            <input
+              name="note"
+              className="checkbox"
+              id={script.id}
+              style={{ position: 'absolute', marginLeft: '-2.2%' }}
+              type="checkbox"
+              onChange={this.handleCheckbox.bind(this)}
+            />
+            :
+            <span></span>
+          }
+          {this.props.state.copySchedule && script.id !== this.props.state.id && script.status === 'Schedule' ?
             <input
               name="note"
               className="checkbox"

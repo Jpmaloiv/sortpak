@@ -8,3 +8,10 @@
   line-height: 1.3em;
 }
 
+#scriptViewBody .button.orange.inactive {
+  display: inline-block;
+  margin-left: 10px;
+  background-color: #ff7d38;
+  line-height: 1.3em;
+}
+
