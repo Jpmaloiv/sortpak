@@ -165,15 +165,17 @@ class FaxModal extends Component {
                 console.log(date);
 
                 for (var i = 0; i < filteredScripts.length; i++) {
-
+                  let iVal = i;
                   filteredScripts[i].faxNum++;
                   var data = new FormData();
                   const loginToken = window.localStorage.getItem("token");
                   axios.put('/api/scripts/fax?id=' + filteredScripts[i].id + '&faxNum=' + filteredScripts[i].faxNum + '&lastFaxed=' + date,
                     data, { headers: { "Authorization": "Bearer " + loginToken } })
-                    .then((data) => {
-                      window.alert('Fax successfully sent!');
-                      window.location.reload();
+                    .then((res) => {
+                      if (res.status === 200 && iVal === filteredScripts.length - 1) {
+                        window.alert('Fax successfully sent!');
+                        window.location.reload();
+                      }
                     }).catch((error) => {
                       console.error(error);
                     })
