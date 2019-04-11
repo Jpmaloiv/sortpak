@@ -286,6 +286,7 @@ class FaxModal extends Component {
 
 
   renderTableRow(script) {
+    console.log(script)
     return (
       <tr value={script.id}>
         <td>{script.rxNumber}</td>
@@ -298,7 +299,7 @@ class FaxModal extends Component {
         <td>{script.directions}</td>
         <td><div className='check'><input type="checkbox"></input><label>AUTHORIZED</label></div>
           WITH ______<br />
-          ADDITIONAL REFILLS</td>
+          <div>ADDITIONAL REFILLS</div></td>
       </tr>
     )
   }

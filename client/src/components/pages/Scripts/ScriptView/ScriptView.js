@@ -511,7 +511,7 @@ class ScriptView extends Component {
       })
 
       const loginToken = window.localStorage.getItem("token");
-      if (window.confirm(`This will schedule ${scriptIds.length} different script. Proceed?`)) {
+      if (window.confirm(`This will schedule ${scriptIds.length} different scripts. Proceed?`)) {
         for (var i = 0; i < scriptIds.length; i++) {
           let iVal = i;
           let data = new FormData();
