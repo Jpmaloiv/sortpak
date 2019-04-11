@@ -31,6 +31,7 @@ router.post("/upload", (req, res) => {
     const date = moment().format('MM-DD-YYYY');
 
     const faxFile = req.files.faxFile;
+    console.log("FAX FILE", faxFile)
     const faxLink = '/faxes/' + '/download' + ".pdf";
     const fax = {
         fileName: `https://s3-us-west-1.amazonaws.com/${S3_BUCKET}/faxes/${date}/Fax-${req.query.faxId}.pdf`,
@@ -43,21 +44,21 @@ router.post("/upload", (req, res) => {
     const faxNumber = req.query.faxNumber.trim().replace(/\D/g, '');
     console.log(faxNumber);
 
-    fs.mkdir(`./faxes/${req.query.scriptId}_${date}`, (err) => {
-        if ((err) && (err.code !== 'EEXIST')) {
-            console.error(err)
-        } else {
-            const faxPath = `./faxes/${req.query.scriptId}_${date}` + `/Fax-${req.query.faxId}` + ".pdf";
-            console.log(faxPath);
-            console.log("dir created");
-            faxFile
-                .mv(faxPath)
-                .then((response) => {
-                    console.log("file saved");
+    // fs.mkdir(`./faxes/${req.query.scriptId}_${date}`, (err) => {
+    //     if ((err) && (err.code !== 'EEXIST')) {
+    //         console.error(err)
+    //     } else {
+    //         const faxPath = `./faxes/${req.query.scriptId}_${date}` + `/Fax-${req.query.faxId}` + ".pdf";
+    //         console.log(faxPath);
+    //         console.log("dir created");
+    //         faxFile
+    //             .mv(faxPath)
+    //             .then((response) => {
+    //                 console.log("file saved");
 
                     phaxio.faxes.create({
                         to: '+1' + faxNumber,
-                        file: `./faxes/${req.query.scriptId}_${date}` + '/Fax' + ".pdf",
+                        content_url: `https://s3-us-west-1.amazonaws.com/${S3_BUCKET}/faxes/${date}/Fax-${req.query.faxId}.pdf`,
                         caller_id: '+18774752382'
                     })
                         .then((fax) => {
@@ -101,9 +102,9 @@ router.post("/upload", (req, res) => {
                             console.error(err);
                             res.status(500).json({ message: "Internal server error.", error: err });
                         })
-                })
-        }
-    })
+    //             })
+    //     }
+    // })
 
 })
 
