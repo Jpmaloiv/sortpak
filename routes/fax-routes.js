@@ -44,7 +44,7 @@ router.post("/upload", (req, res) => {
 
     phaxio.faxes.create({
         to: '+1' + faxNumber,
-        file: `./faxes/${req.query.scriptId}_${currentDate}/Fax.pdf`,
+        // file: `./faxes/${req.query.scriptId}_${currentDate}/Fax.pdf`,
         caller_id: '+18774752382'
     })
         .then((fax) => {
