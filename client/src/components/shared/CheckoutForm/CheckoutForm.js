@@ -255,7 +255,7 @@ class CheckoutForm extends Component {
             />
             <Button
               large
-              inactive={this.inactive}
+              inactive
               type="submit"
               onClick={this.submit}
               title="Charge"

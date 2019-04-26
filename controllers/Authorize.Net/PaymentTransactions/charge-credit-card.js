@@ -1,96 +1,116 @@
 'use strict';
 
-var ApiContracts = require('authorizenet').APIContracts;
-var ApiControllers = require('authorizenet').APIControllers;
-var SDKConstants = require('authorizenet').Constants;
-// var utils = require('../utils.js');
-var constants = require('../constants.js');
+const ApiContracts = require('authorizenet').APIContracts;
+const ApiControllers = require('authorizenet').APIControllers;
+const SDKConstants = require('authorizenet').Constants;
+// const utils = require('../utils.js');
+const constants = require('../constants.js');
 
 function chargeCreditCard(callback) {
 
+	console.log("callback", callback)
 
-	var merchantAuthenticationType = new ApiContracts.MerchantAuthenticationType();
+	return;
+
+
+	const merchantAuthenticationType = new ApiContracts.MerchantAuthenticationType();
 	merchantAuthenticationType.setName(constants.apiLoginKey);
 	merchantAuthenticationType.setTransactionKey(constants.transactionKey);
 
-	var creditCard = new ApiContracts.CreditCardType();
-	creditCard.setCardNumber('4242424242424242');
-	creditCard.setExpirationDate('0822');
-	creditCard.setCardCode('999');
+	const creditCard = new ApiContracts.CreditCardType();
+	creditCard.setCardNumber('4342562284317730');
+	creditCard.setExpirationDate('0621');
+	creditCard.setCardCode('811');
 
-	var paymentType = new ApiContracts.PaymentType();
+	// creditCard.setCardNumber('4342562284317730');
+	// creditCard.setExpirationDate('0621');
+	// creditCard.setCardCode('811');
+
+	const paymentType = new ApiContracts.PaymentType();
 	paymentType.setCreditCard(creditCard);
 
-	var orderDetails = new ApiContracts.OrderType();
+	const orderDetails = new ApiContracts.OrderType();
 	orderDetails.setInvoiceNumber('INV-12345');
 	orderDetails.setDescription('Product Description');
+
+	const billTo = new ApiContracts.CustomerAddressType();
+	billTo.setFirstName('Ellen');
+	billTo.setLastName('Johnson');
+	billTo.setCompany('Souveniropolis');
+	billTo.setAddress('14 Main Street');
+	billTo.setCity('Pecan Springs');
+	billTo.setState('TX');
+	billTo.setZip('44628');
+	billTo.setCountry('USA');
 	
 
-	var lineItem_id1 = new ApiContracts.LineItemType();
+	const lineItem_id1 = new ApiContracts.LineItemType();
 	lineItem_id1.setItemId('1');
 	lineItem_id1.setName('vase');
 	lineItem_id1.setDescription('cannes logo');
-	lineItem_id1.setQuantity('18');
-	lineItem_id1.setUnitPrice(45.00);
+	lineItem_id1.setQuantity('1');
+	lineItem_id1.setUnitPrice('45.00');
 
 
-	var lineItemList = [];
+	const lineItemList = [];
 	lineItemList.push(lineItem_id1);
 
-	var lineItems = new ApiContracts.ArrayOfLineItem();
+	const lineItems = new ApiContracts.ArrayOfLineItem();
 	lineItems.setLineItem(lineItemList);
 
-	var userField_a = new ApiContracts.UserField();
+	const userField_a = new ApiContracts.UserField();
 	userField_a.setName('A');
 	userField_a.setValue('Aval');
 
-	var userFieldList = [];
+	const userFieldList = [];
 	userFieldList.push(userField_a);
 
-	var userFields = new ApiContracts.TransactionRequestType.UserFields();
+	const userFields = new ApiContracts.TransactionRequestType.UserFields();
 	userFields.setUserField(userFieldList);
 
-	var transactionSetting1 = new ApiContracts.SettingType();
+	const transactionSetting1 = new ApiContracts.SettingType();
 	transactionSetting1.setSettingName('duplicateWindow');
 	transactionSetting1.setSettingValue('120');
 
-	var transactionSetting2 = new ApiContracts.SettingType();
+	const transactionSetting2 = new ApiContracts.SettingType();
 	transactionSetting2.setSettingName('recurringBilling');
 	transactionSetting2.setSettingValue('false');
 
-	var transactionSettingList = [];
+	const transactionSettingList = [];
 	transactionSettingList.push(transactionSetting1);
 	transactionSettingList.push(transactionSetting2);
 
-	var transactionSettings = new ApiContracts.ArrayOfSetting();
+	const transactionSettings = new ApiContracts.ArrayOfSetting();
 	transactionSettings.setSetting(transactionSettingList);
 
-	var transactionRequestType = new ApiContracts.TransactionRequestType();
+	const transactionRequestType = new ApiContracts.TransactionRequestType();
 	transactionRequestType.setTransactionType(ApiContracts.TransactionTypeEnum.AUTHCAPTURETRANSACTION);
 	transactionRequestType.setPayment(paymentType);
 	// transactionRequestType.setAmount(utils.getRandomAmount());
-	transactionRequestType.setAmount(callback.amount);
+	transactionRequestType.setAmount(1.75);
+
+	// transactionRequestType.setAmount(callback.amount);
 	transactionRequestType.setLineItems(lineItems);
 	transactionRequestType.setUserFields(userFields);
 	transactionRequestType.setOrder(orderDetails);
 	transactionRequestType.setTransactionSettings(transactionSettings);
 
-	var createRequest = new ApiContracts.CreateTransactionRequest();
+	const createRequest = new ApiContracts.CreateTransactionRequest();
 	createRequest.setMerchantAuthentication(merchantAuthenticationType);
 	createRequest.setTransactionRequest(transactionRequestType);
 
 	//pretty print request
 	console.log(JSON.stringify(createRequest.getJSON(), null, 2));
 		
-	var ctrl = new ApiControllers.CreateTransactionController(createRequest.getJSON());
+	const ctrl = new ApiControllers.CreateTransactionController(createRequest.getJSON());
 	//Defaults to sandbox
-	//ctrl.setEnvironment(SDKConstants.endpoint.production);
+	ctrl.setEnvironment(SDKConstants.endpoint.production);
 
 	ctrl.execute(function(){
 
-		var apiResponse = ctrl.getResponse();
+		const apiResponse = ctrl.getResponse();
 
-		var response = new ApiContracts.CreateTransactionResponse(apiResponse);
+		const response = new ApiContracts.CreateTransactionResponse(apiResponse);
 
 		//pretty print response
 		console.log(JSON.stringify(response, null, 2));
@@ -129,7 +149,7 @@ function chargeCreditCard(callback) {
 		}
 
 		// callback(response);
-		return 5;
+		// return 5;
 	});
 }
 

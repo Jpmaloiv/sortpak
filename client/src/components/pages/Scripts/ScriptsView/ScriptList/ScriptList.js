@@ -364,7 +364,7 @@ class ScriptList extends React.Component {
       return event.shipOn != null;
     });
     let sortedDateScriptsFill = dateScriptsFill.sort(function (a, b) {
-      return new Date(a.shipOn).getTime() - new Date(b.shipOn).getTime()
+      return new Date(b.shipOn).getTime() - new Date(a.shipOn).getTime()
     });
     for (var i = 0; i < sortedDateScriptsFill.length; i++) {
       scripts.push(sortedDateScriptsFill[i])

@@ -94,12 +94,12 @@ export const login = payload => {
       type: LOGIN,
     })
     auth.login(payload)
-      .then(res => onLoginSuccess({dispatch, res}))
-      .catch(err => onLoginFailure({dispatch, err}))
+      .then(res => onLoginSuccess({ dispatch, res }))
+      .catch(err => onLoginFailure({ dispatch, err }))
   }
 }
 
-function onLoginSuccess({dispatch, res}) {
+function onLoginSuccess({ dispatch, res }) {
   console.log('login success', res);
   const { token } = res
   localStorage.setItem('token', token)
@@ -109,7 +109,7 @@ function onLoginSuccess({dispatch, res}) {
   dispatch(push('/'))
 }
 
-function onLoginFailure({dispatch, err}) {
+function onLoginFailure({ dispatch, err }) {
   console.log('login failure', err);
   dispatch({
     type: LOGIN_FAILURE,
@@ -122,11 +122,11 @@ export const getSelf = () => dispatch => {
     type: GET_SELF,
   })
   users.getSelf()
-    .then(res => onGetSelfSuccess({dispatch, res}))
-    .catch(err => onGetSelfFailure({dispatch, err}))
+    .then(res => onGetSelfSuccess({ dispatch, res }))
+    .catch(err => onGetSelfFailure({ dispatch, err }))
 }
 
-function onGetSelfSuccess({dispatch, res}) {
+function onGetSelfSuccess({ dispatch, res }) {
   console.log('getSelf success', res);
   const { user } = res
   dispatch({
@@ -135,7 +135,7 @@ function onGetSelfSuccess({dispatch, res}) {
   })
 }
 
-function onGetSelfFailure({dispatch, err}) {
+function onGetSelfFailure({ dispatch, err }) {
   const message = err.message || 'Get Self Failed'
   console.log('getSelf failure', message);
   window.alert(message)
@@ -150,11 +150,11 @@ export const resetPassword = ({ email }) => dispatch => {
     type: RESET_PASSWORD,
   })
   auth.resetPassword({ email })
-    .then(res => onResetPasswordSuccess({dispatch, res}))
-    .catch(err => onResetPasswordFailure({dispatch, err}))
+    .then(res => onResetPasswordSuccess({ dispatch, res }))
+    .catch(err => onResetPasswordFailure({ dispatch, err }))
 }
 
-function onResetPasswordSuccess({dispatch, res}) {
+function onResetPasswordSuccess({ dispatch, res }) {
   console.log('resetPassword success', res);
   dispatch({
     type: RESET_PASSWORD_SUCCESS,
@@ -162,7 +162,7 @@ function onResetPasswordSuccess({dispatch, res}) {
   dispatch(push('/login'))
 }
 
-function onResetPasswordFailure({dispatch, err}) {
+function onResetPasswordFailure({ dispatch, err }) {
   const message = err.message || 'Reset Password Failed'
   console.log('resetPassword failure', message);
   window.alert(message)
@@ -177,8 +177,8 @@ export const createPassword = data => dispatch => {
     type: CREATE_PASSWORD,
   })
   auth.createPassword(data)
-    .then(res => onCreatePasswordSuccess({dispatch, res}))
-    .catch(err => onCreatePasswordFailure({dispatch, err}))
+    .then(res => onCreatePasswordSuccess({ dispatch, res }))
+    .catch(err => onCreatePasswordFailure({ dispatch, err }))
 }
 
 export const claimAccount = data => dispatch => {
@@ -186,11 +186,11 @@ export const claimAccount = data => dispatch => {
     type: CLAIM_ACCOUNT,
   })
   auth.claimAccount(data)
-    .then(res => onCreatePasswordSuccess({dispatch, res}))
-    .catch(err => onCreatePasswordFailure({dispatch, err}))
+    .then(res => onCreatePasswordSuccess({ dispatch, res }))
+    .catch(err => onCreatePasswordFailure({ dispatch, err }))
 }
 
-function onCreatePasswordSuccess({dispatch, res}) {
+function onCreatePasswordSuccess({ dispatch, res }) {
   console.log('createPassword success', res);
   dispatch({
     type: CREATE_PASSWORD_SUCCESS,
@@ -202,7 +202,7 @@ function onCreatePasswordSuccess({dispatch, res}) {
   dispatch(push('/'))
 }
 
-function onCreatePasswordFailure({dispatch, err}) {
+function onCreatePasswordFailure({ dispatch, err }) {
   const message = err.message || 'Create Password Failed'
   console.log('createPassword failure', message);
   window.alert(message)
@@ -217,11 +217,11 @@ export const patchSelf = update => dispatch => {
     type: PATCH_SELF,
   })
   users.patchSelf(update)
-    .then(res => onPatchSelfSuccess({dispatch, res}))
-    .catch(err => onPatchSelfFailure({dispatch, err}))
+    .then(res => onPatchSelfSuccess({ dispatch, res }))
+    .catch(err => onPatchSelfFailure({ dispatch, err }))
 }
 
-function onPatchSelfSuccess({dispatch, res}) {
+function onPatchSelfSuccess({ dispatch, res }) {
   console.log('patchSelf success', res);
   const { user } = res
   dispatch({
@@ -230,7 +230,7 @@ function onPatchSelfSuccess({dispatch, res}) {
   })
 }
 
-function onPatchSelfFailure({dispatch, err}) {
+function onPatchSelfFailure({ dispatch, err }) {
   const message = err.message || 'Patch Self Failed'
   console.log('patchSelf failure', message);
   window.alert(message)
@@ -258,13 +258,13 @@ export const patientChange = payload => {
 export const medicationChange = payload => {
   const loginToken = window.localStorage.getItem("token");
   axios.get('api/medications/search?s=' + payload, { headers: { "Authorization": "Bearer " + loginToken } })
-  .then((res) => {
-    console.log(res.data.response)
-    
-  })
-  .catch((error) => {
-    console.error(error)
-  })
+    .then((res) => {
+      console.log(res.data.response)
+
+    })
+    .catch((error) => {
+      console.error(error)
+    })
 
   return {
     type: MEDICATION_CHANGE,

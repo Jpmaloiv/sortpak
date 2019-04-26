@@ -15,6 +15,8 @@ const paymentTransactions = require('../controllers/Authorize.Net/PaymentTransac
 
 router.post("/charge", async (req, res) => {
 
+    console.log("req.query", req.query)
+
     const payment = {
         name: req.query.name,
         amount: req.query.amount,
@@ -23,8 +25,7 @@ router.post("/charge", async (req, res) => {
         ScriptId: req.query.scriptId
     }
 
-    const test = await paymentTransactions.chargeCreditCard(payment)
-    console.log("TEST", test)
+    paymentTransactions.chargeCreditCard(req.query)
 
     // try {
     //     console.log("IN TRY")
