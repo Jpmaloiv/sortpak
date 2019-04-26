@@ -6,7 +6,7 @@ const SDKConstants = require('authorizenet').Constants;
 // const utils = require('../utils.js');
 const constants = require('../constants.js');
 
-function chargeCreditCard(callback) {
+function chargeCreditCard(payment) {
 
 	console.log("callback", callback)
 
