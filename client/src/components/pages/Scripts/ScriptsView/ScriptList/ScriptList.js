@@ -24,7 +24,6 @@ class ScriptList extends React.Component {
 
   renderTableHead() {
     return (
-
       <thead>
         <tr>
           <th>Status</th>
