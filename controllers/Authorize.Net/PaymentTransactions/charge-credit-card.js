@@ -8,9 +8,7 @@ const constants = require('../constants.js');
 
 function chargeCreditCard(payment) {
 
-	console.log("callback", callback)
 
-	return;
 
 
 	const merchantAuthenticationType = new ApiContracts.MerchantAuthenticationType();
@@ -18,9 +16,9 @@ function chargeCreditCard(payment) {
 	merchantAuthenticationType.setTransactionKey(constants.transactionKey);
 
 	const creditCard = new ApiContracts.CreditCardType();
-	creditCard.setCardNumber('4342562284317730');
-	creditCard.setExpirationDate('0621');
-	creditCard.setCardCode('811');
+	creditCard.setCardNumber('4012888818888');
+	creditCard.setExpirationDate('0410');
+	// creditCard.setCardCode('811');
 
 	// creditCard.setCardNumber('4342562284317730');
 	// creditCard.setExpirationDate('0621');
@@ -49,7 +47,7 @@ function chargeCreditCard(payment) {
 	lineItem_id1.setName('vase');
 	lineItem_id1.setDescription('cannes logo');
 	lineItem_id1.setQuantity('1');
-	lineItem_id1.setUnitPrice('45.00');
+	lineItem_id1.setUnitPrice('1.25');
 
 
 	const lineItemList = [];
@@ -70,7 +68,7 @@ function chargeCreditCard(payment) {
 
 	const transactionSetting1 = new ApiContracts.SettingType();
 	transactionSetting1.setSettingName('duplicateWindow');
-	transactionSetting1.setSettingValue('120');
+	transactionSetting1.setSettingValue('1.75');
 
 	const transactionSetting2 = new ApiContracts.SettingType();
 	transactionSetting2.setSettingName('recurringBilling');
@@ -87,7 +85,7 @@ function chargeCreditCard(payment) {
 	transactionRequestType.setTransactionType(ApiContracts.TransactionTypeEnum.AUTHCAPTURETRANSACTION);
 	transactionRequestType.setPayment(paymentType);
 	// transactionRequestType.setAmount(utils.getRandomAmount());
-	transactionRequestType.setAmount(1.75);
+	transactionRequestType.setAmount(1.);
 
 	// transactionRequestType.setAmount(callback.amount);
 	transactionRequestType.setLineItems(lineItems);
