@@ -530,6 +530,15 @@
 
 /* Checkout */
 
-#field-wrapper label.sc-bxivhb.hlTfmo {
-  display: flex !important;
+#field-wrapper label {
+  display: flex !important
+}
+
+#field-wrapper label:nth-child(2) {
+  width: 525px !important;
+  font-size: 1.2em !important
+}
+
+#field-wrapper label:nth-child(3) {
+  width: 175px !important;
 }

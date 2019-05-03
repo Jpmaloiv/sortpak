@@ -27,7 +27,7 @@ router.post("/charge", (req, res) => {
     // merchantAuthenticationType.setName('86KgWx9un');
     merchantAuthenticationType.setName('73D5BqaZ');
     // merchantAuthenticationType.setTransactionKey('9jtx744ZJp559LQ4');
-    merchantAuthenticationType.setTransactionKey('5dRy388N8Pz4Zfr2');
+    merchantAuthenticationType.setTransactionKey('43LxL7L28zq2eRHM');
 
     const creditCard = new ApiContracts.CreditCardType();
 
