@@ -82,7 +82,7 @@ class CheckoutForm extends Component {
         // let token = await this.props.stripe.createToken({ name: "Name" });
         // console.log(token);
         let data = new FormData();
-        axios.post('/api/scripts/payments/charge?amount=' + this.state.scripts[i].patientPay + '&scriptId=' + this.state.scripts[i].id
+        axios.post('/api/scripts/payments/charge?amount=' + this.state.patientPay[i]+ '&scriptId=' + this.state.scripts[i].id
           + '&receiptLink=' + `${lastName}_${firstName}/${date}/Receipt.pdf` + '&number=' + this.state.number + '&expiry=' + this.state.expiry + '&cvc=' + this.state.cvc
           + '&customerId=' + this.state.PatientId + '&firstName=' + firstName + '&lastName=' + lastName + '&address=' + this.state.patientAddressStreet + '&city=' + this.state.patientAddressCity +
           '&state=' + this.state.patientAddressState + '&zipCode=' + this.state.patientAddressZipCode + '&phone=' + this.state.patientPhone, data, { headers: { "Authorization": "Bearer " + loginToken, "Content-Type": "application/json" }, })
@@ -187,7 +187,7 @@ class CheckoutForm extends Component {
 
   render() {
 
-    console.log(this.props, this.state)
+    console.log(this.state, this.props)
 
     if (this.state.totalPayUpdated === true) {
       const totalPay = [];
