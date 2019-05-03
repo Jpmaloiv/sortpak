@@ -3,6 +3,7 @@ import { CardElement, injectStripe } from 'react-stripe-elements';
 import axios from 'axios'
 import Moment from 'react-moment'
 import moment from 'moment'
+import CreditCardInput from 'react-credit-card-input';
 
 import {
   Button,
@@ -38,9 +39,9 @@ class CheckoutForm extends Component {
         console.error(err)
       })
 
-        this.setState({
-          transactionId: Math.floor(Math.random() * 90000000) + 10000000
-        })
+    this.setState({
+      transactionId: Math.floor(Math.random() * 90000000) + 10000000
+    })
 
   }
 
@@ -71,25 +72,29 @@ class CheckoutForm extends Component {
 
       const payments = this.state.scripts;
       const totalPay = this.state.totalPay;
-      const firstName = this.props.state.patientName.split(' ').slice(0, -1).join (' ');
+      const firstName = this.props.state.patientName.split(' ').slice(0, -1).join(' ');
       const lastName = this.props.state.patientName.split(' ').slice(-1).join(' ');
       const date = moment().format('MM-DD-YYYY')
-      const transactionId = this.state.transactionId
+      // const transactionId = this.state.transactionId
 
       for (var i = 0; i < this.state.scripts.length; i++) {
         const loginToken = window.localStorage.getItem("token");
-        let token = await this.props.stripe.createToken({ name: "Name" });
-        console.log(token);
-        let data = token;
+        // let token = await this.props.stripe.createToken({ name: "Name" });
+        // console.log(token);
+        let data = new FormData();
         axios.post('/api/scripts/payments/charge?amount=' + this.state.scripts[i].patientPay + '&scriptId=' + this.state.scripts[i].id
-        + '&receiptLink=' + `${lastName}_${firstName}/${date}/Receipt.pdf` + '&transactionId=' + this.state.transactionId, data, { headers: { "Authorization": "Bearer " + loginToken, "Content-Type": "application/json" }, })
-          .then((data) => {
+          + '&receiptLink=' + `${lastName}_${firstName}/${date}/Receipt.pdf` + '&number=' + this.state.number + '&expiry=' + this.state.expiry + '&cvc=' + this.state.cvc
+          + '&customerId=' + this.state.PatientId + '&firstName=' + firstName + '&lastName=' + lastName + '&address=' + this.state.patientAddressStreet + '&city=' + this.state.patientAddressCity +
+          '&state=' + this.state.patientAddressState + '&zipCode=' + this.state.patientAddressZipCode + '&phone=' + this.state.patientPhone, data, { headers: { "Authorization": "Bearer " + loginToken, "Content-Type": "application/json" }, })
+          .then((res) => {
+            console.log(res)
+            const { transactionId } = res.data
+            this.props.onSubmit(payments, totalPay, transactionId);
           }).catch((error) => {
             window.alert("Payment Failed")
             console.error(error);
             return;
           })
-          this.props.onSubmit(payments, totalPay, transactionId);
 
       }
     } else {
@@ -134,6 +139,14 @@ class CheckoutForm extends Component {
     })
   }
 
+  handleCardInfoChange = e => {
+    console.log(e.target, e.target.value)
+    this.setState({
+      [e.target.name]: e.target.value
+    })
+
+  }
+
 
   renderTableRow(script) {
     const i = this.state.scripts.indexOf(script);
@@ -174,6 +187,7 @@ class CheckoutForm extends Component {
 
   render() {
 
+    console.log(this.props, this.state)
 
     if (this.state.totalPayUpdated === true) {
       const totalPay = [];
@@ -232,9 +246,14 @@ class CheckoutForm extends Component {
         className="checkoutForm"
       ><br />
         <div className="checkout">
-          <p>Would you like to complete the purchase?</p>
-          <p><i>Enter "4242 4242 4242 4242" for testing</i></p>
-          <CardElement />
+          <CreditCardInput
+            cardNumberInputProps={{ name: 'number', onChange: this.handleCardInfoChange }}
+            cardExpiryInputProps={{ name: 'expiry', onChange: this.handleCardInfoChange }}
+            cardCVCInputProps={{ name: 'cvc', onChange: this.handleCardInfoChange }}
+            fieldClassName="input"
+            style={{ display: 'initial !important' }}
+          />
+
           <label>Claim</label>
           <Selector
             options={claimOptions}
@@ -255,7 +274,6 @@ class CheckoutForm extends Component {
             />
             <Button
               large
-              inactive
               type="submit"
               onClick={this.submit}
               title="Charge"

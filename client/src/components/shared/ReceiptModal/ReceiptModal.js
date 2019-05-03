@@ -62,6 +62,7 @@ class ReceiptModal extends Component {
   // }
 
   uploadDocument(e) {
+  // componentDidMount() {
     e.preventDefault();
 
     const input = document.getElementById('divToPrint');
@@ -101,7 +102,7 @@ class ReceiptModal extends Component {
         if (xhr.status === 200) {
           console.log(xhr.responseText);
           const response = JSON.parse(xhr.responseText);
-          this.uploadFile(file, response.signedRequest, response.url);
+          this.uploadFile(file, response.signedRequest, response.url)
         }
         else {
           alert('Could not get signed URL.');
@@ -237,106 +238,106 @@ class ReceiptModal extends Component {
         onClickAway={onClickAway}
         visible={!!content}
       >
-      
 
-            <div>
-              <div className="mb5">
-                <Button onClick={this.uploadDocument.bind(this)}>SAVE RECEIPT</Button>
-                {/* <Icon style={{'cursor': 'pointer'}} name="print" onClick={this.printDocument.bind(this)} /> */}
-              </div>
-              <div id="divToPrint" className="mt4" style={{
-                backgroundColor: '#fff',
-                width: '210mm',
-                minHeight: '297mm',
-                marginLeft: 'auto',
-                marginRight: 'auto'
-              }}>
-                <div className="main">
-                  <div className='flex'>
-                    <div className='flex-col'>
-                      <img style={{ width: '75px', height: 'auto' }} alt="SortPak" src="https://www.sortpak.com/site-uploadz/2018/05/sortpak-logo-lg.png" />
-                    </div>
-                    <div className='flex-col'>
-                      <h2>RECEIPT</h2>
-                      <p>PRINTED ON <Moment format="MM/DD/YYYY" /></p>
-                    </div>
-                    <div className='flex-col'>
-                      124 S. GLENDALE AVE<br />
-                      GLENDALE, CA 91205<br />
-                      TEL: (877) 570-7787<br />
-                      FAX: (877) 475-2382
+
+        <div>
+          <div className="mb5">
+            <Button onClick={this.uploadDocument.bind(this)}>SAVE RECEIPT</Button>
+            {/* <Icon style={{'cursor': 'pointer'}} name="print" onClick={this.printDocument.bind(this)} /> */}
+          </div>
+          <div id="divToPrint" className="mt4" style={{
+            backgroundColor: '#fff',
+            width: '210mm',
+            minHeight: '297mm',
+            marginLeft: 'auto',
+            marginRight: 'auto'
+          }}>
+            <div className="main">
+              <div className='flex'>
+                <div className='flex-col'>
+                  <img style={{ width: '75px', height: 'auto' }} alt="SortPak" src="https://www.sortpak.com/site-uploadz/2018/05/sortpak-logo-lg.png" />
                 </div>
-                  </div>
-                  <br /><br />
-                  <table className='infoTable'>
-                    <tr>
-                      <td>NAME</td>
-                      <td>{this.props.state.patientName}</td>
-                      <td>DATE OF BIRTH</td>
-                      <td><Moment format='MM/DD/YYYY'>{this.props.state.patientDOB}</Moment></td>
-                    </tr>
-                    <tr>
-                      <td>RX NUMBER</td>
-                      <td>{this.props.state.rxNumber}</td>
-                      <td>PHONE</td>
-                      <td>{this.props.state.patientPhone}</td>
-                    </tr>
-                    <tr>
-                      <td>PATIENT COPAY</td>
-                      <td>{this.props.state.totalPay}</td>
-                      <td>ADDRESS</td>
-                      <td>{this.props.state.patientAddressStreet} <br />
-                        {this.props.state.patientAddressCity}, {this.props.state.patientAddressState}, {this.props.state.patientAddressZipCode}</td>
-                    </tr>
-                    <tr>
-                      <td>TRANSACTION ID</td>
-                      <td>{this.props.state.transactionId}</td>
-                    </tr>
-                  </table>
-                  <br />
+                <div className='flex-col'>
+                  <h2>RECEIPT</h2>
+                  <p>PRINTED ON <Moment format="MM/DD/YYYY" /></p>
+                </div>
+                <div className='flex-col'>
+                  124 S. GLENDALE AVE<br />
+                  GLENDALE, CA 91205<br />
+                  TEL: (877) 570-7787<br />
+                  FAX: (877) 475-2382
+                </div>
+              </div>
+              <br /><br />
+              <table className='infoTable'>
+                <tr>
+                  <td>NAME</td>
+                  <td>{this.props.state.patientName}</td>
+                  <td>DATE OF BIRTH</td>
+                  <td><Moment format='MM/DD/YYYY'>{this.props.state.patientDOB}</Moment></td>
+                </tr>
+                <tr>
+                  <td>RX NUMBER</td>
+                  <td>{this.props.state.rxNumber}</td>
+                  <td>PHONE</td>
+                  <td>{this.props.state.patientPhone}</td>
+                </tr>
+                <tr>
+                  <td>PATIENT COPAY</td>
+                  <td>{this.props.state.totalPay}</td>
+                  <td>ADDRESS</td>
+                  <td>{this.props.state.patientAddressStreet} <br />
+                    {this.props.state.patientAddressCity}, {this.props.state.patientAddressState}, {this.props.state.patientAddressZipCode}</td>
+                </tr>
+                <tr>
+                  <td>TRANSACTION ID</td>
+                  <td>{this.props.state.transactionId}</td>
+                </tr>
+              </table>
+              <br />
 
-                  <b>PLEASE CHECK ONE:</b>
-                  <br /><br />
+              <b>PLEASE CHECK ONE:</b>
+              <br /><br />
 
-                  <div style={{ 'display': 'flex' }}>
-                    <input type="checkbox" style={{ width: '30px', marginTop: 6 }}></input>
-                    <label>NO PATIENT COPAY REQUIRED</label>
-                  </div>
-                  <div style={{ 'display': 'flex' }}>
-                    <input type="checkbox" style={{ width: '30px', marginTop: 6 }}></input>
-                    <label>PLEASE PAY ON DELIVERY</label>
-                  </div>
-                  <div style={{ 'display': 'flex' }}>
-                    <input type="checkbox" style={{ width: '30px', marginTop: 6 }}></input>
-                    <label>PLEASE MAIL A CHECK UPON DELIVERY</label>
-                  </div>
-                  <div style={{ 'display': 'flex' }}>
-                    <input type="checkbox" style={{ width: '30px', marginTop: 6 }}></input>
-                    <label>ALREADY PAID WITH CREDIT CARD</label>
-                  </div>
+              <div style={{ 'display': 'flex' }}>
+                <input type="checkbox" style={{ width: '30px', marginTop: 6 }}></input>
+                <label>NO PATIENT COPAY REQUIRED</label>
+              </div>
+              <div style={{ 'display': 'flex' }}>
+                <input type="checkbox" style={{ width: '30px', marginTop: 6 }}></input>
+                <label>PLEASE PAY ON DELIVERY</label>
+              </div>
+              <div style={{ 'display': 'flex' }}>
+                <input type="checkbox" style={{ width: '30px', marginTop: 6 }}></input>
+                <label>PLEASE MAIL A CHECK UPON DELIVERY</label>
+              </div>
+              <div style={{ 'display': 'flex' }}>
+                <input type="checkbox" style={{ width: '30px', marginTop: 6 }}></input>
+                <label>ALREADY PAID WITH CREDIT CARD</label>
+              </div>
 
-                  {/* {this.renderTable()}
+              {/* {this.renderTable()}
               {paymentList} */}
 
-                  <div className='signatures' style={{ textAlign: 'right' }}>
-                    <div>
-                      <p>SIGNATURE</p>
-                      <p>__________________________</p>
-                    </div>
-                  </div>
-
-                  <div>
-                    <h5>CONFIDENTIALITY NOTICE</h5>
-                    <p>The information contained in this transmittal belongs to SortPak Pharmacy and may include information that is confidential, privileged, and protected
-                      from disclosure under applicable law. It is intended only for the use of the above physicians. If you are not the intended recipient of this information,
-                      you are hereby notified that any disclosure, copying, or distribution of this information is strictly prohibited. If you have received this transmittal in error,
-                      please immediately notify us by telephone at (877) 570-7787. Thank you.
-                </p>
-                  </div>
-
+              <div className='signatures' style={{ textAlign: 'right' }}>
+                <div>
+                  <p>SIGNATURE</p>
+                  <p>__________________________</p>
                 </div>
               </div>
+
+              <div>
+                <h5>CONFIDENTIALITY NOTICE</h5>
+                <p>The information contained in this transmittal belongs to SortPak Pharmacy and may include information that is confidential, privileged, and protected
+                  from disclosure under applicable law. It is intended only for the use of the above physicians. If you are not the intended recipient of this information,
+                  you are hereby notified that any disclosure, copying, or distribution of this information is strictly prohibited. If you have received this transmittal in error,
+                  please immediately notify us by telephone at (877) 570-7787. Thank you.
+                </p>
+              </div>
+
             </div>
+          </div>
+        </div>
 
       </FormModal >
 
