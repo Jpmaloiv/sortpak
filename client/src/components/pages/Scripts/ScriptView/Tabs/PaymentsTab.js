@@ -26,10 +26,15 @@ class PaymentsTab extends Component {
         console.log(resp.data.response)
         this.setState({
           payments: resp.data.response,
+          s3Bucket: resp.data.bucket
         })
       }).catch((error) => {
         console.error(error);
       })
+  }
+
+  handleClick(receiptLink) {
+    window.open(`https://s3-us-west-1.amazonaws.com/${this.state.s3Bucket}/receipts/${receiptLink}`)
   }
 
   renderTableHead() {
@@ -55,8 +60,7 @@ class PaymentsTab extends Component {
 
   renderTableRow(payment) {
     return (
-      // <tr value={script.id} onClick={() => this.handleClick(script.id)}>
-      <tr>
+      <tr value={payment.receiptLink} onClick={() => this.handleClick(payment.receiptLink)}>
         <td>{this.props.state.patientName}</td>
         <td>{this.props.state.productName}</td>
         <td>${payment.amount}</td>

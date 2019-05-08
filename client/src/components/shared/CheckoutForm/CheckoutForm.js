@@ -67,8 +67,7 @@ class CheckoutForm extends Component {
   async submit(ev) {
     console.log(this.state.totalPay)
     ev.preventDefault();
-    if (window.confirm(`This will charge an amount of $${this.state.totalPay.toFixed(2)} to the card that has been entered. Proceed?\n\n
-    Testing Mode (Feel free to click CHARGE)`)) {
+    if (window.confirm(`This will charge an amount of $${this.state.totalPay.toFixed(2)} to the card that has been entered. Proceed?\n`)) {
 
       const payments = this.state.scripts;
       const totalPay = this.state.totalPay;
@@ -77,19 +76,21 @@ class CheckoutForm extends Component {
       const date = moment().format('MM-DD-YYYY')
       // const transactionId = this.state.transactionId
 
+      const now = Date.now();
+
       for (var i = 0; i < this.state.scripts.length; i++) {
         const loginToken = window.localStorage.getItem("token");
         // let token = await this.props.stripe.createToken({ name: "Name" });
         // console.log(token);
         let data = new FormData();
         axios.post('/api/scripts/payments/charge?amount=' + this.state.patientPay[i]+ '&scriptId=' + this.state.scripts[i].id
-          + '&receiptLink=' + `${lastName}_${firstName}/${date}/Receipt.pdf` + '&number=' + this.state.number + '&expiry=' + this.state.expiry + '&cvc=' + this.state.cvc
+          + '&receiptLink=' + `${lastName}_${firstName}/${date}/Receipt-${now}.pdf` + '&number=' + this.state.number + '&expiry=' + this.state.expiry + '&cvc=' + this.state.cvc
           + '&customerId=' + this.state.PatientId + '&firstName=' + firstName + '&lastName=' + lastName + '&address=' + this.state.patientAddressStreet + '&city=' + this.state.patientAddressCity +
           '&state=' + this.state.patientAddressState + '&zipCode=' + this.state.patientAddressZipCode + '&phone=' + this.state.patientPhone, data, { headers: { "Authorization": "Bearer " + loginToken, "Content-Type": "application/json" }, })
           .then((res) => {
             console.log(res)
             const { transactionId } = res.data
-            this.props.onSubmit(payments, totalPay, transactionId);
+            this.props.onSubmit(payments, totalPay, transactionId, now);
           }).catch((error) => {
             window.alert("Payment Failed")
             console.error(error);

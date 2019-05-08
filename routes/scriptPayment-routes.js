@@ -281,7 +281,8 @@ router.get("/search", (req, res) => {
         .then((response) => {
             res.json({
                 success: true,
-                response: response
+                response: response,
+                bucket: process.env.S3_BUCKET
             });
         })
         .catch((err) => {

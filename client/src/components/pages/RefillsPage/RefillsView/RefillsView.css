@@ -9,6 +9,13 @@
     background: #dddddd !important;
 }
 
+.receiptModal > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) {
+    width: 90% !important;
+    overflow: scroll;
+    background: #dddddd !important;
+    opacity: 0 !important
+}
+
 .overlay {
     position: fixed;
     top: 0;

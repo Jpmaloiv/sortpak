@@ -100,8 +100,8 @@ function chargeCreditCard(payment, response) {
 		
 	const ctrl = new ApiControllers.CreateTransactionController(createRequest.getJSON());
 	//Defaults to sandbox
-	ctrl.setEnvironment(SDKConstants.endpoint.sandbox);
-	// ctrl.setEnvironment(SDKConstants.endpoint.production);
+	// ctrl.setEnvironment(SDKConstants.endpoint.sandbox);
+	ctrl.setEnvironment(SDKConstants.endpoint.production);
 
 
 	const test = ctrl.execute(function(){
@@ -148,9 +148,6 @@ function chargeCreditCard(payment, response) {
 		}
 
 	});
-
-	console.log("TEST", test)
-
 }
 
 
