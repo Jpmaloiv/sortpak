@@ -124,9 +124,11 @@ class ReceiptModal extends Component {
           // document.getElementById('preview').src = url;
           // document.getElementById('avatar-url').value = url;
           this.props.onClickAway()
-          this.props.setState({ loading: false})
+          this.props.setState({ loading: false })
           console.log(url)
           window.open(url)
+          const done = window.open(url)
+          done.addEventListener('load', window.location.reload(), true);
           // window.location.reload();
         }
         else {
@@ -256,7 +258,7 @@ class ReceiptModal extends Component {
             marginLeft: 'auto',
             marginRight: 'auto'
           }}>
-            <div className="main" style={{padding: '25px 45px'}}>
+            <div className="main" style={{ padding: '25px 45px' }}>
               <div className='flex'>
                 <div className='flex-col'>
                   <img style={{ width: '75px', height: 'auto' }} alt="SortPak" src="https://www.sortpak.com/site-uploadz/2018/05/sortpak-logo-lg.png" />
