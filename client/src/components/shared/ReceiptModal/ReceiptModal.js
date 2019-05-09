@@ -125,11 +125,10 @@ class ReceiptModal extends Component {
           // document.getElementById('avatar-url').value = url;
           this.props.onClickAway()
           this.props.setState({ loading: false })
+
           console.log(url)
-          window.open(url)
           const done = window.open(url)
           done.addEventListener('load', window.location.reload(), true);
-          // window.location.reload();
         }
         else {
           alert('Could not upload file.');

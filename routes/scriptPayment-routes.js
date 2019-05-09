@@ -142,7 +142,7 @@ router.post("/charge", (req, res) => {
                         name: req.query.name,
                         amount: req.query.amount,
                         receiptLink: req.query.receiptLink,
-                        transactionId: req.query.transactionId,
+                        transactionId: transactionId,
                         ScriptId: req.query.scriptId
                     }
 
