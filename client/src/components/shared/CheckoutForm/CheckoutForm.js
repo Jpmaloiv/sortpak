@@ -67,7 +67,7 @@ class CheckoutForm extends Component {
   async submit(ev) {
     console.log(this.state.totalPay)
     ev.preventDefault();
-    if (window.confirm(`This will charge an amount of $${this.state.totalPay.toFixed(2)} to the card that has been entered. Proceed?\n`)) {
+    if (window.confirm(`This will charge an amount of $${Number(this.state.totalPay).toFixed(2)} to the card that has been entered. Proceed?\n`)) {
 
       const payments = this.state.scripts;
       const totalPay = this.state.totalPay;
