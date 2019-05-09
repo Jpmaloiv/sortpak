@@ -67,8 +67,6 @@ class ReceiptModal extends Component {
         receipt: false
       })
 
-
-
       const input = document.getElementById('divToPrint');
 
       html2canvas(input)
@@ -129,7 +127,7 @@ class ReceiptModal extends Component {
           this.props.setState({ loading: false})
           console.log(url)
           window.open(url)
-          window.location.reload();
+          // window.location.reload();
         }
         else {
           alert('Could not upload file.');

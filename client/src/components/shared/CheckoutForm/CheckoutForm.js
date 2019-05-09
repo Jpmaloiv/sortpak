@@ -57,7 +57,7 @@ class CheckoutForm extends Component {
     }
 
     this.setState({
-      totalPay: sum,
+      totalPay: sum.toFixed(2),
       patientPay: totalPay
     })
   }
@@ -128,7 +128,7 @@ class CheckoutForm extends Component {
   renderTotalPayRow() {
     return (
       <tr style={{ textAlign: 'right' }}>
-        <td colspan="4">Total Pay: <b>{this.state.totalPay ? <span>${this.state.totalPay.toFixed(2)}</span> : <b>Input needed</b>}</b></td>
+        <td colspan="4">Total Pay: <b>{this.state.totalPay ? <span>${Number(this.state.totalPay).toFixed(2)}</span> : <b>Input needed</b>}</b></td>
       </tr>
     )
   }
@@ -162,7 +162,7 @@ class CheckoutForm extends Component {
         <td>
           {script.patientPay ?
             <input
-              placeholder={script.patientPay}
+              placeholder={Number(script.patientPay).toFixed(2)}
               value={test}
               index={i}
               style={{ width: 'auto' }}
@@ -188,7 +188,7 @@ class CheckoutForm extends Component {
 
   render() {
 
-    console.log(this.state, this.props)
+    console.log(this.state.totalPay) 
 
     if (this.state.totalPayUpdated === true) {
       const totalPay = [];
@@ -202,7 +202,7 @@ class CheckoutForm extends Component {
       }
 
       this.setState({
-        totalPay: sum,
+        totalPay: Number(sum).toFixed(2),
         totalPayUpdated: false
       })
     }
