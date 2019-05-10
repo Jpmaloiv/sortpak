@@ -97,7 +97,6 @@ app.use(["/api/scripts"], jwt({
 app.use("/api/attachments", scriptAttachmentRoutes);
 app.use("/api/receipts", receiptRoutes);
 
-
 app.use("/api/scriptNotes", scriptNoteRoutes);
 // app.use(["/api/scriptNotes"], jwt({
 //     secret: process.env.JWT_SECRET,
