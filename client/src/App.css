@@ -542,3 +542,15 @@
 #field-wrapper label:nth-child(3) {
   width: 175px !important;
 }
+
+
+/* React Table */
+.ReactTable .rt-thead .rt-th.-cursor-pointer {
+  font-size: 12px;
+}
+
+.reactTable .rt-tbody .rt-td {
+  font-weight: lighter;
+  border: none;
+  border: 1px solid #dfe1e2
+}

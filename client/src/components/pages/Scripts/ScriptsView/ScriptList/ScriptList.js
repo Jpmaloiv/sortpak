@@ -1,8 +1,9 @@
 import React from 'react';
 
 import Moment from 'react-moment'
+import ReactTable from "react-table";
+import { Span, Table } from '../../../../common'
 import moment from 'moment'
-import { Table } from '../../../../common'
 
 
 
@@ -128,7 +129,6 @@ class ScriptList extends React.Component {
   }
 
   sortScripts() {
-    console.log(this.props, this.state)
     this.setState({
       scripts: this.props.data
     }, this.filterScripts)
@@ -168,7 +168,7 @@ class ScriptList extends React.Component {
 
       if (script1.processedOn > script2.processedOn) return 1;
       if (script1.processedOn < script2.processedOn) return -1;
-    
+
     });
 
     for (var i = 0; i < sortReceived.length; i++) {
@@ -199,7 +199,7 @@ class ScriptList extends React.Component {
 
       if (script1.processedOn > script2.processedOn) return 1;
       if (script1.processedOn < script2.processedOn) return -1;
-    
+
     });
 
     for (var i = 0; i < sortReview.length; i++) {
@@ -230,7 +230,7 @@ class ScriptList extends React.Component {
 
       if (script1.processedOn > script2.processedOn) return 1;
       if (script1.processedOn < script2.processedOn) return -1;
-    
+
     });
 
     for (var i = 0; i < sortPriorAuth.length; i++) {
@@ -261,7 +261,7 @@ class ScriptList extends React.Component {
 
       if (script1.processedOn > script2.processedOn) return 1;
       if (script1.processedOn < script2.processedOn) return -1;
-    
+
     });
 
     for (var i = 0; i < sortProcess.length; i++) {
@@ -292,7 +292,7 @@ class ScriptList extends React.Component {
 
       if (script1.processedOn > script2.processedOn) return 1;
       if (script1.processedOn < script2.processedOn) return -1;
-    
+
     });
 
     for (var i = 0; i < sortCopayAssistance.length; i++) {
@@ -323,7 +323,7 @@ class ScriptList extends React.Component {
 
       if (script1.processedOn > script2.processedOn) return 1;
       if (script1.processedOn < script2.processedOn) return -1;
-    
+
     });
 
     for (var i = 0; i < sortSchedule.length; i++) {
@@ -463,15 +463,69 @@ class ScriptList extends React.Component {
     for (var i = 0; i < sortedDateScriptsRenew.length; i++) {
       scripts.push(sortedDateScriptsRenew[i])
     }
-  
+
 
     this.setState({
       scripts: scripts
-    })
+    }, this.formatDates)
+  }
+
+  formatDates() {
+    const { scripts } = this.state
+    for (var i = 0; i < scripts.length; i++) {
+      let date = moment(scripts[i].notesUpdated).fromNow();
+      if (date === 'Invalid date') date = ''
+      scripts[i].notesUpdated = date
+    }
+    this.setState({ render: !this.state.render })
   }
 
 
   render() {
+
+    const columns = [{
+      Header: 'Status',
+      Cell: props =>
+        <span>
+          {props.original.status}
+        </span>
+    }, {
+      Header: 'Date',
+      Cell: props =>
+        <Span icon="calendar">
+          <Moment format="MM/DD/YYYY">{props.original.processedOn || 'None'}</Moment>
+        </Span>
+    }, {
+      Header: 'Age',
+      Cell: props =>
+        <Moment fromNow>{props.original.updatedAt}</Moment>
+    }, {
+      Header: 'Note',
+      Cell: props =>
+        <span>{this.state.scripts[props.index].notesUpdated}</span>
+    },
+    {
+      Header: 'Physician',
+      Cell: props =>
+        <span>{props.original.Physician.firstName} {props.original.Physician.lastName}</span>
+    },
+    {
+      Header: 'Patient',
+      Cell: props =>
+        <span>{props.original.Patient.firstName} {props.original.Patient.lastName}</span>
+    },
+    {
+      Header: 'Medication',
+      minWidth: 225,
+      Cell: props =>
+        <span>{props.original.Product.name}</span>
+    },
+    {
+      Header: 'Other',
+      Cell: props =>
+          <span>{this.renderOtherSection(props.original)}</span>
+    },
+  ]
 
     if ((this.props.data.length > 0) && (this.state.scriptSort === false)) {
       this.sortScripts();
@@ -498,8 +552,17 @@ class ScriptList extends React.Component {
     return (
       <div>
 
-        {this.renderTable()}
-        {scriptList}
+        {/* {this.renderTable()}
+        {scriptList} */}
+
+        <ReactTable
+          className="reactTable"
+          data={this.state.scripts}
+          columns={columns}
+          getTrProps={(state, rowInfo, column, instance) => ({
+            onClick: e => window.location = `/scripts/${rowInfo.original.id}`
+          })}
+        />
       </div>
     )
   }
