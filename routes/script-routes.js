@@ -136,28 +136,6 @@ router.get("/search", (req, res) => {
         }
     }
 
-    // if (req.query.textSearch) {
-    //     searchParams = {
-    //         include: [{
-    //             model: db.Patients, attributes: ["firstName", "lastName", "dob", "phone", "email", "patientWarning", "conditions", "allergies", 'primInsPlan',
-    //                 'primInsBIN', 'primInsGroup', 'primInsID', 'primInsPCN', 'primInsType', 'secInsPlan', 'secInsBIN', 'secInsGroup',
-    //                 'secInsID', 'secInsPCN', 'secInsType'],
-    //         }, {
-    //             model: db.Physicians, attributes: ["firstName", "lastName", 'specialization', "rep", "contact", "phone", "physicianWarning"],
-    //         }, {
-    //             model: db.Products,
-    //             where: {
-    //                 [Op.or]: [{
-    //                     name: { like: '%' + req.query.textSearch + '%' }
-    //                 }, {
-    //                     NDC: { like: '%' + req.query.textSearch + '%' }
-    //                 }]
-    //             }
-    //         }, { model: db.scriptNotes, attributes: ['note', 'createdAt'] }, { model: db.scriptAttachments, attributes: ['id'] }]
-
-    //     }
-    // }
-
 
 
 
@@ -232,10 +210,13 @@ router.get("/search", (req, res) => {
 
     db.Scripts
         .findAll(searchParams)
-        .then((response) => {
+        // .then((scripts) => {
+        //     console.log("SCRIPTS", scripts)
+        // })
+        .then((scripts) => {
             res.json({
                 success: true,
-                response: response
+                response: scripts
             });
         })
         .catch((err) => {
