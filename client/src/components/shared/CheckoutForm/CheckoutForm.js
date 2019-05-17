@@ -28,7 +28,7 @@ class CheckoutForm extends Component {
 
   componentDidMount() {
     const loginToken = window.localStorage.getItem("token");
-    axios.get('/api/scripts/search?patientId=' + this.props.patientId + '&exactStatus=Schedule', { headers: { "Authorization": "Bearer " + loginToken } })
+    axios.get('/api/scripts/search?patientId=' + this.props.patientId, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
         console.log(resp)
         this.setState({

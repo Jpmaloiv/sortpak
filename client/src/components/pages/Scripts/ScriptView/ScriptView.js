@@ -1441,6 +1441,8 @@ class ScriptView extends Component {
 
   render() {
 
+    console.log(this.state.chargeModal)
+
     const {
       receiptModal
     } = this.state
