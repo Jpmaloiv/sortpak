@@ -219,33 +219,33 @@ router.get("/search", (req, res) => {
         .then((scripts) => {
 
 
-            var statusOrder = ['Received', 'Review', 'Prior Auth', 'Process', 'Copay Assistance', 'Schedule', 'QA', 'Fill', 'Shipped', 'Done', 'Refill', 'Renew', 'Cancelled'];
+        //     var statusOrder = ['Received', 'Review', 'Prior Auth', 'Process', 'Copay Assistance', 'Schedule', 'QA', 'Fill', 'Shipped', 'Done', 'Refill', 'Renew', 'Cancelled'];
 
-            var noteOrder = [null, !null]
+        //     var noteOrder = [null, !null]
 
-            // scripts.sort( ( a, b ) => statusOrder.indexOf( a.status ) - statusOrder.indexOf( b.status ))
+        //     // scripts.sort( ( a, b ) => statusOrder.indexOf( a.status ) - statusOrder.indexOf( b.status ))
 
-            scripts.sort(
-                function (a, b) {
-                    if (statusOrder.indexOf(a.status) > statusOrder.indexOf(b.status)) return 1;
-                    if (statusOrder.indexOf(a.status) < statusOrder.indexOf(b.status)) return -1;
+        //     scripts.sort(
+        //         function (a, b) {
+        //             if (statusOrder.indexOf(a.status) > statusOrder.indexOf(b.status)) return 1;
+        //             if (statusOrder.indexOf(a.status) < statusOrder.indexOf(b.status)) return -1;
 
-                    if (a.status === 'Received' && b.status === 'Received') {
-                        if (noteOrder.indexOf(a.notesUpdated) < noteOrder.indexOf(b.notesUpdated)) return 1;
-                        if (noteOrder.indexOf(a.notesUpdated) > noteOrder.indexOf(b.notesUpdated)) return -1;
-                    }
+        //             if (a.status === 'Received' && b.status === 'Received') {
+        //                 if (noteOrder.indexOf(a.notesUpdated) < noteOrder.indexOf(b.notesUpdated)) return 1;
+        //                 if (noteOrder.indexOf(a.notesUpdated) > noteOrder.indexOf(b.notesUpdated)) return -1;
+        //             }
 
 
-                    // If the votes number is the same between both items, sort alphabetically
-                    // If the first item comes first in the alphabet, move it up
-                    // Otherwise move it down
-                    // if (vote1.title > vote2.title) return 1;
-                    // if (vote1.title < vote2.title) return -1;
-                    // return statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status)
+        //             // If the votes number is the same between both items, sort alphabetically
+        //             // If the first item comes first in the alphabet, move it up
+        //             // Otherwise move it down
+        //             // if (vote1.title > vote2.title) return 1;
+        //             // if (vote1.title < vote2.title) return -1;
+        //             // return statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status)
 
-                });
+        //         });
 
-            console.log(scripts)
+        //     console.log(scripts)
 
             res.json({
                 success: true,
