@@ -5,8 +5,8 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const authCtrl = require("../controller/auth/auth-ctrl.js");
 const fs = require('fs');
-const Sequelize = require('sequelize');
-const Op = Sequelize.Op;
+const sequelize = require('sequelize');
+const Op = sequelize.Op;
 // const util = require('util')
 
 
@@ -75,9 +75,13 @@ router.get("/search", (req, res) => {
 
     let searchParams = {
         where: {},
+
         attributes: {
             exclude: ["createdAt"]
         },
+        // order: [
+        //     ['status', 'DESC'],
+        // ],
         include: [{
             model: db.Patients,
             attributes: ["id", "firstName", "lastName", "dob", "hub", "phone", 'sex', "addressStreet", "addressCity", "addressState", "addressZipCode", "email", "patientWarning", "conditions", "allergies", 'primInsPlan',
@@ -208,17 +212,52 @@ router.get("/search", (req, res) => {
         }
     }
 
+    const statusOrder = ["Received", "Review", "Prior Auth", "Process"];
+
     db.Scripts
         .findAll(searchParams)
-        // .then((scripts) => {
-        //     console.log("SCRIPTS", scripts)
-        // })
         .then((scripts) => {
+
+
+            var statusOrder = ['Received', 'Review', 'Prior Auth', 'Process', 'Copay Assistance', 'Schedule', 'QA', 'Fill', 'Shipped', 'Done', 'Refill', 'Renew', 'Cancelled'];
+
+            var noteOrder = [null, !null]
+
+            // scripts.sort( ( a, b ) => statusOrder.indexOf( a.status ) - statusOrder.indexOf( b.status ))
+
+            scripts.sort(
+                function (a, b) {
+                    if (statusOrder.indexOf(a.status) > statusOrder.indexOf(b.status)) return 1;
+                    if (statusOrder.indexOf(a.status) < statusOrder.indexOf(b.status)) return -1;
+
+                    if (a.status === 'Received' && b.status === 'Received') {
+                        if (noteOrder.indexOf(a.notesUpdated) < noteOrder.indexOf(b.notesUpdated)) return 1;
+                        if (noteOrder.indexOf(a.notesUpdated) > noteOrder.indexOf(b.notesUpdated)) return -1;
+                    }
+
+
+                    // If the votes number is the same between both items, sort alphabetically
+                    // If the first item comes first in the alphabet, move it up
+                    // Otherwise move it down
+                    // if (vote1.title > vote2.title) return 1;
+                    // if (vote1.title < vote2.title) return -1;
+                    // return statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status)
+
+                });
+
+            console.log(scripts)
+
             res.json({
                 success: true,
                 response: scripts
             });
         })
+        // .then((scripts) => {
+        //     res.json({
+        //         success: true,
+        //         response: scripts
+        //     });
+        // })
         .catch((err) => {
             console.error(err);
             res.status(500).json({ message: "Error (500): Internal Server Error", error: err })
