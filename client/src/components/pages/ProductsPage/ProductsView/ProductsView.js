@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 
 import axios from 'axios'
 import { TablePagination } from 'react-pagination-table';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 import {
   Header,
@@ -186,6 +187,8 @@ class ProductsView extends Component {
     }
 
     return (
+      <ReactCSSTransitionGroup transitionName='fade' transitionAppear={true} transitionAppearTimeout={500} transitionEnter={false} transitionLeave={false}>
+
       <div className={styles.app}>
 
         <Header>
@@ -256,6 +259,7 @@ class ProductsView extends Component {
           </div>
 
       </div>
+      </ReactCSSTransitionGroup>
         );
       }
     }

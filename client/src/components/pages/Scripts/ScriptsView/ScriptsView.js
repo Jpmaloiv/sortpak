@@ -5,11 +5,13 @@ import jwt_decode from 'jwt-decode'
 import ScriptSearch from './ScriptSearch/ScriptSearch'
 import ScriptList from './ScriptList/ScriptList'
 
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+
+
 
 import { Header } from '../../../common'
 
 import styles from './ScriptsView.css'
-import { ENETDOWN } from 'constants';
 
 class ScriptsView extends Component {
   constructor(props) {
@@ -104,27 +106,30 @@ class ScriptsView extends Component {
 
   render() {
     return (
-      <div className={styles.app}>
+      <ReactCSSTransitionGroup transitionName='fade' transitionAppear={true} transitionAppearTimeout={500} transitionEnter={false} transitionLeave={false}>
 
-        <Header>
+          <div className={styles.app}>
 
-          <h2>
-            Select a Script
+            <Header>
+
+              <h2>
+                Select a Script
           </h2>
 
-        </Header>
+            </Header>
 
-        <div className="body">
+            <div className="body">
 
-          <ScriptSearch searchFunc={this.searchScriptDb} />
-          {/* {(this.state.results[0]) ? <ScriptList data={this.state.results} /> : ""} */}
-          <ScriptList data={this.state.results} />
+              <ScriptSearch searchFunc={this.searchScriptDb} />
+              {/* {(this.state.results[0]) ? <ScriptList data={this.state.results} /> : ""} */}
+              <ScriptList data={this.state.results} />
 
 
-        </div>
+            </div>
 
-      </div>
-    );
+          </div>
+        </ ReactCSSTransitionGroup>
+    ); 
   }
 }
 

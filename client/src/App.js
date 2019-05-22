@@ -147,7 +147,7 @@ class App extends Component {
       }
     }
 
-    
+
     return (
       <Provider store={store}>
         <Router>
@@ -214,10 +214,6 @@ class App extends Component {
                 <PrivateRoute exact path="/receipt/:paymentId" component={Receipt} />
 
                 <PrivateRoute exact path="/patientAttachment/:attachmentId" component={PatientAttachment} />
-
-                {/* <Route exact path="/book/:bookId" component={Attachment} /> */}
-
-
 
               </Switch>
             </div>

@@ -6,6 +6,8 @@ import Moment from 'react-moment'
 import moment from 'moment'
 import ReactTable from "react-table";
 import 'react-table/react-table.css'
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+
 
 import { Span, Table, Input, Header, Button, ActionBox } from '../../../common'
 
@@ -207,103 +209,106 @@ class PatientsView extends Component {
     }
 
     return (
-      <div className={styles.app}>
+      <ReactCSSTransitionGroup transitionName='fade' transitionAppear={true} transitionAppearTimeout={500} transitionEnter={false} transitionLeave={false}>
 
-        <Header>
+        <div className={styles.app}>
 
-          <h2>
-            Select a Patient
+          <Header>
+
+            <h2>
+              Select a Patient
           </h2>
 
-          <div className="action">
-            <Button
-              title="MERGE PATIENT"
-              style={{ backgroundColor: "#ff7d38", marginRight: 10 }}
-              onClick={this.openNoteModal.bind(this)}
-            />
-
-            <Button
-              link="/patients/add"
-              icon="plus"
-              title="ADD A NEW PATIENT"
-              style={{ marginRight: 8 }}
-            />
-
-          </div>
-
-        </Header>
-
-        <div className="body">
-
-          <ActionBox className='searchBar'>
-            <div className="main" style={{ paddingTop: 0 }}>
-
-              <Input
-                label="Search By Name"
-                placeholder="First or Last Name..."
-                value={this.state.searchName}
-                onChange={searchName => this.setState({ searchName })}
-                onKeyPress={this.enterPressed.bind(this)}
-              />
-              <Input
-                label="Search By DOB"
-                type="date"
-                value={this.state.searchDOB}
-                onChange={searchDOB => this.setState({ searchDOB })}
-                onKeyPress={this.enterPressed.bind(this)}
-              />
-              <Input
-                label="Search By Address"
-                placeholder="Address or City"
-                value={this.state.searchAddress}
-                onChange={searchAddress => this.setState({ searchAddress })}
-                onKeyPress={this.enterPressed.bind(this)}
-              />
-              <Input
-                label="Search by Phone"
-                type="phone"
-                placeholder="(---) --- ---"
-                value={this.state.searchPhone}
-                onChange={searchPhone => this.setState({ searchPhone })}
-                onKeyPress={this.enterPressed.bind(this)}
+            <div className="action">
+              <Button
+                title="MERGE PATIENT"
+                style={{ backgroundColor: "#ff7d38", marginRight: 10 }}
+                onClick={this.openNoteModal.bind(this)}
               />
 
               <Button
-                search
-                icon="search"
-                title="SEARCH"
-                onClick={this.searchQuery}
+                link="/patients/add"
+                icon="plus"
+                title="ADD A NEW PATIENT"
+                style={{ marginRight: 8 }}
               />
-
 
             </div>
 
-          </ActionBox>
+          </Header>
 
-          <ReactTable
-            className="reactTable"
-            data={this.state.patients}
-            columns={columns}
-            getTrProps={(state, rowInfo, column, instance) => ({
-              onClick: e => window.location = `/patients/${rowInfo.original.id}`
-            })}
-          />
+          <div className="body">
 
-          <div className="mergePatient">
-            <MergePatientModal
-              content={mergeModal}
-              // onSubmit={this.openReceiptModals}
-              state={this.state}
-              patientId={this.state.PatientId}
-              props={this.props}
-              onClickAway={() => this.closeModal()}
-            // onCloseModal={() => this.closeModal()}
+            <ActionBox className='searchBar'>
+              <div className="main" style={{ paddingTop: 0 }}>
+
+                <Input
+                  label="Search By Name"
+                  placeholder="First or Last Name..."
+                  value={this.state.searchName}
+                  onChange={searchName => this.setState({ searchName })}
+                  onKeyPress={this.enterPressed.bind(this)}
+                />
+                <Input
+                  label="Search By DOB"
+                  type="date"
+                  value={this.state.searchDOB}
+                  onChange={searchDOB => this.setState({ searchDOB })}
+                  onKeyPress={this.enterPressed.bind(this)}
+                />
+                <Input
+                  label="Search By Address"
+                  placeholder="Address or City"
+                  value={this.state.searchAddress}
+                  onChange={searchAddress => this.setState({ searchAddress })}
+                  onKeyPress={this.enterPressed.bind(this)}
+                />
+                <Input
+                  label="Search by Phone"
+                  type="phone"
+                  placeholder="(---) --- ---"
+                  value={this.state.searchPhone}
+                  onChange={searchPhone => this.setState({ searchPhone })}
+                  onKeyPress={this.enterPressed.bind(this)}
+                />
+
+                <Button
+                  search
+                  icon="search"
+                  title="SEARCH"
+                  onClick={this.searchQuery}
+                />
+
+
+              </div>
+
+            </ActionBox>
+
+            <ReactTable
+              className="reactTable"
+              data={this.state.patients}
+              columns={columns}
+              getTrProps={(state, rowInfo, column, instance) => ({
+                onClick: e => window.location = `/patients/${rowInfo.original.id}`
+              })}
             />
+
+            <div className="mergePatient">
+              <MergePatientModal
+                content={mergeModal}
+                // onSubmit={this.openReceiptModals}
+                state={this.state}
+                patientId={this.state.PatientId}
+                props={this.props}
+                onClickAway={() => this.closeModal()}
+              // onCloseModal={() => this.closeModal()}
+              />
+            </div>
+
           </div>
 
         </div>
-
-      </div>
+      </ReactCSSTransitionGroup>
     );
   }
 }

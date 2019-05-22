@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import jwt_decode from 'jwt-decode'
 
+
 // Helpers
 import { formatCurrencyOptions } from '../../../../lib'
 
@@ -163,244 +164,245 @@ class AdminDashboard extends Component {
     }
   }
 
-    calcPatientNum() {
-      const patientsReps = [];
-      for (var i = 0; i < this.state.patientScripts.length; i++) {
-        let script = this.state.patientScripts[i];
-        let name = script.Patient.firstName + ' ' + script.Patient.lastName
-        patientsReps.push(name);
-      }
-      this.setState({
-        patientsReps: patientsReps
-      }, this.filterPatientsReps)
+  calcPatientNum() {
+    const patientsReps = [];
+    for (var i = 0; i < this.state.patientScripts.length; i++) {
+      let script = this.state.patientScripts[i];
+      let name = script.Patient.firstName + ' ' + script.Patient.lastName
+      patientsReps.push(name);
+    }
+    this.setState({
+      patientsReps: patientsReps
+    }, this.filterPatientsReps)
+  }
+
+  filterPatientsReps() {
+    const { patientsReps } = this.state
+
+    const patientsRepsNum = patientsReps.filter(function (elem, index, self) {
+      return index === self.indexOf(elem);
+    })
+    this.setState({
+      patientNum: patientsRepsNum.length
+    })
+  }
+
+  calcRevenue() {
+    console.log(this.state.payments)
+    const revenue = [];
+    for (var i = 0; i < this.state.payments.length; i++) {
+      revenue.push(this.state.payments[i].amount)
+    }
+    var sum = revenue.reduce(add, 0);
+
+    function add(a, b) {
+      return a + +b;
     }
 
-    filterPatientsReps() {
-      const { patientsReps } = this.state
+    this.setState({
+      revenue: sum.toFixed(2)
+    }, this.calcDailyRevenue)
+  }
 
-      const patientsRepsNum = patientsReps.filter(function (elem, index, self) {
-        return index === self.indexOf(elem);
+  calcDailyRevenue() {
+    this.setState({
+      dailyAvgRevenue: (this.state.revenue / 21.74).toFixed(2)
+    })
+  }
+
+  calcCost() {
+    console.log(this.state.scripts)
+    const cost = [];
+    for (var i = 0; i < this.state.scripts.length; i++) {
+      cost.push(this.state.scripts[i].cost)
+    }
+    var sum = cost.reduce(add, 0);
+
+    function add(a, b) {
+      return a + +b;
+    }
+
+    this.setState({
+      cost: sum.toFixed(2)
+    }, this.calcProfit)
+  }
+
+  calcProfit() {
+    this.setState({
+      profit: (this.state.revenue - this.state.cost).toFixed(2),
+      dailyAvgProfit: ((this.state.revenue - this.state.cost) / 21.74).toFixed(2)
+    }, this.calcFinal)
+  }
+
+  calcFinal() {
+    this.setState({
+      revenuePerSale: (this.state.revenue.toFixed / this.state.sales).toFixed(2)
+    }, this.convertNaN)
+  }
+
+  convertNaN() {
+    if (this.state.revenuePerSale === 'NaN') {
+      this.setState({
+        revenuePerSale: 0
       })
-      this.setState({
-        patientNum: patientsRepsNum.length
-      })
     }
-
-    calcRevenue() {
-      console.log(this.state.payments)
-      const revenue = [];
-      for (var i = 0; i < this.state.payments.length; i++) {
-        revenue.push(this.state.payments[i].amount)
-      }
-      var sum = revenue.reduce(add, 0);
-
-      function add(a, b) {
-        return a + +b;
-      }
-
-      this.setState({
-        revenue: sum.toFixed(2)
-      }, this.calcDailyRevenue)
-    }
-
-    calcDailyRevenue() {
-      this.setState({
-        dailyAvgRevenue: (this.state.revenue / 21.74).toFixed(2)
-      })
-    }
-
-    calcCost() {
-      console.log(this.state.scripts)
-      const cost = [];
-      for (var i = 0; i < this.state.scripts.length; i++) {
-        cost.push(this.state.scripts[i].cost)
-      }
-      var sum = cost.reduce(add, 0);
-
-      function add(a, b) {
-        return a + +b;
-      }
-
-      this.setState({
-        cost: sum.toFixed(2)
-      }, this.calcProfit)
-    }
-
-    calcProfit() {
-      this.setState({
-        profit: (this.state.revenue - this.state.cost).toFixed(2),
-        dailyAvgProfit: ((this.state.revenue - this.state.cost) / 21.74).toFixed(2)
-      }, this.calcFinal)
-    }
-
-    calcFinal() {
-      this.setState({
-        revenuePerSale: (this.state.revenue.toFixed / this.state.sales).toFixed(2)
-      }, this.convertNaN)
-    }
-
-    convertNaN() {
-      if (this.state.revenuePerSale === 'NaN') {
-        this.setState({
-          revenuePerSale: 0
-        })
-      }
-    }
+  }
 
 
-    renderCards() {
-      // const patients = this.props.patients.length
-      // const repeatPatients = this.props.patients.filter(el => el.scripts).length
-      // const newPhysicians = this.props.physicians.filter(el => !el.repId).length
-      const cardData1 = [
-        { title: 'Revenue', content: '$' + this.state.revenue },
-        { title: 'Daily AVG Revenue', content: '$' + this.state.dailyAvgRevenue },
-        { title: 'Cost', content: '$' + this.state.cost },
-        { title: 'Profit', content: '$' + this.state.profit },
-        { title: 'Daily AVG Profit', content: '$' + this.state.dailyAvgProfit }
-      ]
-      const cardData2 = [
-        { title: 'Sales', content: this.state.sales },
-        { title: 'Revenue per Sale', content: '$' + this.state.revenuePerSale },
-        { title: 'Repeat Patients', content: this.state.repeatPatients },
-        { title: 'New Patients', content: this.state.patientNum || '-' },
-        { title: 'New Physicians', content: this.state.physicianNum || '-' }
-      ]
+  renderCards() {
+    // const patients = this.props.patients.length
+    // const repeatPatients = this.props.patients.filter(el => el.scripts).length
+    // const newPhysicians = this.props.physicians.filter(el => !el.repId).length
+    const cardData1 = [
+      { title: 'Revenue', content: '$' + this.state.revenue },
+      { title: 'Daily AVG Revenue', content: '$' + this.state.dailyAvgRevenue },
+      { title: 'Cost', content: '$' + this.state.cost },
+      { title: 'Profit', content: '$' + this.state.profit },
+      { title: 'Daily AVG Profit', content: '$' + this.state.dailyAvgProfit }
+    ]
+    const cardData2 = [
+      { title: 'Sales', content: this.state.sales },
+      { title: 'Revenue per Sale', content: '$' + this.state.revenuePerSale },
+      { title: 'Repeat Patients', content: this.state.repeatPatients },
+      { title: 'New Patients', content: this.state.patientNum || '-' },
+      { title: 'New Physicians', content: this.state.physicianNum || '-' }
+    ]
 
-      return (<div className="cardStack">
-        <div className="cards">
-          {cardData1.map(this.renderCard.bind(this))}
-        </div>
-        <div className="cards">
-          {cardData2.map(this.renderCard.bind(this))}
-        </div></div>
-      )
-    }
+    return (<div className="cardStack">
+      <div className="cards">
+        {cardData1.map(this.renderCard.bind(this))}
+      </div>
+      <div className="cards">
+        {cardData2.map(this.renderCard.bind(this))}
+      </div></div>
+    )
+  }
 
-    renderRepRow(rep) {
-      return (
-        <tr key={rep.id}>
-          <td>
+  renderRepRow(rep) {
+    return (
+      <tr key={rep.id}>
+        <td>
+          <Span
+            link={`/team/${rep.id}`}
+            icon='user-circle'
+          >
+            {rep.nameDisplay}
+          </Span>
+        </td>
+        <td>
+          {rep.bonus.toLocaleString(...formatCurrencyOptions)}
+        </td>
+      </tr>
+    )
+  }
+
+  renderRepScorecard() {
+    const { reps } = this.props
+    return (
+      <div className="card-container">
+        <h2>
+          Rep Scorecard
+        </h2>
+        <Table
+          className={styles.repsTable}
+          borderless
+        >
+          <thead>
+            <tr>
+              <th>
+                Rep
+              </th>
+              <th>
+                Bonus
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {reps.map(this.renderRepRow.bind(this))}
+          </tbody>
+        </Table>
+      </div>
+    )
+  }
+
+  renderPhysicianRow(physician) {
+    return (
+      <tr key={physician.id}>
+        <td>
+          <Span icon='user-circle' />
+          <div className="physician">
             <Span
-              link={`/team/${rep.id}`}
-              icon='user-circle'
+              className="name"
+              link={`/physicians/${physician.id}`}
             >
-              {rep.nameDisplay}
+              {physician.nameDisplay}
             </Span>
-          </td>
-          <td>
-            {rep.bonus.toLocaleString(...formatCurrencyOptions)}
-          </td>
-        </tr>
-      )
-    }
+            <span className="group">
+              {physician.group || 'No Group Found'}
+            </span>
+          </div>
+        </td>
+      </tr>
+    )
+  }
 
-    renderRepScorecard() {
-      const { reps } = this.props
-      return (
-        <div className="card-container">
-          <h2>
-            Rep Scorecard
+  renderUnassignedPhysicians() {
+    const physicians = this.props.physicians.filter(el => !el.repId)
+    return (
+      <div className="card-container">
+        <h2>
+          Unassigned Physicians
         </h2>
-          <Table
-            className={styles.repsTable}
-            borderless
-          >
-            <thead>
-              <tr>
-                <th>
-                  Rep
+        <Table
+          className={styles.physiciansTable}
+          borderless
+        >
+          <thead>
+            <tr>
+              <th>
+                Physician
               </th>
-                <th>
-                  Bonus
-              </th>
-              </tr>
-            </thead>
-            <tbody>
-              {reps.map(this.renderRepRow.bind(this))}
-            </tbody>
-          </Table>
-        </div>
-      )
-    }
+            </tr>
+          </thead>
+          <tbody>
+            {physicians.map(this.renderPhysicianRow.bind(this))}
+          </tbody>
+        </Table>
+      </div>
+    )
+  }
 
-    renderPhysicianRow(physician) {
-      return (
-        <tr key={physician.id}>
-          <td>
-            <Span icon='user-circle' />
-            <div className="physician">
-              <Span
-                className="name"
-                link={`/physicians/${physician.id}`}
-              >
-                {physician.nameDisplay}
-              </Span>
-              <span className="group">
-                {physician.group || 'No Group Found'}
-              </span>
-            </div>
-          </td>
-        </tr>
-      )
-    }
+  render() {
+    return (
 
-    renderUnassignedPhysicians() {
-      const physicians = this.props.physicians.filter(el => !el.repId)
-      return (
-        <div className="card-container">
-          <h2>
-            Unassigned Physicians
-        </h2>
-          <Table
-            className={styles.physiciansTable}
-            borderless
-          >
-            <thead>
-              <tr>
-                <th>
-                  Physician
-              </th>
-              </tr>
-            </thead>
-            <tbody>
-              {physicians.map(this.renderPhysicianRow.bind(this))}
-            </tbody>
-          </Table>
-        </div>
-      )
-    }
-
-    render() {
-      return (
-        <div className={styles.body}>
-          {/* <div className="graph">
+      <div className={styles.body}>
+        {/* <div className="graph">
         </div> */}
-          {this.renderCards()}
+        {this.renderCards()}
 
-          {/* <div className="cards">
+        {/* <div className="cards">
           {this.renderRepScorecard()}
           {this.renderUnassignedPhysicians()}
         </div> */}
-        </div>
-      );
-    }
+      </div>
+    );
   }
+}
 
-  const mapStateToProps = ({ main }) => {
-    const {
-      physicians,
-      patients,
-      reps,
-    } = main
-    return {
-      physicians,
-      patients,
-      reps,
-    }
+const mapStateToProps = ({ main }) => {
+  const {
+    physicians,
+    patients,
+    reps,
+  } = main
+  return {
+    physicians,
+    patients,
+    reps,
   }
+}
 
-  const actions = {
-  }
+const actions = {
+}
 
-  export default connect(mapStateToProps, actions)(AdminDashboard);
+export default connect(mapStateToProps, actions)(AdminDashboard);

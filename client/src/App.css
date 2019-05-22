@@ -527,7 +527,6 @@
   background: #5d5d8a
 }
 
-
 /* Checkout */
 
 #field-wrapper label {
@@ -543,8 +542,8 @@
   width: 175px !important;
 }
 
-
 /* React Table */
+
 .ReactTable .rt-thead .rt-th.-cursor-pointer {
   font-size: 12px;
 }
@@ -553,4 +552,30 @@
   font-weight: lighter;
   border: none;
   border: 1px solid #dfe1e2
+}
+
+/* Navigation */
+#navigation div:nth-child(2) a.active {
+  background-color: #ff7d38;
+  color: #fff
+}
+
+/* Transitions */
+
+.fade-appear {
+  opacity: 0.01;
+}
+
+.fade-appear.fade-appear-active {
+  opacity: 1;
+  transition: opacity .5s ease-in;
+}
+
+/* 
+.switch-wrapper {
+  position: relative;
+} */
+ 
+.switch-wrapper > div {
+  position: absolute;
 }
