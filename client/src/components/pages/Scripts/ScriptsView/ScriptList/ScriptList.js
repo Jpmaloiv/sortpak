@@ -144,8 +144,6 @@ class ScriptList extends React.Component {
     const sortProcess = [];
     const sortCopayAssistance = [];
     const sortSchedule = [];
-    console.log(this.props)
-    console.log(this.state.scripts)
 
     const scriptsReceived = this.props.data.filter(function (event) {
       return event.status === 'Received';
@@ -479,6 +477,7 @@ class ScriptList extends React.Component {
       if (date === 'Invalid date') date = ''
       scripts[i].notesUpdated = date
     }
+    console.log("CHECKPOINT 3")
     this.setState({ render: !this.state.render })
   }
 

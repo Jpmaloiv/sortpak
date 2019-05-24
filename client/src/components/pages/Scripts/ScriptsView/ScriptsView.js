@@ -1,17 +1,26 @@
 import React, { Component } from 'react';
 import axios from 'axios'
 import jwt_decode from 'jwt-decode'
+import { connect } from "react-redux";
+
+
 
 import ScriptSearch from './ScriptSearch/ScriptSearch'
 import ScriptList from './ScriptList/ScriptList'
 
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
-
-
 import { Header } from '../../../common'
 
 import styles from './ScriptsView.css'
+
+import { createStore } from 'redux'
+
+import { ADD_TODO, toggleTodo } from '../../../../redux/actions'
+
+
+//Create Redux store
+import todoApp from '../../../../redux/reducers'
 
 class ScriptsView extends Component {
   constructor(props) {
@@ -33,12 +42,14 @@ class ScriptsView extends Component {
     }
   }
 
+
   searchScriptDb = (searchParams, textSearch) => {
     const loginToken = window.localStorage.getItem("token");
     let roleFilter = '';
     if (this.state.role === 'Rep') roleFilter = '&rep=' + this.state.name;
     axios.get('api/scripts/search' + searchParams + roleFilter, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
+
         let filteredScripts = resp.data.response;
         if (textSearch) {
           filteredScripts = resp.data.response.filter(function (event) {
@@ -52,18 +63,24 @@ class ScriptsView extends Component {
           })
         };
 
-        this.setState({
-          results: filteredScripts,
-          patient: resp.data.patient,
-          medication: resp.data.medication,
-          status: resp.data.status,
-          pharmNPI: resp.data.pharmNPI,
-          location: resp.data.location,
-          pharmDate: resp.data.pharmDate
-        })
-      }).catch((error) => {
-        console.error(error);
-      })
+    const store = createStore(todoApp)
+
+    console.log(store.getState())
+
+    this.setState({
+      results: filteredScripts,
+      // results: store.getState(),
+      patient: resp.data.patient,
+      medication: resp.data.medication,
+      status: resp.data.status,
+      pharmNPI: resp.data.pharmNPI,
+      location: resp.data.location,
+      pharmDate: resp.data.pharmDate
+    })
+
+    }).catch((error) => {
+      console.error(error);
+    })
   }
 
   componentDidMount() {
@@ -83,10 +100,10 @@ class ScriptsView extends Component {
     } else {
       return;
     }
-    // const urlParams = new URLSearchParams(this.props.location.scripts)
-    // // const patient = urlParams.get("patient")
-    // this.searchScriptDb("?patient=" + urlParams.get("patient"))
-    // // this.searchScriptDb();
+    const urlParams = new URLSearchParams(this.props.location.scripts)
+    // const patient = urlParams.get("patient")
+    this.searchScriptDb("?patient=" + urlParams.get("patient"))
+    // this.searchScriptDb();
   }
 
   initialSearch() {
@@ -107,30 +124,21 @@ class ScriptsView extends Component {
   render() {
     return (
       <ReactCSSTransitionGroup transitionName='fade' transitionAppear={true} transitionAppearTimeout={500} transitionEnter={false} transitionLeave={false}>
+        <div className={styles.app}>
+          <Header>
+            <h2>Select a Script</h2>
+          </Header>
 
-          <div className={styles.app}>
-
-            <Header>
-
-              <h2>
-                Select a Script
-          </h2>
-
-            </Header>
-
-            <div className="body">
-
-              <ScriptSearch searchFunc={this.searchScriptDb} />
-              {/* {(this.state.results[0]) ? <ScriptList data={this.state.results} /> : ""} */}
-              <ScriptList data={this.state.results} />
-
-
-            </div>
-
+          <div className="body">
+            <ScriptSearch searchFunc={this.searchScriptDb} />
+            {/* {(this.state.results[0]) ? <ScriptList data={this.state.results} /> : ""} */}
+            <ScriptList data={this.state.results} />
           </div>
-        </ ReactCSSTransitionGroup>
-    ); 
+        </div>
+      </ ReactCSSTransitionGroup>
+    );
   }
 }
+
 
 export default ScriptsView;

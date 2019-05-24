@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Redirect } from 'react-router-dom'
+
+
 import axios from 'axios'
 import jwt_decode from 'jwt-decode'
 import TopNav from './components/TopNav/TopNav'
@@ -61,6 +63,16 @@ import { createStore, applyMiddleware } from 'redux'
 import createHistory from 'history/createBrowserHistory'
 // import restricted from './components/restricted'
 
+//Create Redux store
+import todoApp from './redux/reducers'
+
+import {
+  addTodo,
+  toggleTodo,
+  setVisibilityFilter,
+  VisibilityFilters
+} from './redux/actions'
+
 
 import './App.css';
 
@@ -74,6 +86,30 @@ class App extends Component {
     }
   }
 
+
+  saveStore() {
+    const store = createStore(todoApp)
+
+    // Dispatch some actions
+    store.dispatch(addTodo('Learn about actions'))
+    store.dispatch(addTodo('Learn about reducers'))
+    store.dispatch(addTodo(this.state.Scripts))
+    store.dispatch(toggleTodo(0))
+    store.dispatch(toggleTodo(1))
+    store.dispatch(setVisibilityFilter(VisibilityFilters.SHOW_COMPLETED))
+
+    // Log the initial state
+    console.log(store.getState())
+
+    // Every time the state changes, log it
+    // Note that subscribe() returns a function for unregistering the listener
+    const unsubscribe = store.subscribe(() => console.log(store.getState()))
+
+
+
+    // Stop listening to state updates
+    unsubscribe()
+  }
 
 
   componentWillMount() {
@@ -92,6 +128,17 @@ class App extends Component {
     } else {
       return;
     }
+
+
+    axios.get('api/scripts/search', { headers: { "Authorization": "Bearer " + loginToken } })
+      .then((resp) => {
+        console.log(resp)
+        this.setState({
+          Scripts: resp.data.response
+        }, this.saveStore)
+      }).catch((error) => {
+        console.error(error);
+      })
   }
 
   render() {
@@ -106,7 +153,6 @@ class App extends Component {
     )
 
     const Scripts = () => {
-      console.log(this.state.userRole)
       if (this.state.userRole === 'Admin' || this.state.userRole === 'Rep') {
         return <PrivateRoute exact path="/scripts" component={ScriptsPage} />
       } else if (this.state.userRole === 'Physician') {
