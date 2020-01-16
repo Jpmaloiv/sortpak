@@ -3,7 +3,6 @@ import { CardElement, injectStripe } from 'react-stripe-elements';
 import axios from 'axios'
 import Moment from 'react-moment'
 import moment from 'moment'
-import CreditCardInput from 'react-credit-card-input';
 
 import {
   Button,
@@ -28,7 +27,7 @@ class CheckoutForm extends Component {
 
   componentDidMount() {
     const loginToken = window.localStorage.getItem("token");
-    axios.get('/api/scripts/search?patientId=' + this.props.patientId, { headers: { "Authorization": "Bearer " + loginToken } })
+    axios.get('/api/scripts/search?patientId=' + this.props.patientId + '&exactStatus=Schedule', { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
         console.log(resp)
         this.setState({
@@ -39,9 +38,9 @@ class CheckoutForm extends Component {
         console.error(err)
       })
 
-    this.setState({
-      transactionId: Math.floor(Math.random() * 90000000) + 10000000
-    })
+        this.setState({
+          transactionId: Math.floor(Math.random() * 90000000) + 10000000
+        })
 
   }
 
@@ -57,7 +56,7 @@ class CheckoutForm extends Component {
     }
 
     this.setState({
-      totalPay: sum.toFixed(2),
+      totalPay: sum,
       patientPay: totalPay
     })
   }
@@ -67,35 +66,30 @@ class CheckoutForm extends Component {
   async submit(ev) {
     console.log(this.state.totalPay)
     ev.preventDefault();
-    if (window.confirm(`This will charge an amount of $${Number(this.state.totalPay).toFixed(2)} to the card that has been entered. Proceed?\n`)) {
+    if (window.confirm(`This will charge an amount of $${this.state.totalPay.toFixed(2)} to the card that has been entered. Proceed?\n\n
+    Testing Mode (Feel free to click CHARGE)`)) {
 
       const payments = this.state.scripts;
       const totalPay = this.state.totalPay;
-      const firstName = this.props.state.patientName.split(' ').slice(0, -1).join(' ');
+      const firstName = this.props.state.patientName.split(' ').slice(0, -1).join (' ');
       const lastName = this.props.state.patientName.split(' ').slice(-1).join(' ');
       const date = moment().format('MM-DD-YYYY')
-      // const transactionId = this.state.transactionId
-
-      const now = Date.now();
+      const transactionId = this.state.transactionId
 
       for (var i = 0; i < this.state.scripts.length; i++) {
         const loginToken = window.localStorage.getItem("token");
-        // let token = await this.props.stripe.createToken({ name: "Name" });
-        // console.log(token);
-        let data = new FormData();
-        axios.post('/api/scripts/payments/charge?amount=' + this.state.patientPay[i]+ '&scriptId=' + this.state.scripts[i].id
-          + '&receiptLink=' + `${lastName}_${firstName}/${date}/Receipt-${now}.pdf` + '&number=' + this.state.number + '&expiry=' + this.state.expiry + '&cvc=' + this.state.cvc
-          + '&customerId=' + this.state.PatientId + '&firstName=' + firstName + '&lastName=' + lastName + '&address=' + this.state.patientAddressStreet + '&city=' + this.state.patientAddressCity +
-          '&state=' + this.state.patientAddressState + '&zipCode=' + this.state.patientAddressZipCode + '&phone=' + this.state.patientPhone, data, { headers: { "Authorization": "Bearer " + loginToken, "Content-Type": "application/json" }, })
-          .then((res) => {
-            console.log(res)
-            const { transactionId } = res.data
-            this.props.onSubmit(payments, totalPay, transactionId, now);
+        let token = await this.props.stripe.createToken({ name: "Name" });
+        console.log(token);
+        let data = token;
+        axios.post('/api/scripts/payments/charge?amount=' + this.state.scripts[i].patientPay + '&scriptId=' + this.state.scripts[i].id
+        + '&receiptLink=' + `${lastName}_${firstName}/${date}/Receipt.pdf` + '&transactionId=' + this.state.transactionId, data, { headers: { "Authorization": "Bearer " + loginToken, "Content-Type": "application/json" }, })
+          .then((data) => {
           }).catch((error) => {
             window.alert("Payment Failed")
             console.error(error);
             return;
           })
+          this.props.onSubmit(payments, totalPay, transactionId);
 
       }
     } else {
@@ -128,7 +122,7 @@ class CheckoutForm extends Component {
   renderTotalPayRow() {
     return (
       <tr style={{ textAlign: 'right' }}>
-        <td colspan="4">Total Pay: <b>{this.state.totalPay ? <span>${Number(this.state.totalPay).toFixed(2)}</span> : <b>Input needed</b>}</b></td>
+        <td colspan="4">Total Pay: <b>{this.state.totalPay ? <span>${this.state.totalPay.toFixed(2)}</span> : <b>Input needed</b>}</b></td>
       </tr>
     )
   }
@@ -138,14 +132,6 @@ class CheckoutForm extends Component {
     this.setState({
       totalPayUpdated: true
     })
-  }
-
-  handleCardInfoChange = e => {
-    console.log(e.target, e.target.value)
-    this.setState({
-      [e.target.name]: e.target.value
-    })
-
   }
 
 
@@ -162,7 +148,7 @@ class CheckoutForm extends Component {
         <td>
           {script.patientPay ?
             <input
-              placeholder={Number(script.patientPay).toFixed(2)}
+              placeholder={script.patientPay}
               value={test}
               index={i}
               style={{ width: 'auto' }}
@@ -188,7 +174,6 @@ class CheckoutForm extends Component {
 
   render() {
 
-    console.log(this.state.totalPay) 
 
     if (this.state.totalPayUpdated === true) {
       const totalPay = [];
@@ -202,7 +187,7 @@ class CheckoutForm extends Component {
       }
 
       this.setState({
-        totalPay: Number(sum).toFixed(2),
+        totalPay: sum,
         totalPayUpdated: false
       })
     }
@@ -247,14 +232,9 @@ class CheckoutForm extends Component {
         className="checkoutForm"
       ><br />
         <div className="checkout">
-          <CreditCardInput
-            cardNumberInputProps={{ name: 'number', onChange: this.handleCardInfoChange }}
-            cardExpiryInputProps={{ name: 'expiry', onChange: this.handleCardInfoChange }}
-            cardCVCInputProps={{ name: 'cvc', onChange: this.handleCardInfoChange }}
-            fieldClassName="input"
-            style={{ display: 'initial !important' }}
-          />
-
+          <p>Would you like to complete the purchase?</p>
+          <p><i>Enter "4242 4242 4242 4242" for testing</i></p>
+          <CardElement />
           <label>Claim</label>
           <Selector
             options={claimOptions}
@@ -275,6 +255,7 @@ class CheckoutForm extends Component {
             />
             <Button
               large
+              inactive
               type="submit"
               onClick={this.submit}
               title="Charge"

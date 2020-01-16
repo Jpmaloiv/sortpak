@@ -73,10 +73,10 @@ class NavBar extends Component {
     if (this.state.userRole === 'Admin') {
       return (
         <div className={styles.navBar}>
-          <NavLink activeClassName='active' to="/scripts">
+          <NavLink to="/scripts">
             <Icon name="bookmark-o" />Scripts
           </NavLink>
-          <NavLink activeClassName='active' to="/patients">
+          <NavLink to="/patients">
             <Icon name="heart-o" />Patients
           </NavLink>
           <NavLink to={this.dashboardLink}>
@@ -152,5 +152,4 @@ const mapStateToProps = ({ router, auth }) => {
   }
 }
 
-// export default connect(mapStateToProps, actions)(NavBar)
-export default NavBar;
+export default connect(mapStateToProps, actions)(NavBar)

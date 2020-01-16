@@ -24,6 +24,12 @@ class Login extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
+    componentDidMount() {
+        window.alert(`To log in: 
+        Username: Admin
+        Password: password`)
+    }
+
     handleChange(event) {
         this.setState({
             [event.target.name]: event.target.value

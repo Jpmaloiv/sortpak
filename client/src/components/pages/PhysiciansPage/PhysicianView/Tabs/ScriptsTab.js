@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import axios from 'axios'
-import Moment from 'react-moment'
 
 import { Span, Table } from '../../../../common'
 
@@ -29,22 +28,12 @@ class ScriptsTab extends Component {
                         console.log(resp);
                         this.setState({
                             scripts: resp.data.response
-                        }, this.sortScripts)
+                        })
                     })
             }).catch((error) => {
                 console.error(error);
             })
 
-    }
-
-    sortScripts() {
-        var scriptList = this.state.scripts.sort(function(a,b) { 
-            return new Date(b.processedOn).getTime() - new Date(a.processedOn).getTime() 
-        });
-
-        this.setState({
-            scripts: scriptList
-        })
     }
 
     renderTableHead() {
@@ -93,7 +82,7 @@ class ScriptsTab extends Component {
 
                 <td>
                     <Span icon="calendar">
-                        <Moment format='MM/DD/YYYY'>{script.processedOn}</Moment>
+                        {script.processedOn}
                     </Span>
                 </td>
 

@@ -19,7 +19,6 @@ import {
 } from '../../../common'
 
 import styles from './RefillsView.css'
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 const override = css`
     display: block;
@@ -303,7 +302,6 @@ class RefillsView extends Component {
     }
 
     return (
-      <ReactCSSTransitionGroup transitionName='fade' transitionAppear={true} transitionAppearTimeout={500} transitionEnter={false} transitionLeave={false}>
       <div className={styles.app}>
         <Header>
           <h2>
@@ -397,7 +395,6 @@ class RefillsView extends Component {
 
         </div>
       </div>
-      </ReactCSSTransitionGroup>
     );
   }
 }

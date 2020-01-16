@@ -4,8 +4,6 @@ import axios from 'axios'
 import jwt_decode from 'jwt-decode'
 
 import { Table, Header, Input, ActionBox, Button, Selector } from '../../../common'
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-
 
 // import {
 //   getPhysicians,
@@ -70,13 +68,13 @@ class PhysiciansViewRep extends Component {
   searchQuery() {
     const loginToken = window.localStorage.getItem("token");
     axios.get('api/physicians/search?name=' + this.state.searchName + '&searchGroup=' + this.state.searchGroup + '&address=' + this.state.searchAddress
-      + '&searchSpec=' + this.state.searchSpec, { headers: { "Authorization": "Bearer " + loginToken } })
+    + '&searchSpec=' + this.state.searchSpec, { headers: { "Authorization": "Bearer " + loginToken } })
       .then((resp) => {
         console.log(resp.data.response);
         this.setState({
           physicians: resp.data.response,
         })
-
+        
       }).catch((error) => {
         console.error(error);
       })
@@ -212,89 +210,87 @@ class PhysiciansViewRep extends Component {
     ]
 
     return (
-      <ReactCSSTransitionGroup transitionName='fade' transitionAppear={true} transitionAppearTimeout={500} transitionEnter={false} transitionLeave={false}>
+      <div className={styles.app}>
 
-        <div className={styles.app}>
+        <Header>
 
-          <Header>
-
-            <h2>
-              Select A Physician
+          <h2>
+            Select A Physician
           </h2>
 
-            <div className="action">
-              <Button
-                link="physicians/add"
-                icon="plus"
-                title="ADD A NEW PHYSICIAN"
-                style={{ marginRight: 8 }}
+          <div className="action">
+            <Button
+              link="physicians/add"
+              icon="plus"
+              title="ADD A NEW PHYSICIAN"
+              style={{ marginRight: 8 }}
+            />
+          </div>
+
+        </Header>
+
+        <div className="body">
+
+          <ActionBox className='searchBar'>
+            <div className="main">
+
+              <Input
+                label="Search By Name"
+                placeholder="First or Last Name..."
+                value={this.state.searchName}
+                onChange={searchName => this.setState({ searchName })}
+                onKeyPress={this.enterPressed.bind(this)}
               />
+
+              <Input
+                label="Search By Group"
+                placeholder="Group Name..."
+                value={this.state.searchGroup}
+                onChange={searchGroup => this.setState({ searchGroup })}
+                onKeyPress={this.enterPressed.bind(this)}
+              />
+
+              <Input
+                label="Search By Address"
+                placeholder="Address or City..."
+                value={this.state.searchAddress}
+                onChange={searchAddress => this.setState({ searchAddress })}
+                onKeyPress={this.enterPressed.bind(this)}
+              />
+
+              <Input
+                label="Search By Phone"
+                placeholder="(---) --- ---"
+                value={this.state.searchPhone}
+                onChange={searchPhone => this.setState({ searchPhone })}
+                onKeyPress={this.enterPressed.bind(this)}
+              />
+
+              <Selector
+                label="Search By Specialty"
+                placeholder="Specialty..."
+                options={specOptions}
+                value={this.state.searchSpec}
+                onSelect={searchSpec => this.setState({ searchSpec })}
+                onKeyPress={this.enterPressed.bind(this)}
+              />
+
+              <Button
+                search
+                icon="search"
+                title="SEARCH"
+                onClick={this.searchQuery}
+              />
+
             </div>
 
-          </Header>
+          </ActionBox>
 
-          <div className="body">
+          {this.renderTable()}
+          {physicianList}
 
-            <ActionBox className='searchBar'>
-              <div className="main">
-
-                <Input
-                  label="Search By Name"
-                  placeholder="First or Last Name..."
-                  value={this.state.searchName}
-                  onChange={searchName => this.setState({ searchName })}
-                  onKeyPress={this.enterPressed.bind(this)}
-                />
-
-                <Input
-                  label="Search By Group"
-                  placeholder="Group Name..."
-                  value={this.state.searchGroup}
-                  onChange={searchGroup => this.setState({ searchGroup })}
-                  onKeyPress={this.enterPressed.bind(this)}
-                />
-
-                <Input
-                  label="Search By Address"
-                  placeholder="Address or City..."
-                  value={this.state.searchAddress}
-                  onChange={searchAddress => this.setState({ searchAddress })}
-                  onKeyPress={this.enterPressed.bind(this)}
-                />
-
-                <Input
-                  label="Search By Phone"
-                  placeholder="(---) --- ---"
-                  value={this.state.searchPhone}
-                  onChange={searchPhone => this.setState({ searchPhone })}
-                  onKeyPress={this.enterPressed.bind(this)}
-                />
-
-                <Selector
-                  label="Search By Specialty"
-                  placeholder="Specialty..."
-                  options={specOptions}
-                  value={this.state.searchSpec}
-                  onSelect={searchSpec => this.setState({ searchSpec })}
-                  onKeyPress={this.enterPressed.bind(this)}
-                />
-
-                <Button
-                  search
-                  icon="search"
-                  title="SEARCH"
-                  onClick={this.searchQuery}
-                />
-
-              </div>
-
-            </ActionBox>
-
-            {this.renderTable()}
-            {physicianList}
-          </div>
         </div>
-      </ReactCSSTransitionGroup>
+      </div>
     );
   }
 }

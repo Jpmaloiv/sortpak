@@ -19,13 +19,10 @@
     "phaxio": "^1.0.0",
     "prop-types": "^15.6.1",
     "react": "^16.6.0",
-    "react-addons-css-transition-group": "^15.6.2",
     "react-autosuggest": "^9.4.2",
     "react-awesome-modal": "^2.0.5",
     "react-big-calendar": "^0.20.1",
     "react-bootstrap": "^0.32.4",
-    "react-credit-card-input": "^1.1.4",
-    "react-credit-cards": "^0.7.0",
     "react-disqus-thread": "^0.4.0",
     "react-dom": "^16.6.0",
     "react-fontawesome": "^1.6.1",
@@ -49,7 +46,6 @@
     "redux-thunk": "^2.3.0",
     "socket.io": "^2.2.0",
     "socket.io-client": "^2.2.0",
-    "styled-components": "^4.2.0",
     "yarn": "^1.5.1"
   },
   "scripts": {

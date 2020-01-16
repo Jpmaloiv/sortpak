@@ -6,53 +6,57 @@ const SDKConstants = require('authorizenet').Constants;
 // const utils = require('../utils.js');
 const constants = require('../constants.js');
 
-function chargeCreditCard(payment, response) {
+function chargeCreditCard(payment) {
 
-	const number = payment.number.replace(/ /g, "")
-	const expiry = payment.expiry.replace(/ /g, "")
-	
+	console.log("callback", callback)
+
+	return;
+
+
 	const merchantAuthenticationType = new ApiContracts.MerchantAuthenticationType();
 	merchantAuthenticationType.setName(constants.apiLoginKey);
 	merchantAuthenticationType.setTransactionKey(constants.transactionKey);
 
 	const creditCard = new ApiContracts.CreditCardType();
+	creditCard.setCardNumber('4342562284317730');
+	creditCard.setExpirationDate('0621');
+	creditCard.setCardCode('811');
 
-	creditCard.setCardNumber(number);
-	creditCard.setExpirationDate(expiry);
-	creditCard.setCardCode(payment.cvc);
+	// creditCard.setCardNumber('4342562284317730');
+	// creditCard.setExpirationDate('0621');
+	// creditCard.setCardCode('811');
 
 	const paymentType = new ApiContracts.PaymentType();
 	paymentType.setCreditCard(creditCard);
 
 	const orderDetails = new ApiContracts.OrderType();
-	// orderDetails.setInvoiceNumber('INV-12345');
-	// orderDetails.setDescription('Product Description');
+	orderDetails.setInvoiceNumber('INV-12345');
+	orderDetails.setDescription('Product Description');
 
 	const billTo = new ApiContracts.CustomerAddressType();
-	billTo.setFirstName(payment.firstName);
-	billTo.setLastName(payment.lastName);
-	// billTo.setCompany('Souveniropolis');
-	billTo.setAddress(payment.address);
-	billTo.setCity(payment.city);
-	billTo.setState(payment.state);
-	billTo.setZip(payment.zipCode);
+	billTo.setFirstName('Ellen');
+	billTo.setLastName('Johnson');
+	billTo.setCompany('Souveniropolis');
+	billTo.setAddress('14 Main Street');
+	billTo.setCity('Pecan Springs');
+	billTo.setState('TX');
+	billTo.setZip('44628');
 	billTo.setCountry('USA');
-	billTo.setPhoneNumber(payment.phone)
 	
 
-	// const lineItem_id1 = new ApiContracts.LineItemType();
-	// lineItem_id1.setItemId('1');
-	// lineItem_id1.setName('vase');
-	// lineItem_id1.setDescription('cannes logo');
-	// lineItem_id1.setQuantity('1');
-	// lineItem_id1.setUnitPrice('1.25');
+	const lineItem_id1 = new ApiContracts.LineItemType();
+	lineItem_id1.setItemId('1');
+	lineItem_id1.setName('vase');
+	lineItem_id1.setDescription('cannes logo');
+	lineItem_id1.setQuantity('1');
+	lineItem_id1.setUnitPrice('45.00');
 
 
-	// const lineItemList = [];
-	// lineItemList.push(lineItem_id1);
+	const lineItemList = [];
+	lineItemList.push(lineItem_id1);
 
-	// const lineItems = new ApiContracts.ArrayOfLineItem();
-	// lineItems.setLineItem(lineItemList);
+	const lineItems = new ApiContracts.ArrayOfLineItem();
+	lineItems.setLineItem(lineItemList);
 
 	const userField_a = new ApiContracts.UserField();
 	userField_a.setName('A');
@@ -66,7 +70,7 @@ function chargeCreditCard(payment, response) {
 
 	const transactionSetting1 = new ApiContracts.SettingType();
 	transactionSetting1.setSettingName('duplicateWindow');
-	transactionSetting1.setSettingValue('1.75');
+	transactionSetting1.setSettingValue('120');
 
 	const transactionSetting2 = new ApiContracts.SettingType();
 	transactionSetting2.setSettingName('recurringBilling');
@@ -83,10 +87,10 @@ function chargeCreditCard(payment, response) {
 	transactionRequestType.setTransactionType(ApiContracts.TransactionTypeEnum.AUTHCAPTURETRANSACTION);
 	transactionRequestType.setPayment(paymentType);
 	// transactionRequestType.setAmount(utils.getRandomAmount());
-	transactionRequestType.setAmount(payment.amount);
+	transactionRequestType.setAmount(1.75);
 
 	// transactionRequestType.setAmount(callback.amount);
-	// transactionRequestType.setLineItems(lineItems);
+	transactionRequestType.setLineItems(lineItems);
 	transactionRequestType.setUserFields(userFields);
 	transactionRequestType.setOrder(orderDetails);
 	transactionRequestType.setTransactionSettings(transactionSettings);
@@ -100,11 +104,9 @@ function chargeCreditCard(payment, response) {
 		
 	const ctrl = new ApiControllers.CreateTransactionController(createRequest.getJSON());
 	//Defaults to sandbox
-	// ctrl.setEnvironment(SDKConstants.endpoint.sandbox);
 	ctrl.setEnvironment(SDKConstants.endpoint.production);
 
-
-	const test = ctrl.execute(function(){
+	ctrl.execute(function(){
 
 		const apiResponse = ctrl.getResponse();
 
@@ -120,7 +122,6 @@ function chargeCreditCard(payment, response) {
 					console.log('Response Code: ' + response.getTransactionResponse().getResponseCode());
 					console.log('Message Code: ' + response.getTransactionResponse().getMessages().getMessage()[0].getCode());
 					console.log('Description: ' + response.getTransactionResponse().getMessages().getMessage()[0].getDescription());
-					response.send("Payment Success!")
 				}
 				else {
 					console.log('Failed Transaction.');
@@ -147,9 +148,10 @@ function chargeCreditCard(payment, response) {
 			console.log('Null Response.');
 		}
 
+		// callback(response);
+		// return 5;
 	});
 }
-
 
 if (require.main === module) {
 	chargeCreditCard(function(){

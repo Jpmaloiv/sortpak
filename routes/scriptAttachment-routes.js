@@ -20,6 +20,8 @@ router.post("/upload", (req, res) => {
 
     const title = req.files.attachmentFile.name;
 
+    console.log("HERE", req.query.scriptId)
+
     const attachment = {
         title,
         attachedBy: req.query.attachedBy,

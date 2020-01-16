@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
 import Router from './ScriptsPage.Router'
-import axios from 'axios'
 
 import styles from './ScriptsPage.css'
 
 class ScriptsPage extends Component {
-  
-
   render() {
     return (
       <div className={styles.app}>

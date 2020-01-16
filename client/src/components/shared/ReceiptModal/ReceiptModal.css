@@ -1,9 +1,9 @@
 
-.faxModal .flex, .receiptModal .flex {
+.faxModal .flex {
     display: flex;
 }
 
-.faxModal .flex .flex-col, .receiptModal .flex .flex-col {
+.faxModal .flex .flex-col {
     flex: 1 1;
     align-items: center;
     text-align: center;

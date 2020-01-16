@@ -6,7 +6,6 @@ import axios from 'axios'
 import Moment from 'react-moment'
 import { TablePagination } from 'react-pagination-table';
 import { ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 
 
@@ -101,11 +100,11 @@ class TeamViewRep extends Component {
   }
 
   filterUsers() {
-    const { physicianIdArray } = this.state;
+    const {physicianIdArray} = this.state;
     console.log(this.state.users)
     const users = this.state.users.filter(function (user) {
       let userIds = []
-      for (var i = 0; i < user.physicians.length; i++) {
+      for (var i=0; i < user.physicians.length; i++) {
         userIds.push(user.physicians[i].id)
       }
       console.log(user)
@@ -260,72 +259,70 @@ class TeamViewRep extends Component {
     }
 
     return (
-      <ReactCSSTransitionGroup transitionName='fade' transitionAppear={true} transitionAppearTimeout={500} transitionEnter={false} transitionLeave={false}>
+      <div className={styles.app}>
 
-        <div className={styles.app}>
+        <div className="body" style={{ marginTop: 1 }}>
 
-          <div className="body" style={{ marginTop: 1 }}>
+          <ActionBox>
 
-            <ActionBox>
+            <div className="main">
 
-              <div className="main">
-
-                <ToggleButtonGroup
-                  name='teamSearch'
-                  type='checkbox'
-                  className="teamSearch"
-                  value={this.state.value}
-                >
-                  {/* <ToggleButton value={1}>Admin</ToggleButton>
+              <ToggleButtonGroup
+                name='teamSearch'
+                type='checkbox'
+                className="teamSearch"
+                value={this.state.value}
+              >
+                {/* <ToggleButton value={1}>Admin</ToggleButton>
                 <ToggleButton value={2}>Sales</ToggleButton> */}
-                  <ToggleButton value={3}>Physicians</ToggleButton>
-                </ToggleButtonGroup>
+                <ToggleButton value={3}>Physicians</ToggleButton>
+              </ToggleButtonGroup>
 
-                <div className="teamSearchInput" style={{ 'display': 'flex' }}>
-                  <Input
-                    label="Search By Name"
-                    placeholder="First or Last Name..."
-                    value={this.state.searchName}
-                    onChange={searchName => this.setState({ searchName })}
-                    onKeyPress={this.enterPressed.bind(this)}
-                  />
-
-                  <Input
-                    label="Search By Username"
-                    placeholder="Username..."
-                    value={this.state.searchUsername}
-                    onChange={searchUsername => this.setState({ searchUsername })}
-                    onKeyPress={this.enterPressed.bind(this)}
-                  />
-
-                  <Input
-                    label="Search By Email"
-                    placeholder="Email..."
-                    value={this.state.searchEmail}
-                    onChange={searchEmail => this.setState({ searchEmail })}
-                    onKeyPress={this.enterPressed.bind(this)}
-                  />
-                </div>
-
-                <Button
-                  search
-                  style={{ marginLeft: 20, lineHeight: 1, height: 38 }}
-                  icon="search"
-                  title="SEARCH"
-                  onClick={this.searchQuery.bind(this)}
+              <div className="teamSearchInput" style={{ 'display': 'flex' }}>
+                <Input
+                  label="Search By Name"
+                  placeholder="First or Last Name..."
+                  value={this.state.searchName}
+                  onChange={searchName => this.setState({ searchName })}
+                  onKeyPress={this.enterPressed.bind(this)}
                 />
 
-                <Button
-                  style={{ marginLeft: 20 }}
-                  link='/team/add'
-                  icon="plus"
-                  title="ADD A NEW USER"
+                <Input
+                  label="Search By Username"
+                  placeholder="Username..."
+                  value={this.state.searchUsername}
+                  onChange={searchUsername => this.setState({ searchUsername })}
+                  onKeyPress={this.enterPressed.bind(this)}
                 />
 
+                <Input
+                  label="Search By Email"
+                  placeholder="Email..."
+                  value={this.state.searchEmail}
+                  onChange={searchEmail => this.setState({ searchEmail })}
+                  onKeyPress={this.enterPressed.bind(this)}
+                />
               </div>
 
-            </ActionBox>
-            {/* {this.state.users ?
+              <Button
+                search
+                style={{ marginLeft: 20, lineHeight: 1, height: 38 }}
+                icon="search"
+                title="SEARCH"
+                onClick={this.searchQuery.bind(this)}
+              />
+
+              <Button
+                style={{ marginLeft: 20 }}
+                link='/team/add'
+                icon="plus"
+                title="ADD A NEW USER"
+              />
+
+            </div>
+
+          </ActionBox>
+          {/* {this.state.users ?
             <TablePagination
               headers={th}
               data={this.state.users}
@@ -337,13 +334,12 @@ class TeamViewRep extends Component {
             
             :
             <div></div>} */}
-            {this.renderTable()}
-            {userList}
-
-          </div>
+          {this.renderTable()}
+          {userList}
 
         </div>
-      </ReactCSSTransitionGroup>
+
+      </div>
     );
   }
 }

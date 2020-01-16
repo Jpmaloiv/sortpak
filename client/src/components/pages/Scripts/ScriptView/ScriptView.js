@@ -624,17 +624,15 @@ class ScriptView extends Component {
       })
   }
 
-  openReceiptModals(payments, totalPay, transactionId, now) {
-    console.log(payments, totalPay, transactionId, now)
+  openReceiptModals(payments, totalPay, transactionId) {
+    console.log(payments, totalPay, transactionId)
     this.setState({
       chargeModal: null,
       payments: payments,
       totalPay: totalPay,
-      now: now,
       transactionId: transactionId,
       receiptModal: {},
-      receiptUpload: true,
-      loading: true
+      receiptUpload: true
     })
   }
 
@@ -1545,7 +1543,7 @@ class ScriptView extends Component {
             </div>
           </div>
 
-          <div className="receiptModal">
+          <div className="faxModal">
             <ReceiptModal
               content={receiptModal}
               onClickAway={() => this.closeModal()}
@@ -1553,7 +1551,6 @@ class ScriptView extends Component {
               // onSubmit={onCreateNote}
               state={this.state}
               props={this.props}
-              setState={this.setState.bind(this)}
             />
           </div>
 

@@ -10,9 +10,6 @@ import {
 // import RepDashboard from '../RepDashboard/RepDashboard'
 import AdminDashboard from '../AdminDashboard/AdminDashboard'
 
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-
-
 class DashboardView extends Component {
   componentDidMount() {
     if (!this.params.view) {
@@ -26,7 +23,7 @@ class DashboardView extends Component {
   }
 
   set graphView(view) {
-    const newParams = qs.stringify({ ...this.params, view })
+    const newParams = qs.stringify({...this.params, view})
     this.props.history.push({
       search: newParams,
     })
@@ -43,10 +40,9 @@ class DashboardView extends Component {
     // const { me, isAdmin } = this.props
 
     return (
-      <ReactCSSTransitionGroup transitionName='fade' transitionAppear={true} transitionAppearTimeout={500} transitionEnter={false} transitionLeave={false}>
-        <div>
-          <Header>
-            {/* {isAdmin ? (
+      <div>
+        <Header>
+          {/* {isAdmin ? (
             <h2>
               Revenue / Profit
             </h2>
@@ -54,24 +50,23 @@ class DashboardView extends Component {
             <h2>
               Dashboard
             </h2>
-            {/* )} */}
+          {/* )} */}
 
-            {/* <ButtonGroup
+          {/* <ButtonGroup
             options={buttonOptions}
             onPress={view => this.graphView = view}
             selected={this.params.view}
           /> */}
-          </Header>
+        </Header>
 
-          {/* {!me ? (
+        {/* {!me ? (
           null
         ) : isAdmin ? ( */}
           <AdminDashboard />
-          {/* ) : ( */}
+        {/* ) : ( */}
           {/* <RepDashboard /> */}
-          {/* )} */}
-        </div>
-      </ReactCSSTransitionGroup>
+        {/* )} */}
+      </div>
     );
   }
 }

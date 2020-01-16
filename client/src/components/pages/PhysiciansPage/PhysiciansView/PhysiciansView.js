@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import axios from 'axios'
 
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-
 import { Table, Header, Input, ActionBox, Button, Selector } from '../../../common'
 
 // import {
@@ -210,7 +208,6 @@ class PhysiciansView extends Component {
     ]
 
     return (
-      <ReactCSSTransitionGroup transitionName='fade' transitionAppear={true} transitionAppearTimeout={500} transitionEnter={false} transitionLeave={false}>
       <div className={styles.app}>
 
         <Header>
@@ -309,7 +306,6 @@ class PhysiciansView extends Component {
           </div>
         </div>
       </div>
-      </ ReactCSSTransitionGroup>
     );
   }
 }

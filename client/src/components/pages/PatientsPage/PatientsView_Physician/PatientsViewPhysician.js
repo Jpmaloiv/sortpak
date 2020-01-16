@@ -3,11 +3,9 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import Moment from 'react-moment'
 import jwt_decode from 'jwt-decode'
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 
-
-import { Span, Table, Input, Header, Button, ActionBox } from '../../../common'
+import { Span, Table, Input, Header, Button, ActionBox} from '../../../common'
 
 import {
   getPatients,
@@ -60,7 +58,7 @@ class PatientsViewPhysician extends Component {
 
   sortPhysicianIds() {
     const physicianIds = []
-    for (var i = 0; i < this.state.physicians.length; i++) {
+    for (var i=0; i < this.state.physicians.length; i++) {
       physicianIds.push(this.state.physicians[i].id)
     }
     this.setState({
@@ -189,78 +187,75 @@ class PatientsViewPhysician extends Component {
     }
 
     return (
-      <ReactCSSTransitionGroup transitionName='fade' transitionAppear={true} transitionAppearTimeout={500} transitionEnter={false} transitionLeave={false}>
+      <div className={styles.app}>
 
-        <div className={styles.app}>
+        <Header>
 
-          <Header>
-
-            <h2>
-              Select a Patient
+          <h2>
+            Select a Patient
           </h2>
 
-            <div className="action">
+          <div className="action">
+
+
+          </div>
+
+        </Header>
+
+        <div className="body">
+
+          <ActionBox className='searchBar'>
+            <div className="main" style={{ paddingTop: 0 }}>
+
+              <Input
+                label="Search By Name"
+                placeholder="First or Last Name..."
+                value={this.state.searchName}
+                onChange={searchName => this.setState({ searchName })}
+                onKeyPress={this.enterPressed.bind(this)}
+              />
+              <Input
+                label="Search By DOB"
+                type="date"
+                value={this.state.searchDOB}
+                onChange={searchDOB => this.setState({ searchDOB })}
+                onKeyPress={this.enterPressed.bind(this)}
+              />
+              <Input
+                label="Search By Address"
+                placeholder="Address or City"
+                value={this.state.searchAddress}
+                onChange={searchAddress => this.setState({ searchAddress })}
+                onKeyPress={this.enterPressed.bind(this)}
+              />
+              <Input
+                label="Search by Phone"
+                type="phone"
+                placeholder="(---) --- ---"
+                value={this.state.searchPhone}
+                onChange={searchPhone => this.setState({ searchPhone })}
+                onKeyPress={this.enterPressed.bind(this)}
+              />
+
+              <Button
+                search
+                icon="search"
+                title="SEARCH"
+                onClick={this.getRelativePatients.bind(this)}
+              />
 
 
             </div>
 
-          </Header>
-
-          <div className="body">
-
-            <ActionBox className='searchBar'>
-              <div className="main" style={{ paddingTop: 0 }}>
-
-                <Input
-                  label="Search By Name"
-                  placeholder="First or Last Name..."
-                  value={this.state.searchName}
-                  onChange={searchName => this.setState({ searchName })}
-                  onKeyPress={this.enterPressed.bind(this)}
-                />
-                <Input
-                  label="Search By DOB"
-                  type="date"
-                  value={this.state.searchDOB}
-                  onChange={searchDOB => this.setState({ searchDOB })}
-                  onKeyPress={this.enterPressed.bind(this)}
-                />
-                <Input
-                  label="Search By Address"
-                  placeholder="Address or City"
-                  value={this.state.searchAddress}
-                  onChange={searchAddress => this.setState({ searchAddress })}
-                  onKeyPress={this.enterPressed.bind(this)}
-                />
-                <Input
-                  label="Search by Phone"
-                  type="phone"
-                  placeholder="(---) --- ---"
-                  value={this.state.searchPhone}
-                  onChange={searchPhone => this.setState({ searchPhone })}
-                  onKeyPress={this.enterPressed.bind(this)}
-                />
-
-                <Button
-                  search
-                  icon="search"
-                  title="SEARCH"
-                  onClick={this.getRelativePatients.bind(this)}
-                />
+          </ActionBox>
 
 
-              </div>
-
-            </ActionBox>
-
-
-            {this.renderTable()}
-            {patientList}
-
-          </div>
+          {this.renderTable()}
+          {patientList}
 
         </div>
-      </ReactCSSTransitionGroup>
+
+      </div>
     );
   }
 }

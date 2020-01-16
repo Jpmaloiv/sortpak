@@ -25,7 +25,7 @@ router.get("/sign-s3", (req, res) => {
     const fileType = req.query['file-type'];
     const s3Params = {
         Bucket: S3_BUCKET,
-        Key: `receipts/${lastName}_${firstName}/${date}/Receipt-${req.query.now}.pdf`,
+        Key: `receipts/${lastName}_${firstName}/${date}/Receipt.pdf`,
         Expires: 60,
         ContentType: fileType,
         ACL: 'public-read'
@@ -38,9 +38,8 @@ router.get("/sign-s3", (req, res) => {
         }
         const returnData = {
             signedRequest: data,
-            url: `https://s3-us-west-1.amazonaws.com/${S3_BUCKET}/receipts/${lastName}_${firstName}/${date}/Receipt-${req.query.now}.pdf`
+            url: `https://s3-us-west-1.amazonaws.com/${S3_BUCKET}/receipts/${lastName}_${firstName}/${date}/Receipt.pdf`
         };
-
         console.log(returnData)
         res.write(JSON.stringify(returnData));
         res.end();
