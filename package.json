@@ -38,7 +38,7 @@
     "mysql": "^2.15.0",
     "mysql2": "^1.5.2",
     "npm": "^5.7.1",
-    "open": "0.0.5",
+    "open": "6.0.0",
     "phaxio": "^1.0.0",
     "phaxio-official": "^1.0.0",
     "react-chartjs-2": "^2.7.4",
