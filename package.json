@@ -44,7 +44,7 @@
     "react-chartjs-2": "^2.7.4",
     "react-geocode": "^0.1.2",
     "react-stripe-elements": "^2.0.1",
-    "sequelize": "^4.44.3",
+    "sequelize": "^5.15.1",
     "socket.io": "^2.2.0",
     "stripe": "^6.15.0",
     "uuid": "^3.3.2"
