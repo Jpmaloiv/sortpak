@@ -3,6 +3,8 @@ Credentials:
 Username: James - Password: Test123$
 
 
+
+
 SortPak - A patient portal where users can manage their prescriptions and communicate with physicians
 
 This app uses `React` for the front-end and `Node/MYSQL` for the back-end.
