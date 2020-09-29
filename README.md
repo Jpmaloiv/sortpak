@@ -1,3 +1,7 @@
+Credentials:
+
+Username - James
+Password - Test123$
 
 SortPak - A patient portal where users can manage their prescriptions and communicate with physicians
 
