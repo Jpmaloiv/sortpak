@@ -34,7 +34,7 @@
     "express-unless": "^0.5.0",
     "heroku-ssl-redirect": "0.0.4",
     "jsonwebtoken": "^8.2.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "mysql": "^2.15.0",
     "mysql2": "^1.5.2",
     "npm": "^5.7.1",
