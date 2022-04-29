@@ -13,7 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "@react-pdf/renderer": "^1.0.0-alpha.25",
-    "async": "^2.6.2",
+    "async": "^2.6.4",
     "authorizenet": "^1.0.7",
     "aws": "0.0.3-2",
     "aws-cli": "0.0.2",
